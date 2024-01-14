@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:QBB/localestring.dart';
 import 'package:QBB/localization/localization.dart';
-import 'package:QBB/nirmal_api.dart/studies_api.dart';
 import 'package:QBB/providers/studymodel.dart';
 import 'package:QBB/providers/token_provider.dart';
 import 'package:QBB/screens/splash.dart';
@@ -14,8 +13,6 @@ import 'package:QBB/l10n/l10n.dart';
 import 'package:QBB/providers/navigation_provider.dart';
 // import 'package:flutter_gen/gen_I10n/app-localizations.dart';
 import 'package:get/get.dart';
-
-import 'nirmal_api.dart/studies_api.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
