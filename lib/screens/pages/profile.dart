@@ -172,65 +172,80 @@ class ProfileState extends State<Profile> {
                 MaterialPageRoute(builder: (context) => const Results()),
               );
             }
+            if (index == 4) {
+              BottomNavigationBarItem(
+                backgroundColor: secondaryColor,
+                icon: Padding(
+                  padding: const EdgeInsets.only(bottom: 5.0),
+                  child: Image.asset(
+                    "assets/images/home.png",
+                    width: 20.0,
+                    height: 20.0,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                label: 'HOME',
+              );
+            }
           },
           items: [
-                  BottomNavigationBarItem(
-                    icon: Padding(
-                      padding: const EdgeInsets.only(bottom: 5.0),
-                      child: Image.asset(
-                        "assets/images/home.png",
-                        width: 20.0,
-                        height: 20.0,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                    label: 'HOME',
+            BottomNavigationBarItem(
+              icon: Padding(
+                padding: const EdgeInsets.only(bottom: 5.0),
+                child: Image.asset(
+                  "assets/images/home.png",
+                  width: 20.0,
+                  height: 20.0,
+                  fit: BoxFit.cover,
+                ),
+              ),
+              label: 'HOME',
+            ),
+            BottomNavigationBarItem(
+                icon: Padding(
+                  padding: const EdgeInsets.only(bottom: 5.0),
+                  child: Image.asset(
+                    "assets/images/event.png",
+                    width: 20.0,
+                    height: 20.0,
+                    fit: BoxFit.cover,
                   ),
-                  BottomNavigationBarItem(
-                      icon: Padding(
-                        padding: const EdgeInsets.only(bottom: 5.0),
-                        child: Image.asset(
-                          "assets/images/event.png",
-                          width: 20.0,
-                          height: 20.0,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                      label: 'APPOINTMENT'),
-                  BottomNavigationBarItem(
-                      icon: Padding(
-                        padding: const EdgeInsets.only(bottom: 5.0),
-                        child: Image.asset(
-                          "assets/images/event.png",
-                          width: 20.0,
-                          height: 20.0,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                      label: 'BOOK AN APPOINTMENT'),
-                  BottomNavigationBarItem(
-                      icon: Padding(
-                        padding: const EdgeInsets.only(bottom: 5.0),
-                        child: Image.asset(
-                          "assets/images/experiment-results.png",
-                          width: 20.0,
-                          height: 20.0,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                      label: 'RESULTS/STATUS'),
-                  BottomNavigationBarItem(
-                      icon: Padding(
-                        padding: const EdgeInsets.only(bottom: 5.0),
-                        child: Image.asset(
-                          "assets/images/user.png",
-                          width: 20.0,
-                          height: 20.0,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                      label: 'MY PROFILE'),
-                ]),
+                ),
+                label: 'APPOINTMENT'),
+            BottomNavigationBarItem(
+                icon: Padding(
+                  padding: const EdgeInsets.only(bottom: 5.0),
+                  child: Image.asset(
+                    "assets/images/event.png",
+                    width: 20.0,
+                    height: 20.0,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                label: 'BOOK AN APPOINTMENT'),
+            BottomNavigationBarItem(
+                icon: Padding(
+                  padding: const EdgeInsets.only(bottom: 5.0),
+                  child: Image.asset(
+                    "assets/images/experiment-results.png",
+                    width: 20.0,
+                    height: 20.0,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                label: 'RESULTS/STATUS'),
+            BottomNavigationBarItem(
+                icon: Padding(
+                  padding: const EdgeInsets.only(bottom: 5.0),
+                  child: Image.asset(
+                    "assets/images/user.png",
+                    width: 20.0,
+                    height: 20.0,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                label: 'MY PROFILE'),
+          ]),
       body: _isLoading
           ? Center(child: LoaderWidget()) // Loader widget
           : SingleChildScrollView(

@@ -8,6 +8,11 @@ import 'package:QBB/screens/pages/notification.dart';
 import 'package:QBB/sidebar.dart';
 import 'package:get/get.dart';
 
+import 'appointments.dart';
+import 'homescreen_nk.dart';
+import 'profile.dart';
+import 'results.dart';
+
 class Studies extends StatefulWidget {
   const Studies({Key? key}) : super(key: key);
 
@@ -22,13 +27,13 @@ class StudiesState extends State<Studies> {
   void initState() {
     studies = [];
     print('api calling...');
-    
-      fetchStudyMasterAPI().then((studyList) {
-        setState(() {
-          studies = studyList;
-          isLoading = false; // Set loading state to false when data is fetched
-        });
+
+    fetchStudyMasterAPI().then((studyList) {
+      setState(() {
+        studies = studyList;
+        isLoading = false; // Set loading state to false when data is fetched
       });
+    });
     super.initState();
   }
 
@@ -45,6 +50,114 @@ class StudiesState extends State<Studies> {
       },
       child: Scaffold(
         drawer: const SideMenu(),
+        bottomNavigationBar: BottomNavigationBar(
+            selectedItemColor: textcolor,
+            unselectedItemColor: textcolor,
+            backgroundColor: primaryColor,
+            // currentIndex: currentIndex,
+            unselectedFontSize: 7,
+            selectedFontSize: 7,
+            type: BottomNavigationBarType.fixed,
+            onTap: (index) {
+              // setState(() {
+              //   currentIndex = index;
+              // });
+              if (index == 0) {
+                // Handle tap for the "HOME" item
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const HomeScreen()),
+                );
+              }
+              if (index == 1) {
+                // Handle tap for the "HOME" item
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const Appointments()),
+                );
+              }
+              if (index == 2) {
+                // Handle tap for the "HOME" item
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const BookAppointments()),
+                );
+              }
+              if (index == 3) {
+                // Handle tap for the "HOME" item
+                BottomAppBarTheme(color: secondaryColor);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const Results()),
+                );
+              }
+              if (index == 4) {
+                // Handle tap for the "HOME" item
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const Profile()),
+                );
+              }
+            },
+            items: [
+              BottomNavigationBarItem(
+                icon: Padding(
+                  padding: const EdgeInsets.only(bottom: 5.0),
+                  child: Image.asset(
+                    "assets/images/home.png",
+                    width: 20.0,
+                    height: 20.0,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                label: 'HOME',
+              ),
+              BottomNavigationBarItem(
+                  icon: Padding(
+                    padding: const EdgeInsets.only(bottom: 5.0),
+                    child: Image.asset(
+                      "assets/images/event.png",
+                      width: 20.0,
+                      height: 20.0,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  label: 'APPOINTMENT'),
+              BottomNavigationBarItem(
+                  icon: Padding(
+                    padding: const EdgeInsets.only(bottom: 5.0),
+                    child: Image.asset(
+                      "assets/images/event.png",
+                      width: 20.0,
+                      height: 20.0,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  label: 'BOOK AN APPOINTMENT'),
+              BottomNavigationBarItem(
+                  icon: Padding(
+                    padding: const EdgeInsets.only(bottom: 5.0),
+                    child: Image.asset(
+                      "assets/images/experiment-results.png",
+                      width: 20.0,
+                      height: 20.0,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  label: 'RESULTS/STATUS'),
+              BottomNavigationBarItem(
+                  icon: Padding(
+                    padding: const EdgeInsets.only(bottom: 5.0),
+                    child: Image.asset(
+                      "assets/images/user.png",
+                      width: 20.0,
+                      height: 20.0,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  label: 'MY PROFILE'),
+            ]),
         appBar: AppBar(
           iconTheme: const IconThemeData(color: textcolor),
           title: Row(
@@ -61,7 +174,7 @@ class StudiesState extends State<Studies> {
               ),
               Text(
                 'studies'.tr,
-                style: TextStyle(
+                style: const TextStyle(
                   color: Colors.white,
                   fontFamily: 'Impact',
                 ),
@@ -125,7 +238,7 @@ class StudiesState extends State<Studies> {
                                     children: [
                                       Text(
                                         'studyCode'.tr,
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                           color: Color.fromARGB(
                                               255, 195, 195, 195),
                                           fontSize: 14,
@@ -144,7 +257,7 @@ class StudiesState extends State<Studies> {
                                       children: [
                                         Text(
                                           'studyName'.tr,
-                                          style: TextStyle(
+                                          style: const TextStyle(
                                             color: Color.fromARGB(
                                                 255, 195, 195, 195),
                                             fontSize: 14,
@@ -187,11 +300,11 @@ class StudiesState extends State<Studies> {
                                   ),
                                 ),
                                 child: Padding(
-                                  padding: EdgeInsets.fromLTRB(
+                                  padding: const EdgeInsets.fromLTRB(
                                       10.0, 15.0, 10.0, 15.0),
                                   child: Text(
                                     'bookAnAppointment'.tr,
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                       color: textcolor,
                                     ),
                                   ),

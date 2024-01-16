@@ -488,7 +488,7 @@ class _LoginPageState extends State<LoginPage> {
           height: 10.0,
           width: 10.0,
           child: Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(10.0),
             child: Image.asset(
               "assets/images/lock.png",
               width: 15.0,
@@ -570,10 +570,10 @@ class _LoginPageState extends State<LoginPage> {
           fontSize: 14.0,
         ),
         prefixIcon: Container(
-          height: 10,
-          width: 10,
+          height: 5,
+          width: 5,
           child: Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(10.0),
             child: Image.asset(
               "assets/images/id-card.png",
               // width: 15.0,
