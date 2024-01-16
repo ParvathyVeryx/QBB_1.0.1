@@ -108,6 +108,7 @@ flutter:
     - assets/images/event.png
     - assets/images/calender2.png
     - assets/images/user.png
+    - assets/images/phone.png
     - assets/images/experiment-results.png
     - assets/images/loader.gif
     - assets/i18n/en.json

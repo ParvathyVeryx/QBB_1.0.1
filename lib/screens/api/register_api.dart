@@ -30,7 +30,7 @@ class RegisterApi {
     };
     // Register register = Register();
 
-          SharedPreferences prefs = await SharedPreferences.getInstance();
+    SharedPreferences prefs = await SharedPreferences.getInstance();
     String langg = pref.getString("langEn").toString();
     String setLang;
     if (langg == "true") {
@@ -57,7 +57,8 @@ class RegisterApi {
       showDialog(
           context: context, // Use the context of the current screen
           builder: (BuildContext context) {
-            return ErrorPopup(errorMessage: response.body);
+            // return ErrorPopup(errorMessage: response.body);
+            return loginOrReg();
           }).then((_) {
         // This code will run after the dialog is dismissed
         // Navigate to another widget here

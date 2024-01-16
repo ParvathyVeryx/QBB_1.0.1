@@ -106,6 +106,167 @@ class _LoginPageState extends State<LoginPage> {
                                   const SizedBox(
                                     height: 20,
                                   ),
+                                  // Directionality(
+                                  //   textDirection: TextDirection.ltr,
+                                  //   child: Row(
+                                  //     mainAxisAlignment:
+                                  //         MainAxisAlignment.center,
+                                  //     children: [
+                                  //       ElevatedButton(
+                                  //         style: isButtonClicked
+                                  //             ? ButtonStyle(
+                                  //                 backgroundColor:
+                                  //                     MaterialStateProperty.all<
+                                  //                         Color>(appbar),
+                                  //                 shape:
+                                  //                     MaterialStateProperty.all<
+                                  //                         RoundedRectangleBorder>(
+                                  //                   const RoundedRectangleBorder(
+                                  //                     borderRadius:
+                                  //                         BorderRadius.only(
+                                  //                       bottomLeft:
+                                  //                           Radius.circular(
+                                  //                               10.0),
+                                  //                     ),
+                                  //                   ),
+                                  //                 ),
+                                  //               )
+                                  //             : ButtonStyle(
+                                  //                 backgroundColor:
+                                  //                     MaterialStateProperty.all<
+                                  //                         Color>(Colors.white),
+                                  //                 shape:
+                                  //                     MaterialStateProperty.all<
+                                  //                         RoundedRectangleBorder>(
+                                  //                   const RoundedRectangleBorder(
+                                  //                     side: BorderSide(
+                                  //                         color: appbar),
+                                  //                     borderRadius:
+                                  //                         BorderRadius.only(
+                                  //                       bottomLeft:
+                                  //                           Radius.circular(
+                                  //                               0.0),
+                                  //                     ),
+                                  //                   ),
+                                  //                 ),
+                                  //               ),
+                                  //         onPressed: () async {
+                                  //           setState(() {
+                                  //             // Toggle the state to change the button style
+                                  //             isButtonClicked = true;
+                                  //             isButtonClickedArabic = false;
+                                  //           });
+                                  //           // print('token before calling api $token');
+                                  //           SharedPreferences pref =
+                                  //               await SharedPreferences
+                                  //                   .getInstance();
+                                  //           pref.setString("langEn", "English");
+                                  //           var lan = pref
+                                  //               .getString("langEn")
+                                  //               .toString();
+                                  //           print("jjjjjjjjjjjjjjj" + lan);
+                                  //           updateLanguageLogin(
+                                  //               locale[0]['locale']);
+
+                                  //           // validated
+                                  //           //     ? qidErr =
+                                  //           //         'Please enter valid Qatar ID'
+                                  //           //     : 'الرجاء إدخال رقم البطاقة الشخصية القطرية الصحيح';
+                                  //           // validated
+                                  //           //     ? qidErr = 'pleaseEnterValidQatarID'.tr
+                                  //           //     :  qidErr = 'pleaseEnterValidQatarID'.tr;
+                                  //         },
+                                  //         child: Padding(
+                                  //           padding: EdgeInsets.fromLTRB(
+                                  //               6.0, 3.0, 6.0, 3.0),
+                                  //           child: isButtonClicked
+                                  //               ? Text(
+                                  //                   'English',
+                                  //                   style: TextStyle(
+                                  //                     color: textcolor,
+                                  //                   ),
+                                  //                 )
+                                  //               : Text(
+                                  //                   'English',
+                                  //                   style: TextStyle(
+                                  //                     color: appbar,
+                                  //                   ),
+                                  //                 ),
+                                  //         ),
+                                  //       ),
+                                  //       ElevatedButton(
+                                  //         style: isButtonClickedArabic
+                                  //             ? ButtonStyle(
+                                  //                 backgroundColor:
+                                  //                     MaterialStateProperty.all<
+                                  //                         Color>(appbar),
+                                  //                 shape:
+                                  //                     MaterialStateProperty.all<
+                                  //                         RoundedRectangleBorder>(
+                                  //                   const RoundedRectangleBorder(
+                                  //                     borderRadius:
+                                  //                         BorderRadius.only(
+                                  //                       bottomRight:
+                                  //                           Radius.circular(
+                                  //                               10.0),
+                                  //                     ),
+                                  //                   ),
+                                  //                 ),
+                                  //               )
+                                  //             : ButtonStyle(
+                                  //                 backgroundColor:
+                                  //                     MaterialStateProperty.all<
+                                  //                         Color>(Colors.white),
+                                  //                 shape:
+                                  //                     MaterialStateProperty.all<
+                                  //                         RoundedRectangleBorder>(
+                                  //                   const RoundedRectangleBorder(
+                                  //                     // borderRadius: BorderRadius.only(
+                                  //                     //   bottomLeft: Radius.circular(20.0),
+                                  //                     // ),
+                                  //                     side: BorderSide(
+                                  //                         color: appbar),
+                                  //                   ),
+                                  //                 ),
+                                  //               ),
+                                  //         onPressed: () async {
+                                  //           setState(() {
+                                  //             // Toggle the state to change the button style
+                                  //             isButtonClicked = false;
+                                  //             isButtonClickedArabic = true;
+                                  //           });
+                                  //           SharedPreferences pref =
+                                  //               await SharedPreferences
+                                  //                   .getInstance();
+                                  //           pref.setString("langAR", "Arabic");
+                                  //           var lan = pref
+                                  //               .getString("langAR")
+                                  //               .toString();
+                                  //           print("jjjjjjjjjjjjjjj" + lan);
+                                  //           updateLanguageLogin(
+                                  //               locale[1]['locale']);
+                                  //         },
+                                  //         child: Padding(
+                                  //           padding: EdgeInsets.fromLTRB(
+                                  //               6.0, 3.0, 6.0, 3.0),
+                                  //           child: isButtonClickedArabic
+                                  //               ? Text(
+                                  //                   'عربي',
+                                  //                   style: TextStyle(
+                                  //                     color: textcolor,
+                                  //                   ),
+                                  //                 )
+                                  //               : Text(
+                                  //                   'عربي',
+                                  //                   style: TextStyle(
+                                  //                     color: appbar,
+                                  //                   ),
+                                  //                 ),
+                                  //         ),
+                                  //       ),
+                                  //     ],
+                                  //   ),
+                                  // ),
                                   Directionality(
                                     textDirection: TextDirection.ltr,
                                     child: Row(
@@ -126,7 +287,7 @@ class _LoginPageState extends State<LoginPage> {
                                                           BorderRadius.only(
                                                         bottomLeft:
                                                             Radius.circular(
-                                                                20.0),
+                                                                10.0),
                                                       ),
                                                     ),
                                                   ),
@@ -167,28 +328,22 @@ class _LoginPageState extends State<LoginPage> {
                                             print("jjjjjjjjjjjjjjj" + lan);
                                             updateLanguageLogin(
                                                 locale[0]['locale']);
-
-                                            // validated
-                                            //     ? qidErr =
-                                            //         'Please enter valid Qatar ID'
-                                            //     : 'الرجاء إدخال رقم البطاقة الشخصية القطرية الصحيح';
-                                            // validated
-                                            //     ? qidErr = 'pleaseEnterValidQatarID'.tr
-                                            //     :  qidErr = 'pleaseEnterValidQatarID'.tr;
                                           },
                                           child: Padding(
-                                            padding: EdgeInsets.fromLTRB(
+                                            padding: const EdgeInsets.fromLTRB(
                                                 6.0, 3.0, 6.0, 3.0),
                                             child: isButtonClicked
-                                                ? Text(
+                                                ? const Text(
                                                     'English',
                                                     style: TextStyle(
+                                                      fontSize: 12,
                                                       color: textcolor,
                                                     ),
                                                   )
-                                                : Text(
+                                                : const Text(
                                                     'English',
                                                     style: TextStyle(
+                                                      fontSize: 12,
                                                       color: appbar,
                                                     ),
                                                   ),
@@ -208,7 +363,7 @@ class _LoginPageState extends State<LoginPage> {
                                                           BorderRadius.only(
                                                         bottomRight:
                                                             Radius.circular(
-                                                                20.0),
+                                                                10.0),
                                                       ),
                                                     ),
                                                   ),
@@ -247,18 +402,20 @@ class _LoginPageState extends State<LoginPage> {
                                                 locale[1]['locale']);
                                           },
                                           child: Padding(
-                                            padding: EdgeInsets.fromLTRB(
+                                            padding: const EdgeInsets.fromLTRB(
                                                 6.0, 3.0, 6.0, 3.0),
                                             child: isButtonClickedArabic
-                                                ? Text(
+                                                ? const Text(
                                                     'عربي',
                                                     style: TextStyle(
+                                                      fontSize: 12,
                                                       color: textcolor,
                                                     ),
                                                   )
-                                                : Text(
+                                                : const Text(
                                                     'عربي',
                                                     style: TextStyle(
+                                                      fontSize: 12,
                                                       color: appbar,
                                                     ),
                                                   ),
@@ -267,6 +424,7 @@ class _LoginPageState extends State<LoginPage> {
                                       ],
                                     ),
                                   ),
+
                                   const SizedBox(
                                     height: 50,
                                   ),
@@ -334,7 +492,8 @@ class _LoginPageState extends State<LoginPage> {
                                               shape: MaterialStateProperty.all<
                                                   RoundedRectangleBorder>(
                                                 const RoundedRectangleBorder(
-                                                  borderRadius: BorderRadius.only(
+                                                  borderRadius:
+                                                      BorderRadius.only(
                                                     bottomLeft:
                                                         Radius.circular(20.0),
                                                   ),
@@ -505,7 +664,7 @@ class _LoginPageState extends State<LoginPage> {
         ),
         contentPadding: const EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 5.0),
         labelText: labelText,
-        labelStyle: TextStyle(color: labelTextColor),
+        labelStyle: TextStyle(color: labelTextColor, fontSize: 12),
         enabledBorder: const OutlineInputBorder(
           borderSide: BorderSide(color: Color.fromARGB(255, 173, 173, 173)),
           borderRadius: BorderRadius.only(
@@ -584,7 +743,7 @@ class _LoginPageState extends State<LoginPage> {
         ),
         contentPadding: const EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 5.0),
         labelText: labelText,
-        labelStyle: TextStyle(color: labelTextColor),
+        labelStyle: TextStyle(color: labelTextColor, fontSize: 12),
         enabledBorder: const OutlineInputBorder(
           borderSide: BorderSide(color: Color.fromARGB(255, 173, 173, 173)),
           borderRadius: BorderRadius.only(
