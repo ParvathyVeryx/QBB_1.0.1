@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 Future<String> callUserProfileAPIGet() async {
   int? userId = await getUserIdFromSharedPreferences();
+  print('ggggggggggggggggggggggggggggggggggggggggggg' + userId.toString());
   if (userId != null) {
     print('User ID: $userId');
   } else {

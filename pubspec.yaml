@@ -106,7 +106,7 @@ flutter:
     - assets/images/lock.png
     - assets/images/id-card.png
     - assets/images/event.png
-    - assets/images/calender2.png
+    - assets/images/date.png
     - assets/images/user.png
     - assets/images/phone.png
     - assets/images/experiment-results.png

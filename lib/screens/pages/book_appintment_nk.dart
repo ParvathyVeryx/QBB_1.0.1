@@ -556,6 +556,11 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'appointments.dart';
+import 'homescreen_nk.dart';
+import 'profile.dart';
+import 'results.dart';
+
 class BookAppointments extends StatefulWidget {
   const BookAppointments({Key? key}) : super(key: key);
 
@@ -575,7 +580,7 @@ class BookAppointmentsState extends State<BookAppointments> {
   int? selectedVisitTypeIdForBooking;
   int? selectedStudyId;
   bool isLoading = false; // Added flag for loading indicator
-
+  int currentIndex = 2;
   @override
   void initState() {
     super.initState();
@@ -709,6 +714,109 @@ class BookAppointmentsState extends State<BookAppointments> {
         },
         child: Scaffold(
           drawer: SideMenu(),
+          bottomNavigationBar: BottomNavigationBar(
+            selectedItemColor: textcolor,
+            unselectedItemColor: textcolor,
+            backgroundColor: primaryColor,
+            // currentIndex: currentIndex,
+            unselectedFontSize: 7,
+            selectedFontSize: 7,
+            type: BottomNavigationBarType.fixed,
+            onTap: (index) {
+              setState(() {
+                currentIndex = index;
+              });
+              if (index == 0) {
+                // Handle tap for the "HOME" item
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const HomeScreen()),
+                );
+              }
+              if (index == 1) {
+                // Handle tap for the "HOME" item
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const Appointments()),
+                );
+              }
+
+              if (index == 3) {
+                // Handle tap for the "HOME" item
+                BottomAppBarTheme(color: secondaryColor);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const Results()),
+                );
+              }
+              if (index == 4) {
+                // Handle tap for the "HOME" item
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const Profile()),
+                );
+              }
+            },
+            items: [
+            BottomNavigationBarItem(
+              icon: Padding(
+                padding: const EdgeInsets.only(bottom: 5.0, top: 5.0),
+                child: Image.asset(
+                  "assets/images/home.png",
+                  width: 20.0,
+                  height: 20.0,
+                  fit: BoxFit.cover,
+                ),
+              ),
+              label: 'home'.tr + '\n',
+            ),
+            BottomNavigationBarItem(
+              icon: Padding(
+                padding: const EdgeInsets.only(bottom: 5.0, top: 5.0),
+                child: Image.asset(
+                  "assets/images/event.png",
+                  width: 20.0,
+                  height: 20.0,
+                  fit: BoxFit.cover,
+                ),
+              ),
+              label: 'appointment'.tr + '\n',
+            ),
+            BottomNavigationBarItem(
+                icon: Padding(
+                  padding: const EdgeInsets.only(bottom: 5.0, top: 5.0),
+                  child: Image.asset(
+                    "assets/images/date.png",
+                    width: 20.0,
+                    height: 20.0,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                label: 'bookAn'.tr + '\n' + 'appointment'.tr),
+            BottomNavigationBarItem(
+                icon: Padding(
+                  padding: const EdgeInsets.only(bottom: 5.0, top: 5.0),
+                  child: Image.asset(
+                    "assets/images/experiment-results.png",
+                    width: 20.0,
+                    height: 20.0,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                label: 'results'.tr + '/' + '\n' + 'status'.tr),
+            BottomNavigationBarItem(
+                icon: Padding(
+                  padding: const EdgeInsets.only(bottom: 5.0, top: 5.0),
+                  child: Image.asset(
+                    "assets/images/user.png",
+                    width: 20.0,
+                    height: 20.0,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                label: 'profile'.tr.toUpperCase() + '\n'),
+          ]),
+
           appBar: AppBar(
             iconTheme: const IconThemeData(color: textcolor),
             title: Row(

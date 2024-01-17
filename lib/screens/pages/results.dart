@@ -185,63 +185,64 @@ class ResultsState extends State<Results> {
             }
           },
           items: [
-                  BottomNavigationBarItem(
-                    icon: Padding(
-                      padding: const EdgeInsets.only(bottom: 5.0),
-                      child: Image.asset(
-                        "assets/images/home.png",
-                        width: 20.0,
-                        height: 20.0,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                    label: 'HOME',
+            BottomNavigationBarItem(
+              icon: Padding(
+                padding: const EdgeInsets.only(bottom: 5.0, top: 5.0),
+                child: Image.asset(
+                  "assets/images/home.png",
+                  width: 20.0,
+                  height: 20.0,
+                  fit: BoxFit.cover,
+                ),
+              ),
+              label: 'home'.tr + '\n',
+            ),
+            BottomNavigationBarItem(
+              icon: Padding(
+                padding: const EdgeInsets.only(bottom: 5.0, top: 5.0),
+                child: Image.asset(
+                  "assets/images/event.png",
+                  width: 20.0,
+                  height: 20.0,
+                  fit: BoxFit.cover,
+                ),
+              ),
+              label: 'appointment'.tr + '\n',
+            ),
+            BottomNavigationBarItem(
+                icon: Padding(
+                  padding: const EdgeInsets.only(bottom: 5.0, top: 5.0),
+                  child: Image.asset(
+                    "assets/images/date.png",
+                    width: 20.0,
+                    height: 20.0,
+                    fit: BoxFit.cover,
                   ),
-                  BottomNavigationBarItem(
-                      icon: Padding(
-                        padding: const EdgeInsets.only(bottom: 5.0),
-                        child: Image.asset(
-                          "assets/images/event.png",
-                          width: 20.0,
-                          height: 20.0,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                      label: 'APPOINTMENT'),
-                  BottomNavigationBarItem(
-                      icon: Padding(
-                        padding: const EdgeInsets.only(bottom: 5.0),
-                        child: Image.asset(
-                          "assets/images/event.png",
-                          width: 20.0,
-                          height: 20.0,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                      label: 'BOOK AN APPOINTMENT'),
-                  BottomNavigationBarItem(
-                      icon: Padding(
-                        padding: const EdgeInsets.only(bottom: 5.0),
-                        child: Image.asset(
-                          "assets/images/experiment-results.png",
-                          width: 20.0,
-                          height: 20.0,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                      label: 'RESULTS/STATUS'),
-                  BottomNavigationBarItem(
-                      icon: Padding(
-                        padding: const EdgeInsets.only(bottom: 5.0),
-                        child: Image.asset(
-                          "assets/images/user.png",
-                          width: 20.0,
-                          height: 20.0,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                      label: 'MY PROFILE'),
-                ]),
+                ),
+                label: 'bookAn'.tr + '\n' + 'appointment'.tr),
+            BottomNavigationBarItem(
+                icon: Padding(
+                  padding: const EdgeInsets.only(bottom: 5.0, top: 5.0),
+                  child: Image.asset(
+                    "assets/images/experiment-results.png",
+                    width: 20.0,
+                    height: 20.0,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                label: 'results'.tr + '/' + '\n' + 'status'.tr),
+            BottomNavigationBarItem(
+                icon: Padding(
+                  padding: const EdgeInsets.only(bottom: 5.0, top: 5.0),
+                  child: Image.asset(
+                    "assets/images/user.png",
+                    width: 20.0,
+                    height: 20.0,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                label: 'profile'.tr.toUpperCase() + '\n'),
+          ]),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(10.0),
