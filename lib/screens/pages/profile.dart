@@ -31,6 +31,7 @@ class UserProfileData {
   String gender = '';
   String maritalStatus = '';
   String dateOnly = '';
+  String profilePicture = '';
 }
 
 class Profile extends StatefulWidget {
@@ -86,6 +87,7 @@ class ProfileState extends State<Profile> {
       userProfileData.gender = json.decode(responseBody)['Gender'].toString();
       userProfileData.maritalStatus =
           json.decode(responseBody)['MaritalStatus'].toString();
+          _profilePicture = json.decode(responseBody)['Photo'] ?? '';
     } catch (e) {
       print("Catch Exception during API request: $e");
       // Handle exception here if needed
@@ -171,6 +173,8 @@ class ProfileState extends State<Profile> {
 
   @override
   Widget build(BuildContext context) {
+
+    Future<String> userProfilePic = getUserProfileData().then((userProfileData) => userProfileData.profilePicture);
     return Scaffold(
       appBar: AppBar(
         iconTheme: const IconThemeData(color: textcolor),
@@ -245,21 +249,6 @@ class ProfileState extends State<Profile> {
                 MaterialPageRoute(builder: (context) => const Results()),
               );
             }
-            // if (index == 4) {
-            //   BottomNavigationBarItem(
-            //     backgroundColor: secondaryColor,
-            //     icon: Padding(
-            //       padding: const EdgeInsets.only(bottom: 5.0),
-            //       child: Image.asset(
-            //         "assets/images/home.png",
-            //         width: 20.0,
-            //         height: 20.0,
-            //         fit: BoxFit.cover,
-            //       ),
-            //     ),
-            //     label: 'home'.tr,
-            //   );
-            // }
           },
           items: [
             BottomNavigationBarItem(
@@ -347,8 +336,9 @@ class ProfileState extends State<Profile> {
                         CircleAvatar(
                           radius: 50,
                           backgroundImage: _profilePicture.isNotEmpty
-                              ? _getImageProvider(_profilePicture)
-                              : const AssetImage('assets/images/user.png'),
+                                  ? _getImageProvider(_profilePicture)
+                                  : const AssetImage('assets/images/user.png'),
+              
                         ),
                         Positioned(
                           bottom: 0,
