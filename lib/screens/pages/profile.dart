@@ -55,40 +55,45 @@ class ProfileState extends State<Profile> {
 
     UserProfileData userProfileData = UserProfileData();
     try {
-      String middleName =
-          json.decode(responseBody)['MiddleName'].toString() == "null"
-              ? ''
-              : json.decode(responseBody)['MiddleName'].toString() + '';
-      userProfileData.userName =
-          json.decode(responseBody)['FirstName'].toString() +
-              ' ' +
-              middleName +
-              json.decode(responseBody)['LastName'].toString();
+      
+        String middleName =
+            json.decode(responseBody)['MiddleName'].toString() == "null"
+                ? ''
+                : json.decode(responseBody)['MiddleName'].toString() + '';
+        userProfileData.userName =
+            json.decode(responseBody)['FirstName'].toString() +
+                ' ' +
+                middleName +
+                json.decode(responseBody)['LastName'].toString();
 
-      userProfileData.mobile =
-          json.decode(responseBody)['RecoveryMobile'].toString();
-      userProfileData.email =
-          json.decode(responseBody)['RecoverEmail'].toString();
+        userProfileData.mobile =
+            json.decode(responseBody)['RecoveryMobile'].toString();
+        userProfileData.email =
+            json.decode(responseBody)['RecoverEmail'].toString();
 
-      userProfileData.nationality =
-          json.decode(responseBody)["Nationality"].toString() ?? ' ';
+        userProfileData.nationality =
+            json.decode(responseBody)["Nationality"].toString() ?? ' ';
 
-      userProfileData.hCNo =
-          json.decode(responseBody)['HealthCardNo'].toString() == "null"
-              ? ""
-              : json.decode(responseBody)['HealthCardNo'].toString();
+        userProfileData.hCNo =
+            json.decode(responseBody)['HealthCardNo'].toString() == "null"
+                ? ""
+                : json.decode(responseBody)['HealthCardNo'].toString();
 
-      userProfileData.dob = json.decode(responseBody)['Dob'].toString();
-      DateTime dateTime = DateTime.parse(userProfileData.dob);
-      userProfileData.dateOnly =
-          "${dateTime.year}-${dateTime.month.toString().padLeft(2, '0')}-${dateTime.day.toString().padLeft(2, '0')}";
+        userProfileData.dob = json.decode(responseBody)['Dob'].toString();
+        DateTime dateTime = DateTime.parse(userProfileData.dob);
+        userProfileData.dateOnly =
+            "${dateTime.year}-${dateTime.month.toString().padLeft(2, '0')}-${dateTime.day.toString().padLeft(2, '0')}";
 
-      userProfileData.qid = json.decode(responseBody)['QID'].toString();
-      userProfileData.gender = json.decode(responseBody)['Gender'].toString();
-      userProfileData.maritalStatus =
-          json.decode(responseBody)['MaritalStatus'].toString();
-          _profilePicture = json.decode(responseBody)['Photo'] ?? '';
+        userProfileData.qid = json.decode(responseBody)['QID'].toString();
+        userProfileData.gender = json.decode(responseBody)['Gender'].toString();
+        userProfileData.maritalStatus =
+            json.decode(responseBody)['MaritalStatus'].toString();
+        _profilePicture = json.decode(responseBody)['Photo'] ?? '';
+        _isLoading = false;
+      
+      print("is loading is false");
     } catch (e) {
+      _isLoading = false;
       print("Catch Exception during API request: $e");
       // Handle exception here if needed
     } finally {
@@ -173,8 +178,8 @@ class ProfileState extends State<Profile> {
 
   @override
   Widget build(BuildContext context) {
-
-    Future<String> userProfilePic = getUserProfileData().then((userProfileData) => userProfileData.profilePicture);
+    Future<String> userProfilePic = getUserProfileData()
+        .then((userProfileData) => userProfileData.profilePicture);
     return Scaffold(
       appBar: AppBar(
         iconTheme: const IconThemeData(color: textcolor),
@@ -336,9 +341,8 @@ class ProfileState extends State<Profile> {
                         CircleAvatar(
                           radius: 50,
                           backgroundImage: _profilePicture.isNotEmpty
-                                  ? _getImageProvider(_profilePicture)
-                                  : const AssetImage('assets/images/user.png'),
-              
+                              ? _getImageProvider(_profilePicture)
+                              : const AssetImage('assets/images/user.png'),
                         ),
                         Positioned(
                           bottom: 0,
