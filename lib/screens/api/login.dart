@@ -78,9 +78,8 @@ class LoginApi {
         await pref
             .setString('userQID', json.decode(response.body)["QID"])
             .toString();
-        await pref
-            .setString('userFName', json.decode(response.body)["FirstName"].toString())
-            ;
+        await pref.setString(
+            'userFName', json.decode(response.body)["FirstName"].toString());
         await pref.setString(
             'userMName', json.decode(response.body)["MiddleName"].toString());
         await pref.setString(
@@ -89,30 +88,25 @@ class LoginApi {
             'userGender', json.decode(response.body)["Gender"].toString());
         await pref.setString('userHealthCardNo',
             json.decode(response.body)["HealthCardNo"].toString());
-        await pref
-            .setString('userDOb', json.decode(response.body)["Dob"].toString())
-            ;
+        await pref.setString(
+            'userDOb', json.decode(response.body)["Dob"].toString());
         await pref
             .setString('userNationality',
                 json.decode(response.body)["Nationality"].toString())
             .toString();
-        await pref
-            .setString('userEmail', json.decode(response.body)["RecoverEmail"].toString())
-            ;
-        await pref
-            .setString('userPhNo', json.decode(response.body)["RecoveryMobile"].toString())
-            ;
-        await pref
-            .setString('userMaritalStatus',
-                json.decode(response.body)["MaritalStatus"].toString())
-            ;
+        await pref.setString(
+            'userEmail', json.decode(response.body)["RecoverEmail"].toString());
+        await pref.setString('userPhNo',
+            json.decode(response.body)["RecoveryMobile"].toString());
+        await pref.setString('userMaritalStatus',
+            json.decode(response.body)["MaritalStatus"].toString());
 
         // Save user data to SharedPreferences or handle it based on your requirements
         print(
             'Stored User Details: ${pref.getString('userDetails').toString()}');
 
         // Navigate to the home screen
-        Navigator.push(
+        Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => const HomeScreen()),
         );
