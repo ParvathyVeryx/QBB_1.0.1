@@ -6,6 +6,7 @@ class LocaleString extends Translations {
   Map<String, Map<String, String>> get keys => {
         //ENGLISH LANGUAGE
         'en': {
+          "langChange": "en",
           "create/activateAcc": "Create/Activate Account",
           "activateAccMsg":
               "Active if you have already participated/registered in Qatar biobank before",
@@ -330,6 +331,7 @@ class LocaleString extends Translations {
         },
         //HINDI LANGUAGE
         'ar': {
+          "langChange": "ar",
           "create/activateAcc": "إنشاء/تفعيل الحساب",
           "activateAccMsg": "نشط إذا كنت قد شاركت/سجلت في قطر بيوبنك من قبل",
           "pleaseSelectDate": "يرجى تحديد التاريخ",

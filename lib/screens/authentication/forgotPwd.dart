@@ -1,7 +1,4 @@
 import 'package:QBB/constants.dart';
-import 'package:QBB/nirmal_api.dart/forget_password_getotp.dart';
-import 'package:QBB/nirmal_api.dart/update_password.dart';
-import 'package:QBB/screens/pages/erorr_popup.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -79,56 +76,31 @@ class ForgotPasswordState extends State<ForgotPassword> {
                     return null;
                   },
                 ),
-                const SizedBox(
-                  height: 5.0,
-                ),
+                
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     ElevatedButton(
-                      onPressed: () async {
-                        // Print the entered QID for debugging
-                        print('Entered QID: ${_controller.text}');
-
-                        // Call the API function to get OTP
-                        String enteredQID = _controller.text.trim();
-
-                        try {
-                          Map<String, dynamic> result =
-                              await callUpdatePasswordAPI(enteredQID, context);
-
-                          // Handle the result as needed
-                          // For example, you can print the OTP
-                          print('OTP: ${result['OTP']}');
-
-                          // Update the UI or perform other actions based on the result
-                        } catch (e) {
-                          // Handle errors, for example, show an error message
-                          print('Error fetching OTP: $e');
-                        }
-                      },
-                      style: ButtonStyle(
-                        backgroundColor:
-                            MaterialStateProperty.all<Color>(primaryColor),
-                        shape:
-                            MaterialStateProperty.all<RoundedRectangleBorder>(
-                          const RoundedRectangleBorder(
-                            borderRadius: BorderRadius.only(
-                              bottomLeft: Radius.circular(20.0),
-                            ),
+                        onPressed: () {},
+                        style: ButtonStyle(
+                            backgroundColor: MaterialStateProperty.all<Color>(
+                                primaryColor), // Set background color
+                            shape: MaterialStateProperty.all<
+                                RoundedRectangleBorder>(
+                              const RoundedRectangleBorder(
+                                borderRadius: BorderRadius.only(
+                                  bottomLeft: Radius.circular(
+                                      10.0), // Rounded border at bottom-left
+                                ),
+                              ),
+                            )),
+                        child: Padding(
+                          padding: EdgeInsets.fromLTRB(5.0, 5.0, 5.0, 5.0),
+                          child: Text(
+                            'getOTP'.tr,
+                            style: TextStyle(color: textcolor, fontSize: 11),
                           ),
-                        ),
-                      ),
-                      child: Padding(
-                        padding: EdgeInsets.fromLTRB(5.0, 10.0, 5.0, 10.0),
-                        child: Text(
-                          'getOTP'.tr,
-                          style: TextStyle(
-                            color: textcolor,
-                          ),
-                        ),
-                      ),
-                    ),
+                        )),
                   ],
                 ),
                 const SizedBox(
@@ -147,57 +119,15 @@ class ForgotPasswordState extends State<ForgotPassword> {
                 ),
                 const SizedBox(height: 20.0),
                 _buildPasswordField(),
-                const SizedBox(height: 20.0),
+                const SizedBox(height: 0.0),
                 _buildConfirmPasswordField(),
                 const SizedBox(height: 20.0),
                 ElevatedButton(
                   onPressed: isButtonEnabled
-                      ? () async {
+                      ? () {
                           if (_formKey.currentState!.validate()) {
-                            // Print values before calling the API function
-                            print('QID: $QID');
-                            print('OTP: $otp');
-                            print('Password: $password');
-
-                            // Call the API function with QID, OTP, and password
-                            try {
-                              Map<String, dynamic> result =
-                                  await UpdatePasswordAPI(
-                                QID,
-                                otp,
-                                password,
-                                context,
-                              );
-
-                              // Handle the result as needed
-                              // For example, you can print the API response
-                              print('API Response: $result');
-
-                              // Check if the API call was successful
-                              if (result.containsKey('statusCode') &&
-                                  result['statusCode'] == 200) {
-                                // API call successful, handle accordingly
-                              } else {
-                                // API call failed, display the error on the screen
-                                String errorMessage = result['message'] ??
-                                    'Failed to update password';
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text('Error: $errorMessage'),
-                                    backgroundColor: Colors.red,
-                                  ),
-                                );
-                              }
-                            } catch (e) {
-                              // Handle errors, for example, show an error message
-                              print('Error calling API: $e');
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text('Error: $e'),
-                                  backgroundColor: Colors.red,
-                                ),
-                              );
-                            }
+                            // Process the form data
+                            // Submit the form or perform necessary actions
                           }
                         }
                       : null,
@@ -210,7 +140,7 @@ class ForgotPasswordState extends State<ForgotPassword> {
                             const RoundedRectangleBorder(
                               borderRadius: BorderRadius.only(
                                 bottomLeft: Radius.circular(
-                                    20.0), // Rounded border at bottom-left
+                                    12.0), // Rounded border at bottom-left
                               ),
                             ),
                           ))
@@ -225,7 +155,7 @@ class ForgotPasswordState extends State<ForgotPassword> {
                             const RoundedRectangleBorder(
                               borderRadius: BorderRadius.only(
                                 bottomLeft: Radius.circular(
-                                    20.0), // Rounded border at bottom-left
+                                    12.0), // Rounded border at bottom-left
                               ),
                             ),
                           ),
@@ -297,12 +227,21 @@ class ForgotPasswordState extends State<ForgotPassword> {
         ),
         contentPadding: const EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 5.0),
         labelText: labelText,
-        prefixIcon: const Icon(
-          Icons.card_membership_outlined,
-          color: Color.fromARGB(255, 173, 173, 173),
+        prefixIcon: Container(
+          height: 5,
+          width: 5,
+          child: Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: Image.asset(
+              "assets/images/id-card.png",
+              // width: 15.0,
+              // height: 15.0,
+              fit: BoxFit.cover,
+            ),
+          ),
         ),
-        labelStyle:
-            TextStyle(color: labelTextColor), // Set the label text color
+        labelStyle: TextStyle(
+            color: labelTextColor, fontSize: 12), // Set the label text color
         enabledBorder: const OutlineInputBorder(
           borderSide: BorderSide(color: Color.fromARGB(255, 173, 173, 173)),
           borderRadius: BorderRadius.only(
@@ -330,7 +269,7 @@ class ForgotPasswordState extends State<ForgotPassword> {
       ),
       onChanged: (value) {
         setState(() {
-          QID = value.trim(); // Trim to remove leading/trailing whitespaces
+          QID = value;
           // Enable or disable the button based on whether the OTP field is empty or not
           isButtonEnabled = QID.isNotEmpty &&
               otp.isNotEmpty &&
@@ -359,12 +298,21 @@ class ForgotPasswordState extends State<ForgotPassword> {
         ),
         contentPadding: const EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 5.0),
         labelText: labelText,
-        prefixIcon: const Icon(
-          Icons.phone_android,
-          color: Color.fromARGB(255, 173, 173, 173),
+        prefixIcon: Container(
+          height: 5,
+          width: 5,
+          child: Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: Image.asset(
+              "assets/images/phone.png",
+              // width: 15.0,
+              // height: 15.0,
+              fit: BoxFit.cover,
+            ),
+          ),
         ),
-        labelStyle:
-            TextStyle(color: labelTextColor), // Set the label text color
+        labelStyle: TextStyle(
+            color: labelTextColor, fontSize: 12), // Set the label text color
         enabledBorder: const OutlineInputBorder(
           borderSide: BorderSide(color: Color.fromARGB(255, 173, 173, 173)),
           borderRadius: BorderRadius.only(
@@ -417,13 +365,28 @@ class ForgotPasswordState extends State<ForgotPassword> {
         ),
         contentPadding: EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 5.0),
         labelText: 'newPassword'.tr + '*',
-        prefixIcon: Icon(
-          Icons.lock,
-          color: Color.fromARGB(255, 173, 173, 173),
+        prefixIcon: Container(
+          height: 10.0,
+          width: 10.0,
+          child: Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: Image.asset(
+              "assets/images/lock.png",
+              width: 15.0,
+              height: 15.0,
+              fit: BoxFit.cover,
+            ),
+          ),
         ),
         labelStyle: TextStyle(
-          color: Color.fromARGB(255, 173, 173, 173), // Label text color
-        ),
+            color: Color.fromARGB(
+              255,
+              173,
+              173,
+              173,
+            ),
+            fontSize: 12 // Label text color
+            ),
         enabledBorder: OutlineInputBorder(
           borderSide: BorderSide(color: Color.fromARGB(255, 173, 173, 173)),
           borderRadius: BorderRadius.only(
@@ -481,11 +444,21 @@ class ForgotPasswordState extends State<ForgotPassword> {
         contentPadding: EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 5.0),
         labelText: 'confirmPassword'.tr + '*',
         labelStyle: TextStyle(
-          color: Color.fromARGB(255, 173, 173, 173), // Label text color
-        ),
-        prefixIcon: Icon(
-          Icons.lock,
-          color: Color.fromARGB(255, 173, 173, 173),
+            color: Color.fromARGB(255, 173, 173, 173),
+            fontSize: 12 // Label text color
+            ),
+        prefixIcon: Container(
+          height: 10.0,
+          width: 10.0,
+          child: Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: Image.asset(
+              "assets/images/lock.png",
+              width: 15.0,
+              height: 15.0,
+              fit: BoxFit.cover,
+            ),
+          ),
         ),
         enabledBorder: OutlineInputBorder(
           borderSide: BorderSide(color: Color.fromARGB(255, 173, 173, 173)),

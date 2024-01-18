@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:QBB/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -9,15 +10,11 @@ Future<dynamic> getNotifications(context) async {
   var token = pref.getString("token").toString();
   print('kkkklkl' + token.toString());
         SharedPreferences prefs = await SharedPreferences.getInstance();
-    var lang = prefs.getString("langEn");
-    var setLang;
-    if (lang == "true") {
-      setLang = "en";
-    } else {
-      setLang = "ar";
-    }
+    var lang = 'langChange'.tr;
+
+    
   var uri =
-      Uri.parse(base_url + 'GetNotificationsAPI?language=$setLang&QID=28900498437');
+      Uri.parse(base_url + 'GetNotificationsAPI?language=$lang&QID=28900498437');
 
   final response = await http.get(uri, headers: {
     'Content-Type': 'application/json',

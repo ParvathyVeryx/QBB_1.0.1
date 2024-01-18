@@ -51,6 +51,7 @@ class _LoginPageState extends State<LoginPage> {
   var qidErr;
   bool validated = false;
   String errorText = '';
+  String passwordErrorText = '';
 
   @override
   void initState() {
@@ -126,7 +127,7 @@ class _LoginPageState extends State<LoginPage> {
                                                           BorderRadius.only(
                                                         bottomLeft:
                                                             Radius.circular(
-                                                                20.0),
+                                                                10.0),
                                                       ),
                                                     ),
                                                   ),
@@ -167,28 +168,22 @@ class _LoginPageState extends State<LoginPage> {
                                             print("jjjjjjjjjjjjjjj" + lan);
                                             updateLanguageLogin(
                                                 locale[0]['locale']);
-
-                                            // validated
-                                            //     ? qidErr =
-                                            //         'Please enter valid Qatar ID'
-                                            //     : 'الرجاء إدخال رقم البطاقة الشخصية القطرية الصحيح';
-                                            // validated
-                                            //     ? qidErr = 'pleaseEnterValidQatarID'.tr
-                                            //     :  qidErr = 'pleaseEnterValidQatarID'.tr;
                                           },
                                           child: Padding(
-                                            padding: EdgeInsets.fromLTRB(
+                                            padding: const EdgeInsets.fromLTRB(
                                                 6.0, 3.0, 6.0, 3.0),
                                             child: isButtonClicked
-                                                ? Text(
+                                                ? const Text(
                                                     'English',
                                                     style: TextStyle(
+                                                      fontSize: 12,
                                                       color: textcolor,
                                                     ),
                                                   )
-                                                : Text(
+                                                : const Text(
                                                     'English',
                                                     style: TextStyle(
+                                                      fontSize: 12,
                                                       color: appbar,
                                                     ),
                                                   ),
@@ -208,7 +203,7 @@ class _LoginPageState extends State<LoginPage> {
                                                           BorderRadius.only(
                                                         bottomRight:
                                                             Radius.circular(
-                                                                20.0),
+                                                                10.0),
                                                       ),
                                                     ),
                                                   ),
@@ -247,18 +242,20 @@ class _LoginPageState extends State<LoginPage> {
                                                 locale[1]['locale']);
                                           },
                                           child: Padding(
-                                            padding: EdgeInsets.fromLTRB(
+                                            padding: const EdgeInsets.fromLTRB(
                                                 6.0, 3.0, 6.0, 3.0),
                                             child: isButtonClickedArabic
-                                                ? Text(
+                                                ? const Text(
                                                     'عربي',
                                                     style: TextStyle(
+                                                      fontSize: 12,
                                                       color: textcolor,
                                                     ),
                                                   )
-                                                : Text(
+                                                : const Text(
                                                     'عربي',
                                                     style: TextStyle(
+                                                      fontSize: 12,
                                                       color: appbar,
                                                     ),
                                                   ),
@@ -309,10 +306,17 @@ class _LoginPageState extends State<LoginPage> {
                                           labelTextColor: const Color.fromARGB(
                                               255, 173, 173, 173),
                                           validator: (value) {
+                                            print('Print error !!!!!!!!!!!!' + value!);
                                             if (value!.isEmpty) {
-                                              return 'thePasswordCannotBeEmpty'
-                                                  .tr;
+                                              print('Print error !!!!!!!!!!!!33333333333333333333333333' + value);
+                                              setState(() {
+                                                passwordErrorText =
+                                                    'thePasswordCannotBeEmpty'
+                                                        .tr;
+                                              });
+                                              return passwordErrorText;
                                             }
+                                            
                                             return null;
                                           },
 
@@ -426,25 +430,6 @@ class _LoginPageState extends State<LoginPage> {
                                       ],
                                     ),
                                   ),
-                                  // Center(
-                                  //   child: Text(
-                                  //     'byRegisteringYouAgreeToOur'.tr,
-                                  //     style: TextStyle(
-                                  //         color: Color.fromARGB(
-                                  //             255, 107, 107, 107)),
-                                  //   ),
-                                  // ),
-                                  // TextButton(
-                                  //   onPressed: () {
-                                  //     const RegistrationMode();
-                                  //   },
-                                  //   child: Text(
-                                  //     'termsConditions'.tr,
-                                  //     style: TextStyle(
-                                  //         color: primaryColor,
-                                  //         decoration: TextDecoration.underline),
-                                  //   ),
-                                  // )
                                 ],
                               ),
                             ),
@@ -489,7 +474,7 @@ class _LoginPageState extends State<LoginPage> {
           height: 10.0,
           width: 10.0,
           child: Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(10.0),
             child: Image.asset(
               "assets/images/lock.png",
               width: 15.0,
@@ -506,7 +491,7 @@ class _LoginPageState extends State<LoginPage> {
         ),
         contentPadding: const EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 5.0),
         labelText: labelText,
-        labelStyle: TextStyle(color: labelTextColor),
+        labelStyle: TextStyle(color: labelTextColor, fontSize: 12),
         enabledBorder: const OutlineInputBorder(
           borderSide: BorderSide(color: Color.fromARGB(255, 173, 173, 173)),
           borderRadius: BorderRadius.only(
@@ -571,10 +556,10 @@ class _LoginPageState extends State<LoginPage> {
           fontSize: 14.0,
         ),
         prefixIcon: Container(
-          height: 10,
-          width: 10,
+          height: 5,
+          width: 5,
           child: Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(10.0),
             child: Image.asset(
               "assets/images/id-card.png",
               // width: 15.0,
@@ -585,7 +570,7 @@ class _LoginPageState extends State<LoginPage> {
         ),
         contentPadding: const EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 5.0),
         labelText: labelText,
-        labelStyle: TextStyle(color: labelTextColor),
+        labelStyle: TextStyle(color: labelTextColor, fontSize: 12),
         enabledBorder: const OutlineInputBorder(
           borderSide: BorderSide(color: Color.fromARGB(255, 173, 173, 173)),
           borderRadius: BorderRadius.only(

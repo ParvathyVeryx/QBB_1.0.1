@@ -8,25 +8,25 @@ import 'package:provider/provider.dart';
 import 'package:QBB/providers/studymodel.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-  final List locale = [
-    {'name': 'ENGLISH', 'locale': const Locale('en', 'US')},
-    {'name': 'عربي', 'locale': const Locale('ar')},
-  ];
+final List locale = [
+  {'name': 'ENGLISH', 'locale': const Locale('en', 'US')},
+  {'name': 'عربي', 'locale': const Locale('ar')},
+];
 
-  updateLanguage(Locale locale) {
-    // Get.back();
-    Get.updateLocale(locale);
-  }
+updateLanguage(Locale locale) {
+  // Get.back();
+  Get.updateLocale(locale);
+}
 
 Future<List<Study>> fetchStudyMasterAPI() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
-  var lang = prefs.getString("langEn").toString();
-  var setLang;
-  if (lang == "false") {
-    setLang = "ar";
-  } else {
-    setLang = "en";
-  }
+  var lang = 'langChange'.tr;
+  // var setLang;
+  // if (lang == "false") {
+  //   setLang = "ar";
+  // } else {
+  //   setLang = "en";
+  // }
   final String apiUrl =
       'https://participantportal-test.qatarbiobank.org.qa/QbbAPIS/api/StudyMasterAPI';
   // const String token =
@@ -37,7 +37,7 @@ Future<List<Study>> fetchStudyMasterAPI() async {
 
   try {
     final http.Response response = await http.get(
-      Uri.parse('$apiUrl?QID=28900498437&language=$setLang'),
+      Uri.parse('$apiUrl?QID=28900498437&language=$lang'),
       headers: {
         'Authorization': 'Bearer ${token?.replaceAll('"', '')}',
       },
@@ -46,7 +46,6 @@ Future<List<Study>> fetchStudyMasterAPI() async {
     print('API URL: $apiUrl');
     print('Response Code: ${response.statusCode}');
     print('Response Body: ${response.body}');
-    print('llllllllll' + setLang.toString());
 
     if (response.statusCode == 200) {
       final List<dynamic> responseData = json.decode(response.body);

@@ -167,28 +167,28 @@ class loginOrRegState extends State<loginOrReg> {
                     const SizedBox(
                   height: 15.0,
                 ),
-                Text(
-                  'byRegisteringOrActivatingAccountYouAgreeToOurTermsAndConditions'.tr,
-                  style: const TextStyle(
-                      color: Color.fromARGB(255, 107, 107, 107)),
-                ),
-                TextButton(
-                  onPressed: () {
-                    // const RegistrationMode();  showDialog(
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return TermsAndConditionsDialog();
-                      },
-                    );
-                  },
-                  child: Text(
-                    'termsConditions'.tr,
-                    style: const TextStyle(
-                        color: primaryColor,
-                        decoration: TextDecoration.underline),
-                  ),
-                )
+                // Text(
+                //   'byRegisteringOrActivatingAccountYouAgreeToOurTermsAndConditions'.tr,
+                //   style: const TextStyle(
+                //       color: Color.fromARGB(255, 107, 107, 107)),
+                // ),
+                // TextButton(
+                //   onPressed: () {
+                //     // const RegistrationMode();  showDialog(
+                //     showDialog(
+                //       context: context,
+                //       builder: (BuildContext context) {
+                //         return TermsAndConditionsDialog();
+                //       },
+                //     );
+                //   },
+                //   child: Text(
+                //     'termsConditions'.tr,
+                //     style: const TextStyle(
+                //         color: primaryColor,
+                //         decoration: TextDecoration.underline),
+                //   ),
+                // )
                   ],
                 ),
               ),

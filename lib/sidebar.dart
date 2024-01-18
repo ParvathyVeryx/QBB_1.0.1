@@ -51,8 +51,7 @@ class sideMenuclass extends State<SideMenu> {
       selectedLanguage = prefs.getString('langEn').toString();
       if (selectedLanguage == "false") {
         selectedLanguage = 'Arabic';
-      }
-      else {
+      } else {
         selectedLanguage = 'English';
       } // Default language if none is stored
     });
@@ -306,6 +305,8 @@ class sideMenuclass extends State<SideMenu> {
                                     Provider.of<RefreshNotifier>(context,
                                             listen: false)
                                         .triggerRefresh();
+                                    
+                                    
                                   });
                                 },
                                 activeColor: primaryColor,
@@ -451,5 +452,9 @@ class sideMenuclass extends State<SideMenu> {
   Future<void> refreshAPI() async {
     await fetchStudyMasterAPI();
   }
+}
 
+_refreshPage() {
+  print('Refreshing api...');
+  fetchStudyMasterAPI();
 }

@@ -48,7 +48,7 @@ class WelcomeState extends State<Welcome> {
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
             Padding(
-              padding: const EdgeInsets.only(right: 8.0),
+              padding: const EdgeInsets.only(right: 0),
               child: TextButton(
                 onPressed: () {
                   Navigator.push(
@@ -57,12 +57,12 @@ class WelcomeState extends State<Welcome> {
                   );
                 },
                 child: Text(
-                  'tutorialSkipButton'.tr,
+                  'tutorialSkipButton'.tr.toUpperCase(),
                   // appLocalizations?.hello ?? 'default',
 
                   style: const TextStyle(
                     color: appbar,
-                    fontSize: 16.0,
+                    fontSize: 13.0,
                   ),
                   textAlign: TextAlign.right,
                 ),
@@ -79,7 +79,7 @@ class WelcomeState extends State<Welcome> {
       body: SingleChildScrollView(
         physics: const NeverScrollableScrollPhysics(),
         child: Container(
-          height: MediaQuery.of(context).size.height * 0.9,
+          height: MediaQuery.of(context).size.height * 0.95,
           decoration: BoxDecoration(
             image: const DecorationImage(
               image: AssetImage('assets/images/bg.png'),
@@ -93,10 +93,11 @@ class WelcomeState extends State<Welcome> {
             borderRadius: BorderRadius.circular(0),
           ),
           child: Padding(
-            padding: const EdgeInsets.all(45.0),
+            padding: const EdgeInsets.only(left: 45.0, right: 45, top: 20),
+            // padding: const EdgeInsets.all(45),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
+              // mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 // ElevatedButton(
                 //     onPressed: () {
@@ -145,7 +146,7 @@ class WelcomeState extends State<Welcome> {
                                     RoundedRectangleBorder>(
                                   const RoundedRectangleBorder(
                                     borderRadius: BorderRadius.only(
-                                      bottomLeft: Radius.circular(20.0),
+                                      bottomLeft: Radius.circular(10.0),
                                     ),
                                   ),
                                 ),
@@ -179,17 +180,20 @@ class WelcomeState extends State<Welcome> {
                           updateLanguage(locale[0]['locale']);
                         },
                         child: Padding(
-                          padding: EdgeInsets.fromLTRB(6.0, 3.0, 6.0, 3.0),
+                          padding:
+                              const EdgeInsets.fromLTRB(6.0, 3.0, 6.0, 3.0),
                           child: isButtonClicked
-                              ? Text(
+                              ? const Text(
                                   'English',
                                   style: TextStyle(
+                                    fontSize: 12,
                                     color: textcolor,
                                   ),
                                 )
-                              : Text(
+                              : const Text(
                                   'English',
                                   style: TextStyle(
+                                    fontSize: 12,
                                     color: appbar,
                                   ),
                                 ),
@@ -204,7 +208,7 @@ class WelcomeState extends State<Welcome> {
                                     RoundedRectangleBorder>(
                                   const RoundedRectangleBorder(
                                     borderRadius: BorderRadius.only(
-                                      bottomRight: Radius.circular(20.0),
+                                      bottomRight: Radius.circular(10.0),
                                     ),
                                   ),
                                 ),
@@ -237,17 +241,20 @@ class WelcomeState extends State<Welcome> {
                           updateLanguage(locale[1]['locale']);
                         },
                         child: Padding(
-                          padding: EdgeInsets.fromLTRB(6.0, 3.0, 6.0, 3.0),
+                          padding:
+                              const EdgeInsets.fromLTRB(6.0, 3.0, 6.0, 3.0),
                           child: isButtonClickedArabic
-                              ? Text(
+                              ? const Text(
                                   'عربي',
                                   style: TextStyle(
+                                    fontSize: 12,
                                     color: textcolor,
                                   ),
                                 )
-                              : Text(
+                              : const Text(
                                   'عربي',
                                   style: TextStyle(
+                                    fontSize: 12,
                                     color: appbar,
                                   ),
                                 ),
@@ -291,8 +298,8 @@ class WelcomeState extends State<Welcome> {
                 ),
                 Image.asset(
                   "assets/images/logo-welcome-screen.png",
-                  width: 80.0,
-                  height: 80.0,
+                  width: 160.0,
+                  height: 160.0,
                   fit: BoxFit.cover,
                 ),
                 const SizedBox(
@@ -326,14 +333,14 @@ class WelcomeState extends State<Welcome> {
                       },
                       style: ButtonStyle(
                           backgroundColor: MaterialStateProperty.all<Color>(
-                              Colors.white), // Set background color
+                              const Color(0xFFffffff)), // Set background color
 
                           shape:
                               MaterialStateProperty.all<RoundedRectangleBorder>(
                             const RoundedRectangleBorder(
                               borderRadius: BorderRadius.only(
                                 bottomLeft: Radius.circular(
-                                    20.0), // Rounded border at bottom-left
+                                    12.0), // Rounded border at bottom-left
                               ),
                               side: BorderSide(
                                 color:
@@ -344,14 +351,16 @@ class WelcomeState extends State<Welcome> {
                           )),
                       child: Padding(
                         padding:
-                            const EdgeInsets.fromLTRB(15.0, 18.0, 15.0, 18.0),
+                            const EdgeInsets.fromLTRB(15.0, 15.0, 15.0, 15.0),
                         child: Text(
                           'login'.tr,
                           style: const TextStyle(
-                            color: primaryColor,
-                          ),
+                              color: primaryColor, fontSize: 13),
                         ),
                       )),
+                ),
+                const SizedBox(
+                  height: 10,
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -388,12 +397,12 @@ class WelcomeState extends State<Welcome> {
                   ],
                 ),
                 const SizedBox(
-                  height: 15.0,
+                  height: 20.0,
                 ),
                 Text(
                   'byRegisteringYouAgreeToOur'.tr,
                   style: const TextStyle(
-                      color: Color.fromARGB(255, 107, 107, 107)),
+                      fontSize: 12, color: Color.fromARGB(255, 107, 107, 107)),
                 ),
                 TextButton(
                   onPressed: () {
@@ -408,8 +417,10 @@ class WelcomeState extends State<Welcome> {
                   child: Text(
                     'termsConditions'.tr,
                     style: const TextStyle(
+                        fontSize: 12,
                         color: primaryColor,
-                        decoration: TextDecoration.underline),
+                        decoration: TextDecoration.underline,
+                        decorationColor: primaryColor),
                   ),
                 )
               ],

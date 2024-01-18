@@ -136,16 +136,17 @@ class AccessUserState extends State<AccessUser> {
                               const RoundedRectangleBorder(
                                 borderRadius: BorderRadius.only(
                                   bottomLeft: Radius.circular(
-                                      20.0), // Rounded border at bottom-left
+                                      12.0), // Rounded border at bottom-left
                                 ),
                               ),
                             )),
                         child:  Padding(
-                          padding: EdgeInsets.fromLTRB(5.0, 10.0, 5.0, 10.0),
+                          padding: EdgeInsets.fromLTRB(5.0, 5.0, 5.0, 5.0),
                           child: Text(
                             'getOTP'.tr,
                             style: TextStyle(
                               color: textcolor,
+                              fontSize: 11
                             ),
                           ),
                         )),
@@ -206,7 +207,7 @@ class AccessUserState extends State<AccessUser> {
                             const RoundedRectangleBorder(
                               borderRadius: BorderRadius.only(
                                 bottomLeft: Radius.circular(
-                                    20.0), // Rounded border at bottom-left
+                                    12.0), // Rounded border at bottom-left
                               ),
                             ),
                           ))
@@ -221,7 +222,7 @@ class AccessUserState extends State<AccessUser> {
                             const RoundedRectangleBorder(
                               borderRadius: BorderRadius.only(
                                 bottomLeft: Radius.circular(
-                                    20.0), // Rounded border at bottom-left
+                                    12.0), // Rounded border at bottom-left
                               ),
                             ),
                           ),
@@ -256,12 +257,21 @@ class AccessUserState extends State<AccessUser> {
       decoration: InputDecoration(
         contentPadding: const EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 5.0),
         labelText: labelText,
-        prefixIcon: const Icon(
-          Icons.card_membership_outlined,
-          color: Color.fromARGB(255, 173, 173, 173),
+        prefixIcon: Container(
+          height: 5,
+          width: 5,
+          child: Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: Image.asset(
+              "assets/images/id-card.png",
+              // width: 15.0,
+              // height: 15.0,
+              fit: BoxFit.cover,
+            ),
+          ),
         ),
         labelStyle:
-            TextStyle(color: labelTextColor), // Set the label text color
+            TextStyle(color: labelTextColor, fontSize: 12), // Set the label text color
         enabledBorder: const OutlineInputBorder(
           borderSide: BorderSide(color: Color.fromARGB(255, 173, 173, 173)),
           borderRadius: BorderRadius.only(
@@ -302,12 +312,21 @@ class AccessUserState extends State<AccessUser> {
       decoration: InputDecoration(
         contentPadding: const EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 5.0),
         labelText: labelText,
-        prefixIcon: const Icon(
-          Icons.phone_android,
-          color: Color.fromARGB(255, 173, 173, 173),
+        prefixIcon: Container(
+          height: 5,
+          width: 5,
+          child: Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: Image.asset(
+              "assets/images/phone.png",
+              // width: 15.0,
+              // height: 15.0,
+              fit: BoxFit.cover,
+            ),
+          ),
         ),
         labelStyle:
-            TextStyle(color: labelTextColor), // Set the label text color
+            TextStyle(color: labelTextColor, fontSize: 12), // Set the label text color
         enabledBorder: const OutlineInputBorder(
           borderSide: BorderSide(color: Color.fromARGB(255, 173, 173, 173)),
           borderRadius: BorderRadius.only(
@@ -342,12 +361,21 @@ class AccessUserState extends State<AccessUser> {
       decoration:  InputDecoration(
         contentPadding: EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 5.0),
         labelText: 'password'.tr+'*',
-        prefixIcon: Icon(
-          Icons.lock,
-          color: Color.fromARGB(255, 173, 173, 173),
+        prefixIcon: Container(
+          height: 10.0,
+          width: 10.0,
+          child: Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: Image.asset(
+              "assets/images/lock.png",
+              width: 15.0,
+              height: 15.0,
+              fit: BoxFit.cover,
+            ),
+          ),
         ),
         labelStyle: TextStyle(
-          color: Color.fromARGB(255, 173, 173, 173), // Label text color
+          color: Color.fromARGB(255, 173, 173, 173,), fontSize: 12 // Label text color
         ),
         enabledBorder: OutlineInputBorder(
           borderSide: BorderSide(color: Color.fromARGB(255, 173, 173, 173)),
@@ -390,11 +418,20 @@ class AccessUserState extends State<AccessUser> {
         contentPadding: EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 5.0),
         labelText: 'confirmPassword'.tr+'*',
         labelStyle: TextStyle(
-          color: Color.fromARGB(255, 173, 173, 173), // Label text color
+          color: Color.fromARGB(255, 173, 173, 173), fontSize: 12 // Label text color
         ),
-        prefixIcon: Icon(
-          Icons.lock,
-          color: Color.fromARGB(255, 173, 173, 173),
+        prefixIcon: Container(
+          height: 10.0,
+          width: 10.0,
+          child: Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: Image.asset(
+              "assets/images/lock.png",
+              width: 15.0,
+              height: 15.0,
+              fit: BoxFit.cover,
+            ),
+          ),
         ),
         enabledBorder: OutlineInputBorder(
           borderSide: BorderSide(color: Color.fromARGB(255, 173, 173, 173)),

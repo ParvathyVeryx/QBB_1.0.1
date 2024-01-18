@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -30,26 +31,23 @@ class MaritalStatus {
 
 Future<MaritalStatus> fetchMaritalStatus(int maritalStatusId) async {
   SharedPreferences pref = await SharedPreferences.getInstance();
-  var lang = pref.getString("langEn");
-  var setLang;
-  if (lang == "true") {
-    setLang = "en";
-  } else {
-    setLang = "ar";
-  }
-
+  var lang = 'langChange'.tr;
+  // var setLang;
+  // if (lang == "true") {
+  //   setLang = "en";
+  // } else {
+  //   setLang = "ar";
+  // }
   try {
     String token =
-        pref.getString('token') ?? ''; // Fetch token from shared preferences
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6Im1vYmFkbWluQGdtYWlsLmNvbSIsIm5iZiI6MTcwMzE3ODA1MywiZXhwIjoxNzAzNzgyODUzLCJpYXQiOjE3MDMxNzgwNTMsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTAxOTEiLCJhdWQiOiJodHRwOi8vbG9jYWxob3N0OjUwMTkxIn0.WYN0dROXwe3ys9yA2Ngd62p7Fr2h6JV4nSyHPcnF4tk'; // Replace with your actual access token
 
     String apiUrl =
-        'https://participantportal-test.qatarbiobank.org.qa/QbbAPIS/api/MaritalStatusAPI?GenderId=1&language=$setLang';
+        'https://participantportal-test.qatarbiobank.org.qa/QbbAPIS/api/MaritalStatusAPI?GenderId=1&language=$lang';
 
     var response = await http.get(
       Uri.parse(apiUrl),
-      headers: {
-        'Authorization': 'Bearer ${token.replaceAll('"', '')}',
-      },
+      headers: {'Authorization': 'Bearer $token'},
     );
 
     if (response.statusCode == 200) {
