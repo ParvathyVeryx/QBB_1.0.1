@@ -595,13 +595,13 @@ class BookAppointmentsState extends State<BookAppointments> {
     final String apiUrl =
         'https://participantportal-test.qatarbiobank.org.qa/QbbAPIS/api/StudyMasterAPI';
     SharedPreferences pref = await SharedPreferences.getInstance();
-    var lang = pref.getString("langEn").toString();
-    var setLang;
-    if (lang == "false") {
-      setLang = "ar";
-    } else {
-      setLang = "en";
-    }
+    var lang = 'langChange'.tr;
+    // var setLang;
+    // if (lang == "false") {
+    //   setLang = "ar";
+    // } else {
+    //   setLang = "en";
+    // }
 
     try {
       SharedPreferences pref = await SharedPreferences.getInstance();
@@ -614,7 +614,7 @@ class BookAppointmentsState extends State<BookAppointments> {
         print('Failed to retrieve QID');
       }
       final http.Response response = await http.get(
-        Uri.parse('$apiUrl?QID=$qid&language=$setLang'),
+        Uri.parse('$apiUrl?QID=$qid&language=$lang'),
         headers: {
           'Authorization': 'Bearer ${token?.replaceAll('"', '')}',
         },
@@ -653,13 +653,8 @@ class BookAppointmentsState extends State<BookAppointments> {
     });
 
         SharedPreferences pref = await SharedPreferences.getInstance();
-    var lang = pref.getString("langEn").toString();
-    var setLang;
-    if (lang == "false") {
-      setLang = "ar";
-    } else {
-      setLang = "en";
-    }
+    var lang = 'langChange'.tr;
+    
 
     final String apiUrl =
         'https://participantportal-test.qatarbiobank.org.qa/QbbAPIS/api/GetVisitTypeForAppointment';
@@ -676,7 +671,7 @@ class BookAppointmentsState extends State<BookAppointments> {
       }
 
       final http.Response response = await http.get(
-        Uri.parse('$apiUrl?QID=$qid&StudyId=$studyId&Preg=false&language=$setLang'),
+        Uri.parse('$apiUrl?QID=$qid&StudyId=$studyId&Preg=false&language=$lang'),
         headers: {
           'Authorization': 'Bearer ${token?.replaceAll('"', '')}',
         },

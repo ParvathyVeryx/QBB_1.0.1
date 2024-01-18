@@ -2,6 +2,7 @@ import 'package:QBB/constants.dart';
 import 'package:QBB/nirmal_api.dart/profile_api.dart';
 import 'package:QBB/screens/pages/profile.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 // import 'package:flutter_gen/gen_l10n/app-localizations.dart';
 
@@ -51,11 +52,11 @@ class EditUserState extends State<EditUser> {
             );
           },
         ),
-        title: const Center(
+        title:  Center(
           child: Padding(
             padding: EdgeInsets.only(right: 40.0),
             child: Text(
-              'Edit Profile',
+              'settingsPageProfile'.tr,
               style: TextStyle(
                 color: appbar,
                 fontFamily: 'Impact',
@@ -216,9 +217,18 @@ class EditUserState extends State<EditUser> {
       decoration: InputDecoration(
         contentPadding: const EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 5.0),
         labelText: labelText,
-        prefixIcon: const Icon(
-          Icons.card_membership_outlined,
-          color: Color.fromARGB(255, 173, 173, 173),
+        prefixIcon: Container(
+          height: 5,
+          width: 5,
+          child: Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: Image.asset(
+              "assets/images/id-card.png",
+              // width: 15.0,
+              // height: 15.0,
+              fit: BoxFit.cover,
+            ),
+          ),
         ),
         labelStyle:
             TextStyle(color: labelTextColor), // Set the label text color

@@ -1,18 +1,14 @@
 import 'package:QBB/constants.dart';
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
 Future<Map<String, dynamic>> getUserProfile(int id) async {
-        SharedPreferences pref = await SharedPreferences.getInstance();
-    String lang = pref.getString("langEn").toString();
-    String setLang;
-    if (lang == "true") {
-      setLang = "en";
-    } else {
-      setLang = "ar";
-    }
+  SharedPreferences pref = await SharedPreferences.getInstance();
+  String lang = 'langChange'.tr;
+ 
   // Replace the following URL with your actual API endpoint
   final apiUrl = '$base_url/UserProfileAPI';
 
@@ -24,7 +20,7 @@ Future<Map<String, dynamic>> getUserProfile(int id) async {
   print('Bearer Token: $token');
 
   final response = await http.post(
-    Uri.parse('$apiUrl?id=$id&language=$setLang'), // Include id in the URL
+    Uri.parse('$apiUrl?id=$id&language=$lang'), // Include id in the URL
     headers: {
       'Authorization': 'Bearer $token',
       'Content-Type': 'application/json',

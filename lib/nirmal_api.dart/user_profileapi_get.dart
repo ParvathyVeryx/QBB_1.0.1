@@ -1,4 +1,5 @@
 import 'package:QBB/screens/api/userid.dart';
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -23,7 +24,7 @@ Future<String> callUserProfileAPIGet() async {
 
   const String apiUrl =
       "https://participantportal-test.qatarbiobank.org.qa/QbbAPIS/api/UserProfileAPI";
-  const String language = "en";
+   String language = "langChange".tr;
 
   final Map<String, String> headers = {
     'Authorization': 'Bearer ${token.replaceAll('"', '')}',

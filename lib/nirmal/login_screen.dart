@@ -51,6 +51,7 @@ class _LoginPageState extends State<LoginPage> {
   var qidErr;
   bool validated = false;
   String errorText = '';
+  String passwordErrorText = '';
 
   @override
   void initState() {
@@ -106,7 +107,6 @@ class _LoginPageState extends State<LoginPage> {
                                   const SizedBox(
                                     height: 20,
                                   ),
-                                
                                   Directionality(
                                     textDirection: TextDirection.ltr,
                                     child: Row(
@@ -264,7 +264,6 @@ class _LoginPageState extends State<LoginPage> {
                                       ],
                                     ),
                                   ),
-
                                   const SizedBox(
                                     height: 50,
                                   ),
@@ -307,10 +306,17 @@ class _LoginPageState extends State<LoginPage> {
                                           labelTextColor: const Color.fromARGB(
                                               255, 173, 173, 173),
                                           validator: (value) {
+                                            print('Print error !!!!!!!!!!!!' + value!);
                                             if (value!.isEmpty) {
-                                              return 'thePasswordCannotBeEmpty'
-                                                  .tr;
+                                              print('Print error !!!!!!!!!!!!33333333333333333333333333' + value);
+                                              setState(() {
+                                                passwordErrorText =
+                                                    'thePasswordCannotBeEmpty'
+                                                        .tr;
+                                              });
+                                              return passwordErrorText;
                                             }
+                                            
                                             return null;
                                           },
 

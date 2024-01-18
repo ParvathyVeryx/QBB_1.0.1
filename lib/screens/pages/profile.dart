@@ -20,6 +20,19 @@ import 'appointments.dart';
 import 'book_appintment_nk.dart';
 import 'homescreen_nk.dart';
 
+class UserProfileData {
+  String userName = '';
+  String mobile = '';
+  String email = '';
+  String nationality = '';
+  String hCNo = '';
+  String dob = '';
+  String qid = '';
+  String gender = '';
+  String maritalStatus = '';
+  String dateOnly = '';
+}
+
 class Profile extends StatefulWidget {
   const Profile({super.key});
 
@@ -28,33 +41,73 @@ class Profile extends StatefulWidget {
 }
 
 class ProfileState extends State<Profile> {
-  late SharedPreferences _prefs;
-  String _fullName = '';
-  int _userId = 0;
-  String _mobile = '';
   String _qid = '';
-  String _gender = '';
-  String _healthCardNo = '';
-  String _dob = '';
-  String _nationality = '';
-  String _email = '';
+
   String _profilePicture = '';
   late File? _selectedImage; // Add this line to define _selectedImage
-  String _maritalStatus = '';
-  bool _isLoading = true; // Add this line for loading indicator
+
+  bool _isLoading = false; // Add this line for loading indicator
   int currentIndex = 4;
+
+  Future<UserProfileData> getUserProfileData() async {
+    String responseBody = await callUserProfileAPIGet();
+
+    UserProfileData userProfileData = UserProfileData();
+    try {
+      String middleName =
+          json.decode(responseBody)['MiddleName'].toString() == "null"
+              ? ''
+              : json.decode(responseBody)['MiddleName'].toString() + '';
+      userProfileData.userName =
+          json.decode(responseBody)['FirstName'].toString() +
+              ' ' +
+              middleName +
+              json.decode(responseBody)['LastName'].toString();
+
+      userProfileData.mobile =
+          json.decode(responseBody)['RecoveryMobile'].toString();
+      userProfileData.email =
+          json.decode(responseBody)['RecoverEmail'].toString();
+
+      userProfileData.nationality =
+          json.decode(responseBody)["Nationality"].toString() ?? ' ';
+
+      userProfileData.hCNo =
+          json.decode(responseBody)['HealthCardNo'].toString() == "null"
+              ? ""
+              : json.decode(responseBody)['HealthCardNo'].toString();
+
+      userProfileData.dob = json.decode(responseBody)['Dob'].toString();
+      DateTime dateTime = DateTime.parse(userProfileData.dob);
+      userProfileData.dateOnly =
+          "${dateTime.year}-${dateTime.month.toString().padLeft(2, '0')}-${dateTime.day.toString().padLeft(2, '0')}";
+
+      userProfileData.qid = json.decode(responseBody)['QID'].toString();
+      userProfileData.gender = json.decode(responseBody)['Gender'].toString();
+      userProfileData.maritalStatus =
+          json.decode(responseBody)['MaritalStatus'].toString();
+    } catch (e) {
+      print("Catch Exception during API request: $e");
+      // Handle exception here if needed
+    } finally {
+      // Set loading to false even if there's an exception
+      _isLoading = false;
+    }
+
+    return userProfileData;
+  }
 
   @override
   void initState() {
     super.initState();
-    _loadUserData();
+    // getUserProfileData();
   }
 
-  void _delayedLoadUserData() {
-    Timer(const Duration(seconds: 2), () {
-      _loadUserData();
-    });
-  }
+  // void _delayedLoadUserData() {
+  //   Timer(const Duration(seconds: 2), () {
+  //     getUserProfileData();
+  //   });
+  // }
 
   String userName = '';
   String userMName = '';
@@ -69,52 +122,52 @@ class ProfileState extends State<Profile> {
   String maritalStatus = '';
   String dateOnly = '';
 
-  _loadUserData() async {
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    Map<String, dynamic> userDetails =
-        json.decode(pref.getString('userDetails') ?? '{}');
+  // loadUserData() async {
+  //   SharedPreferences pref = await SharedPreferences.getInstance();
+  //   Map<String, dynamic> userDetails =
+  //       json.decode(pref.getString('userDetails') ?? '{}');
 
-    try {
-      String responseBody = await callUserProfileAPIGet();
-      print("Response from API: $responseBody");
+  //   try {
+  //     String responseBody = await callUserProfileAPIGet();
+  //     print("Response from API: $responseBody");
 
-      Map<String, dynamic> responseJson = json.decode(responseBody);
-      print('reponse' + json.decode(responseBody)["Nationality"].toString());
-      setState(() {
-        String middleName = pref.getString('userMName').toString() == "null"
-            ? ''
-            : pref.getString('userMName').toString() + '';
-        userName = pref.getString('userFName').toString() +
-            ' ' +
-            middleName +
-            pref.getString('userLName').toString();
-        print('jjjjjjjjjjjjjjjjjjjjjjjj' +
-            pref.getString('userFName').toString());
-        print("UserName" + userName);
-        mobile = pref.getString("userPhNo").toString();
-        qid = pref.getString('userQID').toString();
-        gender = pref.getString('userGender').toString();
-        hCNo = pref.getString('userHealthCardNo').toString() == "null"
-            ? ""
-            : pref.getString('userHealthCardNo').toString();
-        dob = pref.getString('userDOb').toString();
-        DateTime dateTime = DateTime.parse(dob);
-        dateOnly =
-            "${dateTime.year}-${dateTime.month.toString().padLeft(2, '0')}-${dateTime.day.toString().padLeft(2, '0')}";
-        nationality =
-            json.decode(responseBody)["Nationality"].toString() ?? ' ';
-        email = pref.getString('userEmail').toString();
-        mobile = pref.getString('userPhNo').toString();
-        maritalStatus = pref.getString('userMaritalStatus').toString();
-        _profilePicture = json.decode(responseBody)['Photo'] ?? '';
+  //     Map<String, dynamic> responseJson = json.decode(responseBody);
+  //     print('reponse' + json.decode(responseBody)["Nationality"].toString());
+  //     setState(() {
+  //       String middleName =
+  //           json.decode(responseBody)['MiddleName'].toString() == "null"
+  //               ? ''
+  //               : json.decode(responseBody)['MiddleName'].toString() + '';
+  //       userName = json.decode(responseBody)['FirstName'].toString() +
+  //           ' ' +
+  //           middleName +
+  //           json.decode(responseBody)['LastName'].toString();
+  //       print('jjjjjjjjjjjjjjjjjjjjjjjj' +
+  //           pref.getString('userFName').toString());
+  //       print("UserName" + userName.toString());
+  //       mobile = json.decode(responseBody)['RecoveryMobile'].toString();
+  //       qid = json.decode(responseBody)['QID'].toString();
+  //       gender = json.decode(responseBody)['Gender'].toString();
+  //       hCNo = json.decode(responseBody)['HealthCardNo'].toString() == "null"
+  //           ? ""
+  //           : json.decode(responseBody)['HealthCardNo'].toString();
+  //       dob = json.decode(responseBody)['Dob'].toString();
+  //       DateTime dateTime = DateTime.parse(dob);
+  //       dateOnly =
+  //           "${dateTime.year}-${dateTime.month.toString().padLeft(2, '0')}-${dateTime.day.toString().padLeft(2, '0')}";
+  //       nationality =
+  //           json.decode(responseBody)["Nationality"].toString() ?? ' ';
+  //       email = json.decode(responseBody)['RecoverEmail'].toString();
+  //       maritalStatus = json.decode(responseBody)['MaritalStatus'].toString();
+  //       _profilePicture = json.decode(responseBody)['Photo'] ?? '';
 
-        _isLoading = false; // Set loading to false when data is loaded
-      });
-    } catch (e) {
-      print("Catch Exception during API request: $e");
-      _isLoading = false; // Set loading to false even if there's an exception
-    }
-  }
+  //       _isLoading = false; // Set loading to false when data is loaded
+  //     });
+  //   } catch (e) {
+  //     print("Catch Exception during API request: $e");
+  //     _isLoading = false; // Set loading to false even if there's an exception
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -306,8 +359,7 @@ class ProfileState extends State<Profile> {
                             decoration: BoxDecoration(
                                 shape: BoxShape.circle,
                                 border: Border.all(
-                                  color:
-                                      primaryColor, // Set the border color
+                                  color: primaryColor, // Set the border color
                                   width: 1.0, // Set the border width
                                 ),
                                 color: primaryColor),
@@ -321,14 +373,12 @@ class ProfileState extends State<Profile> {
                                 onPressed: () async {
                                   // Open the image picker
                                   final pickedImage = await ImagePicker()
-                                      .pickImage(
-                                          source: ImageSource.gallery);
+                                      .pickImage(source: ImageSource.gallery);
                                   if (pickedImage != null) {
                                     setState(() {
-                                      _selectedImage =
-                                          File(pickedImage.path);
+                                      _selectedImage = File(pickedImage.path);
                                     });
-                          
+
                                     // Call the API with the selected image
                                     await uploadUserProfilePhoto(
                                         _qid, _selectedImage!);
@@ -340,43 +390,75 @@ class ProfileState extends State<Profile> {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 30),
-                    ProfileInfoRow(label: 'fullName'.tr, value: userName),
-                    const SizedBox(height: 10),
-                    const PinkDivider(),
-                    const SizedBox(height: 10),
-                    ProfileInfoRow(label: 'mobile'.tr, value: mobile),
-                    const SizedBox(height: 10),
-                    const PinkDivider(),
-                    const SizedBox(height: 10),
-                    ProfileInfoRow(label: 'qid'.tr, value: qid),
-                    const SizedBox(height: 10),
-                    const PinkDivider(),
-                    const SizedBox(height: 10),
-                    ProfileInfoRow(label: 'gender'.tr, value: gender),
-                    const SizedBox(height: 10),
-                    const PinkDivider(),
-                    const SizedBox(height: 10),
-                    ProfileInfoRow(label: 'healthCardNo'.tr, value: hCNo),
+                    SizedBox(height: 30),
+                    ProfileInfoRow(
+                      label: 'fullName'.tr,
+                      value: getUserProfileData()
+                          .then((userProfileData) => userProfileData.userName),
+                    ),
                     const SizedBox(height: 10),
                     const PinkDivider(),
                     const SizedBox(height: 10),
                     ProfileInfoRow(
-                        label: 'dateOfBirth'.tr, value: dateOnly),
+                        label: 'mobile'.tr,
+                        value: getUserProfileData()
+                            .then((userProfileData) => userProfileData.mobile)),
                     const SizedBox(height: 10),
                     const PinkDivider(),
                     const SizedBox(height: 10),
                     ProfileInfoRow(
-                        label: 'nationality'.tr, value: nationality),
-                    const SizedBox(height: 10),
-                    const PinkDivider(),
-                    const SizedBox(height: 10),
-                    ProfileInfoRow(label: 'email'.tr, value: email),
+                      label: 'qid'.tr,
+                      value: getUserProfileData()
+                          .then((userProfileData) => userProfileData.qid),
+                    ),
                     const SizedBox(height: 10),
                     const PinkDivider(),
                     const SizedBox(height: 10),
                     ProfileInfoRow(
-                        label: 'maritalStatus'.tr, value: maritalStatus),
+                      label: 'gender'.tr,
+                      value: getUserProfileData()
+                          .then((userProfileData) => userProfileData.gender),
+                    ),
+                    const SizedBox(height: 10),
+                    const PinkDivider(),
+                    const SizedBox(height: 10),
+                    ProfileInfoRow(
+                      label: 'healthCardNo'.tr,
+                      value: getUserProfileData()
+                          .then((userProfileData) => userProfileData.hCNo),
+                    ),
+                    const SizedBox(height: 10),
+                    const PinkDivider(),
+                    const SizedBox(height: 10),
+                    ProfileInfoRow(
+                      label: 'dateOfBirth'.tr,
+                      value: getUserProfileData()
+                          .then((userProfileData) => userProfileData.dateOnly),
+                    ),
+                    const SizedBox(height: 10),
+                    const PinkDivider(),
+                    const SizedBox(height: 10),
+                    ProfileInfoRow(
+                      label: 'nationality'.tr,
+                      value: getUserProfileData().then(
+                          (userProfileData) => userProfileData.nationality),
+                    ),
+                    const SizedBox(height: 10),
+                    const PinkDivider(),
+                    const SizedBox(height: 10),
+                    ProfileInfoRow(
+                      label: 'email'.tr,
+                      value: getUserProfileData()
+                          .then((userProfileData) => userProfileData.email),
+                    ),
+                    const SizedBox(height: 10),
+                    const PinkDivider(),
+                    const SizedBox(height: 10),
+                    ProfileInfoRow(
+                      label: 'maritalStatus'.tr,
+                      value: getUserProfileData().then(
+                          (userProfileData) => userProfileData.maritalStatus),
+                    ),
                     const SizedBox(height: 10),
                     const PinkDivider(),
                     Padding(
@@ -395,7 +477,7 @@ class ProfileState extends State<Profile> {
                             },
                             style: ButtonStyle(
                                 // Set background color
-                          
+
                                 shape: MaterialStateProperty.all<
                                     RoundedRectangleBorder>(
                               const RoundedRectangleBorder(
@@ -406,14 +488,13 @@ class ProfileState extends State<Profile> {
                                 side: BorderSide(
                                   color:
                                       secondaryColor, // Specify the border color here
-                                  width:
-                                      1.0, // Specify the border width here
+                                  width: 1.0, // Specify the border width here
                                 ),
                               ),
                             )),
                             child: Padding(
-                              padding: const EdgeInsets.fromLTRB(
-                                  3.0, 8.0, 3.0, 8.0),
+                              padding:
+                                  const EdgeInsets.fromLTRB(3.0, 8.0, 3.0, 8.0),
                               child: Text(
                                 'settingsPageProfile'.tr,
                                 style: const TextStyle(
@@ -447,42 +528,99 @@ class PinkDivider extends StatelessWidget {
 
 class ProfileInfoRow extends StatelessWidget {
   final String label;
-  final String value;
+  final Future<String> value;
 
   const ProfileInfoRow({required this.label, required this.value});
 
-  @override
+//   @override
+//   Widget build(BuildContext context) {
+//     return Column(
+//       children: [
+//         Row(
+//           mainAxisAlignment: MainAxisAlignment.start,
+//           children: [
+//             Container(
+//               width: MediaQuery.of(context).size.width * 0.50,
+//               child: Padding(
+//                 padding: const EdgeInsets.symmetric(
+//                     horizontal: 16), // Add left padding
+//                 child: Text(
+//                   label,
+//                   style: const TextStyle(color: Colors.grey, fontSize: 13),
+//                 ),
+//               ),
+//             ),
+//             Container(
+//               width: MediaQuery.of(context).size.width * 0.50,
+//               child: Padding(
+//                 padding: const EdgeInsets.symmetric(
+//                     horizontal: 16), // Add right padding
+//                 child: Directionality(
+//                   textDirection: TextDirection.ltr,
+//                   child: Text(
+//                     value.tr,
+//                     style: const TextStyle(fontSize: 13),
+//                   ),
+//                 ),
+//               ),
+//             ),
+//           ],
+//         ),
+//       ],
+//     );
+//   }
+// }
+
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Container(
-              width: MediaQuery.of(context).size.width * 0.50,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 16), // Add left padding
-                child: Text(
-                  label,
-                  style: const TextStyle(color: Colors.grey, fontSize: 13),
-                ),
+    return FutureBuilder<String>(
+      future: value,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          // If data is still loading, return a loading indicator
+
+          return Container();
+        } else if (snapshot.hasError) {
+          // If there's an error, return an error message
+          return Text('Error: ${snapshot.error}');
+        } else {
+          // If data has been loaded successfully, display the Row
+          return Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Container(
+                    width: MediaQuery.of(context).size.width * 0.50,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16), // Add left padding
+                      child: Text(
+                        label,
+                        style:
+                            const TextStyle(color: Colors.grey, fontSize: 13),
+                      ),
+                    ),
+                  ),
+                  Container(
+                    width: MediaQuery.of(context).size.width * 0.50,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16), // Add right padding
+                      child: Directionality(
+                        textDirection: TextDirection.ltr,
+                        child: Text(
+                          snapshot.data ?? '', // Use the fetched data
+                          style: const TextStyle(fontSize: 13),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            ),
-            Container(
-              width: MediaQuery.of(context).size.width * 0.50,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 16), // Add right padding
-                child: Text(
-                  value,
-                  style: const TextStyle(fontSize: 13),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ],
+            ],
+          );
+        }
+      },
     );
   }
 }

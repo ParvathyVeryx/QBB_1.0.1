@@ -31,15 +31,10 @@ int currentIndex = 1;
 
   Future<void> fetchData() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
-    var lang = pref.getString("langEn");
-    var setLang;
-    if (lang == "true") {
-      setLang = "en";
-    } else {
-      setLang = "ar";
-    }
+    var lang ='langChange'.tr;
+   
     try {
-      var appointments = await viewAppointments('28900498437', 1, '$setLang');
+      var appointments = await viewAppointments('28900498437', 1, '$lang');
       print(appointments);
       setState(() {
         // Set all appointments

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:QBB/screens/pages/erorr_popup.dart';
 import 'package:QBB/screens/pages/homescreen_nk.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:crypto/crypto.dart' as crypto;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -12,13 +13,7 @@ class LoginApi {
       String deviceToken, String? deviceType,
       {required Null Function() onApiComplete}) async {
     SharedPreferences pref = await SharedPreferences.getInstance();
-    var lang = 'en';
-    var langen = pref.getString("langEn");
-    if (langen == "false") {
-      lang = 'ar';
-    } else {
-      lang = 'en';
-    }
+    var lang = 'langChange'.tr;
 
     // print('the device token is $deviceToken');
 
@@ -84,8 +79,8 @@ class LoginApi {
             .setString('userQID', json.decode(response.body)["QID"])
             .toString();
         await pref
-            .setString('userFName', json.decode(response.body)["FirstName"])
-            .toString();
+            .setString('userFName', json.decode(response.body)["FirstName"].toString())
+            ;
         await pref.setString(
             'userMName', json.decode(response.body)["MiddleName"].toString());
         await pref.setString(
@@ -96,20 +91,21 @@ class LoginApi {
             json.decode(response.body)["HealthCardNo"].toString());
         await pref
             .setString('userDOb', json.decode(response.body)["Dob"].toString())
+            ;
+        await pref
+            .setString('userNationality',
+                json.decode(response.body)["Nationality"].toString())
             .toString();
         await pref
-            .setString('userNationality', json.decode(response.body)["Nationality"].toString())
-            .toString();
+            .setString('userEmail', json.decode(response.body)["RecoverEmail"].toString())
+            ;
         await pref
-            .setString('userEmail', json.decode(response.body)["RecoverEmail"])
-            .toString();
-        await pref
-            .setString('userPhNo', json.decode(response.body)["RecoveryMobile"])
-            .toString();
+            .setString('userPhNo', json.decode(response.body)["RecoveryMobile"].toString())
+            ;
         await pref
             .setString('userMaritalStatus',
-                json.decode(response.body)["MaritalStatus"])
-            .toString();
+                json.decode(response.body)["MaritalStatus"].toString())
+            ;
 
         // Save user data to SharedPreferences or handle it based on your requirements
         print(
