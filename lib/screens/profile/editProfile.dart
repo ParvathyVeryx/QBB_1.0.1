@@ -4,12 +4,9 @@ import 'package:QBB/screens/pages/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-// import 'package:flutter_gen/gen_l10n/app-localizations.dart';
-
 class EditUser extends StatefulWidget {
-  final String email; // Add this line
-
-  const EditUser({required this.email, super.key});
+  final Future<String> emailFuture;
+  const EditUser({required this.emailFuture, Key? key}) : super(key: key);
 
   @override
   EditUserState createState() => EditUserState();
@@ -19,21 +16,21 @@ class EditUserState extends State<EditUser> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   String? _emailValidationMessage;
 
-  String password = ''; // Store the entered password
-  String confirmPassword = ''; // Store the entered confirm password
+  String password = '';
+  String confirmPassword = '';
   bool isButtonEnabled = false;
   String otp = '';
   String QID = '';
-  String? maritalStatus = "Single"; // Default value for Marital Status
-// Define maritalStatusId in your state class
+  String? maritalStatus = "Single";
   String? maritalStatusId;
   bool isLoading = false;
-  // Declare a TextEditingController for the email field
+
   final TextEditingController _emailController = TextEditingController();
+
   @override
   void initState() {
     super.initState();
-    _emailController.text = widget.email;
+    // _emailController.text = widget.email; // Removed this line
   }
 
   @override
@@ -52,7 +49,7 @@ class EditUserState extends State<EditUser> {
             );
           },
         ),
-        title:  Center(
+        title: Center(
           child: Padding(
             padding: EdgeInsets.only(right: 40.0),
             child: Text(
@@ -74,22 +71,34 @@ class EditUserState extends State<EditUser> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                _buildRoundedBorderTextField(
-                  labelText: 'Email',
-                  labelTextColor: const Color.fromARGB(255, 173, 173, 173),
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      _setEmailValidationMessage('Please enter your email');
-                      return 'Please enter your email';
-                    } else if (!isValidEmail(value)) {
-                      _setEmailValidationMessage('Invalid email format');
-                      return 'Invalid email format';
+                FutureBuilder<String>(
+                  future: widget.emailFuture,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return CircularProgressIndicator();
+                    } else if (snapshot.hasError) {
+                      return Text('Error: ${snapshot.error}');
                     } else {
-                      _setEmailValidationMessage(null);
-                      return null;
+                      _emailController.text = snapshot.data ?? '';
+                      return _buildRoundedBorderTextField(
+                        labelText: 'Email',
+                        labelTextColor: const Color.fromARGB(255, 173, 173, 173),
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            _setEmailValidationMessage('Please enter your email');
+                            return 'Please enter your email';
+                          } else if (!isValidEmail(value)) {
+                            _setEmailValidationMessage('Invalid email format');
+                            return 'Invalid email format';
+                          } else {
+                            _setEmailValidationMessage(null);
+                            return null;
+                          }
+                        },
+                        controller: _emailController,
+                      );
                     }
                   },
-                  controller: _emailController,
                 ),
                 if (_emailValidationMessage != null)
                   Padding(
@@ -103,13 +112,12 @@ class EditUserState extends State<EditUser> {
                   height: 20.0,
                 ),
                 _buildDropdownFormField(
-                  value: '1', // Set the default value based on the initial 'id'
+                  value: '1',
                   onChanged: (value) {
                     setState(() {
                       maritalStatusId = value!;
                       print('Selected Marital Status Id: $maritalStatusId');
-                      isButtonEnabled = _emailValidationMessage ==
-                          null; // Enable the button if email is valid
+                      isButtonEnabled = _emailValidationMessage == null;
                     });
                   },
                   items: [
@@ -131,20 +139,16 @@ class EditUserState extends State<EditUser> {
                     if (isButtonEnabled) {
                       if (_formKey.currentState!.validate()) {
                         setState(() {
-                          isLoading =
-                              true; // Set loading to true when button is pressed
+                          isLoading = true;
                         });
                         print('Validation passed, executing onPressed block');
-                        // Process the form data
                         String userEmail = _emailController.text;
-                        int userMaritalId = int.parse(maritalStatusId ??
-                            '1'); // Use default value '1' if null
+                        int userMaritalId = int.parse(maritalStatusId ?? '1');
                         callUserProfileAPI(context, userEmail, userMaritalId);
                       } else {
                         print('Validation failed');
                       }
                     } else {
-                      // Show a warning to the user that there are no changes
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                           content: Text('No changes to save.'),
@@ -155,12 +159,11 @@ class EditUserState extends State<EditUser> {
                   },
                   style: ButtonStyle(
                       backgroundColor: MaterialStateProperty.all<Color>(
-                          primaryColor), // Set background color
+                          primaryColor),
                       shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                         const RoundedRectangleBorder(
                           borderRadius: BorderRadius.only(
-                            bottomLeft: Radius.circular(
-                                20.0), // Rounded border at bottom-left
+                            bottomLeft: Radius.circular(20.0),
                           ),
                         ),
                       )),
@@ -182,12 +185,6 @@ class EditUserState extends State<EditUser> {
     );
   }
 
-  // void _submitForm() {
-  //   print('Submit form called');
-  //   // Call your API function with the email and maritalStatus
-  //   callUserProfileAPI();
-  // }
-
   void _setEmailValidationMessage(String? message) {
     print('Email Validation Message: $message');
     setState(() {
@@ -196,24 +193,23 @@ class EditUserState extends State<EditUser> {
   }
 
   bool isValidEmail(String value) {
-    // Use a regular expression for email validation
     final emailRegex = RegExp(
       r'^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$',
     );
     return emailRegex.hasMatch(value);
   }
 
+  // ... Existing code ...
+
   Widget _buildRoundedBorderTextField({
     required String labelText,
     required FormFieldValidator<String> validator,
     Color? labelTextColor,
-    required TextEditingController controller, // Add this line
-
-    TextInputType? keyboardType, // Added labelTextColor parameter
+    required TextEditingController controller,
+    TextInputType? keyboardType,
   }) {
     return TextFormField(
-      controller: controller, // Add this line
-
+      controller: controller,
       decoration: InputDecoration(
         contentPadding: const EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 5.0),
         labelText: labelText,
@@ -224,14 +220,11 @@ class EditUserState extends State<EditUser> {
             padding: const EdgeInsets.all(12.0),
             child: Image.asset(
               "assets/images/id-card.png",
-              // width: 15.0,
-              // height: 15.0,
               fit: BoxFit.cover,
             ),
           ),
         ),
-        labelStyle:
-            TextStyle(color: labelTextColor), // Set the label text color
+        labelStyle: TextStyle(color: labelTextColor),
         enabledBorder: const OutlineInputBorder(
           borderSide: BorderSide(color: Color.fromARGB(255, 173, 173, 173)),
           borderRadius: BorderRadius.only(
@@ -252,7 +245,6 @@ class EditUserState extends State<EditUser> {
 
         setState(() {
           QID = value;
-          // Enable or disable the button based on whether the OTP field is empty or not
           isButtonEnabled = QID.isNotEmpty &&
               otp.isNotEmpty &&
               password.isNotEmpty &&
@@ -263,11 +255,13 @@ class EditUserState extends State<EditUser> {
     );
   }
 
+  // ... Existing code ...
+
   Widget _buildRoundedBorderOTPField({
     required String labelText,
     required FormFieldValidator<String> validator,
     Color? labelTextColor,
-    TextInputType? keyboardType, // Added labelTextColor parameter
+    TextInputType? keyboardType,
   }) {
     return TextFormField(
       keyboardType: TextInputType.number,
@@ -278,8 +272,7 @@ class EditUserState extends State<EditUser> {
           Icons.phone_android,
           color: Color.fromARGB(255, 173, 173, 173),
         ),
-        labelStyle:
-            TextStyle(color: labelTextColor), // Set the label text color
+        labelStyle: TextStyle(color: labelTextColor),
         enabledBorder: const OutlineInputBorder(
           borderSide: BorderSide(color: Color.fromARGB(255, 173, 173, 173)),
           borderRadius: BorderRadius.only(
@@ -296,7 +289,6 @@ class EditUserState extends State<EditUser> {
       onChanged: (value) {
         setState(() {
           otp = value;
-          // Enable or disable the button based on whether the OTP field is empty or not
           isButtonEnabled = QID.isNotEmpty &&
               otp.isNotEmpty &&
               password.isNotEmpty &&
@@ -306,6 +298,8 @@ class EditUserState extends State<EditUser> {
       validator: validator,
     );
   }
+
+  // ... Existing code ...
 
   Widget _buildPasswordField() {
     return TextFormField(
@@ -317,7 +311,7 @@ class EditUserState extends State<EditUser> {
           color: Color.fromARGB(255, 173, 173, 173),
         ),
         labelStyle: TextStyle(
-          color: Color.fromARGB(255, 173, 173, 173), // Label text color
+          color: Color.fromARGB(255, 173, 173, 173),
         ),
         enabledBorder: OutlineInputBorder(
           borderSide: BorderSide(color: Color.fromARGB(255, 173, 173, 173)),
@@ -332,7 +326,7 @@ class EditUserState extends State<EditUser> {
           ),
         ),
       ),
-      obscureText: true, // Hide the entered text
+      obscureText: true,
       onChanged: (value) {
         setState(() {
           password = value;
@@ -344,12 +338,14 @@ class EditUserState extends State<EditUser> {
       },
       validator: (value) {
         if (value == null || value.isEmpty) {
-          return 'Please enter a password'; // Validation error message
+          return 'Please enter a password';
         }
-        return null; // No error
+        return null;
       },
     );
   }
+
+  // ... Existing code ...
 
   Widget _buildConfirmPasswordField() {
     return TextFormField(
@@ -357,7 +353,7 @@ class EditUserState extends State<EditUser> {
         contentPadding: EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 5.0),
         labelText: 'Confirm Password*',
         labelStyle: TextStyle(
-          color: Color.fromARGB(255, 173, 173, 173), // Label text color
+          color: Color.fromARGB(255, 173, 173, 173),
         ),
         prefixIcon: Icon(
           Icons.lock,
@@ -376,7 +372,7 @@ class EditUserState extends State<EditUser> {
           ),
         ),
       ),
-      obscureText: true, // Hide the entered text
+      obscureText: true,
       onChanged: (value) {
         setState(() {
           confirmPassword = value;
@@ -388,31 +384,33 @@ class EditUserState extends State<EditUser> {
       },
       validator: (value) {
         if (value == null || value.isEmpty) {
-          return 'Please confirm your password'; // Validation error message
+          return 'Please confirm your password';
         } else if (value != password) {
-          return 'Passwords do not match'; // Validation error message for mismatch
+          return 'Passwords do not match';
         }
-        return null; // No error
+        return null;
       },
     );
   }
 
-  Widget _buildDropdownFormField(
-      {required String? value,
-      required void Function(String?)? onChanged,
-      required List<DropdownMenuItem<String>> items,
-      required String labelText,
-      String? defaultValue}) {
+  // ... Existing code ...
+
+  Widget _buildDropdownFormField({
+    required String? value,
+    required void Function(String?)? onChanged,
+    required List<DropdownMenuItem<String>> items,
+    required String labelText,
+    String? defaultValue,
+  }) {
     return Container(
       decoration: BoxDecoration(
         border: Border.all(
-          color: const Color.fromARGB(
-              255, 173, 173, 173), // Set the border color to grey
-          width: 1.0, // Set the border width
+          color: const Color.fromARGB(255, 173, 173, 173),
+          width: 1.0,
         ),
         borderRadius: const BorderRadius.only(
-          bottomLeft: Radius.circular(20.0), // Rounded border at bottom-left
-        ), // Rounded border corners
+          bottomLeft: Radius.circular(20.0),
+        ),
       ),
       child: Padding(
         padding: const EdgeInsets.fromLTRB(10.0, 0, 10.0, 0),
@@ -423,17 +421,16 @@ class EditUserState extends State<EditUser> {
           decoration: InputDecoration(
             labelText: labelText,
             labelStyle: const TextStyle(
-                color: Color.fromARGB(255, 173, 173, 173)), // Label text color
-            border: InputBorder.none, // Remove the default border
+              color: Color.fromARGB(255, 173, 173, 173),
+            ),
+            border: InputBorder.none,
           ),
           validator: (value) {
-            // if (selectedDate == null) {
-            //   return 'Please select a value'; // Validation error message
-            // }
-            return null; // No error
+            return null;
           },
         ),
       ),
     );
   }
 }
+
