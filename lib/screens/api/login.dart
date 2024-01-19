@@ -6,7 +6,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:crypto/crypto.dart' as crypto;
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../../nirmal_api.dart/studies_api.dart';
+import '../../providers/studymodel.dart';
 
 class LoginApi {
   static Future<void> login(BuildContext context, String qid, String password,
@@ -100,6 +104,8 @@ class LoginApi {
             json.decode(response.body)["RecoveryMobile"].toString());
         await pref.setString('userMaritalStatus',
             json.decode(response.body)["MaritalStatus"].toString());
+        // await pref.setString('studiesEN', "true");
+        // await pref.setString('studiesAR', "true");
 
         // Save user data to SharedPreferences or handle it based on your requirements
         print(
@@ -110,6 +116,9 @@ class LoginApi {
           context,
           MaterialPageRoute(builder: (context) => const HomeScreen()),
         );
+        // List<Study> studies = await fetchStudyMasterAPI();
+
+        // Provider.of<StudyProvider>(context, listen: false).setStudies(studies);
       } else {
         showDialog(
           context: context,

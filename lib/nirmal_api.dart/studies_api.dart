@@ -21,12 +21,6 @@ updateLanguage(Locale locale) {
 Future<List<Study>> fetchStudyMasterAPI() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   var lang = 'langChange'.tr;
-  // var setLang;
-  // if (lang == "false") {
-  //   setLang = "ar";
-  // } else {
-  //   setLang = "en";
-  // }
   final String apiUrl =
       'https://participantportal-test.qatarbiobank.org.qa/QbbAPIS/api/StudyMasterAPI';
   // const String token =
@@ -34,10 +28,12 @@ Future<List<Study>> fetchStudyMasterAPI() async {
 // Retrieve the token from SharedPreferences
   SharedPreferences pref = await SharedPreferences.getInstance();
   String? token = pref.getString('token');
+  String? qid = pref.getString('userQID');
+  String? isLogin = pref.getString("studiesEN");
 
   try {
     final http.Response response = await http.get(
-      Uri.parse('$apiUrl?QID=28900498437&language=$lang'),
+      Uri.parse('$apiUrl?QID=$qid&language=$lang'),
       headers: {
         'Authorization': 'Bearer ${token?.replaceAll('"', '')}',
       },
@@ -50,6 +46,9 @@ Future<List<Study>> fetchStudyMasterAPI() async {
     if (response.statusCode == 200) {
       final List<dynamic> responseData = json.decode(response.body);
       final List<Study> studies = responseData.map((data) {
+        pref.setString("studyCode",  data['Code'].toString());
+        pref.setString("studyName",  data['Name'].toString());
+        pref.setString("studyDes",  data['Description'].toString());
         return Study(
           studyCode:
               data['Code'] ?? '', // Check for null and provide a default value
@@ -57,7 +56,9 @@ Future<List<Study>> fetchStudyMasterAPI() async {
               data['Name'] ?? '', // Check for null and provide a default value
           studyDescription: data['Description'] ??
               '', // Check for null and provide a default value
+              
         );
+        
       }).toList();
 
       return studies;
@@ -70,12 +71,14 @@ Future<List<Study>> fetchStudyMasterAPI() async {
   }
 }
 
-Future<void> fetchAndSetStudies(BuildContext context) async {
-  try {
-    List<Study> studies = await fetchStudyMasterAPI();
-    Provider.of<StudyProvider>(context, listen: false).setStudies(studies);
-  } catch (error) {
-    print('Error fetching studies: $error');
-    // Handle error as needed
-  }
-}
+// Future<void> fetchAndSetStudies(BuildContext context) async {
+//   SharedPreferences pref = await SharedPreferences.getInstance();
+//   try {
+//     List<Study> studies = await fetchStudyMasterAPI();
+
+//     Provider.of<StudyProvider>(context, listen: false).setStudies(studies);
+//   } catch (error) {
+//     print('Error fetching studies: $error');
+//     // Handle error as needed
+//   }
+// }

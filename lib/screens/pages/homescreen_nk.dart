@@ -1,9 +1,23 @@
 import 'package:QBB/sidebar.dart';
 import 'package:flutter/material.dart';
+
+import '../../nirmal_api.dart/studies_api.dart';
 // import 'package:flutter_gen/gen_I10n/app-localizations.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    fetchStudyMasterAPI();
+  }
 
   @override
   Widget build(BuildContext context) {

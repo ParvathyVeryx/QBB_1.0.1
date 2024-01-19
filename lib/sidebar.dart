@@ -27,6 +27,26 @@ class LanguageProvider extends ChangeNotifier {
   }
 }
 
+class CustomAlertDialogShape extends RoundedRectangleBorder {
+  final double bottomLeftRadius;
+
+  CustomAlertDialogShape({
+    this.bottomLeftRadius = 30.0,
+    double sideRadius = 0.0,
+    double bottomRightRadius = 0.0,
+    double sideHeight = 0.0,
+    sideHeightbottom = 30.0,
+  }) : super(
+          side: BorderSide.none,
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(sideRadius),
+            topRight: Radius.circular(sideRadius),
+            bottomRight: Radius.circular(bottomRightRadius),
+            bottomLeft: Radius.circular(bottomLeftRadius),
+          ),
+        );
+}
+
 class SideMenu extends StatefulWidget {
   const SideMenu({
     Key? key,
@@ -44,12 +64,14 @@ class sideMenuclass extends State<SideMenu> {
     _loadSelectedLanguage();
   }
 
+  String selectedLanguage = '';
+
   var selectedLanguagePref;
   _loadSelectedLanguage() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
-      selectedLanguage = prefs.getString('langEn').toString();
-      if (selectedLanguage == "false") {
+      var selectedLanguagePref = prefs.getString('langEn').toString();
+      if (selectedLanguagePref == "false") {
         selectedLanguage = 'Arabic';
       } else {
         selectedLanguage = 'English';
@@ -62,7 +84,6 @@ class sideMenuclass extends State<SideMenu> {
     prefs.setString('selectedLanguage', language);
   }
 
-  String selectedLanguage = '';
   // selectedLanguage = selectedLanguagePref;
 
   final List locale = [
@@ -159,29 +180,6 @@ class sideMenuclass extends State<SideMenu> {
               ),
               ListTile(
                 leading: Image.asset(
-                  "assets/images/about.png",
-                  width: 30.0,
-                  height: 30.0,
-                  fit: BoxFit.cover,
-                ),
-                title: Text(
-                  'aboutUs'.tr,
-                  style: TextStyle(color: textcolor, fontSize: 14),
-                ),
-                onTap: () {
-                  // Handle onTap action
-                  // For example, you can navigate to a different screen.
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => AboutUs()),
-                  );
-                },
-              ),
-              const SizedBox(
-                height: 15.0,
-              ),
-              ListTile(
-                leading: Image.asset(
                   "assets/images/document.png",
                   width: 30.0,
                   height: 30.0,
@@ -248,6 +246,29 @@ class sideMenuclass extends State<SideMenu> {
               ),
               ListTile(
                 leading: Image.asset(
+                  "assets/images/about.png",
+                  width: 30.0,
+                  height: 30.0,
+                  fit: BoxFit.cover,
+                ),
+                title: Text(
+                  'aboutUs'.tr,
+                  style: TextStyle(color: textcolor, fontSize: 14),
+                ),
+                onTap: () {
+                  // Handle onTap action
+                  // For example, you can navigate to a different screen.
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => AboutUs()),
+                  );
+                },
+              ),
+              const SizedBox(
+                height: 15.0,
+              ),
+              ListTile(
+                leading: Image.asset(
                   "assets/images/language.png",
                   width: 30.0,
                   height: 30.0,
@@ -262,78 +283,124 @@ class sideMenuclass extends State<SideMenu> {
                     context: context,
                     builder: (context) {
                       return AlertDialog(
-                        title: Text('Select Language'),
-                        content: Column(
-                          mainAxisSize: MainAxisSize.min,
+                        shape: CustomAlertDialogShape(bottomLeftRadius: 36.0),
+                        title: Column(
                           children: [
-                            ListTile(
-                              title: Text('English'),
-                              leading: Radio(
-                                value: 'English',
-                                groupValue: selectedLanguage,
-                                onChanged: (value) async {
-                                  SharedPreferences pref =
-                                      await SharedPreferences.getInstance();
-                                  pref.setString("langEn", "true");
-                                  setState(() {
-                                    selectedLanguage = value!;
-                                    // _saveSelectedLanguage(value);
-                                    updateLanguage(locale[0]['locale']);
-                                    refreshAPI();
-                                    Provider.of<RefreshNotifier>(context,
-                                            listen: false)
-                                        .triggerRefresh();
-                                  });
-                                },
-                              ),
+                            Center(
+                                child: Text('changeLanguage'.tr,
+                                    style: TextStyle(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w600))),
+                            SizedBox(
+                              height: 10,
                             ),
-                            ListTile(
-                              title: Text('عربي'),
-                              leading: Radio(
-                                value: 'Arabic',
-                                groupValue: selectedLanguage,
-                                onChanged: (value) async {
-                                  SharedPreferences pref =
-                                      await SharedPreferences.getInstance();
-                                  pref.setString("langEn", "false");
-                                  setState(() {
-                                    selectedLanguage = value!;
-                                    // _saveSelectedLanguage(value);
-
-                                    updateLanguage(locale[1]['locale']);
-                                    refreshAPI();
-                                    Provider.of<RefreshNotifier>(context,
-                                            listen: false)
-                                        .triggerRefresh();
-                                    
-                                    
-                                  });
-                                },
-                                activeColor: primaryColor,
-                              ),
-                            ),
+                            Divider(),
                           ],
                         ),
+                        content: StatefulBuilder(
+                          builder:
+                              (BuildContext context, StateSetter setState) {
+                            return Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                RadioListTile(
+                                  value: 'English',
+                                  title: Text(
+                                    'English',
+                                    style: TextStyle(
+                                      fontSize: 13,
+                                      color: selectedLanguage == 'English'
+                                          ? secondaryColor
+                                          : Colors.black,
+                                    ),
+                                  ),
+                                  groupValue: selectedLanguage,
+                                  activeColor: primaryColor,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      selectedLanguage = value!;
+                                    });
+                                  },
+                                  // Selection color
+                                ),
+
+                                RadioListTile(
+                                  title: Text(
+                                    'عربي',
+                                    style: TextStyle(
+                                      fontSize: 13,
+                                      color: selectedLanguage == 'Arabic'
+                                          ? secondaryColor
+                                          : Colors.black,
+                                    ),
+                                  ),
+                                  value: 'Arabic',
+                                  groupValue: selectedLanguage,
+                                  activeColor: primaryColor,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      selectedLanguage = value!;
+                                    });
+                                  },
+                                ),
+                                // ),
+                              ],
+                            );
+                          },
+                        ),
                         actions: [
-                          TextButton(
-                            onPressed: () {
-                              Navigator.of(context).pop(); // Close the dialog
-                            },
-                            child: Text('cancelButton'.tr),
-                          ),
-                          TextButton(
-                            onPressed: () {
-                              // TODO: Add logic to handle the selected language
-                              if (selectedLanguage.isNotEmpty) {
-                                // Your logic to handle the selected language
-                                refreshAPI();
-                                print('Selected language: $selectedLanguage');
-                                Navigator.of(context).pop(); // Close the dialog
-                              } else {
-                                // Show an error or inform the user to select a language
-                              }
-                            },
-                            child: Text('ok'.tr),
+                          Column(
+                            children: [
+                              Divider(),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  TextButton(
+                                    onPressed: () async {
+                                      SharedPreferences prefs =
+                                          await SharedPreferences.getInstance();
+                                      var selectedLanguagePref =
+                                          prefs.getString('langEn').toString();
+                                      if (selectedLanguagePref == "false") {
+                                        selectedLanguage = 'Arabic';
+                                      } else {
+                                        selectedLanguage = 'English';
+                                      }
+                                      Navigator.of(context)
+                                          .pop(); // Close the dialog
+                                    },
+                                    child: Text('cancelButton'.tr),
+                                  ),
+                                  TextButton(
+                                    onPressed: () async {
+                                      if (selectedLanguage.isNotEmpty) {
+                                        SharedPreferences pref =
+                                            await SharedPreferences
+                                                .getInstance();
+                                        pref.setString(
+                                            "langEn",
+                                            selectedLanguage == 'English'
+                                                ? "true"
+                                                : "false");
+
+                                        updateLanguage(
+                                            selectedLanguage == 'English'
+                                                ? locale[0]['locale']
+                                                : locale[1]['locale']);
+
+                                        print(
+                                            'Selected language: $selectedLanguage');
+                                        Navigator.of(context)
+                                            .pop(); // Close the dialog
+                                      } else {
+                                        // Show an error or inform the user to select a language
+                                      }
+                                    },
+                                    child: Text('ok'.tr),
+                                  ),
+                                ],
+                              ),
+                            ],
                           ),
                         ],
                       );
@@ -402,59 +469,20 @@ class sideMenuclass extends State<SideMenu> {
       },
     );
   }
-
-  // _buildRadioListTile(String title, String value) async {
-  //   SharedPreferences pref = await SharedPreferences.getInstance();
-  //   var lang = pref.getString("langEn");
-  //   var setLang;
-  //   if (lang == "true") {
-  //     setLang = "en";
-  //   } else {
-  //     setLang = "ar";
-  //   }
-
-  //   return RadioListTile<String>(
-  //     title: Text(title),
-  //     value: value,
-  //     groupValue: value,
-  //     onChanged: (newValue) {
-  //       setState(() {
-  //         lang = newValue!;
-  //       });
-  //     },
-  //     activeColor: primaryColor,
-  //   );
-  // }
-
-  String registrationMode = '';
-
-  Widget _buildRadioListTile(String title, String value) {
-    print('nnnnnnnnnnnnnnnnnnnnnn' + getlan.toString());
-    return RadioListTile<String>(
-      title: Text(title),
-      value: value,
-      groupValue: getlan.toString(),
-      onChanged: (newValue) {
-        setState(() {
-          registrationMode = newValue!;
-        });
-      },
-      activeColor: primaryColor,
-    );
-  }
-
-  void _reloadPage() {
-    Navigator.of(context).pop(); // Pop the current route
-    // Navigator.of(context).pushReplacement(MaterialPageRoute(
-    //     builder: (context) => MyCurrentPage())); // Push the page again
-  }
-
-  Future<void> refreshAPI() async {
-    await fetchStudyMasterAPI();
-  }
 }
 
-_refreshPage() {
-  print('Refreshing api...');
-  fetchStudyMasterAPI();
+class Divider extends StatelessWidget {
+  const Divider();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 1,
+      color: Color.fromARGB(255, 184, 184, 184),
+      margin: const EdgeInsets.symmetric(
+        vertical: 8,
+        horizontal: 16,
+      ),
+    );
+  }
 }

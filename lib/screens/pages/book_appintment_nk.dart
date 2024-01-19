@@ -170,7 +170,7 @@ class BookAppointmentsState extends State<BookAppointments> {
     return PopScope(
       canPop: true,
       child: DefaultTabController(
-        length: 3,
+        length: 1,
         child: PopScope(
           canPop: true,
           child: Scaffold(
