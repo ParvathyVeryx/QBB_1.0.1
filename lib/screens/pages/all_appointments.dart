@@ -58,6 +58,7 @@ class AllAppointmentsState extends State<AllAppointments> {
         // Parse and handle the response body
         var responseBody = json.decode(response.body);
         allAppointments = List<Map<String, dynamic>>.from(responseBody);
+        print('jjjjjjjjjjjjjjjjjjjjjjjjjjjjjjj' + allAppointments.toString());
         return allAppointments;
       } else {
         // Handle errors

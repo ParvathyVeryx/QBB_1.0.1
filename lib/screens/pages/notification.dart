@@ -9,25 +9,28 @@ Future<dynamic> getNotifications(context) async {
   SharedPreferences pref = await SharedPreferences.getInstance();
   var token = pref.getString("token").toString();
   print('kkkklkl' + token.toString());
-        SharedPreferences prefs = await SharedPreferences.getInstance();
-    var lang = 'langChange'.tr;
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  var lang = 'langChange'.tr;
 
-    
-  var uri =
-      Uri.parse(base_url + 'GetNotificationsAPI?language=$lang&QID=28900498437');
+  // var uri = Uri.parse(
+  //     base_url+'GetNotificationsAPI?QID=28900498437&language=en');
+  var uri = Uri.parse(
+      "https://participantportal-test.qatarbiobank.org.qa/QbbAPIS/api/ViewAllResultAppointmentsAPI?QID=28900498437&language=en&page=1");
 
   final response = await http.get(uri, headers: {
     'Content-Type': 'application/json',
     'Accept': 'application/json',
     'Authorization': 'Bearer $token',
-    "Access-Control-Allow-Origin": "*", // Required for CORS support to work
-    "Access-Control-Allow-Credentials":
-        'true', // Required for cookies, authorization headers with HTTPS
-    "Access-Control-Allow-Headers":
-        "Origin,Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,locale",
-    "Access-Control-Allow-Methods": "POST, OPTIONS"
+    // "Access-Control-Allow-Origin": "*", // Required for CORS support to work
+    // "Access-Control-Allow-Credentials":
+    //     'true', // Required for cookies, authorization headers with HTTPS
+    // "Access-Control-Allow-Headers":
+    //     "Origin,Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,locale",
+    // "Access-Control-Allow-Methods": "POST, OPTIONS"
   });
-
+  print("ggggggggggggggggggggggggggggggggg");
+  print(response.body);
+  print(response.statusCode);
   if (response.statusCode == 200) {
     // If the server returns a 200 OK response,
     // parse the response body and return it.
