@@ -59,6 +59,19 @@ class ResultsState extends State<Results> {
         },
       );
 
+      String apiUrlN =
+          'https://participantportal-test.qatarbiobank.org.qa/QbbAPIS/api/GetNotificationsAPI?QID=28900498437&language=en';
+      String requestUrlN = '$apiUrlN?qid=$qid&page=1&language=$lang';
+
+      // Make the GET request with the token in the headers
+      var responseN = await http.get(
+        Uri.parse(requestUrlN),
+        headers: {
+          'Authorization': 'Bearer ${token.replaceAll('"', '')}',
+        },
+      );
+      print('kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk' +
+          responseN.body.toString());
       // Check if the request was successful (status code 200)
       if (response.statusCode == 200) {
         // Parse and handle the response body
@@ -493,7 +506,8 @@ class ResultsState extends State<Results> {
                                         height: 20,
                                       ),
                                       Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
                                         children: [
                                           ElevatedButton(
                                             onPressed: () {},
