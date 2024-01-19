@@ -22,7 +22,7 @@ class Appointments extends StatefulWidget {
 class AppointmentsState extends State<Appointments> {
   List<Map<String, dynamic>> allAppointments = [];
   List<Map<String, dynamic>> completedAppointments = [];
-int currentIndex = 1;
+  int currentIndex = 1;
   @override
   void initState() {
     super.initState();
@@ -31,11 +31,12 @@ int currentIndex = 1;
 
   Future<void> fetchData() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
-    var lang ='langChange'.tr;
-   
+    var lang = 'langChange'.tr;
+    String qid = pref.getString("userQID").toString();
+
     try {
-      var appointments = await viewAppointments('28900498437', 1, '$lang');
-      print(appointments);
+      var appointments = await viewAppointments('$qid', 1, '$lang');
+      print('dcfvfdx' + appointments.toString());
       setState(() {
         // Set all appointments
         allAppointments = appointments;
@@ -45,6 +46,7 @@ int currentIndex = 1;
                 appointment['AppoinmentStatus'] is int &&
                 appointment['AppoinmentStatus'] == 4)
             .toList();
+        
         print('completed Appointments: $completedAppointments');
       });
     } catch (error) {
@@ -164,68 +166,66 @@ int currentIndex = 1;
                     MaterialPageRoute(builder: (context) => Profile()),
                   );
                 }
-
-
               },
               items: [
-            BottomNavigationBarItem(
-              icon: Padding(
-                padding: const EdgeInsets.only(bottom: 5.0, top: 5.0),
-                child: Image.asset(
-                  "assets/images/home.png",
-                  width: 20.0,
-                  height: 20.0,
-                  fit: BoxFit.cover,
-                ),
-              ),
-              label: 'home'.tr + '\n',
-            ),
-            BottomNavigationBarItem(
-              icon: Padding(
-                padding: const EdgeInsets.only(bottom: 5.0, top: 5.0),
-                child: Image.asset(
-                  "assets/images/event.png",
-                  width: 20.0,
-                  height: 20.0,
-                  fit: BoxFit.cover,
-                ),
-              ),
-              label: 'appointment'.tr + '\n',
-            ),
-            BottomNavigationBarItem(
-                icon: Padding(
-                  padding: const EdgeInsets.only(bottom: 5.0, top: 5.0),
-                  child: Image.asset(
-                    "assets/images/date.png",
-                    width: 20.0,
-                    height: 20.0,
-                    fit: BoxFit.cover,
+                BottomNavigationBarItem(
+                  icon: Padding(
+                    padding: const EdgeInsets.only(bottom: 5.0, top: 5.0),
+                    child: Image.asset(
+                      "assets/images/home.png",
+                      width: 20.0,
+                      height: 20.0,
+                      fit: BoxFit.cover,
+                    ),
                   ),
+                  label: 'home'.tr + '\n',
                 ),
-                label: 'bookAn'.tr + '\n' + 'appointment'.tr),
-            BottomNavigationBarItem(
-                icon: Padding(
-                  padding: const EdgeInsets.only(bottom: 5.0, top: 5.0),
-                  child: Image.asset(
-                    "assets/images/experiment-results.png",
-                    width: 20.0,
-                    height: 20.0,
-                    fit: BoxFit.cover,
+                BottomNavigationBarItem(
+                  icon: Padding(
+                    padding: const EdgeInsets.only(bottom: 5.0, top: 5.0),
+                    child: Image.asset(
+                      "assets/images/event.png",
+                      width: 20.0,
+                      height: 20.0,
+                      fit: BoxFit.cover,
+                    ),
                   ),
+                  label: 'appointment'.tr + '\n',
                 ),
-                label: 'results'.tr + '/' + '\n' + 'status'.tr),
-            BottomNavigationBarItem(
-                icon: Padding(
-                  padding: const EdgeInsets.only(bottom: 5.0, top: 5.0),
-                  child: Image.asset(
-                    "assets/images/user.png",
-                    width: 20.0,
-                    height: 20.0,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-                label: 'profile'.tr.toUpperCase() + '\n'),
-          ]),
+                BottomNavigationBarItem(
+                    icon: Padding(
+                      padding: const EdgeInsets.only(bottom: 5.0, top: 5.0),
+                      child: Image.asset(
+                        "assets/images/date.png",
+                        width: 20.0,
+                        height: 20.0,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    label: 'bookAn'.tr + '\n' + 'appointment'.tr),
+                BottomNavigationBarItem(
+                    icon: Padding(
+                      padding: const EdgeInsets.only(bottom: 5.0, top: 5.0),
+                      child: Image.asset(
+                        "assets/images/experiment-results.png",
+                        width: 20.0,
+                        height: 20.0,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    label: 'results'.tr + '/' + '\n' + 'status'.tr),
+                BottomNavigationBarItem(
+                    icon: Padding(
+                      padding: const EdgeInsets.only(bottom: 5.0, top: 5.0),
+                      child: Image.asset(
+                        "assets/images/user.png",
+                        width: 20.0,
+                        height: 20.0,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    label: 'profile'.tr.toUpperCase() + '\n'),
+              ]),
           body: TabBarView(
             children: [
               // Content of Tab 1

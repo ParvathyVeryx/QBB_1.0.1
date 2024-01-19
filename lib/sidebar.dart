@@ -315,8 +315,10 @@ class sideMenuclass extends State<SideMenu> {
                                     ),
                                   ),
                                   groupValue: selectedLanguage,
+
                                   activeColor: primaryColor,
                                   onChanged: (value) {
+                                    print('selected language'+selectedLanguage);
                                     setState(() {
                                       selectedLanguage = value!;
                                     });
