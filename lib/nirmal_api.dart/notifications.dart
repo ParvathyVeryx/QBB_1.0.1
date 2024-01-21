@@ -1,3 +1,4 @@
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -7,6 +8,9 @@ Future<String?> getAuthToken() async {
 }
 
 Future<void> getNotificationsApiCall() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+  String qid = prefs.getString("userQID").toString();
+  var lang = 'langChange'.tr;
   final String apiUrl =
       'https://participantportal-test.qatarbiobank.org.qa/QbbAPIS/api/GetNotificationsAPI';
 
@@ -19,8 +23,8 @@ Future<void> getNotificationsApiCall() async {
   }
 
   final Map<String, String> queryParams = {
-    "QID": "28900498437",
-    "language": "en",
+    "QID": "$qid",
+    "language": "$lang",
   };
 
   final Uri uri = Uri.parse(apiUrl).replace(queryParameters: queryParams);

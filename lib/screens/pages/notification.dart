@@ -43,7 +43,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
       // Construct the request URL
 
       String apiUrl =
-          'https://participantportal-test.qatarbiobank.org.qa/QbbAPIS/api/GetNotificationsAPI?QID=28900498437&language=en';
+          'https://participantportal-test.qatarbiobank.org.qa/QbbAPIS/api/GetNotificationsAPI?QID=$qid&language=$lang';
       String requestUrl = '$apiUrl?qid=$qid&page=1&language=$lang';
 
       // Make the GET request with the token in the headers
@@ -104,7 +104,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
           return Scaffold(
             appBar: AppBar(
               title: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Padding(
                     padding: const EdgeInsets.only(bottom: 10.0),
@@ -119,23 +119,30 @@ class _NotificationScreenState extends State<NotificationScreen> {
                   //   width: 50.0,
                   // ),
 
-                  Text(
-                    'notifications'.tr,
-                    style: TextStyle(
-                      color: Colors.white,
-                      // fontWeight: FontWeight.w900 ,
-                      fontFamily: 'Impact',
-                    ),
+                  Row(
+                    children: [
+                      Center(
+                        child: Text(
+                          'notifications'.tr,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: Colors.white,
+                            // fontWeight: FontWeight.w900 ,
+                            fontFamily: 'Impact',
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                   // SizedBox(
                   //   width: 50.0,
                   // ),
-                  IconButton(
-                    onPressed: () {},
-                    icon: const Icon(Icons.notifications_none_outlined),
-                    iconSize: 30.0,
-                    color: textcolor,
-                  )
+                  // IconButton(
+                  //   onPressed: () {},
+                  //   icon: const Icon(Icons.notifications_none_outlined),
+                  //   iconSize: 30.0,
+                  //   color: textcolor,
+                  // )
                 ],
               ),
               backgroundColor: appbar,
@@ -357,7 +364,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                       padding: const EdgeInsets.all(8.0),
                                       child: HtmlWidget(
                                         appointment['Message'],
-                                        textStyle: TextStyle(fontSize: 13) ,
+                                        textStyle: TextStyle(fontSize: 13),
                                       ),
                                     )),
                                   ],

@@ -58,9 +58,12 @@ class ResultsState extends State<Results> {
           'Authorization': 'Bearer ${token.replaceAll('"', '')}',
         },
       );
+        // SharedPreferences prefs = await SharedPreferences.getInstance();
+  // String qid = prefs.getString("userQID").toString();
+  // var lang = 'langChange'.tr;
 
       String apiUrlN =
-          'https://participantportal-test.qatarbiobank.org.qa/QbbAPIS/api/GetNotificationsAPI?QID=28900498437&language=en';
+          'https://participantportal-test.qatarbiobank.org.qa/QbbAPIS/api/GetNotificationsAPI?QID=$qid&language=$lang';
       String requestUrlN = '$apiUrlN?qid=$qid&page=1&language=$lang';
 
       // Make the GET request with the token in the headers
@@ -70,8 +73,7 @@ class ResultsState extends State<Results> {
           'Authorization': 'Bearer ${token.replaceAll('"', '')}',
         },
       );
-      print('kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk' +
-          responseN.body.toString());
+
       // Check if the request was successful (status code 200)
       if (response.statusCode == 200) {
         // Parse and handle the response body

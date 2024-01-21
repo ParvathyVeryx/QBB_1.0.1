@@ -58,7 +58,6 @@ class AllAppointmentsState extends State<AllAppointments> {
         // Parse and handle the response body
         var responseBody = json.decode(response.body);
         allAppointments = List<Map<String, dynamic>>.from(responseBody);
-        print('jjjjjjjjjjjjjjjjjjjjjjjjjjjjjjj' + allAppointments.toString());
         return allAppointments;
       } else {
         // Handle errors
@@ -200,7 +199,9 @@ class AllAppointmentsState extends State<AllAppointments> {
                                                           .toString() ==
                                                       "4"
                                                   ? "completed".tr
-                                                  : "cancelled".tr,
+                                                  : appointment['AppoinmentStatus']
+                                                          .toString() ==
+                                                      "1" ? 'upcoming'.tr : 'cancelled'.tr,
                                               style: TextStyle(
                                                 color: Color.fromARGB(
                                                     255, 255, 255, 255),

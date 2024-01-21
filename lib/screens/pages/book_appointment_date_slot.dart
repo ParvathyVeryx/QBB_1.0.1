@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:QBB/constants.dart';
 import 'package:QBB/screens/pages/loader.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -53,8 +55,8 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'Book an Appointment',
+        title: Text(
+          'pageATitle'.tr,
           style: TextStyle(fontFamily: 'impact', color: Colors.white),
         ),
         backgroundColor: Colors.blue,
@@ -88,8 +90,8 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
             const SwipableDateRow(),
             const SizedBox(height: 10.0),
             const SizedBox(height: 30.0),
-            const Center(
-              child: Text('Swipe right to view more slots'),
+            Center(
+              child: Text('swipeRightToViewMoreSlots'.tr),
             ),
             const SizedBox(
               height: 10,
@@ -115,8 +117,8 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
                       onPressed: () {
                         // Handle button press
                       },
-                      child: const Text(
-                        'Cancel',
+                      child: Text(
+                        'cancel'.tr,
                         style: TextStyle(color: Colors.deepPurple),
                       ),
                     ),
@@ -133,7 +135,7 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
                         ),
                       ),
                       onPressed: _confirmAppointment,
-                      child: const Text('Confirm'),
+                      child: Text('confirm'.tr),
                     ),
                   ),
                 ],
@@ -153,7 +155,13 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
       lastDate: DateTime.now().add(const Duration(days: 30)),
     );
 
-    if (picked != null && picked != _selectedDate) {
+    Future<String> selectedDateFromSlot() async {
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      String selectedDate = pref.getString("selectedDate").toString();
+      return selectedDate;
+    }
+
+    if (picked != null && picked != _selectedDate && selectedDateFromSlot() == "null") {
       setState(() {
         _selectedDate = picked;
         _dateController.text = '${picked.day}/${picked.month}/${picked.year}';
@@ -168,7 +176,8 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
     });
   }
 
-  void _confirmAppointment() {
+  void _confirmAppointment() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
     print('Appointment confirmed for $_selectedDate at $_selectedTimeSlot');
   }
 }
@@ -299,17 +308,16 @@ class SwipableFourColumnWidget extends StatefulWidget {
 }
 
 class _SwipableFourColumnWidgetState extends State<SwipableFourColumnWidget> {
-  final List<String> daysAndDates = [
-    'Monday, 10 Jan',
-    'Tuesday, 11 Jan',
-    'Wednesday, 12 Jan',
-  ];
+  List<String> daysAndDates = [];
+  List<String> datesOnly = [];
+  List<String> dayNames = [];
+  List<String> selectedDates = [];
 
-  final List<String> availabilityStatus = [
-    'Available',
-    'Not Available',
-    'Available',
-  ];
+  // final List<String> availabilityStatus = [
+  //   'Available',
+  //   'Available',
+  //   'Available',
+  // ];
 
   late List<String> timeList;
 
@@ -322,6 +330,8 @@ class _SwipableFourColumnWidgetState extends State<SwipableFourColumnWidget> {
     timeList = [];
     // nextAvailableDates = [];
     fetchApiResponseFromSharedPrefs();
+    fetchAvailableDates();
+    fetchAvailableDays();
   }
 
   Future<void> fetchApiResponseFromSharedPrefs() async {
@@ -340,6 +350,101 @@ class _SwipableFourColumnWidgetState extends State<SwipableFourColumnWidget> {
     }
   }
 
+  Future<List<String>> fetchAvailableDates() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    String? jsonString = pref.getString("availableDates");
+
+// Check if the jsonString is not null
+    if (jsonString != null) {
+      // Use json.decode to parse the jsonString
+      dynamic decodedData = json.decode(jsonString);
+
+      // Check if the decodedData is a List
+      if (decodedData is List) {
+        // Now you can use the data as a List
+        List<String> availableDates = List<String>.from(decodedData);
+        for (String dateTimeString in availableDates) {
+          try {
+            // Parse the date-time string to DateTime
+            DateTime dateTime = DateTime.parse(dateTimeString);
+
+            // Format the DateTime to get only the date part
+            String dateOnly = DateFormat('yyyy-MM-dd').format(dateTime);
+
+            // Add the date to the result list
+            datesOnly.add(dateOnly);
+          } catch (e) {
+            // Handle parsing errors if necessary
+            print("Error parsing date-time string: $dateTimeString");
+          }
+        }
+
+        // Use the 'availableDates' list as needed
+        print("Decoded List");
+        print(availableDates);
+        daysAndDates = availableDates;
+
+        print("daysandtime" + daysAndDates.toString());
+        pref.setString("dateOnly", datesOnly.toString());
+        pref.getString("dateOnly");
+        // ==============================================================================
+        List<DateTime?> dates = datesOnly.map((dateString) {
+          try {
+            return DateTime.parse(dateString);
+          } catch (e) {
+            print('Error parsing date string: $dateString');
+            return null;
+          }
+        }).toList();
+
+        // Check if any dates were successfully parsed
+        for (DateTime? date in dates) {
+          if (date != null) {
+            String dayName = DateFormat('EEEE').format(date);
+            dayNames.add(dayName);
+          }
+        }
+        print("DatesAndDays");
+        print(dayNames);
+
+        // ===============================================================================
+        return datesOnly;
+      } else {
+        print("Decoded data is not a List");
+        return [];
+      }
+    } else {
+      print("No data found in SharedPreferences for 'availableDates'");
+      return [];
+    }
+  }
+
+  List<String> daysOnly = [];
+  Future<List<String>> fetchAvailableDays() async {
+    List<DateTime?> dates = datesOnly.map((dateString) {
+      try {
+        return DateTime.parse(dateString);
+      } catch (e) {
+        print('Error parsing date string: $dateString');
+        return null;
+      }
+    }).toList();
+
+    print(dates);
+
+    // Check if any dates were successfully parsed
+
+    for (DateTime? date in dates) {
+      if (date != null) {
+        String dayName = DateFormat('EEEE').format(date);
+        dayNames.add(dayName);
+      }
+    }
+    print("DatesAndDays");
+    print(dayNames);
+    return dayNames;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -349,8 +454,8 @@ class _SwipableFourColumnWidgetState extends State<SwipableFourColumnWidget> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
-                'Time Slot',
+              Text(
+                'timeSlot'.tr,
                 style: TextStyle(
                   fontSize: 14.0,
                   fontWeight: FontWeight.bold,
@@ -369,26 +474,63 @@ class _SwipableFourColumnWidgetState extends State<SwipableFourColumnWidget> {
           const SizedBox(width: 16.0),
           Expanded(
             child: PageView.builder(
-              itemCount: daysAndDates.length,
+              itemCount: datesOnly.length,
               itemBuilder: (context, pageIndex) {
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      daysAndDates[pageIndex],
+                      dayNames[pageIndex],
+                      style: const TextStyle(
+                        fontSize: 14.0,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(
+                      datesOnly[pageIndex],
                       style: const TextStyle(
                         fontSize: 14.0,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                     const SizedBox(height: 8.0),
-                    Text(
-                      'Available',
-                      style: TextStyle(
-                        fontSize: 14.0,
-                        color: availabilityStatus[pageIndex] == 'Available'
-                            ? Colors.green
-                            : Colors.red,
+                    // Text(
+                    //   'Available',
+                    //   style: TextStyle(
+                    //     fontSize: 14.0,
+                    //     color: availabilityStatus[pageIndex] == 'Available'
+                    //         ? Colors.green
+                    //         : Colors.red,
+                    //   ),
+                    // ),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.only(
+                            bottomLeft: Radius.circular(0.0),
+                          ),
+                        ),
+                        backgroundColor: Colors.white,
+                        side: const BorderSide(color: primaryColor),
+                        elevation: 0,
+                      ),
+                      onPressed: () async {
+                        if (selectedDates.length == 1) {
+                          selectedDates[0] = datesOnly[pageIndex];
+                        } else {
+                          selectedDates.add(datesOnly[pageIndex]);
+                        }
+                        print("New selected Date");
+                        print(selectedDates);
+                        SharedPreferences pref =
+                            await SharedPreferences.getInstance();
+                        pref.setString(
+                            "selectedData", selectedDates.toString());
+                        pref.getString("selectedDate");
+                      },
+                      child: Text(
+                        'available'.tr,
+                        style: TextStyle(color: primaryColor),
                       ),
                     ),
                   ],

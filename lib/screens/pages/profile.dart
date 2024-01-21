@@ -45,15 +45,23 @@ class ProfileState extends State<Profile> {
   String _qid = '';
   // String profilePicture = '';
   late File? _selectedImage;
-  bool _isLoading = false;
+  bool _isLoading = true;
   int currentIndex = 4;
   late Future<UserProfileData> _userProfileFuture;
+
+  bool _isLoadingData = true;
 
   @override
   void initState() {
     super.initState();
     _userProfileFuture = getUserProfileData();
+    Future.delayed(Duration(seconds: 2), () {
+      setState(() {
+        _isLoading = false;
+      });
+    });
   }
+  
 
   Future<UserProfileData> getUserProfileData() async {
     try {
@@ -169,7 +177,7 @@ class ProfileState extends State<Profile> {
           if (index == 3) {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) =>  Results()),
+              MaterialPageRoute(builder: (context) => Results()),
             );
           }
         },
@@ -236,7 +244,7 @@ class ProfileState extends State<Profile> {
           ),
         ],
       ),
-      body: SingleChildScrollView(
+      body: _isLoading ? LoaderWidget() : SingleChildScrollView(
         child: Container(
           width: MediaQuery.of(context).size.width,
           decoration: BoxDecoration(
@@ -446,52 +454,55 @@ class ProfileInfoRow extends StatelessWidget {
     return FutureBuilder<String>(
       future: value,
       builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return Container();
-        } else if (snapshot.hasError) {
-          return Text('Error: ${snapshot.error}');
-        } else {
-          return Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Container(
-                    width: MediaQuery.of(context).size.width * 0.50,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                      ),
-                      child: Text(
-                        label,
-                        style: const TextStyle(
-                          color: Colors.grey,
-                          fontSize: 13,
+        if (snapshot.connectionState == ConnectionState.done) {
+          if (snapshot.hasError) {
+            return Text('Error: ${snapshot.error}');
+          } else {
+            return Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Container(
+                      width: MediaQuery.of(context).size.width * 0.50,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
                         ),
-                      ),
-                    ),
-                  ),
-                  Container(
-                    width: MediaQuery.of(context).size.width * 0.50,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                      ),
-                      child: Directionality(
-                        textDirection: TextDirection.ltr,
                         child: Text(
-                          snapshot.data ?? '',
+                          label,
                           style: const TextStyle(
+                            color: Colors.grey,
                             fontSize: 13,
                           ),
                         ),
                       ),
                     ),
-                  ),
-                ],
-              ),
-            ],
-          );
+                    Container(
+                      width: MediaQuery.of(context).size.width * 0.50,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                        ),
+                        child: Directionality(
+                          textDirection: TextDirection.ltr,
+                          child: Text(
+                            snapshot.data ?? '',
+                            style: const TextStyle(
+                              fontSize: 13,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            );
+          }
+        } else {
+          // Still loading
+          return Container();
         }
       },
     );

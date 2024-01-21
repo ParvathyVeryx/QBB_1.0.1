@@ -1,19 +1,24 @@
 import 'dart:convert';
 import 'package:QBB/screens/pages/erorr_popup.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 Future<void> callUserProfileAPI(
     BuildContext context, String email, int maritalId) async {
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+  String qid = prefs.getString("userQID").toString();
+  var lang = 'langChange'.tr;
   final String apiUrl =
       "https://participantportal-test.qatarbiobank.org.qa/QbbAPIS/api/UserProfileAPI";
 
   final Map<String, dynamic> requestBody = {
     "QID":
-        "28900498437", // Assuming this value is constant, if not, pass it as a parameter as well
+        "$qid", // Assuming this value is constant, if not, pass it as a parameter as well
     "Email": email,
     "MaritalId": maritalId,
-    "language": "en",
+    "language": "$lang",
   };
 
   final Map<String, String> headers = {

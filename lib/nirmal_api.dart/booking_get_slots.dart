@@ -4,6 +4,7 @@ import 'package:QBB/screens/api/userid.dart';
 import 'package:QBB/screens/pages/book_appointment_date_slot.dart';
 import 'package:QBB/screens/pages/erorr_popup.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -62,7 +63,7 @@ Future<void> bookAppointmentApiCall(
     'PersonGradeId': personGradeId,
     'VisitName': visitTypeName,
     'page': '1',
-    'language': 'en',
+    'language': 'langChange'.tr,
   };
 
   print('Study Parameters:');
@@ -75,10 +76,22 @@ Future<void> bookAppointmentApiCall(
   print('page: ${queryParams['page']}');
   print('language: ${queryParams['language']}');
 
-  final Uri uri = Uri.parse(
-      '$apiUrl?qatarid=${queryParams['qatarid']}&StudyId=${queryParams['StudyId']}&Pregnant=${queryParams['Pregnant']}&VisitTypeId=${queryParams['VisitTypeId']}&PersonGradeId=${queryParams['PersonGradeId']}&VisitName=${queryParams['VisitName']}&page=${queryParams['page']}&language=${queryParams['language']}');
+  final Uri urinew = Uri.parse(
+      "https://participantportal-test.qatarbiobank.org.qa/QbbAPIS/api/GetReasonForCancelAppoinmentAPI?language=en");
   SharedPreferences pref = await SharedPreferences.getInstance();
   String? token = pref.getString('token');
+  final responsen = await http.get(
+    urinew,
+    headers: {
+      'Authorization': 'Bearer ${token?.replaceAll('"', '')}',
+      'Content-Type': 'application/json',
+    },
+  );
+  print('gg1234' + responsen.body.toString());
+  final Uri uri = Uri.parse(
+      '$apiUrl?qatarid=${queryParams['qatarid']}&StudyId=${queryParams['StudyId']}&Pregnant=${queryParams['Pregnant']}&VisitTypeId=${queryParams['VisitTypeId']}&PersonGradeId=${queryParams['PersonGradeId']}&VisitName=${queryParams['VisitName']}&page=${queryParams['page']}&language=${queryParams['language']}');
+  // SharedPreferences pref = await SharedPreferences.getInstance();
+  // String? token = pref.getString('token');
   try {
     final response = await http.get(
       uri,
@@ -97,6 +110,30 @@ Future<void> bookAppointmentApiCall(
 
       // Save the API response in shared preferences
       pref.setString('apiResponse', json.encode(jsonResponse));
+      pref.setString("availableDates", json.encode(jsonResponse['datelist']));
+      print('Available Dates' + pref.getString("availableDates").toString());
+
+      String? jsonString = pref.getString("availableDates");
+
+// Check if the jsonString is not null
+      if (jsonString != null) {
+        // Use json.decode to parse the jsonString
+        dynamic decodedData = json.decode(jsonString);
+
+        // Check if the decodedData is a List
+        if (decodedData is List) {
+          // Now you can use the data as a List
+          List<String> availableDates = List<String>.from(decodedData);
+
+          // Use the 'availableDates' list as needed
+          print("Decoded List");
+          print(availableDates);
+        } else {
+          print("Decoded data is not a List");
+        }
+      } else {
+        print("No data found in SharedPreferences for 'availableDates'");
+      }
 
       // Now, navigate to the AppointmentBookingPage
       Navigator.push(

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -8,6 +9,9 @@ Future<String?> getAuthToken() async {
 }
 
 Future<void> bookAppointmentApiCall() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  String qid = prefs.getString("userQID").toString();
+  var lang = 'langChange'.tr;
   final String apiUrl =
       'https://participantportal-test.qatarbiobank.org.qa/QbbAPIS/api/BookAppointmentAPI';
 
@@ -20,26 +24,26 @@ Future<void> bookAppointmentApiCall() async {
   }
 
   final Map<String, dynamic> requestBody = {
-    "qatarid": "28900498437",
+    "qatarid": "$qid",
     "StudyId": "10",
     "ShiftCode": null,
     "VisitTypeId": "72",
     "PersonGradeId": null,
     "AvailabilityCalenderId": null,
     "AppoinmentId": "",
-    "language": "en",
+    "language": "$lang",
     "AppointmentTypeId": null,
   };
 
   final Map<String, String> queryParams = {
-    "qatarid": "28900498437",
+    "qatarid": "$qid",
     "StudyId": "10",
     "ShiftCode": "",
     "VisitTypeId": "72",
     "PersonGradeId": "",
     "AvailabilityCalenderId": "",
     "AppoinmentId": "",
-    "language": "en",
+    "language": "$lang",
     "AppointmentTypeId": "",
   };
 

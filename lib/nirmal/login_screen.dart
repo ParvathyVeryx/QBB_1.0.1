@@ -289,6 +289,8 @@ class _LoginPageState extends State<LoginPage> {
                                               255, 173, 173, 173),
                                           validator: (value) {
                                             if (value!.isEmpty) {
+                                              print('Checking Lang' +
+                                                  'pleaseEnterValidQatarID'.tr);
                                               validated = !validated;
                                               return 'pleaseEnterValidQatarID'
                                                   .tr;
@@ -306,9 +308,12 @@ class _LoginPageState extends State<LoginPage> {
                                           labelTextColor: const Color.fromARGB(
                                               255, 173, 173, 173),
                                           validator: (value) {
-                                            print('Print error !!!!!!!!!!!!' + value!);
+                                            print('Print error !!!!!!!!!!!!' +
+                                                value!);
                                             if (value!.isEmpty) {
-                                              print('Print error !!!!!!!!!!!!33333333333333333333333333' + value);
+                                              print(
+                                                  'Print error !!!!!!!!!!!!33333333333333333333333333' +
+                                                      value);
                                               setState(() {
                                                 passwordErrorText =
                                                     'thePasswordCannotBeEmpty'
@@ -316,7 +321,7 @@ class _LoginPageState extends State<LoginPage> {
                                               });
                                               return passwordErrorText;
                                             }
-                                            
+
                                             return null;
                                           },
 

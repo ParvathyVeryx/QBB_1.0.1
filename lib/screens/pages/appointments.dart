@@ -4,6 +4,7 @@ import 'package:QBB/screens/pages/book_appintment_nk.dart';
 import 'package:QBB/screens/pages/completed.dart';
 import 'package:QBB/screens/pages/profile.dart';
 import 'package:QBB/screens/pages/results.dart';
+import 'package:QBB/screens/pages/upcoming.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -22,6 +23,7 @@ class Appointments extends StatefulWidget {
 class AppointmentsState extends State<Appointments> {
   List<Map<String, dynamic>> allAppointments = [];
   List<Map<String, dynamic>> completedAppointments = [];
+  List<Map<String, dynamic>> upcoming = [];
   int currentIndex = 1;
   @override
   void initState() {
@@ -46,9 +48,7 @@ class AppointmentsState extends State<Appointments> {
                 appointment['AppoinmentStatus'] is int &&
                 appointment['AppoinmentStatus'] == 4)
             .toList();
-        
-        print('completed Appointments: $completedAppointments');
-      });
+              });
     } catch (error) {
       // Handle errors, e.g., show an error message.
       print('Error fetching appointments: $error');
@@ -229,14 +229,18 @@ class AppointmentsState extends State<Appointments> {
           body: TabBarView(
             children: [
               // Content of Tab 1
-              SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.9,
-                  child: Center(
-                      child: Text(
-                    "thereAreNoAppointments".tr,
-                    style: TextStyle(fontSize: 18),
-                  ))),
-
+              // SizedBox(
+              //     height: MediaQuery.of(context).size.height * 0.9,
+              //     child: 
+              //     Center(
+              //         child: Text(
+              //       "thereAreNoAppointments".tr,
+              //       style: TextStyle(fontSize: 18),
+              //     ))
+              //     ),
+ Upcoming(
+                  UpcomingAppointments: upcoming,
+                ),
               // Content of Tab 2
               SizedBox(
                 height: MediaQuery.of(context).size.height * 0.9,
