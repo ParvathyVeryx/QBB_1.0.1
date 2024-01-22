@@ -19,6 +19,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'appointments.dart';
 import 'book_appintment_nk.dart';
 import 'homescreen_nk.dart';
+import 'notification.dart';
 
 class UserProfileData {
   String userName = '';
@@ -61,7 +62,6 @@ class ProfileState extends State<Profile> {
       });
     });
   }
-  
 
   Future<UserProfileData> getUserProfileData() async {
     try {
@@ -134,7 +134,12 @@ class ProfileState extends State<Profile> {
               ),
             ),
             IconButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => NotificationScreen()),
+                );
+              },
               icon: const Icon(Icons.notifications_none_outlined),
               iconSize: 30.0,
               color: Colors.white,
@@ -244,185 +249,190 @@ class ProfileState extends State<Profile> {
           ),
         ],
       ),
-      body: _isLoading ? LoaderWidget() : SingleChildScrollView(
-        child: Container(
-          width: MediaQuery.of(context).size.width,
-          decoration: BoxDecoration(
-            gradient: const LinearGradient(
-              colors: [Colors.deepPurple, Colors.white],
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              stops: [0.150, 0.150],
-            ),
-            borderRadius: BorderRadius.circular(0),
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Stack(
-                children: [
-                  CircleAvatar(
-                    radius: 50,
-                    backgroundImage: profilePicture.isNotEmpty
-                        ? _getImageProvider(profilePicture)
-                        : const AssetImage('assets/images/user.png'),
+      body: _isLoading
+          ? LoaderWidget()
+          : SingleChildScrollView(
+              child: Container(
+                width: MediaQuery.of(context).size.width,
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                    colors: [Colors.deepPurple, Colors.white],
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    stops: [0.150, 0.150],
                   ),
-                  Positioned(
-                    bottom: 0,
-                    right: 0,
-                    child: Container(
-                      height: 35,
-                      width: 35,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        border: Border.all(
-                          color: primaryColor,
-                          width: 1.0,
+                  borderRadius: BorderRadius.circular(0),
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Stack(
+                      children: [
+                        CircleAvatar(
+                          radius: 50,
+                          backgroundImage: profilePicture.isNotEmpty
+                              ? _getImageProvider(profilePicture)
+                              : const AssetImage('assets/images/user.png'),
                         ),
-                        color: primaryColor,
-                      ),
-                      child: Center(
-                        child: IconButton(
-                          icon: const Icon(
-                            Icons.camera_alt,
-                            color: Colors.white,
-                            size: 20,
+                        Positioned(
+                          bottom: 0,
+                          right: 0,
+                          child: Container(
+                            height: 35,
+                            width: 35,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              border: Border.all(
+                                color: primaryColor,
+                                width: 1.0,
+                              ),
+                              color: primaryColor,
+                            ),
+                            child: Center(
+                              child: IconButton(
+                                icon: const Icon(
+                                  Icons.camera_alt,
+                                  color: Colors.white,
+                                  size: 20,
+                                ),
+                                onPressed: () async {
+                                  final pickedImage = await ImagePicker()
+                                      .pickImage(source: ImageSource.gallery);
+                                  if (pickedImage != null) {
+                                    setState(() {
+                                      _selectedImage = File(pickedImage.path);
+                                    });
+                                    await uploadUserProfilePhoto(
+                                        _qid, _selectedImage!);
+                                  }
+                                },
+                              ),
+                            ),
                           ),
-                          onPressed: () async {
-                            final pickedImage = await ImagePicker()
-                                .pickImage(source: ImageSource.gallery);
-                            if (pickedImage != null) {
-                              setState(() {
-                                _selectedImage = File(pickedImage.path);
-                              });
-                              await uploadUserProfilePhoto(
-                                  _qid, _selectedImage!);
-                            }
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 30),
+                    ProfileInfoRow(
+                      label: 'fullName'.tr,
+                      value: _userProfileFuture
+                          .then((userProfileData) => userProfileData.userName),
+                    ),
+                    const SizedBox(height: 10),
+                    const PinkDivider(),
+                    const SizedBox(height: 10),
+                    ProfileInfoRow(
+                      label: 'mobile'.tr,
+                      value: _userProfileFuture
+                          .then((userProfileData) => userProfileData.mobile),
+                    ),
+                    const SizedBox(height: 10),
+                    const PinkDivider(),
+                    const SizedBox(height: 10),
+                    ProfileInfoRow(
+                      label: 'qid'.tr,
+                      value: _userProfileFuture
+                          .then((userProfileData) => userProfileData.qid),
+                    ),
+                    const SizedBox(height: 10),
+                    const PinkDivider(),
+                    const SizedBox(height: 10),
+                    ProfileInfoRow(
+                      label: 'gender'.tr,
+                      value: _userProfileFuture
+                          .then((userProfileData) => userProfileData.gender),
+                    ),
+                    const SizedBox(height: 10),
+                    const PinkDivider(),
+                    const SizedBox(height: 10),
+                    ProfileInfoRow(
+                      label: 'healthCardNo'.tr,
+                      value: _userProfileFuture
+                          .then((userProfileData) => userProfileData.hCNo),
+                    ),
+                    const SizedBox(height: 10),
+                    const PinkDivider(),
+                    const SizedBox(height: 10),
+                    ProfileInfoRow(
+                      label: 'dateOfBirth'.tr,
+                      value: _userProfileFuture
+                          .then((userProfileData) => userProfileData.dateOnly),
+                    ),
+                    const SizedBox(height: 10),
+                    const PinkDivider(),
+                    const SizedBox(height: 10),
+                    ProfileInfoRow(
+                      label: 'nationality'.tr,
+                      value: _userProfileFuture.then(
+                          (userProfileData) => userProfileData.nationality),
+                    ),
+                    const SizedBox(height: 10),
+                    const PinkDivider(),
+                    const SizedBox(height: 10),
+                    ProfileInfoRow(
+                      label: 'email'.tr,
+                      value: _userProfileFuture
+                          .then((userProfileData) => userProfileData.email),
+                    ),
+                    const SizedBox(height: 10),
+                    const PinkDivider(),
+                    const SizedBox(height: 10),
+                    ProfileInfoRow(
+                      label: 'maritalStatus'.tr,
+                      value: _userProfileFuture.then(
+                          (userProfileData) => userProfileData.maritalStatus),
+                    ),
+                    const SizedBox(height: 10),
+                    const PinkDivider(),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(15.0, 5.0, 15, 5),
+                      child: SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => EditUser(
+                                  emailFuture: _userProfileFuture.then(
+                                      (userProfileData) =>
+                                          userProfileData.email),
+                                ),
+                              ),
+                            );
                           },
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(height: 30),
-              ProfileInfoRow(
-                label: 'fullName'.tr,
-                value: _userProfileFuture
-                    .then((userProfileData) => userProfileData.userName),
-              ),
-              const SizedBox(height: 10),
-              const PinkDivider(),
-              const SizedBox(height: 10),
-              ProfileInfoRow(
-                label: 'mobile'.tr,
-                value: _userProfileFuture
-                    .then((userProfileData) => userProfileData.mobile),
-              ),
-              const SizedBox(height: 10),
-              const PinkDivider(),
-              const SizedBox(height: 10),
-              ProfileInfoRow(
-                label: 'qid'.tr,
-                value: _userProfileFuture
-                    .then((userProfileData) => userProfileData.qid),
-              ),
-              const SizedBox(height: 10),
-              const PinkDivider(),
-              const SizedBox(height: 10),
-              ProfileInfoRow(
-                label: 'gender'.tr,
-                value: _userProfileFuture
-                    .then((userProfileData) => userProfileData.gender),
-              ),
-              const SizedBox(height: 10),
-              const PinkDivider(),
-              const SizedBox(height: 10),
-              ProfileInfoRow(
-                label: 'healthCardNo'.tr,
-                value: _userProfileFuture
-                    .then((userProfileData) => userProfileData.hCNo),
-              ),
-              const SizedBox(height: 10),
-              const PinkDivider(),
-              const SizedBox(height: 10),
-              ProfileInfoRow(
-                label: 'dateOfBirth'.tr,
-                value: _userProfileFuture
-                    .then((userProfileData) => userProfileData.dateOnly),
-              ),
-              const SizedBox(height: 10),
-              const PinkDivider(),
-              const SizedBox(height: 10),
-              ProfileInfoRow(
-                label: 'nationality'.tr,
-                value: _userProfileFuture
-                    .then((userProfileData) => userProfileData.nationality),
-              ),
-              const SizedBox(height: 10),
-              const PinkDivider(),
-              const SizedBox(height: 10),
-              ProfileInfoRow(
-                label: 'email'.tr,
-                value: _userProfileFuture
-                    .then((userProfileData) => userProfileData.email),
-              ),
-              const SizedBox(height: 10),
-              const PinkDivider(),
-              const SizedBox(height: 10),
-              ProfileInfoRow(
-                label: 'maritalStatus'.tr,
-                value: _userProfileFuture
-                    .then((userProfileData) => userProfileData.maritalStatus),
-              ),
-              const SizedBox(height: 10),
-              const PinkDivider(),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(15.0, 5.0, 15, 5),
-                child: SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => EditUser(
-                            emailFuture: _userProfileFuture.then(
-                                (userProfileData) => userProfileData.email),
+                          style: ButtonStyle(
+                            shape: MaterialStateProperty.all<
+                                RoundedRectangleBorder>(
+                              const RoundedRectangleBorder(
+                                borderRadius: BorderRadius.only(
+                                  bottomLeft: Radius.circular(12.0),
+                                ),
+                                side: BorderSide(
+                                  color: secondaryColor,
+                                  width: 1.0,
+                                ),
+                              ),
+                            ),
                           ),
-                        ),
-                      );
-                    },
-                    style: ButtonStyle(
-                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                        const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.only(
-                            bottomLeft: Radius.circular(12.0),
-                          ),
-                          side: BorderSide(
-                            color: secondaryColor,
-                            width: 1.0,
+                          child: Padding(
+                            padding:
+                                const EdgeInsets.fromLTRB(3.0, 8.0, 3.0, 8.0),
+                            child: Text(
+                              'settingsPageProfile'.tr,
+                              style: const TextStyle(
+                                color: secondaryColor,
+                                fontSize: 13,
+                              ),
+                            ),
                           ),
                         ),
                       ),
                     ),
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(3.0, 8.0, 3.0, 8.0),
-                      child: Text(
-                        'settingsPageProfile'.tr,
-                        style: const TextStyle(
-                          color: secondaryColor,
-                          fontSize: 13,
-                        ),
-                      ),
-                    ),
-                  ),
+                    const PinkDivider(),
+                  ],
                 ),
               ),
-              const PinkDivider(),
-            ],
-          ),
-        ),
-      ),
+            ),
     );
   }
 }

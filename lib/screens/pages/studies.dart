@@ -206,7 +206,6 @@ class StudiesState extends State<Studies> {
           ),
           backgroundColor: appbar,
         ),
-
         body: RefreshIndicator(
           onRefresh: () => refreshPage(),
           child: FutureBuilder<List<Study>>(

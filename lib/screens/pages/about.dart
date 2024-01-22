@@ -24,7 +24,6 @@ class AboutUsState extends State<AboutUs> {
             title: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                
                 Padding(
                   padding: const EdgeInsets.only(bottom: 10.0),
                   child: Image.asset(
@@ -37,7 +36,7 @@ class AboutUsState extends State<AboutUs> {
                 // SizedBox(
                 //   width: 50.0,
                 // ),
-                 Text(
+                Text(
                   'aboutUs'.tr,
                   style: TextStyle(
                     color: Colors.white,

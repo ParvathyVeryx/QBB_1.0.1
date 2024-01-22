@@ -56,7 +56,6 @@ class BookAppointmentsState extends State<BookAppointments> {
   Future<void> fetchStudyMasterAPI() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     var setLang = 'langChange'.tr;
-    
 
     final String apiUrl =
         'https://participantportal-test.qatarbiobank.org.qa/QbbAPIS/api/StudyMasterAPI';

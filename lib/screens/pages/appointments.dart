@@ -12,6 +12,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../constants.dart';
 import '../../sidebar.dart';
 import 'homescreen_nk.dart';
+import 'notification.dart';
 
 class Appointments extends StatefulWidget {
   const Appointments({super.key});
@@ -48,7 +49,7 @@ class AppointmentsState extends State<Appointments> {
                 appointment['AppoinmentStatus'] is int &&
                 appointment['AppoinmentStatus'] == 4)
             .toList();
-              });
+      });
     } catch (error) {
       // Handle errors, e.g., show an error message.
       print('Error fetching appointments: $error');
@@ -91,7 +92,13 @@ class AppointmentsState extends State<Appointments> {
                 //   width: 50.0,
                 // ),
                 IconButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => NotificationScreen()),
+                    );
+                  },
                   icon: const Icon(Icons.notifications_none_outlined),
                   iconSize: 30.0,
                   color: textcolor,
@@ -231,16 +238,16 @@ class AppointmentsState extends State<Appointments> {
               // Content of Tab 1
               // SizedBox(
               //     height: MediaQuery.of(context).size.height * 0.9,
-              //     child: 
+              //     child:
               //     Center(
               //         child: Text(
               //       "thereAreNoAppointments".tr,
               //       style: TextStyle(fontSize: 18),
               //     ))
               //     ),
- Upcoming(
-                  UpcomingAppointments: upcoming,
-                ),
+              Upcoming(
+                UpcomingAppointments: upcoming,
+              ),
               // Content of Tab 2
               SizedBox(
                 height: MediaQuery.of(context).size.height * 0.9,

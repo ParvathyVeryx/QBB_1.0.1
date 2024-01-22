@@ -61,8 +61,7 @@ class AllAppointmentsState extends State<AllAppointments> {
         return allAppointments;
       } else {
         // Handle errors
-        print('Error: ${response.statusCode}');
-        print('Response: ${response.body}');
+
         return []; // Return an empty list in case of an error
       }
     } catch (e, stackTrace) {
@@ -200,8 +199,14 @@ class AllAppointmentsState extends State<AllAppointments> {
                                                       "4"
                                                   ? "completed".tr
                                                   : appointment['AppoinmentStatus']
-                                                          .toString() ==
-                                                      "1" ? 'upcoming'.tr : 'cancelled'.tr,
+                                                              .toString() ==
+                                                          "1"
+                                                      ? 'upcoming'.tr
+                                                      : appointment['AppoinmentStatus']
+                                                                  .toString() ==
+                                                              "10"
+                                                          ? 'noShow'.tr
+                                                          : 'cancelled'.tr,
                                               style: TextStyle(
                                                 color: Color.fromARGB(
                                                     255, 255, 255, 255),

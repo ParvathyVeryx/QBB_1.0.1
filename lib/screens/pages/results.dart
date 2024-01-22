@@ -15,6 +15,7 @@ import 'package:http/http.dart' as http;
 import '../../sidebar.dart';
 import 'book_appintment_nk.dart';
 import 'homescreen_nk.dart';
+import 'notification.dart';
 import 'profile.dart';
 
 class Results extends StatefulWidget {
@@ -58,9 +59,9 @@ class ResultsState extends State<Results> {
           'Authorization': 'Bearer ${token.replaceAll('"', '')}',
         },
       );
-        // SharedPreferences prefs = await SharedPreferences.getInstance();
-  // String qid = prefs.getString("userQID").toString();
-  // var lang = 'langChange'.tr;
+      // SharedPreferences prefs = await SharedPreferences.getInstance();
+      // String qid = prefs.getString("userQID").toString();
+      // var lang = 'langChange'.tr;
 
       String apiUrlN =
           'https://participantportal-test.qatarbiobank.org.qa/QbbAPIS/api/GetNotificationsAPI?QID=$qid&language=$lang';
@@ -161,7 +162,13 @@ class ResultsState extends State<Results> {
                   //   width: 50.0,
                   // ),
                   IconButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => NotificationScreen()),
+                      );
+                    },
                     icon: const Icon(Icons.notifications_none_outlined),
                     iconSize: 30.0,
                     color: textcolor,
@@ -512,7 +519,28 @@ class ResultsState extends State<Results> {
                                             MainAxisAlignment.center,
                                         children: [
                                           ElevatedButton(
-                                            onPressed: () {},
+                                            onPressed: () {
+                                              showDialog(
+                                                context: context,
+                                                builder:
+                                                    (BuildContext context) {
+                                                  return AlertDialog(
+                                                    title: Text('Alert'),
+                                                    content: Text(
+                                                        'No Slots Available. Please contact QBB'),
+                                                    actions: [
+                                                      ElevatedButton(
+                                                        onPressed: () {
+                                                          Navigator.pop(
+                                                              context); // Close the dialog
+                                                        },
+                                                        child: Text('OK'),
+                                                      ),
+                                                    ],
+                                                  );
+                                                },
+                                              );
+                                            },
                                             style: ButtonStyle(
                                                 backgroundColor:
                                                     MaterialStateProperty.all<
@@ -544,7 +572,28 @@ class ResultsState extends State<Results> {
                                             width: 20,
                                           ),
                                           ElevatedButton(
-                                            onPressed: () {},
+                                            onPressed: () {
+                                              showDialog(
+                                                context: context,
+                                                builder:
+                                                    (BuildContext context) {
+                                                  return AlertDialog(
+                                                    title: Text('Alert'),
+                                                    content: Text(
+                                                        'Access to the results expired. Please contact QBB'),
+                                                    actions: [
+                                                      ElevatedButton(
+                                                        onPressed: () {
+                                                          Navigator.pop(
+                                                              context); // Close the dialog
+                                                        },
+                                                        child: Text('OK'),
+                                                      ),
+                                                    ],
+                                                  );
+                                                },
+                                              );
+                                            },
                                             style: ButtonStyle(
                                                 backgroundColor:
                                                     MaterialStateProperty.all<

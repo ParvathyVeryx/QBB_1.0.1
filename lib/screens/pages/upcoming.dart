@@ -266,6 +266,11 @@ class UpcomingState extends State<Upcoming> {
           } else {
             UpcomingAppointments = snapshot.data!;
           }
+          if (snapshot.data!.isEmpty) {
+            return SizedBox(
+                height: MediaQuery.of(context).size.height * 0.95,
+                child: const Center(child: Text("There are No Appoinments!")));
+          }
           return Scaffold(
             body: SingleChildScrollView(
               child: Padding(
