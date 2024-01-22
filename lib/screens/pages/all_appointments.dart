@@ -58,6 +58,7 @@ class AllAppointmentsState extends State<AllAppointments> {
         // Parse and handle the response body
         var responseBody = json.decode(response.body);
         allAppointments = List<Map<String, dynamic>>.from(responseBody);
+        // print("All Appointments" + allAppointments.toString());
         return allAppointments;
       } else {
         // Handle errors
@@ -109,7 +110,7 @@ class AllAppointmentsState extends State<AllAppointments> {
           if (snapshot.data!.length == 0) {
             return SizedBox(
                 height: MediaQuery.of(context).size.height * 0.95,
-                child: const Center(child: Text("There are No Appoinments!")));
+                child: Center(child: Text('thereAreNoAppointments'.tr)));
           }
           return Scaffold(
             body: SingleChildScrollView(

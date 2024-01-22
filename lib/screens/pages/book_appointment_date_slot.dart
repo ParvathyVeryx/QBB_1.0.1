@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:QBB/constants.dart';
+import 'package:QBB/screens/pages/appointments.dart';
 import 'package:QBB/screens/pages/loader.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -9,6 +10,8 @@ import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:http/http.dart' as http;
+
+import 'erorr_popup.dart';
 
 class AppointmentBookingPage extends StatefulWidget {
   const AppointmentBookingPage({
@@ -217,11 +220,20 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
         'Authorization': 'Bearer ${token.replaceAll('"', '')}',
       };
 
-      Map<String, dynamic> requestBody = {"mode": "raw", "raw": ""};
+      Map<String, dynamic> requestBody = {
+        "QID": '28935648781',
+        "StudyId": '10',
+        "ShiftCode": 'shft',
+        "VisitTypeId": '72',
+        "PersonGradeId": '4',
+        "AvailabilityCalenderId": '15486',
+        "language": "en",
+        "AppointmentTypeId": '1'
+      };
 
       // Construct the API URL
       Uri apiUrl = Uri.parse(
-          'https://participantportal-test.qatarbiobank.org.qa/QbbAPIS/api/BookResultAppointmentAPI?qatarid=28900498437&StudyId=10&ShiftCode&VisitTypeId=72&PersonGradeId&AvailabilityCalenderId&AppoinmentId=&language=en&AppointmentTypeId');
+          'https://participantportal-test.qatarbiobank.org.qa/QbbAPIS/api/BookAppointmentAPI');
 
       print('API URL: $apiUrl');
 
@@ -231,10 +243,34 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
       print(response.statusCode);
       print(response.body);
       if (response.statusCode == 200) {
+        showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text('Alert'),
+                content: Text(response.body),
+                actions: [
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => Appointments(),
+                        ),
+                      ); // Close the dialog
+                    },
+                    child: Text('OK'),
+                  ),
+                ],
+              );
+            });
         print("Appointment booked");
       } else {
-        print(response.statusCode);
-        print(response.body);
+        showDialog(
+            context: context, // Use the context of the current screen
+            builder: (BuildContext context) {
+              return ErrorPopup(errorMessage: response.body);
+            });
       }
     } catch (e) {
       print(e);

@@ -132,6 +132,12 @@ class ResultsState extends State<Results> {
             completedAppointments = snapshot.data!;
           }
 
+          if (snapshot.data!.length == 0) {
+            return SizedBox(
+                height: MediaQuery.of(context).size.height * 0.95,
+                child: const Center(child: Text("There are No Results!")));
+          }
+
           return Scaffold(
             appBar: AppBar(
               title: Row(
