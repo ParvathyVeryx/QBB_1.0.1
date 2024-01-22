@@ -94,6 +94,7 @@ class AllAppointmentsState extends State<AllAppointments> {
         //   // Display a loading indicator while waiting for the data
         //   return CircularProgressIndicator();
         // } else
+
         if (snapshot.hasError) {
           // Display an error message if an error occurs
           return Text('Error: ${snapshot.error}');
@@ -105,7 +106,11 @@ class AllAppointmentsState extends State<AllAppointments> {
           } else {
             completedAppointments = snapshot.data!;
           }
-
+          if (snapshot.data!.length == 0) {
+            return SizedBox(
+                height: MediaQuery.of(context).size.height * 0.95,
+                child: const Center(child: Text("There are No Appoinments!")));
+          }
           return Scaffold(
             body: SingleChildScrollView(
               child: Padding(

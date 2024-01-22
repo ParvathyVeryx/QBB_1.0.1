@@ -153,7 +153,7 @@ class sideMenuclass extends State<SideMenu> {
                 },
               ),
               const SizedBox(
-                height: 15.0,
+                height: 5.0,
               ),
               ListTile(
                 leading: Image.asset(
@@ -176,7 +176,7 @@ class sideMenuclass extends State<SideMenu> {
               // Add more DrawerListTile widgets as needed
 
               const SizedBox(
-                height: 15.0,
+                height: 5.0,
               ),
               ListTile(
                 leading: Image.asset(
@@ -197,7 +197,7 @@ class sideMenuclass extends State<SideMenu> {
                 },
               ),
               const SizedBox(
-                height: 15.0,
+                height: 5.0,
               ),
               ListTile(
                 leading: Image.asset(
@@ -221,7 +221,7 @@ class sideMenuclass extends State<SideMenu> {
                 },
               ),
               const SizedBox(
-                height: 15.0,
+                height: 5.0,
               ),
               ListTile(
                 leading: Image.asset(
@@ -242,7 +242,7 @@ class sideMenuclass extends State<SideMenu> {
                 },
               ),
               const SizedBox(
-                height: 15.0,
+                height: 5.0,
               ),
               ListTile(
                 leading: Image.asset(
@@ -265,7 +265,7 @@ class sideMenuclass extends State<SideMenu> {
                 },
               ),
               const SizedBox(
-                height: 15.0,
+                height: 5.0,
               ),
               ListTile(
                 leading: Image.asset(
@@ -411,7 +411,7 @@ class sideMenuclass extends State<SideMenu> {
                 },
               ),
               const SizedBox(
-                height: 15.0,
+                height: 5.0,
               ),
               ListTile(
                 leading: Image.asset(

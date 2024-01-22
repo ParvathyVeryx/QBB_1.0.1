@@ -429,6 +429,7 @@ class CompletedState extends State<Completed> {
     return FutureBuilder<List<Map<String, dynamic>>>(
       future: fetchData(),
       builder: (context, snapshot) {
+        
         if (snapshot.hasError) {
           // Display an error message if an error occurs
           return Text('Error: ${snapshot.error}');
@@ -439,6 +440,11 @@ class CompletedState extends State<Completed> {
             return LoaderWidget();
           } else {
             completedAppointments = snapshot.data!;
+          }
+          if (snapshot.data!.length == 0) {
+            return SizedBox(
+                height: MediaQuery.of(context).size.height * 0.95,
+                child: const Center(child: Text("There are No Appoinments!")));
           }
           return Scaffold(
             body: SingleChildScrollView(

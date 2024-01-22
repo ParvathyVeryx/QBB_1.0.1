@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:QBB/constants.dart';
@@ -7,6 +8,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:http/http.dart' as http;
 
 class AppointmentBookingPage extends StatefulWidget {
   const AppointmentBookingPage({
@@ -158,10 +160,12 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
     Future<String> selectedDateFromSlot() async {
       SharedPreferences pref = await SharedPreferences.getInstance();
       String selectedDate = pref.getString("selectedDate").toString();
+      pref.setString("selecetedDateFromCalendar", picked.toString());
+      pref.getString("selecetedDateFromCalendar");
       return selectedDate;
     }
 
-    if (picked != null && picked != _selectedDate && selectedDateFromSlot() == "null") {
+    if (picked != null && picked != _selectedDate) {
       setState(() {
         _selectedDate = picked;
         _dateController.text = '${picked.day}/${picked.month}/${picked.year}';
@@ -176,9 +180,65 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
     });
   }
 
+  String selectedSlot = '';
+  DateTime parseDate = DateTime.now();
+
   void _confirmAppointment() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
+    // String selectedSlot = pref.getString("selectDate").toString();
+    // DateTime parsedDateTime;
+    // selectedSlot == "null" ? "" : _selectedDate = DateTime.parse(selectedSlot);
+    Timer.periodic(Duration(seconds: 1), (timer) async {
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      selectedSlot = pref.getString("selectedDate").toString();
+      // parseDate = DateTime.parse(selectedSlot);
+    });
+
+    print('vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv' + selectedSlot);
+
+    selectedSlot == "null" ? _selectedDate : _selectedDate = _selectedDate;
     print('Appointment confirmed for $_selectedDate at $_selectedTimeSlot');
+    var lang = 'langChange'.tr;
+
+    // print('the device token is $deviceToken');
+
+    try {
+      // Retrieve the token from SharedPreferences
+      String? token = pref.getString('token');
+      print('Authtoken: $token');
+      if (token == null) {
+        // Handle the case where the token is not available
+        print('Token not found in SharedPreferences');
+        return;
+      }
+
+      // Construct headers with the retrieved token
+      Map<String, String> headers = {
+        'Authorization': 'Bearer ${token.replaceAll('"', '')}',
+      };
+
+      Map<String, dynamic> requestBody = {"mode": "raw", "raw": ""};
+
+      // Construct the API URL
+      Uri apiUrl = Uri.parse(
+          'https://participantportal-test.qatarbiobank.org.qa/QbbAPIS/api/BookResultAppointmentAPI?qatarid=28900498437&StudyId=10&ShiftCode&VisitTypeId=72&PersonGradeId&AvailabilityCalenderId&AppoinmentId=&language=en&AppointmentTypeId');
+
+      print('API URL: $apiUrl');
+
+      // Make the HTTP POST request
+      final response =
+          await http.post(apiUrl, headers: headers, body: requestBody);
+      print(response.statusCode);
+      print(response.body);
+      if (response.statusCode == 200) {
+        print("Appointment booked");
+      } else {
+        print(response.statusCode);
+        print(response.body);
+      }
+    } catch (e) {
+      print(e);
+    }
   }
 }
 
@@ -332,6 +392,7 @@ class _SwipableFourColumnWidgetState extends State<SwipableFourColumnWidget> {
     fetchApiResponseFromSharedPrefs();
     fetchAvailableDates();
     fetchAvailableDays();
+    pickedDate();
   }
 
   Future<void> fetchApiResponseFromSharedPrefs() async {
@@ -445,6 +506,28 @@ class _SwipableFourColumnWidgetState extends State<SwipableFourColumnWidget> {
     return dayNames;
   }
 
+  String calendarPickedDate = '';
+  DateTime? pickedDateParsed;
+
+  Future<DateTime?> pickedDate() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    calendarPickedDate = pref.getString("selecetedDateFromCalendar").toString();
+
+    try {
+      pickedDateParsed = calendarPickedDate != null
+          ? DateTime.parse(calendarPickedDate)
+          : null;
+    } catch (e) {
+      print("Error parsing date: $e");
+      pickedDateParsed =
+          null; // Handle the error by setting pickedDateParsed to null or provide a default value
+    }
+
+    print(pickedDateParsed.toString() +
+        "ffffffffffffffffffffffffffffffffffffffffffffff");
+    return pickedDateParsed;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -472,6 +555,8 @@ class _SwipableFourColumnWidgetState extends State<SwipableFourColumnWidget> {
             ],
           ),
           const SizedBox(width: 16.0),
+          // pickedDate().toString() == "null"
+          //     ?
           Expanded(
             child: PageView.builder(
               itemCount: datesOnly.length,
@@ -522,11 +607,15 @@ class _SwipableFourColumnWidgetState extends State<SwipableFourColumnWidget> {
                         }
                         print("New selected Date");
                         print(selectedDates);
+                        print(selectedDates.toString());
                         SharedPreferences pref =
                             await SharedPreferences.getInstance();
                         pref.setString(
                             "selectedData", selectedDates.toString());
-                        pref.getString("selectedDate");
+                        String prefval =
+                            pref.getString("selectedDate").toString();
+                        print("get");
+                        print(prefval ?? "Value is null");
                       },
                       child: Text(
                         'available'.tr,
@@ -537,7 +626,86 @@ class _SwipableFourColumnWidgetState extends State<SwipableFourColumnWidget> {
                 );
               },
             ),
-          ),
+          )
+          // : Expanded(
+          //     child: PageView.builder(
+          //       itemCount: 5,
+          //       itemBuilder: (context, pageIndex) {
+          //         return FutureBuilder<DateTime?>(
+          //           future: pickedDate(),
+          //           builder: (context, snapshot) {
+          //             DateTime? currentDate = pickedDateParsed != null
+          //                 ? pickedDateParsed
+          //                 : null;
+          //             DateTime? pickedDate = snapshot.data;
+
+          //             if (pickedDate != null &&
+          //                 currentDate!
+          //                     .isAfter(pickedDate.add(Duration(days: 5)))) {
+          //               // Skip dates that are more than 5 days ahead of the picked date
+          //               return SizedBox
+          //                   .shrink(); // Returns an empty SizedBox for dates beyond the limit
+          //             }
+
+          //             return Column(
+          //               crossAxisAlignment: CrossAxisAlignment.start,
+          //               children: [
+          //                 Text(
+          //                   dayNames[pageIndex],
+          //                   style: const TextStyle(
+          //                     fontSize: 14.0,
+          //                     fontWeight: FontWeight.bold,
+          //                   ),
+          //                 ),
+          //                 Text(
+          //                   datesOnly[pageIndex],
+          //                   style: const TextStyle(
+          //                     fontSize: 14.0,
+          //                     fontWeight: FontWeight.bold,
+          //                   ),
+          //                 ),
+          //                 const SizedBox(height: 8.0),
+          //                 ElevatedButton(
+          //                   style: ElevatedButton.styleFrom(
+          //                     shape: const RoundedRectangleBorder(
+          //                       borderRadius: BorderRadius.only(
+          //                         bottomLeft: Radius.circular(0.0),
+          //                       ),
+          //                     ),
+          //                     backgroundColor: Colors.white,
+          //                     side: const BorderSide(color: primaryColor),
+          //                     elevation: 0,
+          //                   ),
+          //                   onPressed: () async {
+          //                     if (selectedDates.length == 1) {
+          //                       selectedDates[0] = datesOnly[pageIndex];
+          //                     } else {
+          //                       selectedDates.add(datesOnly[pageIndex]);
+          //                     }
+          //                     print("New selected Date");
+          //                     print(selectedDates);
+          //                     SharedPreferences pref =
+          //                         await SharedPreferences.getInstance();
+          //                     pref.setString(
+          //                         "selectedData", selectedDates.toString());
+          //                     pref.getString("selectedDate");
+          //                     print("sleced date" +
+          //                         pref
+          //                             .getString("selectedDate")
+          //                             .toString());
+          //                   },
+          //                   child: Text(
+          //                     'available'.tr,
+          //                     style: TextStyle(color: primaryColor),
+          //                   ),
+          //                 ),
+          //               ],
+          //             );
+          //           },
+          //         );
+          //       },
+          //     ),
+          //   )
         ],
       ),
     );
