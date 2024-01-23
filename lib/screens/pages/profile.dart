@@ -46,7 +46,7 @@ class ProfileState extends State<Profile> {
   String _qid = '';
   // String profilePicture = '';
   late File? _selectedImage;
-  bool _isLoading = true;
+  bool _isLoading = false;
   int currentIndex = 4;
   late Future<UserProfileData> _userProfileFuture;
 
@@ -467,6 +467,9 @@ class ProfileInfoRow extends StatelessWidget {
         if (snapshot.connectionState == ConnectionState.done) {
           if (snapshot.hasError) {
             return Text('Error: ${snapshot.error}');
+          }
+          if (!snapshot.hasData) {
+            return LoaderWidget();
           } else {
             return Column(
               children: [
@@ -512,6 +515,7 @@ class ProfileInfoRow extends StatelessWidget {
           }
         } else {
           // Still loading
+          // return LoaderWidget();
           return Container();
         }
       },

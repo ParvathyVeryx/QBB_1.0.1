@@ -23,6 +23,7 @@ class ForgotPasswordState extends State<ForgotPassword> {
   String errorPwd = '';
   final TextEditingController _controller = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  bool isbuttonCLicked = false;
 
   @override
   void initState() {
@@ -76,7 +77,6 @@ class ForgotPasswordState extends State<ForgotPassword> {
                     return null;
                   },
                 ),
-                
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
