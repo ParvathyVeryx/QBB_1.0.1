@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:QBB/constants.dart';
 import 'package:QBB/nirmal_api.dart/appointments._api.dart';
+import 'package:QBB/nirmal_api.dart/booking_get_slots.dart';
 import 'package:QBB/screens/pages/appointments_data_extract.dart';
 import 'package:QBB/screens/pages/book_appintment_nk.dart';
 import 'package:QBB/screens/pages/erorr_popup.dart';
@@ -319,6 +320,9 @@ class UpcomingState extends State<Upcoming> {
     SharedPreferences pref = await SharedPreferences.getInstance();
     String qid = pref.getString("userQID").toString();
     String rescheduleId = pref.getString("rescheduleAppointmentID").toString();
+    String studyId = pref.getString("rescheduleStudyId").toString();
+    String visitTypeId = pref.getString("rescheduleVisitTypeID").toString();
+
     String rescheduleVisitType =
         pref.getString("rescheduleVisitType").toString();
     var lang = 'langChange'.tr;
@@ -363,9 +367,11 @@ class UpcomingState extends State<Upcoming> {
       print(response.statusCode);
       print(response.body);
       if (response.statusCode == 200) {
-        Navigator.push(
+        await bookAppointmentApiCall(
           context,
-          MaterialPageRoute(builder: (context) => BookAppointments()),
+          studyId,
+          visitTypeId,
+          rescheduleVisitType,
         );
       } else {
         showDialog(
@@ -915,6 +921,12 @@ class UpcomingState extends State<Upcoming> {
                                               pref.setString(
                                                   "rescheduleVisitType",
                                                   appointment['VisittypeName']);
+                                              pref.setString(
+                                                  "rescheduleVisitTypeID",
+                                                  appointment['VisitTypeId']);
+                                              pref.setString(
+                                                  "rescheduleStudyId",
+                                                  appointment['StudyId']);
                                               rescheduleAppointment();
                                             }
                                           },
