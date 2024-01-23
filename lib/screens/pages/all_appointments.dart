@@ -22,6 +22,8 @@ class AllAppointments extends StatefulWidget {
 
 class AllAppointmentsState extends State<AllAppointments> {
   List<Map<String, dynamic>> allAppointments = [];
+  String allCancelMsg = '';
+  List<String> cancelMessages = [];
   bool _isMounted = false;
   Future<List<Map<String, dynamic>>> fetchData() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
@@ -58,7 +60,16 @@ class AllAppointmentsState extends State<AllAppointments> {
         // Parse and handle the response body
         var responseBody = json.decode(response.body);
         allAppointments = List<Map<String, dynamic>>.from(responseBody);
-        // print("All Appointments" + allAppointments.toString());
+        allCancelMsg = allAppointments[0]["CancelExpiredMSG"];
+
+        print('ABGVCF' + allCancelMsg.toString());
+
+        cancelMessages = allAppointments
+            .map((appointment) => appointment["CancelExpiredMSG"])
+            .cast<String>()
+            .toList();
+        print("All Appointments" + allAppointments.toString());
+        print('ABGVCF' + cancelMessages.toString());
         return allAppointments;
       } else {
         // Handle errors
@@ -437,6 +448,120 @@ class AllAppointmentsState extends State<AllAppointments> {
                                           )
                                         ],
                                       ),
+                                      const SizedBox(
+                                        height: 20,
+                                      ),
+                                 appointment["AppoinmentStatus"] == 10 ?     Center(
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            SizedBox(
+                                              width: 150,
+                                              child: ElevatedButton(
+                                                style: ElevatedButton.styleFrom(
+                                                  shape:
+                                                      const RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.only(
+                                                      bottomLeft:
+                                                          Radius.circular(20.0),
+                                                    ),
+                                                  ),
+                                                  backgroundColor: Colors.white,
+                                                  side: const BorderSide(
+                                                      color: Colors.deepPurple),
+                                                  elevation: 0,
+                                                ),
+                                                onPressed: () async {
+                                                  if (appointment[
+                                                          'CancelExpiredMSG'] !=
+                                                      null) {
+                                                    showDialog(
+                                                        context: context,
+                                                        builder: (BuildContext
+                                                            context) {
+                                                          return AlertDialog(
+                                                            title: Text(''),
+                                                            content: Text(
+                                                                appointment[
+                                                                    'CancelExpiredMSG']),
+                                                            actions: [
+                                                              ElevatedButton(
+                                                                onPressed: () {
+                                                                  Navigator.pop(
+                                                                      context); // Close the dialog
+                                                                },
+                                                                child:
+                                                                    Text('OK'),
+                                                              ),
+                                                            ],
+                                                          );
+                                                        });
+                                                  }
+                                                },
+                                                child: Text(
+                                                  'cancelButton'.tr,
+                                                  style: TextStyle(
+                                                      color: Colors.deepPurple),
+                                                ),
+                                              ),
+                                            ),
+                                            const SizedBox(width: 16.0),
+                                            SizedBox(
+                                              width: 150,
+                                              child: ElevatedButton(
+                                                style: ElevatedButton.styleFrom(
+                                                  shape:
+                                                      const RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.only(
+                                                      bottomLeft:
+                                                          Radius.circular(20.0),
+                                                    ),
+                                                  ),
+                                                  backgroundColor: primaryColor,
+                                                  side: const BorderSide(
+                                                      color: Colors.black),
+                                                  elevation: 0,
+                                                ),
+                                                onPressed: () async {
+                                                  if (appointment[
+                                                          'ResultExpiredMSG'] !=
+                                                      null) {
+                                                    showDialog(
+                                                        context: context,
+                                                        builder: (BuildContext
+                                                            context) {
+                                                          return AlertDialog(
+                                                            title: Text(''),
+                                                            content: Text(
+                                                                appointment[
+                                                                    'ResultExpiredMSG']),
+                                                            actions: [
+                                                              ElevatedButton(
+                                                                onPressed: () {
+                                                                  Navigator.pop(
+                                                                      context); // Close the dialog
+                                                                },
+                                                                child:
+                                                                    Text('OK'),
+                                                              ),
+                                                            ],
+                                                          );
+                                                        });
+                                                  }
+                                                },
+                                                child: Text(
+                                                  'Reschedule',
+                                                  style: TextStyle(
+                                                      color: Colors.white),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ) : Container()
                                     ],
                                   ),
                                 ),

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:QBB/constants.dart';
 import 'package:QBB/nirmal_api.dart/appointments._api.dart';
 import 'package:QBB/screens/pages/appointments_data_extract.dart';
+import 'package:QBB/screens/pages/book_appintment_nk.dart';
 import 'package:QBB/screens/pages/erorr_popup.dart';
 import 'package:QBB/screens/pages/loader.dart';
 import 'package:QBB/sidebar.dart';
@@ -11,6 +12,8 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
+
+import 'appointments.dart';
 
 class Upcoming extends StatefulWidget {
   final List<Map<String, dynamic>> UpcomingAppointments;
@@ -25,26 +28,12 @@ class Upcoming extends StatefulWidget {
 class UpcomingState extends State<Upcoming> {
   List<Map<String, dynamic>> allAppointments = [];
   List<Map<String, dynamic>> allUpcomingAppointments = [];
+  List<Map<String, dynamic>> allCancelMsg = [];
 
   Future<List<Map<String, dynamic>>> fetchData() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     var lang = 'langChange'.tr;
     String qid = pref.getString("userQID").toString();
-
-    // try {
-
-    //   var appointments = await viewAppointments('$qid', 1, '$lang');
-    //   // setState(() {
-    //   //   // Set all appointments
-    //   //   allAppointments = appointments;
-    //   // });
-    //   allAppointments = appointments;
-    //   return appointments;
-    // } catch (error) {
-    //   // Handle errors, e.g., show an error message.
-    //   print('Error fetching appointments: $error');
-    //   throw error; // Make sure to rethrow the error
-    // }
 
     try {
       // Get the token from shared preferences
@@ -245,6 +234,148 @@ class UpcomingState extends State<Upcoming> {
           );
         },
       );
+    }
+  }
+
+  void cancelAnAppointment() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+
+    String qid = pref.getString("userQID").toString();
+    var lang = 'langChange'.tr;
+    String selectedAppointmentId =
+        pref.getString("selectedAppointmentId").toString();
+    String selectedReason = pref.getString("selectedReason").toString();
+
+    // print('the device token is $deviceToken');
+
+    try {
+      // Retrieve the token from SharedPreferences
+      String? token = pref.getString('token');
+      print('Authtoken: $token');
+      if (token == null) {
+        // Handle the case where the token is not available
+        print('Token not found in SharedPreferences');
+        return;
+      }
+
+      // Construct headers with the retrieved token
+      Map<String, String> headers = {
+        'Authorization': 'Bearer ${token.replaceAll('"', '')}',
+      };
+
+      Map<String, dynamic> requestBody = {
+        "QID": '$qid',
+        "AppoinmentId": '$selectedAppointmentId',
+        "Reason": '$selectedReason',
+        "ReasonType": '0',
+      };
+
+      // Construct the API URL
+      Uri apiUrl = Uri.parse(
+          'https://participantportal-test.qatarbiobank.org.qa/QbbAPIS/api/CancelAppointmentAPI');
+
+      print('API URL: $apiUrl');
+
+      // Make the HTTP POST request
+      final response =
+          await http.post(apiUrl, headers: headers, body: requestBody);
+      print(response.statusCode);
+      print(response.body);
+      if (response.statusCode == 200) {
+        showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text('Alert'),
+                content: Text(response.body),
+                actions: [
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => Appointments(),
+                        ),
+                      ); // Close the dialog
+                    },
+                    child: Text('OK'),
+                  ),
+                ],
+              );
+            });
+      } else {
+        showDialog(
+            context: context, // Use the context of the current screen
+            builder: (BuildContext context) {
+              return ErrorPopup(errorMessage: response.body);
+            });
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  void rescheduleAppointment() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    String qid = pref.getString("userQID").toString();
+    String rescheduleId = pref.getString("rescheduleAppointmentID").toString();
+    String rescheduleVisitType =
+        pref.getString("rescheduleVisitType").toString();
+    var lang = 'langChange'.tr;
+
+    // print('the device token is $deviceToken');
+
+    try {
+      // Retrieve the token from SharedPreferences
+      String? token = pref.getString('token');
+      print('Authtoken: $token');
+      if (token == null) {
+        // Handle the case where the token is not available
+        print('Token not found in SharedPreferences');
+        return;
+      }
+
+      // Construct headers with the retrieved token
+      Map<String, String> headers = {
+        'Authorization': 'Bearer ${token.replaceAll('"', '')}',
+      };
+
+      Map<String, dynamic> requestBody = {
+        "QID": '$qid',
+        "StudyId": '10',
+        "ShiftCode": 'shft',
+        "VisitTypeId": '72',
+        "AvailabilityCalenderId": '15486',
+        "AppoinmentId": '$rescheduleId',
+        "language": "$lang",
+        "AppointmentTypeId": '1'
+      };
+
+      // Construct the API URL
+      Uri apiUrl = Uri.parse(
+          'https://participantportal-test.qatarbiobank.org.qa/QbbAPIS/api/BookAppointmentAPI');
+
+      print('API URL: $apiUrl');
+
+      // Make the HTTP POST request
+      final response =
+          await http.post(apiUrl, headers: headers, body: requestBody);
+      print(response.statusCode);
+      print(response.body);
+      if (response.statusCode == 200) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => BookAppointments()),
+        );
+      } else {
+        showDialog(
+            context: context, // Use the context of the current screen
+            builder: (BuildContext context) {
+              return ErrorPopup(errorMessage: response.body);
+            });
+      }
+    } catch (e) {
+      print(e);
     }
   }
 
@@ -587,240 +718,215 @@ class UpcomingState extends State<Upcoming> {
                                     ],
                                   ),
                                 ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    const SizedBox(
-                                      width: 20,
-                                    ),
-                                    ElevatedButton(
-                                      onPressed: () {
-                                        // Get the date from your appointment
-                                        DateTime appointmentDate =
-                                            dateExtract(appointment);
-
-                                        // Check if today's date is the same as the appointment date
-                                        if (isToday(appointmentDate)) {
-                                          // Show an alert dialog if the dates are the same
-                                          showDialog(
-                                            context: context,
-                                            builder: (BuildContext context) {
-                                              return AlertDialog(
-                                                title: Text('Alert'),
-                                                content: Text(
-                                                    'Couldn\'t cancel appointment. Please contact QBB'),
-                                                actions: [
-                                                  ElevatedButton(
-                                                    onPressed: () {
-                                                      Navigator.pop(
-                                                          context); // Close the dialog
-                                                    },
-                                                    child: Text('OK'),
-                                                  ),
-                                                ],
-                                              );
-                                            },
-                                          );
-                                        } else {
-                                          // Perform the cancel action if the dates are not the same
-                                          // For now, we are just printing a message
-                                          print('Cancel action');
-                                          // }
-                                          showDialog(
-                                            context: context,
-                                            builder: (context) {
-                                              return AlertDialog(
-                                                shape: CustomAlertDialogShape(
-                                                    bottomLeftRadius: 36.0),
-                                                title: Column(
-                                                  children: [
-                                                    Center(
-                                                        child: Text("",
-                                                            style: TextStyle(
-                                                                fontSize: 15,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w600))),
-                                                    SizedBox(
-                                                      height: 10,
-                                                    ),
-                                                    // Divider(),
-                                                  ],
-                                                ),
-                                                content: StatefulBuilder(
-                                                  builder: (BuildContext
-                                                          context,
-                                                      StateSetter setState) {
-                                                    return Column(
-                                                      mainAxisSize:
-                                                          MainAxisSize.min,
-                                                      children: [
-                                                        ...buildReasonRadioButtons()
-
-                                                        // ),
+                                const SizedBox(
+                                  height: 20,
+                                ),
+                                Center(
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      SizedBox(
+                                        width: 150,
+                                        child: ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                            shape: const RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.only(
+                                                bottomLeft:
+                                                    Radius.circular(20.0),
+                                              ),
+                                            ),
+                                            backgroundColor: Colors.white,
+                                            side: const BorderSide(
+                                                color: Colors.deepPurple),
+                                            elevation: 0,
+                                          ),
+                                          onPressed: () async {
+                                            if (appointment[
+                                                    'CancelExpiredMSG'] !=
+                                                null) {
+                                              showDialog(
+                                                  context: context,
+                                                  builder:
+                                                      (BuildContext context) {
+                                                    return AlertDialog(
+                                                      title: Text(''),
+                                                      content: Text(appointment[
+                                                          'CancelExpiredMSG']),
+                                                      actions: [
+                                                        ElevatedButton(
+                                                          onPressed: () {
+                                                            Navigator.pop(
+                                                                context); // Close the dialog
+                                                          },
+                                                          child: Text('OK'),
+                                                        ),
                                                       ],
                                                     );
-                                                  },
-                                                ),
-                                                actions: [
-                                                  Column(
-                                                    children: [
-                                                      Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .end,
+                                                  });
+                                            } else {
+                                              appointment["AppoinmentId"];
+                                              showDialog(
+                                                context: context,
+                                                builder: (context) {
+                                                  return AlertDialog(
+                                                    shape:
+                                                        CustomAlertDialogShape(
+                                                            bottomLeftRadius:
+                                                                36.0),
+                                                    title: Column(
+                                                      children: [
+                                                        Center(
+                                                            child: Text("",
+                                                                style: TextStyle(
+                                                                    fontSize:
+                                                                        15,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w600))),
+                                                        SizedBox(
+                                                          height: 10,
+                                                        ),
+                                                        // Divider(),
+                                                      ],
+                                                    ),
+                                                    content: StatefulBuilder(
+                                                      builder:
+                                                          (BuildContext context,
+                                                              StateSetter
+                                                                  setState) {
+                                                        return Column(
+                                                          mainAxisSize:
+                                                              MainAxisSize.min,
+                                                          children: [
+                                                            ...buildReasonRadioButtons()
+
+                                                            // ),
+                                                          ],
+                                                        );
+                                                      },
+                                                    ),
+                                                    actions: [
+                                                      Column(
                                                         children: [
-                                                          TextButton(
-                                                            onPressed:
-                                                                () async {
-                                                              // SharedPreferences prefs =
-                                                              //     await SharedPreferences.getInstance();
-                                                              // var selectedLanguagePref =
-                                                              //     prefs.getString('langEn').toString();
-                                                              // if (selectedLanguagePref == "false") {
-                                                              //   selectedLanguage = 'Arabic';
-                                                              // } else {
-                                                              //   selectedLanguage = 'English';
-                                                              // }
-                                                              Navigator.of(
-                                                                      context)
-                                                                  .pop(); // Close the dialog
-                                                            },
-                                                            child: Text(
-                                                                'cancelButton'
-                                                                    .tr),
-                                                          ),
-                                                          TextButton(
-                                                            onPressed:
-                                                                () async {
-                                                              cancelAppointment();
-                                                              // if (selectedLanguage.isNotEmpty) {
-                                                              //   SharedPreferences pref =
-                                                              //       await SharedPreferences
-                                                              //           .getInstance();
-                                                              //   pref.setString(
-                                                              //       "langEn",
-                                                              //       selectedLanguage == 'English'
-                                                              //           ? "true"
-                                                              //           : "false");
-
-                                                              //   updateLanguage(
-                                                              //       selectedLanguage == 'English'
-                                                              //           ? locale[0]['locale']
-                                                              //           : locale[1]['locale']);
-
-                                                              //   print(
-                                                              //       'Selected language: $selectedLanguage');
-                                                              //   Navigator.of(context)
-                                                              //       .pop(); // Close the dialog
-                                                              // } else {
-                                                              //   // Show an error or inform the user to select a language
-                                                              // }
-                                                            },
-                                                            child:
-                                                                Text('ok'.tr),
+                                                          Row(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .end,
+                                                            children: [
+                                                              TextButton(
+                                                                onPressed:
+                                                                    () async {
+                                                                  // SharedPreferences prefs =
+                                                                  //     await SharedPreferences.getInstance();
+                                                                  // var selectedLanguagePref =
+                                                                  //     prefs.getString('langEn').toString();
+                                                                  // if (selectedLanguagePref == "false") {
+                                                                  //   selectedLanguage = 'Arabic';
+                                                                  // } else {
+                                                                  //   selectedLanguage = 'English';
+                                                                  // }
+                                                                  Navigator.of(
+                                                                          context)
+                                                                      .pop(); // Close the dialog
+                                                                },
+                                                                child: Text(
+                                                                    'cancelButton'
+                                                                        .tr),
+                                                              ),
+                                                              TextButton(
+                                                                onPressed:
+                                                                    () async {
+                                                                  SharedPreferences
+                                                                      pref =
+                                                                      await SharedPreferences
+                                                                          .getInstance();
+                                                                  pref.setString(
+                                                                      "selectedAppointmentId",
+                                                                      appointment[
+                                                                          "AppoinmentId"]);
+                                                                  cancelAnAppointment();
+                                                                },
+                                                                child: Text(
+                                                                    'ok'.tr),
+                                                              ),
+                                                            ],
                                                           ),
                                                         ],
                                                       ),
                                                     ],
-                                                  ),
-                                                ],
+                                                  );
+                                                },
                                               );
-                                            },
-                                          );
-                                        }
-                                      },
-                                      style: ButtonStyle(
-                                          backgroundColor: MaterialStateProperty
-                                              .all<Color>(textcolor.withOpacity(
-                                                  0.6)), // Set background color
-                                          shape: MaterialStateProperty.all<
-                                              RoundedRectangleBorder>(
-                                            const RoundedRectangleBorder(
-                                              side: BorderSide(
-                                                color:
-                                                    secondaryColor, // Specify the border color here
-                                                width:
-                                                    1.0, // Specify the border width here
-                                              ),
-                                              borderRadius: BorderRadius.only(
-                                                bottomLeft: Radius.circular(
-                                                    12.0), // Rounded border at bottom-left
-                                              ),
-                                            ),
-                                          )),
-                                      child: Padding(
-                                        padding: const EdgeInsets.fromLTRB(
-                                            5.0, 5.0, 5.0, 5.0),
-                                        child: Text(
-                                          'cancel'.tr,
-                                          style: const TextStyle(
-                                              color: secondaryColor,
-                                              fontSize: 12),
+                                            }
+                                          },
+                                          child: Text(
+                                            'reschedule'.tr,
+                                            style: TextStyle(
+                                                color: Colors.deepPurple),
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                    const SizedBox(
-                                      width: 20,
-                                    ),
-                                    ElevatedButton(
-                                      onPressed: () {
-                                        // Get the date from your appointment
-                                        DateTime appointmentDate =
-                                            dateExtract(appointment);
-
-                                        // Check if today's date is the same as the appointment date
-                                        if (isToday(appointmentDate)) {
-                                          // Show an alert dialog if the dates are the same
-                                          showDialog(
-                                            context: context,
-                                            builder: (BuildContext context) {
-                                              return AlertDialog(
-                                                title: Text('Alert'),
-                                                content: Text(
-                                                    'Couldn\'t reschedule this appointment. Please contact QBB'),
-                                                actions: [
-                                                  ElevatedButton(
-                                                    onPressed: () {
-                                                      Navigator.pop(
-                                                          context); // Close the dialog
-                                                    },
-                                                    child: Text('OK'),
-                                                  ),
-                                                ],
-                                              );
-                                            },
-                                          );
-                                        } else {
-                                          // Perform the cancel action if the dates are not the same
-                                          // For now, we are just printing a message
-                                          print('Cancel action');
-                                        }
-                                      },
-                                      style: ButtonStyle(
-                                          backgroundColor:
-                                              MaterialStateProperty.all<Color>(
-                                                  primaryColor), // Set background color
-                                          shape: MaterialStateProperty.all<
-                                              RoundedRectangleBorder>(
-                                            const RoundedRectangleBorder(
+                                      const SizedBox(width: 16.0),
+                                      SizedBox(
+                                        width: 150,
+                                        child: ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                            shape: const RoundedRectangleBorder(
                                               borderRadius: BorderRadius.only(
-                                                bottomLeft: Radius.circular(
-                                                    12.0), // Rounded border at bottom-left
+                                                bottomLeft:
+                                                    Radius.circular(20.0),
                                               ),
                                             ),
-                                          )),
-                                      child: Padding(
-                                        padding: const EdgeInsets.fromLTRB(
-                                            5.0, 5.0, 5.0, 5.0),
-                                        child: Text(
-                                          'reschedule'.tr,
-                                          style: const TextStyle(
-                                              color: textcolor, fontSize: 12),
+                                            backgroundColor: primaryColor,
+                                            side: const BorderSide(
+                                                color: Colors.black),
+                                            elevation: 0,
+                                          ),
+                                          onPressed: () async {
+                                            if (appointment[
+                                                    'ResultExpiredMSG'] !=
+                                                null) {
+                                              showDialog(
+                                                  context: context,
+                                                  builder:
+                                                      (BuildContext context) {
+                                                    return AlertDialog(
+                                                      title: Text(''),
+                                                      content: Text(appointment[
+                                                          'ResultExpiredMSG']),
+                                                      actions: [
+                                                        ElevatedButton(
+                                                          onPressed: () {
+                                                            Navigator.pop(
+                                                                context); // Close the dialog
+                                                          },
+                                                          child: Text('OK'),
+                                                        ),
+                                                      ],
+                                                    );
+                                                  });
+                                            } else {
+                                              SharedPreferences pref =
+                                                  await SharedPreferences
+                                                      .getInstance();
+                                              pref.setString(
+                                                  "rescheduleAppointmentID",
+                                                  appointment["AppoinmentId"]);
+                                              pref.setString(
+                                                  "rescheduleVisitType",
+                                                  appointment['VisittypeName']);
+                                              rescheduleAppointment();
+                                            }
+                                          },
+                                          child: Text(
+                                            'Reschedule',
+                                            style:
+                                                TextStyle(color: Colors.white),
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 )
                               ],
                             ),

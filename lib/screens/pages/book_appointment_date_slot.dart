@@ -198,6 +198,7 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
     });
 
     print('vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv' + selectedSlot);
+    String qid = pref.getString("userQID").toString();
 
     selectedSlot == "null" ? _selectedDate : _selectedDate = _selectedDate;
     print('Appointment confirmed for $_selectedDate at $_selectedTimeSlot');
@@ -221,13 +222,13 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
       };
 
       Map<String, dynamic> requestBody = {
-        "QID": '28935648781',
+        "QID": '$qid',
         "StudyId": '10',
         "ShiftCode": 'shft',
         "VisitTypeId": '72',
         "PersonGradeId": '4',
         "AvailabilityCalenderId": '15486',
-        "language": "en",
+        "language": "$lang",
         "AppointmentTypeId": '1'
       };
 
