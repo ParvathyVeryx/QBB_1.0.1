@@ -32,7 +32,6 @@ class UserProfileData {
   String gender = '';
   String maritalStatus = '';
   String dateOnly = '';
-  String profilePicture = '';
 }
 
 class Profile extends StatefulWidget {
@@ -46,22 +45,33 @@ class ProfileState extends State<Profile> {
   String _qid = '';
   // String profilePicture = '';
   late File? _selectedImage;
-  bool _isLoading = false;
+  bool _isLoading = true;
   int currentIndex = 4;
   late Future<UserProfileData> _userProfileFuture;
+  String profilePicture = '';
 
   bool _isLoadingData = true;
 
-  @override
-  void initState() {
-    super.initState();
-    _userProfileFuture = getUserProfileData();
-    Future.delayed(Duration(seconds: 2), () {
-      setState(() {
-        _isLoading = false;
-      });
+@override
+void initState() {
+  super.initState();
+
+  // Assume you have a variable _isLoading to track whether data is still loading
+  _isLoading = true;
+
+  // Start loading user profile data
+  _userProfileFuture = getUserProfileData();
+
+  // After 2 seconds, set isLoading to false to stop showing the LoaderWidget
+  Future.delayed(Duration(seconds: 2), () {
+    setState(() {
+      _isLoading = false;
     });
-  }
+  });
+
+  // Call the profilePic method to update profilePicture after loading data
+  profilePic();
+}
 
   Future<UserProfileData> getUserProfileData() async {
     try {
@@ -87,12 +97,10 @@ class ProfileState extends State<Profile> {
       ..qid = jsonMap['QID'].toString()
       ..gender = jsonMap['Gender'].toString()
       ..maritalStatus = jsonMap['MaritalStatus'].toString()
-      ..dateOnly = _buildDateOnly(jsonMap)
-      ..profilePicture = jsonMap['Photo'] ?? '';
+      ..dateOnly = _buildDateOnly(jsonMap);
   }
 
   String _buildFullName(Map<String, dynamic> jsonMap) {
-    print('Profile Picture' + profilePicture.toString());
     String middleName = jsonMap['MiddleName'].toString() == "null"
         ? ''
         : jsonMap['MiddleName'].toString() + '';
@@ -107,7 +115,20 @@ class ProfileState extends State<Profile> {
     return "${dateTime.year}-${dateTime.month.toString().padLeft(2, '0')}-${dateTime.day.toString().padLeft(2, '0')}";
   }
 
-  String profilePicture = '';
+void profilePic() async {
+  try {
+    String responseBody = await callUserProfileAPIGet();
+    Map<String, dynamic> jsonMap = json.decode(responseBody);
+    setState(() {
+      profilePicture = jsonMap['Photo'] ?? '';
+      print("profileP" + profilePicture);
+    });
+  } catch (e) {
+    print("Error loading user profile: $e");
+    // Handle the error appropriately
+  }
+}
+
 
   @override
   Widget build(BuildContext context) {
