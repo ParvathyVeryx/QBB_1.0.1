@@ -292,9 +292,9 @@ class _RegistrationModeState extends State<RegistrationMode> {
           labelText: labelText,
 
           labelStyle:
-              TextStyle(color: labelTextColor), // Set the label text color
+              TextStyle(color: Color.fromARGB(255, 173, 173, 173), fontSize: 12), // Set the label text color
           enabledBorder: const OutlineInputBorder(
-            borderSide: BorderSide(color: Color.fromARGB(255, 173, 173, 173)),
+            borderSide: BorderSide(color: Color.fromARGB(255, 173, 173, 173),),
             borderRadius: BorderRadius.only(
               bottomLeft: Radius.circular(20.0),
             ),

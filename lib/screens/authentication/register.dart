@@ -393,7 +393,7 @@ class RegisterUserState extends State<RegisterUser> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                           Text(
+                          Text(
                             'howLong'.tr,
                             style: TextStyle(
                                 fontSize: 12, fontWeight: FontWeight.normal),
@@ -411,7 +411,7 @@ class RegisterUserState extends State<RegisterUser> {
                               for (int i = 1; i <= 14; i++)
                                 DropdownMenuItem<String>(
                                   value: i.toString(),
-                                  child: Text('$i'+ 'years'.tr),
+                                  child: Text('$i' + 'years'.tr),
                                 ),
                               const DropdownMenuItem<String>(
                                 value: '15',
@@ -454,7 +454,7 @@ class RegisterUserState extends State<RegisterUser> {
                                 child: Text(item['display']),
                               );
                             }).toList(),
-                            labelText: 'newspaper'.tr+'*',
+                            labelText: 'newspaper'.tr + '*',
                           ),
                         ],
                       ),
@@ -466,7 +466,7 @@ class RegisterUserState extends State<RegisterUser> {
                           children: [
                             Container(
                               alignment: Alignment.centerLeft,
-                              child:  Text(
+                              child: Text(
                                 'campaigns'.tr,
                                 style: TextStyle(
                                     fontSize: 16,
@@ -567,7 +567,7 @@ class RegisterUserState extends State<RegisterUser> {
                                 ),
                               ),
                             )),
-                        child:  Padding(
+                        child: Padding(
                           padding: EdgeInsets.fromLTRB(10.0, 15.0, 10.0, 15.0),
                           child: Text(
                             'tutorialContinueButton'.tr,
@@ -605,8 +605,14 @@ class RegisterUserState extends State<RegisterUser> {
       decoration: InputDecoration(
         contentPadding: const EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 5.0),
         labelText: labelText,
-        labelStyle:
-            TextStyle(color: labelTextColor), // Set the label text color
+        errorStyle: TextStyle(
+          // Add your style properties here
+          color: primaryColor,
+          fontWeight: FontWeight.w600,
+          fontSize: 14.0,
+        ),
+        labelStyle: TextStyle(
+            color: labelTextColor, fontSize: 12), // Set the label text color
         enabledBorder: const OutlineInputBorder(
           borderSide: BorderSide(color: Color.fromARGB(255, 173, 173, 173)),
           borderRadius: BorderRadius.only(
@@ -619,7 +625,20 @@ class RegisterUserState extends State<RegisterUser> {
             bottomLeft: Radius.circular(20.0),
           ),
         ),
+        errorBorder: const OutlineInputBorder(
+          borderSide: BorderSide(color: Color.fromARGB(255, 173, 173, 173)),
+          borderRadius: BorderRadius.only(
+            bottomLeft: Radius.circular(20.0),
+          ),
+        ),
+        focusedErrorBorder: const OutlineInputBorder(
+          borderSide: BorderSide(color: Color.fromARGB(255, 173, 173, 173)),
+          borderRadius: BorderRadius.only(
+            bottomLeft: Radius.circular(20.0),
+          ),
+        ),
       ),
+
       validator: validator,
     );
   }
@@ -636,8 +655,14 @@ class RegisterUserState extends State<RegisterUser> {
       decoration: InputDecoration(
         contentPadding: const EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 5.0),
         labelText: labelText,
-        labelStyle:
-            TextStyle(color: labelTextColor), // Set the label text color
+        errorStyle: TextStyle(
+          // Add your style properties here
+          color: primaryColor,
+          fontWeight: FontWeight.w600,
+          fontSize: 14.0,
+        ),
+        labelStyle: TextStyle(
+            color: labelTextColor, fontSize: 12), // Set the label text color
         enabledBorder: const OutlineInputBorder(
           borderSide: BorderSide(color: Color.fromARGB(255, 173, 173, 173)),
           borderRadius: BorderRadius.only(
@@ -645,6 +670,18 @@ class RegisterUserState extends State<RegisterUser> {
           ),
         ),
         focusedBorder: const OutlineInputBorder(
+          borderSide: BorderSide(color: Color.fromARGB(255, 173, 173, 173)),
+          borderRadius: BorderRadius.only(
+            bottomLeft: Radius.circular(20.0),
+          ),
+        ),
+        errorBorder: const OutlineInputBorder(
+          borderSide: BorderSide(color: Color.fromARGB(255, 173, 173, 173)),
+          borderRadius: BorderRadius.only(
+            bottomLeft: Radius.circular(20.0),
+          ),
+        ),
+        focusedErrorBorder: const OutlineInputBorder(
           borderSide: BorderSide(color: Color.fromARGB(255, 173, 173, 173)),
           borderRadius: BorderRadius.only(
             bottomLeft: Radius.circular(20.0),
@@ -667,6 +704,7 @@ class RegisterUserState extends State<RegisterUser> {
               255, 173, 173, 173), // Set the border color to grey
           width: 1.0, // Set the border width
         ),
+
         borderRadius: const BorderRadius.only(
           bottomLeft: Radius.circular(20.0), // Rounded border at bottom-left
         ), // Rounded border corners
@@ -678,9 +716,18 @@ class RegisterUserState extends State<RegisterUser> {
           onChanged: onChanged,
           items: items,
           decoration: InputDecoration(
+            errorStyle: TextStyle(
+              // Add your style properties here
+              color: primaryColor,
+              fontWeight: FontWeight.w600,
+              fontSize: 14.0,
+            ),
             labelText: labelText,
-            labelStyle: const TextStyle(
-                color: Color.fromARGB(255, 173, 173, 173)), // Label text color
+            labelStyle: TextStyle(
+                color: const Color.fromARGB(255, 173, 173, 173), fontSize: 12),
+            // Set the label text color
+
+            // Label text color
             border: InputBorder.none, // Remove the default border
           ),
           validator: (value) {
@@ -721,13 +768,27 @@ class RegisterUserState extends State<RegisterUser> {
         if (_qidError != null)
           Text(
             _qidError!,
-            style: const TextStyle(color: Colors.red),
+            style: const TextStyle(color: primaryColor),
           ),
+
         TextFormField(
           decoration: InputDecoration(
+            errorBorder: const OutlineInputBorder(
+              borderSide: BorderSide(color: Color.fromARGB(255, 173, 173, 173)),
+              borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(20.0),
+              ),
+            ),
             labelText: labelText,
             labelStyle: const TextStyle(
-              color: Color.fromARGB(255, 173, 173, 173), // Label text color
+                color: Color.fromARGB(255, 173, 173, 173),
+                fontSize: 12 // Label text color
+                ),
+            errorStyle: TextStyle(
+              // Add your style properties here
+              color: primaryColor,
+              fontWeight: FontWeight.w600,
+              fontSize: 14.0,
             ),
             border: const OutlineInputBorder(
               borderRadius: BorderRadius.only(
@@ -839,9 +900,16 @@ class QIDTextField extends StatelessWidget {
       onChanged: onChanged,
       onFieldSubmitted: onFieldSubmitted,
       decoration: InputDecoration(
+        errorStyle: TextStyle(
+          // Add your style properties here
+          color: primaryColor,
+          fontWeight: FontWeight.w600,
+          fontSize: 14.0,
+        ),
         contentPadding: const EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 5.0),
         labelText: labelText,
-        labelStyle: TextStyle(color: labelTextColor),
+        labelStyle: TextStyle(
+            color: labelTextColor, fontSize: 12), // Set the label text color
         enabledBorder: const OutlineInputBorder(
           borderSide: BorderSide(color: Color.fromARGB(255, 173, 173, 173)),
           borderRadius: BorderRadius.only(
@@ -849,6 +917,18 @@ class QIDTextField extends StatelessWidget {
           ),
         ),
         focusedBorder: const OutlineInputBorder(
+          borderSide: BorderSide(color: Color.fromARGB(255, 173, 173, 173)),
+          borderRadius: BorderRadius.only(
+            bottomLeft: Radius.circular(20.0),
+          ),
+        ),
+        errorBorder: const OutlineInputBorder(
+          borderSide: BorderSide(color: Color.fromARGB(255, 173, 173, 173)),
+          borderRadius: BorderRadius.only(
+            bottomLeft: Radius.circular(20.0),
+          ),
+        ),
+        focusedErrorBorder: const OutlineInputBorder(
           borderSide: BorderSide(color: Color.fromARGB(255, 173, 173, 173)),
           borderRadius: BorderRadius.only(
             bottomLeft: Radius.circular(20.0),
