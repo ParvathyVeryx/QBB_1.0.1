@@ -9,6 +9,8 @@ class ErrorPopup extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print('Error Popup Content: $errorMessage'); // Add this line for debugging
+
     return AlertDialog(
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
@@ -28,7 +30,7 @@ class ErrorPopup extends StatelessWidget {
           onPressed: () {
             Navigator.of(context).pop();
           },
-          child:  Text('ok'.tr),
+          child: Text('ok'.tr),
         ),
       ],
     );

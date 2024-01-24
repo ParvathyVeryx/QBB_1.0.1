@@ -30,7 +30,7 @@ class AccessUserState extends State<AccessUser> {
     if (_formKey.currentState!.validate()) {
       // Process the form data
       // Check OTP match
-      bool isOtpMatch = await getAcess(qidController.text, otp);
+      bool isOtpMatch = await getAccess(qidController.text, otp, context);
 
       // If OTP doesn't match, show error and return
       if (!isOtpMatch) {
@@ -65,7 +65,7 @@ class AccessUserState extends State<AccessUser> {
             Navigator.of(context).pop();
           },
         ),
-        title:  Center(
+        title: Center(
           child: Padding(
             padding: EdgeInsets.only(right: 40.0),
             child: Text(
@@ -140,14 +140,11 @@ class AccessUserState extends State<AccessUser> {
                                 ),
                               ),
                             )),
-                        child:  Padding(
+                        child: Padding(
                           padding: EdgeInsets.fromLTRB(5.0, 5.0, 5.0, 5.0),
                           child: Text(
                             'getOTP'.tr,
-                            style: TextStyle(
-                              color: textcolor,
-                              fontSize: 11
-                            ),
+                            style: TextStyle(color: textcolor, fontSize: 11),
                           ),
                         )),
                   ],
@@ -227,7 +224,7 @@ class AccessUserState extends State<AccessUser> {
                             ),
                           ),
                         ),
-                  child:  Padding(
+                  child: Padding(
                     padding: EdgeInsets.fromLTRB(10.0, 15.0, 10.0, 15.0),
                     child: Text(
                       'submit'.tr,
@@ -270,8 +267,8 @@ class AccessUserState extends State<AccessUser> {
             ),
           ),
         ),
-        labelStyle:
-            TextStyle(color: labelTextColor, fontSize: 12), // Set the label text color
+        labelStyle: TextStyle(
+            color: labelTextColor, fontSize: 12), // Set the label text color
         enabledBorder: const OutlineInputBorder(
           borderSide: BorderSide(color: Color.fromARGB(255, 173, 173, 173)),
           borderRadius: BorderRadius.only(
@@ -325,8 +322,8 @@ class AccessUserState extends State<AccessUser> {
             ),
           ),
         ),
-        labelStyle:
-            TextStyle(color: labelTextColor, fontSize: 12), // Set the label text color
+        labelStyle: TextStyle(
+            color: labelTextColor, fontSize: 12), // Set the label text color
         enabledBorder: const OutlineInputBorder(
           borderSide: BorderSide(color: Color.fromARGB(255, 173, 173, 173)),
           borderRadius: BorderRadius.only(
@@ -358,9 +355,9 @@ class AccessUserState extends State<AccessUser> {
     required TextEditingController controller,
   }) {
     return TextFormField(
-      decoration:  InputDecoration(
+      decoration: InputDecoration(
         contentPadding: EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 5.0),
-        labelText: 'password'.tr+'*',
+        labelText: 'password'.tr + '*',
         prefixIcon: Container(
           height: 10.0,
           width: 10.0,
@@ -375,8 +372,14 @@ class AccessUserState extends State<AccessUser> {
           ),
         ),
         labelStyle: TextStyle(
-          color: Color.fromARGB(255, 173, 173, 173,), fontSize: 12 // Label text color
-        ),
+            color: Color.fromARGB(
+              255,
+              173,
+              173,
+              173,
+            ),
+            fontSize: 12 // Label text color
+            ),
         enabledBorder: OutlineInputBorder(
           borderSide: BorderSide(color: Color.fromARGB(255, 173, 173, 173)),
           borderRadius: BorderRadius.only(
@@ -414,12 +417,13 @@ class AccessUserState extends State<AccessUser> {
     required TextEditingController controller,
   }) {
     return TextFormField(
-      decoration:  InputDecoration(
+      decoration: InputDecoration(
         contentPadding: EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 5.0),
-        labelText: 'confirmPassword'.tr+'*',
+        labelText: 'confirmPassword'.tr + '*',
         labelStyle: TextStyle(
-          color: Color.fromARGB(255, 173, 173, 173), fontSize: 12 // Label text color
-        ),
+            color: Color.fromARGB(255, 173, 173, 173),
+            fontSize: 12 // Label text color
+            ),
         prefixIcon: Container(
           height: 10.0,
           width: 10.0,

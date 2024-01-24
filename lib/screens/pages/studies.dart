@@ -309,11 +309,20 @@ class StudiesState extends State<Studies> {
                                   const SizedBox(height: 20.0),
                                   ElevatedButton(
                                     onPressed: () {
+                                      // Fetch the "Id" from the study JSON
+                                      int? studyId = study
+                                          .Id; // Replace "id" with the actual getter in your Study class
+
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                            builder: (context) =>
-                                                const BookAppointments()),
+                                          builder: (context) =>
+                                              BookAppointments(
+                                            studyName: study
+                                                .studyName, // Pass the study name as an argument
+                                            studyId: studyId,
+                                          ),
+                                        ),
                                       );
                                     },
                                     style: ButtonStyle(

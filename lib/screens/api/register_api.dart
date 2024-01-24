@@ -22,12 +22,10 @@ class RegisterApi {
     //     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6Im1vYmFkbWluQGdtYWlsLmNvbSIsIm5iZiI6MTcwMzE3ODA1MywiZXhwIjoxNzAzNzgyODUzLCJpYXQiOjE3MDMxNzgwNTMsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTAxOTEiLCJhdWQiOiJodHRwOi8vbG9jYWxob3N0OjUwMTkxIn0.WYN0dROXwe3ys9yA2Ngd62p7Fr2h6JV4nSyHPcnF4tk";
     SharedPreferences pref = await SharedPreferences.getInstance();
     var lang = pref.getString("langEn").toString();
-    var token = pref.getString('token');
-
     Map<String, String> headers = {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
-      'Authorization': 'Bearer ${token?.replaceAll('"', '')}',
+      'Authorization': 'Bearer $token',
       // 'Authorization': token.toString(),
     };
     // Register register = Register();

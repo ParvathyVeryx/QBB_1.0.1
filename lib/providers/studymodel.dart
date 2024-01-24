@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 
 class Study {
+  final int Id;
   final String studyCode;
   final String studyName;
   final String studyDescription;
 
   Study({
+    required this.Id,
     required this.studyCode,
     required this.studyName,
     required this.studyDescription,

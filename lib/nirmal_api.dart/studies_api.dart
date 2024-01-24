@@ -46,19 +46,19 @@ Future<List<Study>> fetchStudyMasterAPI() async {
     if (response.statusCode == 200) {
       final List<dynamic> responseData = json.decode(response.body);
       final List<Study> studies = responseData.map((data) {
-        pref.setString("studyCode",  data['Code'].toString());
-        pref.setString("studyName",  data['Name'].toString());
-        pref.setString("studyDes",  data['Description'].toString());
+        pref.setString("studyCode", data['Code'].toString());
+        pref.setString("studyName", data['Name'].toString());
+        pref.setString("studyDes", data['Description'].toString());
+        pref.setString("Id", data['Id'].toString());
         return Study(
+          Id: data['Id'] ?? '',
           studyCode:
               data['Code'] ?? '', // Check for null and provide a default value
           studyName:
               data['Name'] ?? '', // Check for null and provide a default value
           studyDescription: data['Description'] ??
               '', // Check for null and provide a default value
-              
         );
-        
       }).toList();
 
       return studies;
