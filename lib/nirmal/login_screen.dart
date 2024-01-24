@@ -8,6 +8,7 @@ import 'package:QBB/screens/api/register_api.dart';
 import 'package:QBB/screens/authentication/forgotPwd.dart';
 import 'package:QBB/screens/authentication/loginorReg.dart';
 import 'package:QBB/screens/pages/loader.dart';
+import 'package:QBB/screens/pages/welcome.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -50,22 +51,60 @@ class _LoginPageState extends State<LoginPage> {
   bool isLoading = false;
 
   bool isButtonClicked = true;
-  bool isButtonClickedArabic = false;
+
   bool _obscureText = true;
   var qidErr;
   bool validated = false;
   String errorText = '';
   String passwordErrorText = '';
 
+  String selectedLang = '';
+  bool isButtonClickedArabic = false;
+
+  void selectedLanguage() async {}
+
+  Future<bool> ButtonClickedArabic() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    selectedLang = pref.getString("langEn").toString();
+    print(';;;;;;;;;;;;;;;;;;;;;;;;;;;;' + selectedLang);
+    if (selectedLang == "Arabic") {
+      isButtonClickedArabic = true;
+      isButtonClicked = false;
+    } else {
+      isButtonClickedArabic = false;
+      isButtonClicked = true;
+    }
+    print(';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;' +
+        isButtonClickedArabic.toString());
+    print(';;;;;;;;;;;;;;;;;;;;;;;;;;;;' + selectedLang);
+    return isButtonClicked;
+  }
+
   @override
   void initState() {
     super.initState();
+    selectedLanguage();
     qidController.addListener(_validateInput);
+    ButtonClickedArabic();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(
+            Icons.arrow_back,
+            color: Color.fromARGB(255, 179, 179, 179),
+          ),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => Welcome()),
+            );
+          },
+        ),
+      ),
       body: isLoading
           ? Center(
               child: LoaderWidget(),
@@ -236,9 +275,9 @@ class _LoginPageState extends State<LoginPage> {
                                           SharedPreferences pref =
                                               await SharedPreferences
                                                   .getInstance();
-                                          pref.setString("langAR", "Arabic");
+                                          pref.setString("langEn", "Arabic");
                                           langen = pref
-                                              .getString("langAR")
+                                              .getString("langEn")
                                               .toString();
                                           print("jjjjjjjjjjjjjjj" + langen);
                                           updateLanguageLogin(
@@ -289,111 +328,123 @@ class _LoginPageState extends State<LoginPage> {
                                       const SizedBox(
                                         height: 30,
                                       ),
-                                      _buildRoundedBorderTextField(
-                                        labelText: 'qid'.tr + '*',
-                                        labelTextColor: const Color.fromARGB(
-                                            255, 173, 173, 173),
-                                        validator: (value) {
-                                          if (value!.isEmpty) {
-                                            print('Checking Lang' +
-                                                'pleaseEnterValidQatarID'.tr);
-                                            validated = !validated;
+                                      SingleChildScrollView(
+                                        physics: NeverScrollableScrollPhysics(),
+                                        reverse: true,
+                                        child: Container(
+                                          // height: 200,
+                                          child: Column(children: [
+                                            _buildRoundedBorderTextField(
+                                              labelText: 'qid'.tr + '*',
+                                              labelTextColor:
+                                                  const Color.fromARGB(
+                                                      255, 173, 173, 173),
+                                              validator: (value) {
+                                                if (value!.isEmpty) {
+                                                  print('Checking Lang' +
+                                                      'pleaseEnterValidQatarID'
+                                                          .tr);
+                                                  validated = !validated;
 
-                                            return 'pleaseEnterValidQatarID'.tr;
-                                          }
-                                          return null;
-                                        },
-                                        // controller: qidController,
-                                      ),
-                                      const SizedBox(
-                                        height: 20.0,
-                                      ),
-                                      _buildRoundedBorderPWDField(
-                                        labelText: 'password'.tr + '*',
+                                                  return 'pleaseEnterValidQatarID'
+                                                      .tr;
+                                                }
+                                                return null;
+                                              },
+                                              // controller: qidController,
+                                            ),
+                                            _buildRoundedBorderPWDField(
+                                              labelText: 'password'.tr + '*',
 
-                                        labelTextColor: const Color.fromARGB(
-                                            255, 173, 173, 173),
-                                        validator: (value) {
-                                          print('Print error !!!!!!!!!!!!' +
-                                              value!);
-                                          if (value.isEmpty) {
-                                            print(
-                                                'Print error !!!!!!!!!!!!33333333333333333333333333' +
-                                                    value);
-                                            // setState(() {
-                                            //   passwordErrorText =
-                                            //       'thePasswordCannotBeEmpty'.tr;
-                                            // });
-                                            return 'thePasswordCannotBeEmpty'
-                                                .tr;
-                                          }
-                                          return null;
-                                        },
+                                              labelTextColor:
+                                                  const Color.fromARGB(
+                                                      255, 173, 173, 173),
+                                              validator: (value) {
+                                                print(
+                                                    'Print error !!!!!!!!!!!!' +
+                                                        value!);
+                                                if (value.isEmpty) {
+                                                  print(
+                                                      'Print error !!!!!!!!!!!!33333333333333333333333333' +
+                                                          value);
+                                                  // setState(() {
+                                                  //   passwordErrorText =
+                                                  //       'thePasswordCannotBeEmpty'.tr;
+                                                  // });
+                                                  return 'thePasswordCannotBeEmpty'
+                                                      .tr;
+                                                }
+                                                return null;
+                                              },
 
-                                        controller: passwordController,
-                                        isPassword:
-                                            true, // Set isPassword to true for the password field
-                                      ),
-                                      const SizedBox(
-                                        height: 10.0,
-                                      ),
-                                      const SizedBox(height: 10.0),
-                                      Container(
-                                        width: double.infinity,
-                                        child: ElevatedButton(
-                                          style: ButtonStyle(
-                                            backgroundColor:
-                                                MaterialStateProperty.all<
-                                                    Color>(primaryColor),
-                                            shape: MaterialStateProperty.all<
-                                                RoundedRectangleBorder>(
-                                              const RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.only(
-                                                  bottomLeft:
-                                                      Radius.circular(20.0),
+                                              controller: passwordController,
+                                              isPassword:
+                                                  true, // Set isPassword to true for the password field
+                                            ),
+                                            const SizedBox(height: 20.0),
+                                            Container(
+                                              width: double.infinity,
+                                              child: ElevatedButton(
+                                                style: ButtonStyle(
+                                                  backgroundColor:
+                                                      MaterialStateProperty.all<
+                                                          Color>(primaryColor),
+                                                  shape:
+                                                      MaterialStateProperty.all<
+                                                          RoundedRectangleBorder>(
+                                                    const RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.only(
+                                                        bottomLeft:
+                                                            Radius.circular(
+                                                                20.0),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                                onPressed: () async {
+                                                  isLogginchecked = true;
+                                                  // print('token before calling api $token');
+                                                  String deviceToken =
+                                                      getDeviceId().toString();
+                                                  // String deviceToken = 'qwd';
+                                                  String deviceType =
+                                                      getDeviceType()
+                                                          .toString();
+                                                  if (_formKey.currentState!
+                                                      .validate()) {
+                                                    setState(() {
+                                                      isLoading =
+                                                          true; // Set loading to true when button is pressed
+                                                    });
+                                                    await LoginApi.login(
+                                                      context,
+                                                      qidController.text,
+                                                      passwordController.text,
+                                                      deviceToken,
+                                                      deviceType,
+                                                      onApiComplete: () {
+                                                        setState(() {
+                                                          isLoading =
+                                                              false; // Set loading to false when API call is complete
+                                                        });
+                                                      },
+                                                    );
+                                                  }
+                                                },
+                                                child: Padding(
+                                                  padding: EdgeInsets.fromLTRB(
+                                                      10.0, 8.0, 10.0, 8.0),
+                                                  child: Text(
+                                                    'login'.tr,
+                                                    style: TextStyle(
+                                                      color: textcolor,
+                                                    ),
+                                                  ),
                                                 ),
                                               ),
                                             ),
-                                          ),
-                                          onPressed: () async {
-                                            isLogginchecked = true;
-                                            // print('token before calling api $token');
-                                            String deviceToken =
-                                                getDeviceId().toString();
-                                            // String deviceToken = 'qwd';
-                                            String deviceType =
-                                                getDeviceType().toString();
-                                            if (_formKey.currentState!
-                                                .validate()) {
-                                              setState(() {
-                                                isLoading =
-                                                    true; // Set loading to true when button is pressed
-                                              });
-                                              await LoginApi.login(
-                                                context,
-                                                qidController.text,
-                                                passwordController.text,
-                                                deviceToken,
-                                                deviceType,
-                                                onApiComplete: () {
-                                                  setState(() {
-                                                    isLoading =
-                                                        false; // Set loading to false when API call is complete
-                                                  });
-                                                },
-                                              );
-                                            }
-                                          },
-                                          child: Padding(
-                                            padding: EdgeInsets.fromLTRB(
-                                                10.0, 8.0, 10.0, 8.0),
-                                            child: Text(
-                                              'login'.tr,
-                                              style: TextStyle(
-                                                color: textcolor,
-                                              ),
-                                            ),
-                                          ),
+                                          ]),
                                         ),
                                       ),
                                       Row(
@@ -464,6 +515,8 @@ class _LoginPageState extends State<LoginPage> {
     required TextEditingController controller,
   }) {
     return TextFormField(
+      scrollPadding: EdgeInsets.only(
+          bottom: MediaQuery.of(context).viewInsets.bottom + 12 * 4),
       obscureText: _obscureText, // Set obscureText to true for password fields
       // obscuringCharacter: "*",
       decoration: InputDecoration(
@@ -553,6 +606,8 @@ class _LoginPageState extends State<LoginPage> {
     TextInputType? keyboardType,
   }) {
     return TextFormField(
+      scrollPadding: EdgeInsets.only(
+          bottom: MediaQuery.of(context).viewInsets.bottom + 12 * 4),
       keyboardType: TextInputType.number,
       controller: qidController,
       // obscureText: _obscureText, // Set obscureText to true for password fields

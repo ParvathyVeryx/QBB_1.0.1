@@ -96,7 +96,156 @@ class _NotificationScreenState extends State<NotificationScreen> {
           // Display the data when it's available
           List<Map<String, dynamic>> allresults = [];
           if (!snapshot.hasData) {
-            return LoaderWidget();
+            return Scaffold(
+                appBar: AppBar(
+                  title: Row(
+                    // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 10.0),
+                        child: Image.asset(
+                          "assets/images/icon.png",
+                          width: 40.0,
+                          height: 40.0,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                      // SizedBox(
+                      //   width: 50.0,
+                      // ),
+
+                      Row(
+                        children: [
+                          Center(
+                            child: Text(
+                              'notifications'.tr,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: Colors.white,
+                                // fontWeight: FontWeight.w900 ,
+                                fontFamily: 'Impact',
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  backgroundColor: appbar,
+                  iconTheme: const IconThemeData(color: textcolor),
+                ),
+                drawer: const SideMenu(),
+                bottomNavigationBar: BottomNavigationBar(
+                    selectedItemColor: textcolor,
+                    unselectedItemColor: textcolor,
+                    backgroundColor: primaryColor,
+                    unselectedFontSize: 7,
+                    selectedFontSize: 7,
+                    type: BottomNavigationBarType.fixed,
+                    onTap: (index) {
+                      if (index == 0) {
+                        // Handle tap for the "HOME" item
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => HomeScreen()),
+                        );
+                      }
+                      if (index == 2) {
+                        // Handle tap for the "HOME" item
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => BookAppointments()),
+                        );
+                      }
+                      if (index == 1) {
+                        // Handle tap for the "HOME" item
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => Appointments()),
+                        );
+                      }
+
+                      if (index == 3) {
+                        // Handle tap for the "HOME" item
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => Results()),
+                        );
+                      }
+                      if (index == 4) {
+                        // Handle tap for the "HOME" item
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => Profile()),
+                        );
+                      }
+                    },
+                    items: [
+                      BottomNavigationBarItem(
+                        icon: Padding(
+                          padding: const EdgeInsets.only(bottom: 5.0, top: 5.0),
+                          child: Image.asset(
+                            "assets/images/home.png",
+                            width: 20.0,
+                            height: 20.0,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                        label: 'home'.tr + '\n',
+                      ),
+                      BottomNavigationBarItem(
+                        icon: Padding(
+                          padding: const EdgeInsets.only(bottom: 5.0, top: 5.0),
+                          child: Image.asset(
+                            "assets/images/event.png",
+                            width: 20.0,
+                            height: 20.0,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                        label: 'appointment'.tr + '\n',
+                      ),
+                      BottomNavigationBarItem(
+                          icon: Padding(
+                            padding:
+                                const EdgeInsets.only(bottom: 5.0, top: 5.0),
+                            child: Image.asset(
+                              "assets/images/date.png",
+                              width: 20.0,
+                              height: 20.0,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                          label: 'bookAn'.tr + '\n' + 'appointment'.tr),
+                      BottomNavigationBarItem(
+                          icon: Padding(
+                            padding:
+                                const EdgeInsets.only(bottom: 5.0, top: 5.0),
+                            child: Image.asset(
+                              "assets/images/experiment-results.png",
+                              width: 20.0,
+                              height: 20.0,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                          label: 'results'.tr + '/' + '\n' + 'status'.tr),
+                      BottomNavigationBarItem(
+                          icon: Padding(
+                            padding:
+                                const EdgeInsets.only(bottom: 5.0, top: 5.0),
+                            child: Image.asset(
+                              "assets/images/user.png",
+                              width: 20.0,
+                              height: 20.0,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                          label: 'profile'.tr.toUpperCase() + '\n'),
+                    ]),
+                body: LoaderWidget());
+
           } else {
             allresults = snapshot.data!;
           }
@@ -106,156 +255,158 @@ class _NotificationScreenState extends State<NotificationScreen> {
             //     height: MediaQuery.of(context).size.height * 0.95,
             //     child: const Center(child: Text("No new notifications")));
             return Scaffold(
-            appBar: AppBar(
-              title: Row(
-                // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 10.0),
-                    child: Image.asset(
-                      "assets/images/icon.png",
-                      width: 40.0,
-                      height: 40.0,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                  // SizedBox(
-                  //   width: 50.0,
-                  // ),
-
-                  Row(
+                appBar: AppBar(
+                  title: Row(
+                    // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Center(
-                        child: Text(
-                          'notifications'.tr,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: Colors.white,
-                            // fontWeight: FontWeight.w900 ,
-                            fontFamily: 'Impact',
-                          ),
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 10.0),
+                        child: Image.asset(
+                          "assets/images/icon.png",
+                          width: 40.0,
+                          height: 40.0,
+                          fit: BoxFit.cover,
                         ),
+                      ),
+                      // SizedBox(
+                      //   width: 50.0,
+                      // ),
+
+                      Row(
+                        children: [
+                          Center(
+                            child: Text(
+                              'notifications'.tr,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: Colors.white,
+                                // fontWeight: FontWeight.w900 ,
+                                fontFamily: 'Impact',
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
-                ],
-              ),
-              backgroundColor: appbar,
-              iconTheme: const IconThemeData(color: textcolor),
-            ),
-            drawer: const SideMenu(),
-            bottomNavigationBar: BottomNavigationBar(
-                selectedItemColor: textcolor,
-                unselectedItemColor: textcolor,
-                backgroundColor: primaryColor,
-                unselectedFontSize: 7,
-                selectedFontSize: 7,
-                type: BottomNavigationBarType.fixed,
-                onTap: (index) {
-                  if (index == 0) {
-                    // Handle tap for the "HOME" item
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => HomeScreen()),
-                    );
-                  }
-                  if (index == 2) {
-                    // Handle tap for the "HOME" item
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => BookAppointments()),
-                    );
-                  }
-                  if (index == 1) {
-                    // Handle tap for the "HOME" item
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => Appointments()),
-                    );
-                  }
+                  backgroundColor: appbar,
+                  iconTheme: const IconThemeData(color: textcolor),
+                ),
+                drawer: const SideMenu(),
+                bottomNavigationBar: BottomNavigationBar(
+                    selectedItemColor: textcolor,
+                    unselectedItemColor: textcolor,
+                    backgroundColor: primaryColor,
+                    unselectedFontSize: 7,
+                    selectedFontSize: 7,
+                    type: BottomNavigationBarType.fixed,
+                    onTap: (index) {
+                      if (index == 0) {
+                        // Handle tap for the "HOME" item
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => HomeScreen()),
+                        );
+                      }
+                      if (index == 2) {
+                        // Handle tap for the "HOME" item
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => BookAppointments()),
+                        );
+                      }
+                      if (index == 1) {
+                        // Handle tap for the "HOME" item
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => Appointments()),
+                        );
+                      }
 
-                  if (index == 3) {
-                    // Handle tap for the "HOME" item
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => Results()),
-                    );
-                  }
-                  if (index == 4) {
-                    // Handle tap for the "HOME" item
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => Profile()),
-                    );
-                  }
-                },
-                items: [
-                  BottomNavigationBarItem(
-                    icon: Padding(
-                      padding: const EdgeInsets.only(bottom: 5.0, top: 5.0),
-                      child: Image.asset(
-                        "assets/images/home.png",
-                        width: 20.0,
-                        height: 20.0,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                    label: 'home'.tr + '\n',
-                  ),
-                  BottomNavigationBarItem(
-                    icon: Padding(
-                      padding: const EdgeInsets.only(bottom: 5.0, top: 5.0),
-                      child: Image.asset(
-                        "assets/images/event.png",
-                        width: 20.0,
-                        height: 20.0,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                    label: 'appointment'.tr + '\n',
-                  ),
-                  BottomNavigationBarItem(
-                      icon: Padding(
-                        padding: const EdgeInsets.only(bottom: 5.0, top: 5.0),
-                        child: Image.asset(
-                          "assets/images/date.png",
-                          width: 20.0,
-                          height: 20.0,
-                          fit: BoxFit.cover,
+                      if (index == 3) {
+                        // Handle tap for the "HOME" item
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => Results()),
+                        );
+                      }
+                      if (index == 4) {
+                        // Handle tap for the "HOME" item
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => Profile()),
+                        );
+                      }
+                    },
+                    items: [
+                      BottomNavigationBarItem(
+                        icon: Padding(
+                          padding: const EdgeInsets.only(bottom: 5.0, top: 5.0),
+                          child: Image.asset(
+                            "assets/images/home.png",
+                            width: 20.0,
+                            height: 20.0,
+                            fit: BoxFit.cover,
+                          ),
                         ),
+                        label: 'home'.tr + '\n',
                       ),
-                      label: 'bookAn'.tr + '\n' + 'appointment'.tr),
-                  BottomNavigationBarItem(
-                      icon: Padding(
-                        padding: const EdgeInsets.only(bottom: 5.0, top: 5.0),
-                        child: Image.asset(
-                          "assets/images/experiment-results.png",
-                          width: 20.0,
-                          height: 20.0,
-                          fit: BoxFit.cover,
+                      BottomNavigationBarItem(
+                        icon: Padding(
+                          padding: const EdgeInsets.only(bottom: 5.0, top: 5.0),
+                          child: Image.asset(
+                            "assets/images/event.png",
+                            width: 20.0,
+                            height: 20.0,
+                            fit: BoxFit.cover,
+                          ),
                         ),
+                        label: 'appointment'.tr + '\n',
                       ),
-                      label: 'results'.tr + '/' + '\n' + 'status'.tr),
-                  BottomNavigationBarItem(
-                      icon: Padding(
-                        padding: const EdgeInsets.only(bottom: 5.0, top: 5.0),
-                        child: Image.asset(
-                          "assets/images/user.png",
-                          width: 20.0,
-                          height: 20.0,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                      label: 'profile'.tr.toUpperCase() + '\n'),
-                ]),
-            body: SingleChildScrollView(child:  
-               Container(height: MediaQuery.of(context).size.height*0.95,
-               child: Center(child: Text("No Notification")),
-               )
-            ));
-              
-          
+                      BottomNavigationBarItem(
+                          icon: Padding(
+                            padding:
+                                const EdgeInsets.only(bottom: 5.0, top: 5.0),
+                            child: Image.asset(
+                              "assets/images/date.png",
+                              width: 20.0,
+                              height: 20.0,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                          label: 'bookAn'.tr + '\n' + 'appointment'.tr),
+                      BottomNavigationBarItem(
+                          icon: Padding(
+                            padding:
+                                const EdgeInsets.only(bottom: 5.0, top: 5.0),
+                            child: Image.asset(
+                              "assets/images/experiment-results.png",
+                              width: 20.0,
+                              height: 20.0,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                          label: 'results'.tr + '/' + '\n' + 'status'.tr),
+                      BottomNavigationBarItem(
+                          icon: Padding(
+                            padding:
+                                const EdgeInsets.only(bottom: 5.0, top: 5.0),
+                            child: Image.asset(
+                              "assets/images/user.png",
+                              width: 20.0,
+                              height: 20.0,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                          label: 'profile'.tr.toUpperCase() + '\n'),
+                    ]),
+                body: SingleChildScrollView(
+                    child: Container(
+                  height: MediaQuery.of(context).size.height * 0.95,
+                  child: Center(child: Text("No Notification")),
+                )));
           }
 
           return Scaffold(

@@ -63,22 +63,25 @@ class sideMenuclass extends State<SideMenu> {
   void initState() {
     super.initState();
     print('iiiiiiiiiiiiiiiiiiiiii' + getlan.toString());
-    _loadSelectedLanguage();
+    loadSelectedLanguage();
   }
 
   String selectedLanguage = '';
 
-  var selectedLanguagePref;
-  _loadSelectedLanguage() async {
+  Future<String> loadSelectedLanguage() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState(() {
-      var selectedLanguagePref = prefs.getString('langEn').toString();
-      if (selectedLanguagePref == "false") {
-        selectedLanguage = 'Arabic';
-      } else {
-        selectedLanguage = 'English';
-      } // Default language if none is stored
-    });
+
+    String selectedLanguagePref = prefs.getString('langEn').toString();
+    print('gggggggggggggggggggggddddddddddddddddd' + selectedLanguagePref);
+    if (selectedLanguagePref == "Arabic") {
+      selectedLanguage = 'Arabic';
+      print('pppppppppppppppppppppppppppppp' + selectedLanguage);
+      return selectedLanguage;
+    } else {
+      selectedLanguage = 'English';
+      print('pppppppppppppppppppppppppppppp' + selectedLanguage);
+      return selectedLanguage;
+    }
   }
 
   _saveSelectedLanguage(String language) async {
@@ -129,12 +132,14 @@ class sideMenuclass extends State<SideMenu> {
             children: [
               const SizedBox(height: 30),
               Image.asset(
-                  "assets/images/logo-welcome-screen.png",
-                  width: 65.0,
-                  height: 65.0,
-                  fit: BoxFit.cover,
-                ),
-                SizedBox(height: 30,), // Use SizedBox for spacing
+                "assets/images/logo-welcome-screen.png",
+                width: 65.0,
+                height: 65.0,
+                fit: BoxFit.cover,
+              ),
+              SizedBox(
+                height: 30,
+              ), // Use SizedBox for spacing
               ListTile(
                 leading: Image.asset(
                   "assets/images/date.png",
@@ -327,7 +332,8 @@ class sideMenuclass extends State<SideMenu> {
 
                                   activeColor: primaryColor,
                                   onChanged: (value) {
-                                    print('selected language'+selectedLanguage);
+                                    print(
+                                        'selected language' + selectedLanguage);
                                     setState(() {
                                       selectedLanguage = value!;
                                     });

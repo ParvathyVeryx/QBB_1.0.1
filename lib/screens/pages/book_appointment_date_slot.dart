@@ -121,6 +121,7 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
                       ),
                       onPressed: () {
                         // Handle button press
+                        Navigator.pop(context);
                       },
                       child: Text(
                         'cancel'.tr,
