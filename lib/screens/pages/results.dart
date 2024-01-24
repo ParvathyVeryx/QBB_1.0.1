@@ -14,6 +14,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
 import '../../sidebar.dart';
+import '../api/results_api.dart';
 import 'book_appintment_nk.dart';
 import 'homescreen_nk.dart';
 import 'notification.dart';
@@ -82,17 +83,14 @@ class ResultsState extends State<Results> {
         // Parse and handle the response body
         var responseBody = json.decode(response.body);
         allreslt = List<Map<String, dynamic>>.from(responseBody);
-        print('jjjjjjjjjjjjjjjjjjjjjjjjjjjjjjj' + allreslt.toString());
         return allreslt;
       } else {
         // Handle errors
-        print('Error: ${response.statusCode}');
-        print('Response: ${response.body}');
+      
         return []; // Return an empty list in case of an error
       }
     } catch (e, stackTrace) {
-      print('Exception during API request: $e');
-      print('StackTrace: $stackTrace');
+     
       return []; // Return an empty list in case of an exception
     }
   }
@@ -859,14 +857,19 @@ class ResultsState extends State<Results> {
                                           appointment["showResultBookingBtn"]
                                               ? ElevatedButton(
                                                   onPressed: () async {
-                                                    await bookAppointmentApiCall(
+                                                    await bookAppointmentToGetResults(
                                                       context,
-                                                      appointment["StudyId"]
-                                                          .toString(),
-                                                      appointment["VisitTypeId"]
+                                                      appointment["QID"]
                                                           .toString(),
                                                       appointment[
-                                                          'VisittypeName'],
+                                                          "AppointmentTypeId"].toString(),
+                                                      appointment[
+                                                          'AppoinmentId'].toString(),
+                                                      appointment["StudyId"].toString(),
+                                                      appointment[
+                                                          "VisitTypeId"].toString(),
+                                                      appointment[
+                                                          'AvailabilityCalenderId'].toString(),
                                                     );
                                                   },
                                                   style: ButtonStyle(
@@ -903,35 +906,42 @@ class ResultsState extends State<Results> {
                                             width: 20,
                                           ),
                                           ElevatedButton(
-                                            onPressed: () {
-                                              String dateString = appointment[
-                                                  "ResultExpiredDate"];
-                                              DateTime resultExpiredDate =
-                                                  DateTime.parse(dateString);
-                                              showDialog(
-                                                context: context,
-                                                builder:
-                                                    (BuildContext context) {
-                                                  return AlertDialog(
-                                                    title: Text(''),
-                                                    content:
-                                                        isDateGreaterThanOrEqualToToday(
-                                                                resultExpiredDate)
-                                                            ? null
-                                                            : Text(appointment[
-                                                                "ExpiredMsg"]),
-                                                    actions: [
-                                                      ElevatedButton(
-                                                        onPressed: () {
-                                                          Navigator.pop(
-                                                              context); // Close the dialog
-                                                        },
-                                                        child: Text('OK'),
-                                                      ),
-                                                    ],
-                                                  );
-                                                },
-                                              );
+                                            onPressed: () async {
+                                              await getresults(
+                                                  context,
+                                                  appointment["QID"],
+                                                  appointment["AppoinmentId"]
+                                                      .toString(),
+                                                  'en');
+
+                                              // String dateString = appointment[
+                                              //     "ResultExpiredDate"];
+                                              // DateTime resultExpiredDate =
+                                              //     DateTime.parse(dateString);
+                                              // showDialog(
+                                              //   context: context,
+                                              //   builder:
+                                              //       (BuildContext context) {
+                                              //     return AlertDialog(
+                                              //       title: Text(''),
+                                              //       content:
+                                              //           isDateGreaterThanOrEqualToToday(
+                                              //                   resultExpiredDate)
+                                              //               ? null
+                                              //               : Text(appointment[
+                                              //                   "ExpiredMsg"]),
+                                              //       actions: [
+                                              //         ElevatedButton(
+                                              //           onPressed: () {
+                                              //             Navigator.pop(
+                                              //                 context); // Close the dialog
+                                              //           },
+                                              //           child: Text('OK'),
+                                              //         ),
+                                              //       ],
+                                              //     );
+                                              //   },
+                                              // );
                                             },
                                             style: ButtonStyle(
                                                 backgroundColor:

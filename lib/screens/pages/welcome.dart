@@ -181,7 +181,7 @@ class WelcomeState extends State<Welcome> {
                         },
                         child: Padding(
                           padding:
-                              const EdgeInsets.fromLTRB(6.0, 3.0, 6.0, 3.0),
+                              const EdgeInsets.fromLTRB(6.0, 1.0, 6.0, 1.0),
                           child: isButtonClicked
                               ? const Text(
                                   'English',
@@ -242,7 +242,7 @@ class WelcomeState extends State<Welcome> {
                         },
                         child: Padding(
                           padding:
-                              const EdgeInsets.fromLTRB(6.0, 3.0, 6.0, 3.0),
+                              const EdgeInsets.fromLTRB(6.0, 1.0, 6.0, 1.0),
                           child: isButtonClickedArabic
                               ? const Text(
                                   'عربي',

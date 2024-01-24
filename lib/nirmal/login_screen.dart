@@ -77,7 +77,7 @@ class _LoginPageState extends State<LoginPage> {
     print(';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;' +
         isButtonClickedArabic.toString());
     print(';;;;;;;;;;;;;;;;;;;;;;;;;;;;' + selectedLang);
-    return isButtonClicked;
+    return isButtonClickedArabic;
   }
 
   @override
@@ -119,15 +119,14 @@ class _LoginPageState extends State<LoginPage> {
                     decoration: const BoxDecoration(
                       image: DecorationImage(
                         image: AssetImage('assets/images/bg.png'),
-                        alignment: Alignment
-                            .bottomCenter, // Align the image to the bottom center // Replace with your image path
+                        alignment: Alignment.topCenter, // Align the image to the bottom center // Replace with your image path
                         fit: BoxFit
                             .contain, // Adjust to your needs (e.g., BoxFit.fill, BoxFit.fitHeight)
                       ),
                     ),
                     child: Padding(
                       // padding: const EdgeInsets.symmetric(horizontal: 45.0),
-                      padding: EdgeInsets.fromLTRB(10.0, 40.0, 10.0, 40.0),
+                      padding: EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 40.0),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -141,8 +140,8 @@ class _LoginPageState extends State<LoginPage> {
                               children: [
                                 Image.asset(
                                   "assets/images/logo-welcome-screen.png",
-                                  width: 60.0,
-                                  height: 60.0,
+                                  width: 90.0,
+                                  height: 90.0,
                                   // fit: BoxFit.cover,
                                 ),
                                 const SizedBox(
@@ -213,7 +212,7 @@ class _LoginPageState extends State<LoginPage> {
                                         },
                                         child: Padding(
                                           padding: const EdgeInsets.fromLTRB(
-                                              6.0, 3.0, 6.0, 3.0),
+                                              6.0, 1.0, 6.0, 1.0),
                                           child: isButtonClicked
                                               ? const Text(
                                                   'English',
@@ -288,7 +287,7 @@ class _LoginPageState extends State<LoginPage> {
                                         },
                                         child: Padding(
                                           padding: const EdgeInsets.fromLTRB(
-                                              6.0, 3.0, 6.0, 3.0),
+                                              6.0, 1.0, 6.0, 1.0),
                                           child: isButtonClickedArabic
                                               ? const Text(
                                                   'عربي',

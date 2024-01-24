@@ -378,7 +378,7 @@ class sideMenuclass extends State<SideMenu> {
                                           await SharedPreferences.getInstance();
                                       var selectedLanguagePref =
                                           prefs.getString('langEn').toString();
-                                      if (selectedLanguagePref == "false") {
+                                      if (selectedLanguagePref == "Arabic") {
                                         selectedLanguage = 'Arabic';
                                       } else {
                                         selectedLanguage = 'English';
@@ -397,8 +397,8 @@ class sideMenuclass extends State<SideMenu> {
                                         pref.setString(
                                             "langEn",
                                             selectedLanguage == 'English'
-                                                ? "true"
-                                                : "false");
+                                                ? "English"
+                                                : "Arabic");
 
                                         updateLanguage(
                                             selectedLanguage == 'English'
