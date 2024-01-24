@@ -37,8 +37,8 @@ class WelcomeState extends State<Welcome> {
   bool isButtonEnabled = false;
   String otp = '';
   String QID = '';
-  bool isButtonClicked = true;
-  bool isButtonClickedArabic = false;
+  bool isButtonClicked = false;
+  bool isButtonClickedArabic = true;
 
   @override
   Widget build(BuildContext context) {

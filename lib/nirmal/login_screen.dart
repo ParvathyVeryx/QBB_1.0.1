@@ -50,7 +50,7 @@ class _LoginPageState extends State<LoginPage> {
   // String? token;
   bool isLoading = false;
 
-  bool isButtonClicked = true;
+  bool isButtonClicked = false;
 
   bool _obscureText = true;
   var qidErr;
@@ -59,7 +59,7 @@ class _LoginPageState extends State<LoginPage> {
   String passwordErrorText = '';
 
   String selectedLang = '';
-  bool isButtonClickedArabic = false;
+  bool isButtonClickedArabic = true;
 
   void selectedLanguage() async {}
 
@@ -68,16 +68,27 @@ class _LoginPageState extends State<LoginPage> {
     selectedLang = pref.getString("langEn").toString();
     print(';;;;;;;;;;;;;;;;;;;;;;;;;;;;' + selectedLang);
     if (selectedLang == "Arabic") {
-      isButtonClickedArabic = true;
       isButtonClicked = false;
-    } else {
-      isButtonClickedArabic = false;
-      isButtonClicked = true;
+      isButtonClickedArabic = true;
     }
     print(';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;' +
         isButtonClickedArabic.toString());
     print(';;;;;;;;;;;;;;;;;;;;;;;;;;;;' + selectedLang);
     return isButtonClickedArabic;
+  }
+
+  Future<bool> ButtonClickedEng() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    selectedLang = pref.getString("langEn").toString();
+    print(';;;;;;;;;;;;;;;;;;;;;;;;;;;;' + selectedLang);
+    if (selectedLang == "English") {
+      isButtonClicked = true;
+      isButtonClickedArabic = false;
+    }
+    print(';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;' +
+        isButtonClickedArabic.toString());
+    print(';;;;;;;;;;;;;;;;;;;;;;;;;;;;' + selectedLang);
+    return isButtonClicked;
   }
 
   @override
@@ -86,6 +97,7 @@ class _LoginPageState extends State<LoginPage> {
     selectedLanguage();
     qidController.addListener(_validateInput);
     ButtonClickedArabic();
+    ButtonClickedEng();
   }
 
   @override
@@ -119,7 +131,8 @@ class _LoginPageState extends State<LoginPage> {
                     decoration: const BoxDecoration(
                       image: DecorationImage(
                         image: AssetImage('assets/images/bg.png'),
-                        alignment: Alignment.topCenter, // Align the image to the bottom center // Replace with your image path
+                        alignment: Alignment
+                            .topCenter, // Align the image to the bottom center // Replace with your image path
                         fit: BoxFit
                             .contain, // Adjust to your needs (e.g., BoxFit.fill, BoxFit.fitHeight)
                       ),

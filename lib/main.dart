@@ -99,7 +99,7 @@ class _MyAppState extends State<MyApp> {
         // title: 'QBB', supportedLocales: AppLocalizations.supported,
         translations: LocaleString(),
         supportedLocales: L10n.all,
-        locale: const Locale('en'),
+        locale: const Locale('ar'),
         // locale: Locale(LanguageController().selectedLanguageCode.value),
         localizationsDelegates: const [
           GlobalMaterialLocalizations.delegate,
