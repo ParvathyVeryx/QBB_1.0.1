@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:QBB/constants.dart';
 import 'package:QBB/main.dart';
 import 'package:QBB/nirmal/login_screen.dart';
@@ -125,12 +127,19 @@ class sideMenuclass extends State<SideMenu> {
           child: Column(
             // mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const SizedBox(height: 140), // Use SizedBox for spacing
+              const SizedBox(height: 30),
+              Image.asset(
+                  "assets/images/logo-welcome-screen.png",
+                  width: 65.0,
+                  height: 65.0,
+                  fit: BoxFit.cover,
+                ),
+                SizedBox(height: 30,), // Use SizedBox for spacing
               ListTile(
                 leading: Image.asset(
                   "assets/images/date.png",
-                  width: 30.0,
-                  height: 30.0,
+                  width: 25.0,
+                  height: 25.0,
                   fit: BoxFit.cover,
                 ),
                 title: Text(
@@ -158,8 +167,8 @@ class sideMenuclass extends State<SideMenu> {
               ListTile(
                 leading: Image.asset(
                   "assets/images/appointment.png",
-                  width: 30.0,
-                  height: 30.0,
+                  width: 25.0,
+                  height: 25.0,
                   fit: BoxFit.cover,
                 ),
                 title: Text(
@@ -181,8 +190,8 @@ class sideMenuclass extends State<SideMenu> {
               ListTile(
                 leading: Image.asset(
                   "assets/images/document.png",
-                  width: 30.0,
-                  height: 30.0,
+                  width: 25.0,
+                  height: 25.0,
                   fit: BoxFit.cover,
                 ),
                 title: Text(
@@ -202,8 +211,8 @@ class sideMenuclass extends State<SideMenu> {
               ListTile(
                 leading: Image.asset(
                   "assets/images/student.png",
-                  width: 30.0,
-                  height: 30.0,
+                  width: 25.0,
+                  height: 25.0,
                   fit: BoxFit.cover,
                 ),
                 title: Text(
@@ -226,8 +235,8 @@ class sideMenuclass extends State<SideMenu> {
               ListTile(
                 leading: Image.asset(
                   "assets/images/user.png",
-                  width: 30.0,
-                  height: 30.0,
+                  width: 25.0,
+                  height: 25.0,
                   fit: BoxFit.cover,
                 ),
                 title: Text(
@@ -247,8 +256,8 @@ class sideMenuclass extends State<SideMenu> {
               ListTile(
                 leading: Image.asset(
                   "assets/images/about.png",
-                  width: 30.0,
-                  height: 30.0,
+                  width: 25.0,
+                  height: 25.0,
                   fit: BoxFit.cover,
                 ),
                 title: Text(
@@ -270,8 +279,8 @@ class sideMenuclass extends State<SideMenu> {
               ListTile(
                 leading: Image.asset(
                   "assets/images/language.png",
-                  width: 30.0,
-                  height: 30.0,
+                  width: 25.0,
+                  height: 25.0,
                   fit: BoxFit.cover,
                 ),
                 title: Text(
@@ -416,8 +425,8 @@ class sideMenuclass extends State<SideMenu> {
               ListTile(
                 leading: Image.asset(
                   "assets/images/turn-off.png",
-                  width: 30.0,
-                  height: 30.0,
+                  width: 25.0,
+                  height: 25.0,
                   fit: BoxFit.cover,
                 ),
                 title: Text(

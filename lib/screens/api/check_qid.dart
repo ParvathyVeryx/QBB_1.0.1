@@ -13,28 +13,30 @@ class Country {
   Country(this.id, this.code, this.name);
 }
 
-// Future<void> _retrieveToken() async {
-//   try {
-//     SharedPreferences prefs = await SharedPreferences.getInstance();
-//     var token = prefs.getString('token').toString();
-//     print('Tokrn in other screen $token');
-//     // Rest of the code...
-//   } catch (e) {
-//     print('Error retrieving token: $e');
-//   }
-// }
+Future<String?> _retrieveToken() async {
+  try {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getString('token');
+  } catch (e) {
+    print('Error retrieving token: $e');
+    return null;
+  }
+}
 
 Future<bool> checkQIDExist(
   String qid,
   BuildContext context,
   TextEditingController nationalityController,
-  void Function(int) updateNationalityId, // Add the parameter
-  // String token,
+  void Function(int) updateNationalityId,
 ) async {
   try {
-    // Replace 'your_token' with the actual token you have
-    String token =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6Im1vYmFkbWluQGdtYWlsLmNvbSIsIm5iZiI6MTcwMzE3ODA1MywiZXhwIjoxNzAzNzgyODUzLCJpYXQiOjE3MDMxNzgwNTMsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTAxOTEiLCJhdWQiOiJodHRwOi8vbG9jYWxob3N0OjUwMTkxIn0.WYN0dROXwe3ys9yA2Ngd62p7Fr2h6JV4nSyHPcnF4tk";
+    // Retrieve the token from SharedPreferences
+    String? token = await _retrieveToken();
+
+    if (token == null) {
+      print('Token not found in SharedPreferences.');
+      return false;
+    }
 
     // Replace 'your_base_url' with the actual base URL of your API
     String baseUrl =
@@ -49,17 +51,27 @@ Future<bool> checkQIDExist(
     // Set up headers
     Map<String, String> headers = {
       'Content-Type': 'application/json',
-      'Authorization': token,
+      'Authorization': 'Bearer ${token.replaceAll('"', '')}',
     };
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return LoaderWidget();
       },
     );
+
+    // Print statements for debugging
+    print('API URL: $apiUrl');
+    print('Headers: $headers');
+
     // Make the GET request
     final response = await http.get(Uri.parse(apiUrl), headers: headers);
     Navigator.pop(context);
+
+    // Print statements for debugging
+    print('Response Status Code: ${response.statusCode}');
+    print('Response Body: ${response.body}');
 
     if (response.statusCode == 200) {
       // QID exists, proceed to get the country
@@ -98,9 +110,11 @@ Future<bool> checkQIDExist(
               .name; // Update the nationalityId using the provided callback
           updateNationalityId(enteredCountryInfo.id);
 
+          // Print statements for debugging
           print('Entered Country Code: $enteredCountryCode');
           print('Country Name: ${enteredCountryInfo.name}');
-          print('Country ID: ${enteredCountryInfo.id}'); // Print the country ID
+          print('Country ID: ${enteredCountryInfo.id}');
+
           return true;
         } else {
           print('Unexpected response format: $countryResponseBody');
@@ -122,6 +136,10 @@ Future<bool> checkQIDExist(
       }
     } else {
       String errorMessage = response.body;
+
+      // Print statements for debugging
+      print('Error Response Body: $errorMessage');
+
       // Handle error response for CheckQIDExistAPI
       showDialog(
         context: context,
@@ -135,6 +153,9 @@ Future<bool> checkQIDExist(
     }
   } catch (e) {
     // Handle any exceptions
+
+    // Print statements for debugging
+    print('Error while making API request: $e');
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -143,7 +164,8 @@ Future<bool> checkQIDExist(
         );
       },
     );
-    print('Error while making API request: $e');
+    // ... (other code)
+
     return false;
   }
 }
