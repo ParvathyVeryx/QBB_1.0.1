@@ -1,0 +1,508 @@
+import 'package:QBB/constants.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:get/get.dart';
+
+class ForgotPassword extends StatefulWidget {
+  const ForgotPassword({super.key});
+
+  @override
+  ForgotPasswordState createState() => ForgotPasswordState();
+}
+
+class ForgotPasswordState extends State<ForgotPassword> {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  String password = ''; // Store the entered password
+  String confirmPassword = ''; // Store the entered confirm password
+  bool isButtonEnabled = false;
+  String otp = '';
+  String QID = '';
+  bool isPasswordValid = false;
+  String errorText = '';
+  String errorPwd = '';
+  final TextEditingController _controller = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  bool isbuttonCLicked = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller.addListener(_validateInput);
+    passwordController.addListener(_validatePwd);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(
+            Icons.arrow_back,
+            color: Color.fromARGB(255, 179, 179, 179),
+          ),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
+        title: Center(
+          child: Padding(
+            padding: EdgeInsets.only(right: 40.0),
+            child: Text(
+              'forgotPasswordTitle'.tr,
+              style: TextStyle(
+                color: appbar,
+                fontFamily: 'Impact',
+              ),
+            ),
+          ),
+        ),
+        backgroundColor: textcolor,
+      ),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                _buildRoundedBorderTextField(
+                  labelText: 'qid'.tr,
+                  labelTextColor: const Color.fromARGB(255, 173, 173, 173),
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return 'Please enter your QID';
+                    }
+                    return null;
+                  },
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    ElevatedButton(
+                        onPressed: () {},
+                        style: ButtonStyle(
+                            backgroundColor: MaterialStateProperty.all<Color>(
+                                primaryColor), // Set background color
+                            shape: MaterialStateProperty.all<
+                                RoundedRectangleBorder>(
+                              const RoundedRectangleBorder(
+                                borderRadius: BorderRadius.only(
+                                  bottomLeft: Radius.circular(
+                                      10.0), // Rounded border at bottom-left
+                                ),
+                              ),
+                            )),
+                        child: Padding(
+                          padding: EdgeInsets.fromLTRB(5.0, 5.0, 5.0, 5.0),
+                          child: Text(
+                            'getOTP'.tr,
+                            style: TextStyle(color: textcolor, fontSize: 11),
+                          ),
+                        )),
+                  ],
+                ),
+                const SizedBox(
+                  height: 5.0,
+                ),
+                _buildRoundedBorderOTPField(
+                  labelText: 'enterOTP'.tr,
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return 'pleaseEnterOtp'.tr;
+                    }
+                    return null;
+                  },
+                  keyboardType: TextInputType.phone,
+                  labelTextColor: const Color.fromARGB(255, 173, 173, 173),
+                ),
+                const SizedBox(height: 20.0),
+                _buildPasswordField(),
+                const SizedBox(height: 0.0),
+                _buildConfirmPasswordField(),
+                const SizedBox(height: 20.0),
+                ElevatedButton(
+                  onPressed: isButtonEnabled
+                      ? () {
+                          if (_formKey.currentState!.validate()) {
+                            // Process the form data
+                            // Submit the form or perform necessary actions
+                          }
+                        }
+                      : null,
+                  style: isButtonEnabled
+                      ? ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all<Color>(
+                              primaryColor), // Set background color
+                          shape:
+                              MaterialStateProperty.all<RoundedRectangleBorder>(
+                            const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.only(
+                                bottomLeft: Radius.circular(
+                                    12.0), // Rounded border at bottom-left
+                              ),
+                            ),
+                          ))
+                      : ButtonStyle(
+                          // Set background color
+                          backgroundColor: MaterialStateProperty.all<Color>(
+                              primaryColor
+                                  .withOpacity(0.6)), // Set background color
+                          // Set overlay color when disabled
+                          shape:
+                              MaterialStateProperty.all<RoundedRectangleBorder>(
+                            const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.only(
+                                bottomLeft: Radius.circular(
+                                    12.0), // Rounded border at bottom-left
+                              ),
+                            ),
+                          ),
+                        ),
+                  child: Padding(
+                    padding: EdgeInsets.fromLTRB(10.0, 15.0, 10.0, 15.0),
+                    child: Text(
+                      'submit'.tr,
+                      style: TextStyle(
+                        color: textcolor,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _validateInput() {
+    setState(() {
+      if (_controller.text.isEmpty) {
+        errorText = '';
+      } else if (!RegExp(r'^[0-9]*$').hasMatch(_controller.text)) {
+        errorText = 'pleaseEnterValidQatarID'.tr;
+      } else {
+        errorText = '';
+      }
+    });
+  }
+
+  void _validatePwd() {
+    setState(() {
+      if (passwordController.text.isEmpty) {
+        errorPwd = '';
+      } else if (!RegExp(r'^(?=.*[!@#$%^&*(),.?":{}|<>])(?=.*\d)(?=.*[A-Z]).*$')
+          .hasMatch(passwordController.text)) {
+        errorPwd =
+            'passwordsMustBeAtLeast8CharactersAndContainAt3Of4OfTheFollowingUpperCaseAZLowerCaseAAnumber09AndSpecialCharacterEG'
+                .tr;
+      } else {
+        errorPwd = '';
+      }
+    });
+  }
+
+  Widget _buildRoundedBorderTextField({
+    required String labelText,
+    required FormFieldValidator<String> validator,
+    Color? labelTextColor,
+    TextInputType? keyboardType, // Added labelTextColor parameter
+  }) {
+    return TextFormField(
+      controller: _controller,
+      keyboardType: TextInputType.number,
+      // inputFormatters: <TextInputFormatter>[
+      //   FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+      // ],
+      decoration: InputDecoration(
+        errorText: errorText,
+        errorStyle: TextStyle(
+          // Add your style properties here
+          color: primaryColor,
+          fontWeight: FontWeight.w600,
+          fontSize: 14.0,
+        ),
+        contentPadding: const EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 5.0),
+        labelText: labelText,
+        prefixIcon: Container(
+          height: 5,
+          width: 5,
+          child: Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: Image.asset(
+              "assets/images/id-card.png",
+              // width: 15.0,
+              // height: 15.0,
+              fit: BoxFit.cover,
+            ),
+          ),
+        ),
+        labelStyle: TextStyle(
+            color: labelTextColor, fontSize: 12), // Set the label text color
+        enabledBorder: const OutlineInputBorder(
+          borderSide: BorderSide(color: Color.fromARGB(255, 173, 173, 173)),
+          borderRadius: BorderRadius.only(
+            bottomLeft: Radius.circular(20.0),
+          ),
+        ),
+        focusedBorder: const OutlineInputBorder(
+          borderSide: BorderSide(color: Color.fromARGB(255, 173, 173, 173)),
+          borderRadius: BorderRadius.only(
+            bottomLeft: Radius.circular(20.0),
+          ),
+        ),
+        errorBorder: const OutlineInputBorder(
+          borderSide: BorderSide(color: Color.fromARGB(255, 173, 173, 173)),
+          borderRadius: BorderRadius.only(
+            bottomLeft: Radius.circular(20.0),
+          ),
+        ),
+        focusedErrorBorder: const OutlineInputBorder(
+          borderSide: BorderSide(color: Color.fromARGB(255, 173, 173, 173)),
+          borderRadius: BorderRadius.only(
+            bottomLeft: Radius.circular(20.0),
+          ),
+        ),
+      ),
+      onChanged: (value) {
+        setState(() {
+          QID = value;
+          // Enable or disable the button based on whether the OTP field is empty or not
+          isButtonEnabled = QID.isNotEmpty &&
+              otp.isNotEmpty &&
+              password.isNotEmpty &&
+              confirmPassword.isNotEmpty;
+        });
+      },
+      validator: validator,
+    );
+  }
+
+  Widget _buildRoundedBorderOTPField({
+    required String labelText,
+    required FormFieldValidator<String> validator,
+    Color? labelTextColor,
+    TextInputType? keyboardType, // Added labelTextColor parameter
+  }) {
+    return TextFormField(
+      keyboardType: TextInputType.number,
+      decoration: InputDecoration(
+        errorStyle: TextStyle(
+          // Add your style properties here
+          color: primaryColor,
+          fontWeight: FontWeight.w600,
+          fontSize: 14.0,
+        ),
+        contentPadding: const EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 5.0),
+        labelText: labelText,
+        prefixIcon: Container(
+          height: 5,
+          width: 5,
+          child: Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: Image.asset(
+              "assets/images/phone.png",
+              // width: 15.0,
+              // height: 15.0,
+              fit: BoxFit.cover,
+            ),
+          ),
+        ),
+        labelStyle: TextStyle(
+            color: labelTextColor, fontSize: 12), // Set the label text color
+        enabledBorder: const OutlineInputBorder(
+          borderSide: BorderSide(color: Color.fromARGB(255, 173, 173, 173)),
+          borderRadius: BorderRadius.only(
+            bottomLeft: Radius.circular(20.0),
+          ),
+        ),
+        focusedBorder: const OutlineInputBorder(
+          borderSide: BorderSide(color: Color.fromARGB(255, 173, 173, 173)),
+          borderRadius: BorderRadius.only(
+            bottomLeft: Radius.circular(20.0),
+          ),
+        ),
+        errorBorder: const OutlineInputBorder(
+          borderSide: BorderSide(color: Color.fromARGB(255, 173, 173, 173)),
+          borderRadius: BorderRadius.only(
+            bottomLeft: Radius.circular(20.0),
+          ),
+        ),
+        focusedErrorBorder: const OutlineInputBorder(
+          borderSide: BorderSide(color: Color.fromARGB(255, 173, 173, 173)),
+          borderRadius: BorderRadius.only(
+            bottomLeft: Radius.circular(20.0),
+          ),
+        ),
+      ),
+      onChanged: (value) {
+        setState(() {
+          otp = value;
+          // Enable or disable the button based on whether the OTP field is empty or not
+          isButtonEnabled = QID.isNotEmpty &&
+              otp.isNotEmpty &&
+              password.isNotEmpty &&
+              confirmPassword.isNotEmpty;
+        });
+      },
+      validator: validator,
+    );
+  }
+
+  Widget _buildPasswordField() {
+    return TextFormField(
+      controller: passwordController,
+      decoration: InputDecoration(
+        errorText: errorPwd,
+        errorStyle: TextStyle(
+          // Add your style properties here
+          color: primaryColor,
+          fontWeight: FontWeight.w600,
+          fontSize: 14.0,
+        ),
+        contentPadding: EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 5.0),
+        labelText: 'newPassword'.tr + '*',
+        prefixIcon: Container(
+          height: 10.0,
+          width: 10.0,
+          child: Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: Image.asset(
+              "assets/images/lock.png",
+              width: 15.0,
+              height: 15.0,
+              fit: BoxFit.cover,
+            ),
+          ),
+        ),
+        labelStyle: TextStyle(
+            color: Color.fromARGB(
+              255,
+              173,
+              173,
+              173,
+            ),
+            fontSize: 12 // Label text color
+            ),
+        enabledBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: Color.fromARGB(255, 173, 173, 173)),
+          borderRadius: BorderRadius.only(
+            bottomLeft: Radius.circular(20.0),
+          ),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: Color.fromARGB(255, 173, 173, 173)),
+          borderRadius: BorderRadius.only(
+            bottomLeft: Radius.circular(20.0),
+          ),
+        ),
+        errorBorder: const OutlineInputBorder(
+          borderSide: BorderSide(color: Color.fromARGB(255, 173, 173, 173)),
+          borderRadius: BorderRadius.only(
+            bottomLeft: Radius.circular(20.0),
+          ),
+        ),
+        focusedErrorBorder: const OutlineInputBorder(
+          borderSide: BorderSide(color: Color.fromARGB(255, 173, 173, 173)),
+          borderRadius: BorderRadius.only(
+            bottomLeft: Radius.circular(20.0),
+          ),
+        ),
+      ),
+      obscureText: true,
+      // Hide the entered text
+      onChanged: (value) {
+        setState(() {
+          password = value;
+          isButtonEnabled = QID.isNotEmpty &&
+              otp.isNotEmpty &&
+              password.isNotEmpty &&
+              confirmPassword.isNotEmpty;
+        });
+      },
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'pleaseEnterYourPwd'.tr; // Validation error message
+        }
+        return null; // No error
+      },
+    );
+  }
+
+  Widget _buildConfirmPasswordField() {
+    return TextFormField(
+      decoration: InputDecoration(
+        errorStyle: TextStyle(
+          // Add your style properties here
+          color: primaryColor,
+          fontWeight: FontWeight.w600,
+          fontSize: 14.0,
+        ),
+        contentPadding: EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 5.0),
+        labelText: 'confirmPassword'.tr + '*',
+        labelStyle: TextStyle(
+            color: Color.fromARGB(255, 173, 173, 173),
+            fontSize: 12 // Label text color
+            ),
+        prefixIcon: Container(
+          height: 10.0,
+          width: 10.0,
+          child: Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: Image.asset(
+              "assets/images/lock.png",
+              width: 15.0,
+              height: 15.0,
+              fit: BoxFit.cover,
+            ),
+          ),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: Color.fromARGB(255, 173, 173, 173)),
+          borderRadius: BorderRadius.only(
+            bottomLeft: Radius.circular(20.0),
+          ),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: Color.fromARGB(255, 173, 173, 173)),
+          borderRadius: BorderRadius.only(
+            bottomLeft: Radius.circular(20.0),
+          ),
+        ),
+        errorBorder: const OutlineInputBorder(
+          borderSide: BorderSide(color: Color.fromARGB(255, 173, 173, 173)),
+          borderRadius: BorderRadius.only(
+            bottomLeft: Radius.circular(20.0),
+          ),
+        ),
+        focusedErrorBorder: const OutlineInputBorder(
+          borderSide: BorderSide(color: Color.fromARGB(255, 173, 173, 173)),
+          borderRadius: BorderRadius.only(
+            bottomLeft: Radius.circular(20.0),
+          ),
+        ),
+      ),
+      obscureText: true, // Hide the entered text
+      onChanged: (value) {
+        setState(() {
+          confirmPassword = value;
+          isButtonEnabled = QID.isNotEmpty &&
+              otp.isNotEmpty &&
+              password.isNotEmpty &&
+              confirmPassword.isNotEmpty;
+        });
+      },
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'Please confirm your password'; // Validation error message
+        } else if (value != password) {
+          return 'Passwords do not match'; // Validation error message for mismatch
+        }
+        return null; // No error
+      },
+    );
+  }
+}
