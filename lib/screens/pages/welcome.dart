@@ -28,14 +28,13 @@ class WelcomeState extends State<Welcome> {
   // ];
 
   updateLanguage(Locale locale) {
-    Get.back();
+    // Get.back();
     Get.updateLocale(locale);
   }
 
   _clearSharedPreferences() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.remove("langSelected");
-
   }
 
   String password = ''; // Store the entered password
@@ -45,9 +44,9 @@ class WelcomeState extends State<Welcome> {
   String QID = '';
   bool isButtonClickedW = false;
   bool isButtonClickedWArabic = true;
-    String selectedLang = '';
+  String selectedLang = '';
 
-    Future<String> getLang() async {
+  Future<String> getLang() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     selectedLang = pref.getString("langSelected").toString();
     if (selectedLang == "English") {
@@ -73,7 +72,11 @@ class WelcomeState extends State<Welcome> {
     // TODO: implement initState
     // _clearSharedPreferences();
     super.initState();
-    _clearSharedPreferences();
+    getLang();
+    //   Future.delayed(Duration(seconds: 2), () {
+    //     _clearSharedPreferences();
+    //   });
+    // }
   }
 
   @override

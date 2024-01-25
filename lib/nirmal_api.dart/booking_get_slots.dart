@@ -173,7 +173,6 @@ Future<void> bookAppointmentToGetResults(
   String visitTypeId,
   String availabilityCalendar,
 ) async {
-  
   int? personGradeId = await getPersonGradeIdFromSharedPreferences();
 
   if (personGradeId != null) {
@@ -182,14 +181,9 @@ Future<void> bookAppointmentToGetResults(
     print('Failed to retrieve PersonGradeId');
   }
 
-  const String apiUrl =
-      'https://participantportal-test.qatarbiobank.org.qa/QbbAPIS/api/BookResultAppointmentAPI';
+  // const String apiUrl =
+  //     'https://participantportal-test.qatarbiobank.org.qa/QbbAPIS/api/BookResultAppointmentAPI';
 
-
-  SharedPreferences pref = await SharedPreferences.getInstance();
-  String? token = pref.getString('token');
- 
-  final Uri uri = Uri.parse('$apiUrl');
   // SharedPreferences pref = await SharedPreferences.getInstance();
   // String? token = pref.getString('token');
   try {
@@ -198,12 +192,20 @@ Future<void> bookAppointmentToGetResults(
       "AppointmentTypeId": AppointmentTypeId,
       "AppoinmentId": AppoinmentId,
       'StudyId': studyId,
-      'VisitTypeId': visitTypeId,
+      'AvailabilityCalenderId': visitTypeId,
       'AvailabilityCalenderId': availabilityCalendar,
       "ShiftCode": 'shft',
       'PersonGradeId': '$personGradeId',
       'language': 'langChange'.tr,
     };
+
+    String apiUrl =
+        "https://participantportal-test.qatarbiobank.org.qa/QbbAPIS/api/BookResultAppointmentAPI?qatarid=${requestBody['qatarid']}&StudyId=${requestBody['StudyId']}&ShiftCode=${requestBody['ShiftCode']}&VisitTypeId=${requestBody['AvailabilityCalenderId']}&PersonGradeId=${requestBody['PersonGradeId']}&AvailabilityCalenderId=${requestBody['AvailabilityCalenderId']}&AppoinmentId=${requestBody['AppoinmentId']}&language=en&AppointmentTypeId=${requestBody['AppointmentTypeId']}";
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    print(apiUrl);
+    String? token = pref.getString('token');
+
+    final Uri uri = Uri.parse('$apiUrl');
 
     final response = await http.post(
       uri,
@@ -211,7 +213,7 @@ Future<void> bookAppointmentToGetResults(
         'Authorization': 'Bearer ${token?.replaceAll('"', '')}',
         'Accept': 'application/json'
       },
-      body: requestBody,
+      // body: requestBody,
     );
     // print('00000000000000000000000000000000000');
     // print(response.body);
@@ -302,7 +304,7 @@ Future<void> getResultAppointmentApiCall(
   print('page: ${queryParams['page']}');
   print('language: ${queryParams['language']}');
 
-    SharedPreferences pref = await SharedPreferences.getInstance();
+  SharedPreferences pref = await SharedPreferences.getInstance();
   String? token = pref.getString('token');
 
   final Uri uri = Uri.parse(
@@ -323,8 +325,6 @@ Future<void> getResultAppointmentApiCall(
 
       // Parse the JSON response
       final Map<String, dynamic> jsonResponse = json.decode(response.body);
-
-    
 
       // Navigator.push(
       //   context,
@@ -354,4 +354,3 @@ Future<void> getResultAppointmentApiCall(
     );
   }
 }
-
