@@ -63,32 +63,25 @@ class _LoginPageState extends State<LoginPage> {
 
   void selectedLanguage() async {}
 
-  Future<bool> ButtonClickedArabic() async {
+  Future<String> getLang() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
-    selectedLang = pref.getString("langEn").toString();
-    print(';;;;;;;;;;;;;;;;;;;;;;;;;;;;' + selectedLang);
-    if (selectedLang == "Arabic") {
-      isButtonClicked = false;
-      isButtonClickedArabic = true;
-    }
-    print(';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;' +
-        isButtonClickedArabic.toString());
-    print(';;;;;;;;;;;;;;;;;;;;;;;;;;;;' + selectedLang);
-    return isButtonClickedArabic;
-  }
-
-  Future<bool> ButtonClickedEng() async {
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    selectedLang = pref.getString("langEn").toString();
-    print(';;;;;;;;;;;;;;;;;;;;;;;;;;;;' + selectedLang);
+    selectedLang = pref.getString("langSelected").toString();
     if (selectedLang == "English") {
-      isButtonClicked = true;
-      isButtonClickedArabic = false;
+      setState(() {
+        isButtonClicked = true;
+        isButtonClickedArabic = false;
+      });
+    } else {
+      setState(() {
+        isButtonClicked = false;
+        isButtonClickedArabic = true;
+      });
     }
-    print(';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;' +
-        isButtonClickedArabic.toString());
-    print(';;;;;;;;;;;;;;;;;;;;;;;;;;;;' + selectedLang);
-    return isButtonClicked;
+    print('DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD');
+    print(isButtonClicked);
+    print(isButtonClickedArabic);
+    print(selectedLang);
+    return selectedLang;
   }
 
   @override
@@ -96,8 +89,9 @@ class _LoginPageState extends State<LoginPage> {
     super.initState();
     selectedLanguage();
     qidController.addListener(_validateInput);
-    ButtonClickedArabic();
-    ButtonClickedEng();
+    getLang();
+    print('pppppppppppppppppppppppppppppppppppp' + isButtonClicked.toString());
+    print('pp' + isButtonClickedArabic.toString());
   }
 
   @override
@@ -132,7 +126,7 @@ class _LoginPageState extends State<LoginPage> {
                       image: DecorationImage(
                         image: AssetImage('assets/images/bg.png'),
                         alignment: Alignment
-                            .topCenter, // Align the image to the bottom center // Replace with your image path
+                            .bottomCenter, // Align the image to the bottom center
                         fit: BoxFit
                             .contain, // Adjust to your needs (e.g., BoxFit.fill, BoxFit.fitHeight)
                       ),
@@ -202,6 +196,8 @@ class _LoginPageState extends State<LoginPage> {
                                                 ),
                                               ),
                                         onPressed: () async {
+                                          qidController.clear();
+                                          passwordController.clear();
                                           setState(() {
                                             // Toggle the state to change the button style
                                             isButtonClicked = true;
@@ -211,9 +207,10 @@ class _LoginPageState extends State<LoginPage> {
                                           SharedPreferences pref =
                                               await SharedPreferences
                                                   .getInstance();
-                                          pref.setString("langEn", "English");
+                                          pref.setString(
+                                              "langSelected", "English");
                                           langen = pref
-                                              .getString("langEn")
+                                              .getString("langSelected")
                                               .toString();
                                           print("jjjjjjjjjjjjjjj" + langen);
                                           updateLanguageLogin(
@@ -278,6 +275,8 @@ class _LoginPageState extends State<LoginPage> {
                                                 ),
                                               ),
                                         onPressed: () async {
+                                          qidController.clear();
+                                          passwordController.clear();
                                           passwordErrorText = "en";
                                           setState(() {
                                             // Toggle the state to change the button style
@@ -287,9 +286,10 @@ class _LoginPageState extends State<LoginPage> {
                                           SharedPreferences pref =
                                               await SharedPreferences
                                                   .getInstance();
-                                          pref.setString("langEn", "Arabic");
+                                          pref.setString(
+                                              "langSelected", "Arabic");
                                           langen = pref
-                                              .getString("langEn")
+                                              .getString("langSelected")
                                               .toString();
                                           print("jjjjjjjjjjjjjjj" + langen);
                                           updateLanguageLogin(

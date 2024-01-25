@@ -71,14 +71,14 @@ class sideMenuclass extends State<SideMenu> {
   Future<String> loadSelectedLanguage() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    String selectedLanguagePref = prefs.getString('langEn').toString();
+    String selectedLanguagePref = prefs.getString('langSelected').toString();
     print('gggggggggggggggggggggddddddddddddddddd' + selectedLanguagePref);
-    if (selectedLanguagePref == "Arabic") {
-      selectedLanguage = 'Arabic';
+    if (selectedLanguagePref == "English") {
+      selectedLanguage = 'English';
       print('pppppppppppppppppppppppppppppp' + selectedLanguage);
       return selectedLanguage;
     } else {
-      selectedLanguage = 'English';
+      selectedLanguage = 'Arabic';
       print('pppppppppppppppppppppppppppppp' + selectedLanguage);
       return selectedLanguage;
     }
@@ -377,7 +377,7 @@ class sideMenuclass extends State<SideMenu> {
                                       SharedPreferences prefs =
                                           await SharedPreferences.getInstance();
                                       var selectedLanguagePref =
-                                          prefs.getString('langEn').toString();
+                                          prefs.getString('langSelected').toString();
                                       if (selectedLanguagePref == "Arabic") {
                                         selectedLanguage = 'Arabic';
                                       } else {
@@ -395,7 +395,7 @@ class sideMenuclass extends State<SideMenu> {
                                             await SharedPreferences
                                                 .getInstance();
                                         pref.setString(
-                                            "langEn",
+                                            "langSelected",
                                             selectedLanguage == 'English'
                                                 ? "English"
                                                 : "Arabic");
@@ -458,7 +458,7 @@ class sideMenuclass extends State<SideMenu> {
   var getlan;
   void getlang() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
-    var lang = pref.getString("langEn").toString();
+    var lang = pref.getString("langSelected").toString();
     if (lang == "false") {
       getlan = "ar";
     } else {

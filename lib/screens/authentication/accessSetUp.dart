@@ -252,6 +252,12 @@ class AccessUserState extends State<AccessUser> {
     return TextFormField(
       controller: controller,
       decoration: InputDecoration(
+        errorStyle: TextStyle(
+          // Add your style properties here
+          color: primaryColor,
+          fontWeight: FontWeight.w600,
+          fontSize: 14.0,
+        ),
         contentPadding: const EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 5.0),
         labelText: labelText,
         prefixIcon: Container(
@@ -267,8 +273,7 @@ class AccessUserState extends State<AccessUser> {
             ),
           ),
         ),
-        labelStyle: TextStyle(
-            color: labelTextColor, fontSize: 12), // Set the label text color
+        labelStyle: TextStyle(color: labelTextColor, fontSize: 12),
         enabledBorder: const OutlineInputBorder(
           borderSide: BorderSide(color: Color.fromARGB(255, 173, 173, 173)),
           borderRadius: BorderRadius.only(
@@ -276,6 +281,18 @@ class AccessUserState extends State<AccessUser> {
           ),
         ),
         focusedBorder: const OutlineInputBorder(
+          borderSide: BorderSide(color: Color.fromARGB(255, 173, 173, 173)),
+          borderRadius: BorderRadius.only(
+            bottomLeft: Radius.circular(20.0),
+          ),
+        ),
+        errorBorder: const OutlineInputBorder(
+          borderSide: BorderSide(color: Color.fromARGB(255, 173, 173, 173)),
+          borderRadius: BorderRadius.only(
+            bottomLeft: Radius.circular(20.0),
+          ),
+        ),
+        focusedErrorBorder: const OutlineInputBorder(
           borderSide: BorderSide(color: Color.fromARGB(255, 173, 173, 173)),
           borderRadius: BorderRadius.only(
             bottomLeft: Radius.circular(20.0),
@@ -307,6 +324,12 @@ class AccessUserState extends State<AccessUser> {
       keyboardType: TextInputType.number,
       controller: controller,
       decoration: InputDecoration(
+        errorStyle: TextStyle(
+          // Add your style properties here
+          color: primaryColor,
+          fontWeight: FontWeight.w600,
+          fontSize: 14.0,
+        ),
         contentPadding: const EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 5.0),
         labelText: labelText,
         prefixIcon: Container(
@@ -322,8 +345,7 @@ class AccessUserState extends State<AccessUser> {
             ),
           ),
         ),
-        labelStyle: TextStyle(
-            color: labelTextColor, fontSize: 12), // Set the label text color
+        labelStyle: TextStyle(color: labelTextColor, fontSize: 12),
         enabledBorder: const OutlineInputBorder(
           borderSide: BorderSide(color: Color.fromARGB(255, 173, 173, 173)),
           borderRadius: BorderRadius.only(
@@ -331,6 +353,18 @@ class AccessUserState extends State<AccessUser> {
           ),
         ),
         focusedBorder: const OutlineInputBorder(
+          borderSide: BorderSide(color: Color.fromARGB(255, 173, 173, 173)),
+          borderRadius: BorderRadius.only(
+            bottomLeft: Radius.circular(20.0),
+          ),
+        ),
+        errorBorder: const OutlineInputBorder(
+          borderSide: BorderSide(color: Color.fromARGB(255, 173, 173, 173)),
+          borderRadius: BorderRadius.only(
+            bottomLeft: Radius.circular(20.0),
+          ),
+        ),
+        focusedErrorBorder: const OutlineInputBorder(
           borderSide: BorderSide(color: Color.fromARGB(255, 173, 173, 173)),
           borderRadius: BorderRadius.only(
             bottomLeft: Radius.circular(20.0),
@@ -356,6 +390,12 @@ class AccessUserState extends State<AccessUser> {
   }) {
     return TextFormField(
       decoration: InputDecoration(
+        errorStyle: TextStyle(
+          // Add your style properties here
+          color: primaryColor,
+          fontWeight: FontWeight.w600,
+          fontSize: 14.0,
+        ),
         contentPadding: EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 5.0),
         labelText: 'password'.tr + '*',
         prefixIcon: Container(
@@ -380,13 +420,25 @@ class AccessUserState extends State<AccessUser> {
             ),
             fontSize: 12 // Label text color
             ),
-        enabledBorder: OutlineInputBorder(
+        enabledBorder: const OutlineInputBorder(
           borderSide: BorderSide(color: Color.fromARGB(255, 173, 173, 173)),
           borderRadius: BorderRadius.only(
             bottomLeft: Radius.circular(20.0),
           ),
         ),
-        focusedBorder: OutlineInputBorder(
+        focusedBorder: const OutlineInputBorder(
+          borderSide: BorderSide(color: Color.fromARGB(255, 173, 173, 173)),
+          borderRadius: BorderRadius.only(
+            bottomLeft: Radius.circular(20.0),
+          ),
+        ),
+        errorBorder: const OutlineInputBorder(
+          borderSide: BorderSide(color: Color.fromARGB(255, 173, 173, 173)),
+          borderRadius: BorderRadius.only(
+            bottomLeft: Radius.circular(20.0),
+          ),
+        ),
+        focusedErrorBorder: const OutlineInputBorder(
           borderSide: BorderSide(color: Color.fromARGB(255, 173, 173, 173)),
           borderRadius: BorderRadius.only(
             bottomLeft: Radius.circular(20.0),
@@ -418,6 +470,12 @@ class AccessUserState extends State<AccessUser> {
   }) {
     return TextFormField(
       decoration: InputDecoration(
+        errorStyle: TextStyle(
+          // Add your style properties here
+          color: primaryColor,
+          fontWeight: FontWeight.w600,
+          fontSize: 14.0,
+        ),
         contentPadding: EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 5.0),
         labelText: 'confirmPassword'.tr + '*',
         labelStyle: TextStyle(

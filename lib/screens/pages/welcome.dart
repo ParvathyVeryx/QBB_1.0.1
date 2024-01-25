@@ -32,13 +32,49 @@ class WelcomeState extends State<Welcome> {
     Get.updateLocale(locale);
   }
 
+  _clearSharedPreferences() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.remove("langSelected");
+
+  }
+
   String password = ''; // Store the entered password
   String confirmPassword = ''; // Store the entered confirm password
   bool isButtonEnabled = false;
   String otp = '';
   String QID = '';
-  bool isButtonClicked = false;
-  bool isButtonClickedArabic = true;
+  bool isButtonClickedW = false;
+  bool isButtonClickedWArabic = true;
+    String selectedLang = '';
+
+    Future<String> getLang() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    selectedLang = pref.getString("langSelected").toString();
+    if (selectedLang == "English") {
+      setState(() {
+        isButtonClickedW = true;
+        isButtonClickedWArabic = false;
+      });
+    } else {
+      setState(() {
+        isButtonClickedW = false;
+        isButtonClickedWArabic = true;
+      });
+    }
+    print('DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD');
+    print(isButtonClickedW);
+    print(isButtonClickedWArabic);
+    print(selectedLang);
+    return selectedLang;
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    // _clearSharedPreferences();
+    super.initState();
+    _clearSharedPreferences();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -138,7 +174,7 @@ class WelcomeState extends State<Welcome> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       ElevatedButton(
-                        style: isButtonClicked
+                        style: isButtonClickedW
                             ? ButtonStyle(
                                 backgroundColor:
                                     MaterialStateProperty.all<Color>(appbar),
@@ -166,23 +202,23 @@ class WelcomeState extends State<Welcome> {
                                 ),
                               ),
                         onPressed: () async {
-                          setState(() {
-                            // Toggle the state to change the button style
-                            isButtonClicked = true;
-                            isButtonClickedArabic = false;
-                          });
+                          // setState(() {
+                          // Toggle the state to change the button style
+                          isButtonClickedW = true;
+                          isButtonClickedWArabic = false;
+                          // });
                           // print('token before calling api $token');
                           SharedPreferences pref =
                               await SharedPreferences.getInstance();
-                          pref.setString("langEn", "English");
-                          var lan = pref.getString("langEn").toString();
+                          pref.setString("langSelected", "English");
+                          var lan = pref.getString("langSelected").toString();
                           print("jjjjjjjjjjjjjjj" + lan);
                           updateLanguage(locale[0]['locale']);
                         },
                         child: Padding(
                           padding:
                               const EdgeInsets.fromLTRB(6.0, 1.0, 6.0, 1.0),
-                          child: isButtonClicked
+                          child: isButtonClickedW
                               ? const Text(
                                   'English',
                                   style: TextStyle(
@@ -200,7 +236,7 @@ class WelcomeState extends State<Welcome> {
                         ),
                       ),
                       ElevatedButton(
-                        style: isButtonClickedArabic
+                        style: isButtonClickedWArabic
                             ? ButtonStyle(
                                 backgroundColor:
                                     MaterialStateProperty.all<Color>(appbar),
@@ -230,20 +266,19 @@ class WelcomeState extends State<Welcome> {
                         onPressed: () async {
                           setState(() {
                             // Toggle the state to change the button style
-                            isButtonClicked = false;
-                            isButtonClickedArabic = true;
+                            isButtonClickedW = false;
+                            isButtonClickedWArabic = true;
                           });
                           SharedPreferences pref =
                               await SharedPreferences.getInstance();
-                          pref.setString("langEn", "Arabic");
-                          var lan = pref.getString("langEn").toString();
-                          print("jjjjjjjjjjjjjjj" + lan);
+                          pref.setString("langSelected", "Arabic");
+
                           updateLanguage(locale[1]['locale']);
                         },
                         child: Padding(
                           padding:
                               const EdgeInsets.fromLTRB(6.0, 1.0, 6.0, 1.0),
-                          child: isButtonClickedArabic
+                          child: isButtonClickedWArabic
                               ? const Text(
                                   'عربي',
                                   style: TextStyle(
@@ -399,30 +434,6 @@ class WelcomeState extends State<Welcome> {
                 const SizedBox(
                   height: 20.0,
                 ),
-                Text(
-                  'byRegisteringYouAgreeToOur'.tr,
-                  style: const TextStyle(
-                      fontSize: 12, color: Color.fromARGB(255, 107, 107, 107)),
-                ),
-                TextButton(
-                  onPressed: () {
-                    // const RegistrationMode();  showDialog(
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return TermsAndConditionsDialog();
-                      },
-                    );
-                  },
-                  child: Text(
-                    'termsConditions'.tr,
-                    style: const TextStyle(
-                        fontSize: 12,
-                        color: primaryColor,
-                        decoration: TextDecoration.underline,
-                        decorationColor: primaryColor),
-                  ),
-                )
               ],
             ),
           ),
