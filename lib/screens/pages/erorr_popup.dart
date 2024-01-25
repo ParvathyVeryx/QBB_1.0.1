@@ -18,7 +18,7 @@ class ErrorPopup extends StatelessWidget {
         ),
       ),
       title: const Text(
-        'Alert',
+        '',
         style: TextStyle(color: primaryColor),
       ),
       content: Text(
