@@ -451,7 +451,7 @@ class AllAppointmentsState extends State<AllAppointments> {
                                       const SizedBox(
                                         height: 20,
                                       ),
-                                 appointment["AppoinmentStatus"] == 10 ?     Center(
+                                 appointment["AppoinmentStatus"] == 1 ?     Center(
                                         child: Row(
                                           mainAxisAlignment:
                                               MainAxisAlignment.center,
