@@ -35,7 +35,6 @@ Future<void> callUserProfileAPI(
 
   if (response.statusCode == 200) {
     // Successful response, you can handle the data here
-    print("API Response: ${response.body}");
     showDialog(
         context: context, // Use the context of the current screen
         builder: (BuildContext context) {
@@ -43,7 +42,6 @@ Future<void> callUserProfileAPI(
         });
   } else {
     // Error handling, you can log or display an error message
-    print("Error: ${response.statusCode} - ${response.body}");
     showDialog(
         context: context, // Use the context of the current screen
         builder: (BuildContext context) {

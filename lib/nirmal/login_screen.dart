@@ -77,10 +77,6 @@ class _LoginPageState extends State<LoginPage> {
         isButtonClickedArabic = true;
       });
     }
-    print('DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD');
-    print(isButtonClicked);
-    print(isButtonClickedArabic);
-    print(selectedLang);
     return selectedLang;
   }
 
@@ -90,8 +86,6 @@ class _LoginPageState extends State<LoginPage> {
     selectedLanguage();
     qidController.addListener(_validateInput);
     getLang();
-    print('pppppppppppppppppppppppppppppppppppp' + isButtonClicked.toString());
-    print('pp' + isButtonClickedArabic.toString());
   }
 
   @override
@@ -206,7 +200,6 @@ class _LoginPageState extends State<LoginPage> {
                                             isButtonClicked = true;
                                             isButtonClickedArabic = false;
                                           });
-                                          // print('token before calling api $token');
                                           SharedPreferences pref =
                                               await SharedPreferences
                                                   .getInstance();
@@ -354,9 +347,6 @@ class _LoginPageState extends State<LoginPage> {
                                                       255, 173, 173, 173),
                                               validator: (value) {
                                                 if (value!.isEmpty) {
-                                                  print('Checking Lang' +
-                                                      'pleaseEnterValidQatarID'
-                                                          .tr);
                                                   validated = !validated;
 
                                                   return 'pleaseEnterValidQatarID'
@@ -373,17 +363,7 @@ class _LoginPageState extends State<LoginPage> {
                                                   const Color.fromARGB(
                                                       255, 173, 173, 173),
                                               validator: (value) {
-                                                print(
-                                                    'Print error !!!!!!!!!!!!' +
-                                                        value!);
-                                                if (value.isEmpty) {
-                                                  print(
-                                                      'Print error !!!!!!!!!!!!33333333333333333333333333' +
-                                                          value);
-                                                  // setState(() {
-                                                  //   passwordErrorText =
-                                                  //       'thePasswordCannotBeEmpty'.tr;
-                                                  // });
+                                                if (value!.isEmpty) {
                                                   return 'thePasswordCannotBeEmpty'
                                                       .tr;
                                                 }
@@ -421,7 +401,7 @@ class _LoginPageState extends State<LoginPage> {
                                                   ),
                                                   onPressed: () async {
                                                     isLogginchecked = true;
-                                                    // print('token before calling api $token');
+
                                                     String deviceToken =
                                                         getDeviceId()
                                                             .toString();

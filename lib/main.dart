@@ -57,7 +57,6 @@ class _MyAppState extends State<MyApp> {
 
   @override
   void initState() {
-    print('called initApp');
     _initApp();
     super.initState();
     _clearSharedPreferences();
@@ -71,7 +70,8 @@ class _MyAppState extends State<MyApp> {
 
   _clearSharedPreferences() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.remove("langSelected"); // Clear all data from shared preferences
+    await prefs
+        .remove("langSelected"); // Clear all data from shared preferences
   }
 
   Future<void> _initApp() async {
@@ -82,13 +82,7 @@ class _MyAppState extends State<MyApp> {
       // Store the token in shared preferences
       SharedPreferences prefs = await SharedPreferences.getInstance();
       prefs.setString('token', token);
-
-      // Optionally, you can use the stored token for any other purposes
-      // For example, you can print it
-      print('Token: $token');
-    } else {
-      print('Token request failed.');
-    }
+    } else {}
   }
 
   @override
@@ -152,12 +146,9 @@ Future<String?> getToken(context) async {
     // Now you can use storedToken for further API requests.
     String? storedToken =
         Provider.of<TokenProvider>(context, listen: false).token;
-    print('Stored Token: $storedToken');
     return token;
   } else {
     // Handle error response
-    print('Token request failed with status code: ${response.statusCode}');
-    print('Response body: ${response.body}');
     return null;
   }
 }

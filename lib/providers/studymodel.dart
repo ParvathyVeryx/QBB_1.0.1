@@ -24,10 +24,6 @@ class StudyProvider extends ChangeNotifier {
     notifyListeners();
 
     // Debug statements to check the values
-    print('Studies set: ${_studies.length} studies');
-    for (var study in _studies) {
-      print(
-          'Study: ${study.studyCode}, ${study.studyName}, ${study.studyDescription}');
-    }
+    for (var study in _studies) {}
   }
 }

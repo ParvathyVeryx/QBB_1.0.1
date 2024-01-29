@@ -39,18 +39,7 @@ Future<void> bookAppointmentApiCall(
 ) async {
   String? qid = await getQIDFromSharedPreferences();
 
-  if (qid != null) {
-    print('QID: $qid');
-  } else {
-    print('Failed to retrieve QID');
-  }
   int? personGradeId = await getPersonGradeIdFromSharedPreferences();
-
-  if (personGradeId != null) {
-    print('PersonGradeId: $personGradeId');
-  } else {
-    print('Failed to retrieve PersonGradeId');
-  }
 
   const String apiUrl =
       'https://participantportal-test.qatarbiobank.org.qa/QbbAPIS/api/BookAppointmentapi';
@@ -66,16 +55,6 @@ Future<void> bookAppointmentApiCall(
     'language': 'langChange'.tr,
   };
 
-  print('Study Parameters:');
-  print('qatarid: ${queryParams['qatarid']}');
-  print('StudyId: ${queryParams['StudyId']}');
-  print('VisitTypeId: ${queryParams['VisitTypeId']}');
-  print('Pregnant: ${queryParams['Pregnant']}');
-  print('PersonGradeId: ${queryParams['PersonGradeId']}');
-  print('VisitName: ${queryParams['VisitName']}');
-  print('page: ${queryParams['page']}');
-  print('language: ${queryParams['language']}');
-
   final Uri urinew = Uri.parse(
       "https://participantportal-test.qatarbiobank.org.qa/QbbAPIS/api/GetReasonForCancelAppoinmentAPI?language=en");
   SharedPreferences pref = await SharedPreferences.getInstance();
@@ -87,7 +66,6 @@ Future<void> bookAppointmentApiCall(
       'Content-Type': 'application/json',
     },
   );
-  print('gg1234' + responsen.body.toString());
   final Uri uri = Uri.parse(
       '$apiUrl?qatarid=${queryParams['qatarid']}&StudyId=${queryParams['StudyId']}&Pregnant=${queryParams['Pregnant']}&VisitTypeId=${queryParams['VisitTypeId']}&PersonGradeId=${queryParams['PersonGradeId']}&VisitName=${queryParams['VisitName']}&page=${queryParams['page']}&language=${queryParams['language']}');
   // SharedPreferences pref = await SharedPreferences.getInstance();
@@ -110,7 +88,6 @@ Future<void> bookAppointmentApiCall(
       // Save the API response in shared preferences
       pref.setString('apiResponse', json.encode(jsonResponse));
       pref.setString("availableDates", json.encode(jsonResponse['datelist']));
-      print('Available Dates' + pref.getString("availableDates").toString());
 
       String? jsonString = pref.getString("availableDates");
 
@@ -125,13 +102,7 @@ Future<void> bookAppointmentApiCall(
           List<String> availableDates = List<String>.from(decodedData);
 
           // Use the 'availableDates' list as needed
-          print("Decoded List");
-          print(availableDates);
-        } else {
-          print("Decoded data is not a List");
         }
-      } else {
-        print("No data found in SharedPreferences for 'availableDates'");
       }
 
       // Now, navigate to the AppointmentBookingPage
@@ -143,8 +114,7 @@ Future<void> bookAppointmentApiCall(
       );
     } else {
       // Handle errors
-      print('API Call Failed. Status Code: ${response.statusCode}');
-      print('Error Message: ${response.body}');
+
       showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -154,7 +124,6 @@ Future<void> bookAppointmentApiCall(
     }
   } catch (error) {
     // Handle network errors
-    print('Error: $error');
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -175,17 +144,6 @@ Future<void> bookAppointmentToGetResults(
 ) async {
   int? personGradeId = await getPersonGradeIdFromSharedPreferences();
 
-  if (personGradeId != null) {
-    print('PersonGradeId: $personGradeId');
-  } else {
-    print('Failed to retrieve PersonGradeId');
-  }
-
-  // const String apiUrl =
-  //     'https://participantportal-test.qatarbiobank.org.qa/QbbAPIS/api/BookResultAppointmentAPI';
-
-  // SharedPreferences pref = await SharedPreferences.getInstance();
-  // String? token = pref.getString('token');
   try {
     Map<String, dynamic> requestBody = {
       'qatarid': Qid,
@@ -202,7 +160,6 @@ Future<void> bookAppointmentToGetResults(
     String apiUrl =
         "https://participantportal-test.qatarbiobank.org.qa/QbbAPIS/api/BookResultAppointmentAPI?qatarid=${requestBody['qatarid']}&StudyId=${requestBody['StudyId']}&ShiftCode=${requestBody['ShiftCode']}&VisitTypeId=${requestBody['AvailabilityCalenderId']}&PersonGradeId=${requestBody['PersonGradeId']}&AvailabilityCalenderId=${requestBody['AvailabilityCalenderId']}&AppoinmentId=${requestBody['AppoinmentId']}&language=en&AppointmentTypeId=${requestBody['AppointmentTypeId']}";
     SharedPreferences pref = await SharedPreferences.getInstance();
-    print(apiUrl);
     String? token = pref.getString('token');
 
     final Uri uri = Uri.parse('$apiUrl');
@@ -213,17 +170,13 @@ Future<void> bookAppointmentToGetResults(
         'Authorization': 'Bearer ${token?.replaceAll('"', '')}',
         'Accept': 'application/json'
       },
-      // body: requestBody,
     );
-    // print('00000000000000000000000000000000000');
-    // print(response.body);
-    // print(response.statusCode);
+
     if (response.statusCode == 200) {
       // Successful API call
 
       // Parse the JSON response
       final Map<String, dynamic> jsonResponse = json.decode(response.body);
-      print(response.body);
       // Save the API response in shared preferences
 
 // Check if the jsonString is not null
@@ -237,8 +190,7 @@ Future<void> bookAppointmentToGetResults(
       );
     } else {
       // Handle errors
-      print('API Call Failed. Status Code: ${response.statusCode}');
-      print('Error Message: ${response.body}');
+
       showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -248,8 +200,6 @@ Future<void> bookAppointmentToGetResults(
     }
   } catch (error) {
     // Handle network errors
-    print('Error: $error');
-
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -267,18 +217,7 @@ Future<void> getResultAppointmentApiCall(
 ) async {
   String? qid = await getQIDFromSharedPreferences();
 
-  if (qid != null) {
-    print('QID: $qid');
-  } else {
-    print('Failed to retrieve QID');
-  }
   int? personGradeId = await getPersonGradeIdFromSharedPreferences();
-
-  if (personGradeId != null) {
-    print('PersonGradeId: $personGradeId');
-  } else {
-    print('Failed to retrieve PersonGradeId');
-  }
 
   const String apiUrl =
       'https://participantportal-test.qatarbiobank.org.qa/QbbAPIS/api/BookResultAppointmentAPI';
@@ -293,16 +232,6 @@ Future<void> getResultAppointmentApiCall(
     'page': '1',
     'language': 'langChange'.tr,
   };
-
-  print('Study Parameters:');
-  print('qatarid: ${queryParams['qatarid']}');
-  print('StudyId: ${queryParams['StudyId']}');
-  print('VisitTypeId: ${queryParams['VisitTypeId']}');
-  print('Pregnant: ${queryParams['Pregnant']}');
-  print('PersonGradeId: ${queryParams['PersonGradeId']}');
-  print('AppointmentId: ${queryParams['AppointmentId']}');
-  print('page: ${queryParams['page']}');
-  print('language: ${queryParams['language']}');
 
   SharedPreferences pref = await SharedPreferences.getInstance();
   String? token = pref.getString('token');
@@ -325,17 +254,9 @@ Future<void> getResultAppointmentApiCall(
 
       // Parse the JSON response
       final Map<String, dynamic> jsonResponse = json.decode(response.body);
-
-      // Navigator.push(
-      //   context,
-      //   MaterialPageRoute(
-      //     builder: (context) => const AppointmentBookingPage(),
-      //   ),
-      // );
     } else {
       // Handle errors
-      print('API Call Failed. Status Code: ${response.statusCode}');
-      print('Error Message: ${response.body}');
+
       showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -345,7 +266,6 @@ Future<void> getResultAppointmentApiCall(
     }
   } catch (error) {
     // Handle network errors
-    print('Error: $error');
     showDialog(
       context: context,
       builder: (BuildContext context) {

@@ -747,29 +747,29 @@ class UpcomingState extends State<Upcoming> {
                                             elevation: 0,
                                           ),
                                           onPressed: () async {
-                                            if (appointment[
-                                                    'CancelExpiredMSG'] !=
-                                                null) {
-                                              showDialog(
-                                                  context: context,
-                                                  builder:
-                                                      (BuildContext context) {
-                                                    return AlertDialog(
-                                                      title: Text(''),
-                                                      content: Text(appointment[
-                                                          'CancelExpiredMSG']),
-                                                      actions: [
-                                                        ElevatedButton(
-                                                          onPressed: () {
-                                                            Navigator.pop(
-                                                                context); // Close the dialog
-                                                          },
-                                                          child: Text('OK'),
-                                                        ),
-                                                      ],
-                                                    );
-                                                  });
-                                            } else {
+                                            // if (appointment[
+                                            //         'CancelExpiredMSG'] !=
+                                            //     null) {
+                                            //   showDialog(
+                                            //       context: context,
+                                            //       builder:
+                                            //           (BuildContext context) {
+                                            //         return AlertDialog(
+                                            //           title: Text(''),
+                                            //           content: Text(appointment[
+                                            //               'CancelExpiredMSG']),
+                                            //           actions: [
+                                            //             ElevatedButton(
+                                            //               onPressed: () {
+                                            //                 Navigator.pop(
+                                            //                     context); // Close the dialog
+                                            //               },
+                                            //               child: Text('OK'),
+                                            //             ),
+                                            //           ],
+                                            //         );
+                                            //       });
+                                            // } else {
                                               appointment["AppoinmentId"];
                                               showDialog(
                                                 context: context,
@@ -863,7 +863,7 @@ class UpcomingState extends State<Upcoming> {
                                                   );
                                                 },
                                               );
-                                            }
+                                            // }
                                           },
                                           child: Text(
                                             'reschedule'.tr,

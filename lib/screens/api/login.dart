@@ -19,15 +19,12 @@ class LoginApi {
     SharedPreferences pref = await SharedPreferences.getInstance();
     var lang = 'langChange'.tr;
 
-    // print('the device token is $deviceToken');
 
     try {
       // Retrieve the token from SharedPreferences
       String? token = pref.getString('token');
-      print('Authtoken: $token');
       if (token == null) {
         // Handle the case where the token is not available
-        print('Token not found in SharedPreferences');
         return;
       }
 
@@ -50,15 +47,11 @@ class LoginApi {
         'Language': lang,
       };
 
-      // Print headers and request body
-      print('Headers: $headers');
-      print('Request Body: $requestBody');
 
       // Construct the API URL
       Uri apiUrl = Uri.parse(
           'https://participantportal-test.qatarbiobank.org.qa/QbbAPIS/api/LoginAPI');
 
-      print('API URL: $apiUrl');
 
       // Make the HTTP POST request
       final response = await http.post(
@@ -70,8 +63,7 @@ class LoginApi {
       // Handle the response
       if (response.statusCode == 200) {
         // Successful response, handle accordingly
-        print('Login successful!');
-        print('Response body: ${response.body}');
+
 
         // Parse the response if needed
         Map<String, dynamic> responseData = json.decode(response.body);
@@ -108,9 +100,7 @@ class LoginApi {
         // await pref.setString('studiesAR', "true");
 
         // Save user data to SharedPreferences or handle it based on your requirements
-        print(
-            'Stored User Details: ${pref.getString('userDetails').toString()}');
-
+        
         // Navigate to the home screen
         Navigator.pushReplacement(
           context,
@@ -129,8 +119,6 @@ class LoginApi {
           },
         );
         // Handle error response
-        print('Login failed with status code: ${response.statusCode}');
-        print('Response body: ${response.body}');
         // You can throw an exception or handle the error in another way
       }
     } catch (e) {
@@ -143,7 +131,6 @@ class LoginApi {
         },
       );
       // Handle any exceptions that occurred during the request
-      print('Error: $e');
     } finally {
       // Call the callback function to notify that the API is complete
       onApiComplete();

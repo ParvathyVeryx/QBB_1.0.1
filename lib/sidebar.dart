@@ -63,7 +63,6 @@ class sideMenuclass extends State<SideMenu> {
   @override
   void initState() {
     super.initState();
-    print('iiiiiiiiiiiiiiiiiiiiii' + getlan.toString());
     loadSelectedLanguage();
   }
 
@@ -73,14 +72,11 @@ class sideMenuclass extends State<SideMenu> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
     String selectedLanguagePref = prefs.getString('langSelected').toString();
-    print('gggggggggggggggggggggddddddddddddddddd' + selectedLanguagePref);
     if (selectedLanguagePref == "English") {
       selectedLanguage = 'English';
-      print('pppppppppppppppppppppppppppppp' + selectedLanguage);
       return selectedLanguage;
     } else {
       selectedLanguage = 'Arabic';
-      print('pppppppppppppppppppppppppppppp' + selectedLanguage);
       return selectedLanguage;
     }
   }
@@ -333,8 +329,6 @@ class sideMenuclass extends State<SideMenu> {
 
                                   activeColor: primaryColor,
                                   onChanged: (value) {
-                                    print(
-                                        'selected language' + selectedLanguage);
                                     setState(() {
                                       selectedLanguage = value!;
                                     });
@@ -406,9 +400,6 @@ class sideMenuclass extends State<SideMenu> {
                                             selectedLanguage == 'English'
                                                 ? locale[0]['locale']
                                                 : locale[1]['locale']);
-
-                                        print(
-                                            'Selected language: $selectedLanguage');
                                         Navigator.of(context)
                                             .pop(); // Close the dialog
                                       } else {
@@ -467,7 +458,6 @@ class sideMenuclass extends State<SideMenu> {
     } else {
       getlan = "en";
     }
-    print('nnnnnnnnnnnnnnnnnnnnnn' + getlan.toString());
   }
 
   var langg;
@@ -484,7 +474,6 @@ class sideMenuclass extends State<SideMenu> {
       onChanged: (value) async {
         setState(() {
           selectedLanguage = value!;
-          print('ggggggggggggggggggggg' + selectedLanguage);
         });
       },
     );

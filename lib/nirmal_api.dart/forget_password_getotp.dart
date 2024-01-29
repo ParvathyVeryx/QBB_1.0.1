@@ -23,9 +23,6 @@ Future<Map<String, dynamic>> callUpdatePasswordAPI(
     // Get the token from shared preferences
     String token = pref.getString('token') ?? ''; // Replace with your token key
 
-    print('API URL: $apiUrl');
-    print('Bearer Token: $token');
-
     final response = await http.get(
       Uri.parse(apiUrl),
       headers: {
@@ -36,7 +33,6 @@ Future<Map<String, dynamic>> callUpdatePasswordAPI(
 
     if (response.statusCode == 200) {
       // If the server returns a 200 OK response, parse and return the data
-      print('API Response Body: ${response.body}');
       showDialog(
           context: context, // Use the context of the current screen
           builder: (BuildContext context) {
@@ -45,7 +41,6 @@ Future<Map<String, dynamic>> callUpdatePasswordAPI(
       return json.decode(response.body);
     } else {
       // If the server did not return a 200 OK response, handle errors
-      print('API Error Response: ${response.body}');
       showDialog(
           context: context, // Use the context of the current screen
           builder: (BuildContext context) {
@@ -55,7 +50,6 @@ Future<Map<String, dynamic>> callUpdatePasswordAPI(
           'Failed to call UpdatePasswordAPI: ${response.statusCode}');
     }
   } catch (e) {
-    print('Exception during API request: $e');
     throw Exception('Exception during API request: $e');
   }
 }

@@ -41,18 +41,9 @@ Future<void> uploadUserProfilePhoto(String qid, File photo) async {
           false) {
         // Parse the response body as JSON
         var responseBody = json.decode(response.body);
-        print(responseBody);
       } else {
         // Handle non-JSON response (e.g., log or print the raw response)
-        print('Non-JSON Response: ${response.body}');
       }
-    } else {
-      print('Error: ${response.statusCode}');
-      print('Headers: ${response.headers}');
-      print('Response: ${response.body}');
     }
-  } catch (e, stackTrace) {
-    print('Exception during API request: $e');
-    print('StackTrace: $stackTrace');
-  }
+  } catch (e, stackTrace) {}
 }

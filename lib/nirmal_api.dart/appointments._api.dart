@@ -12,7 +12,6 @@ Future<List<Map<String, dynamic>>> viewAppointments(
 
     // Check if the token is available
     if (token.isEmpty) {
-      print('Error: Token not found in shared preferences.');
       return [];
     }
 
@@ -36,13 +35,9 @@ Future<List<Map<String, dynamic>>> viewAppointments(
       return List<Map<String, dynamic>>.from(responseBody);
     } else {
       // Handle errors
-      print('Error: ${response.statusCode}');
-      print('Response: ${response.body}');
       return []; // Return an empty list in case of an error
     }
   } catch (e, stackTrace) {
-    print('Exception during API request: $e');
-    print('StackTrace: $stackTrace');
     return []; // Return an empty list in case of an exception
   }
 }

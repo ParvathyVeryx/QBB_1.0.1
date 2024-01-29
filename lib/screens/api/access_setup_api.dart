@@ -21,15 +21,12 @@ Future<void> accessSetupOTP({
 
     if (token == null) {
       // Handle the case where the token is not available in shared preferences
-      print('Error: Token not found in shared preferences');
       return;
     }
 
     final url = Uri.parse('$base_url/AcessSetupOTP');
-    // Print the request before making the HTTP call
-    print('Request: ${url.toString()}');
+
     String encryptedPassword = _sha512(userPassword);
-    print(encryptedPassword);
     Map<String, dynamic> requestBody = {
       'QID': qid,
       'OTP': otp,
@@ -38,7 +35,6 @@ Future<void> accessSetupOTP({
       'language': language,
     };
 
-    print('Body: ${jsonEncode(requestBody)}');
     final response = await http.post(
       url,
       headers: {
@@ -56,8 +52,6 @@ Future<void> accessSetupOTP({
         },
       );
       // Handle successful response
-      print('API call successful');
-      print(response.body);
     } else {
       showDialog(
         context: context,
@@ -67,8 +61,6 @@ Future<void> accessSetupOTP({
       );
 
       // Handle error
-      print('API call failed with status code: ${response.statusCode}');
-      print(response.body);
     }
   } catch (e) {
     // Handle network errors

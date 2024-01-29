@@ -10,12 +10,8 @@ Future<void> getDeviceType() async {
   try {
     if (Platform.isAndroid) {
       androidInfo = await deviceInfo.androidInfo;
-      print('Device Type: ${androidInfo.model}');
     } else if (Platform.isIOS) {
       iosInfo = await deviceInfo.iosInfo;
-      print('Device Type: ${iosInfo.utsname.machine}');
     }
-  } catch (e) {
-    print('Error getting device type: $e');
-  }
+  } catch (e) {}
 }

@@ -39,9 +39,6 @@ Future<List<Study>> fetchStudyMasterAPI() async {
       },
     );
 
-    print('API URL: $apiUrl');
-    print('Response Code: ${response.statusCode}');
-    print('Response Body: ${response.body}');
 
     if (response.statusCode == 200) {
       final List<dynamic> responseData = json.decode(response.body);
@@ -66,19 +63,7 @@ Future<List<Study>> fetchStudyMasterAPI() async {
       throw Exception('Failed to fetch data');
     }
   } catch (error) {
-    print('Error: $error');
     throw Exception('Failed to fetch data. Error: $error');
   }
 }
 
-// Future<void> fetchAndSetStudies(BuildContext context) async {
-//   SharedPreferences pref = await SharedPreferences.getInstance();
-//   try {
-//     List<Study> studies = await fetchStudyMasterAPI();
-
-//     Provider.of<StudyProvider>(context, listen: false).setStudies(studies);
-//   } catch (error) {
-//     print('Error fetching studies: $error');
-//     // Handle error as needed
-//   }
-// }

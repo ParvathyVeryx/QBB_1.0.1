@@ -18,7 +18,6 @@ Future<String?> _retrieveToken() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.getString('token');
   } catch (e) {
-    print('Error retrieving token: $e');
     return null;
   }
 }
@@ -60,10 +59,6 @@ Future<bool> checkQIDExist(
     final response = await http.get(Uri.parse(apiUrl), headers: headers);
     Navigator.pop(context);
 
-    // Print statements for debugging
-    print('Response Status Code: ${response.statusCode}');
-    print('Response Body: ${response.body}');
-
     if (response.statusCode == 200) {
       // QID exists, proceed to get the country
       String countryCode = qid.substring(3, 6);
@@ -101,14 +96,8 @@ Future<bool> checkQIDExist(
               .name; // Update the nationalityId using the provided callback
           updateNationalityId(enteredCountryInfo.id);
 
-          // Print statements for debugging
-          print('Entered Country Code: $enteredCountryCode');
-          print('Country Name: ${enteredCountryInfo.name}');
-          print('Country ID: ${enteredCountryInfo.id}');
-
           return true;
         } else {
-          print('Unexpected response format: $countryResponseBody');
           return false;
         }
       } else {
@@ -128,9 +117,6 @@ Future<bool> checkQIDExist(
     } else {
       String errorMessage = response.body;
 
-      // Print statements for debugging
-      print('Error Response Body: $errorMessage');
-
       // Handle error response for CheckQIDExistAPI
       showDialog(
         context: context,
@@ -140,15 +126,12 @@ Future<bool> checkQIDExist(
           );
         },
       );
-      print('Error while making API request: ${response.statusCode}');
 
       return false;
     }
   } catch (e) {
     // Handle any exceptions
 
-    // Print statements for debugging
-    print('Error while making API request: $e');
     showDialog(
       context: context,
       builder: (BuildContext context) {

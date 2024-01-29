@@ -86,7 +86,7 @@ Future<void> getresults(
       showDialog(
         context: context,
         builder: (BuildContext context) {
-          return ErrorPopup(errorMessage: response.body);
+          return ErrorPopup(errorMessage: json.decode(response.body)["Message"]);
         },
       );
     }
@@ -181,7 +181,7 @@ Future<void> getOTPForDownload(
       showDialog(
         context: context,
         builder: (BuildContext context) {
-          return ErrorPopup(errorMessage: response.body);
+          return ErrorPopup(errorMessage: json.decode(response.body)["Message"]);
         },
       );
     }

@@ -12,7 +12,6 @@ Future<bool> getAccess(String qid, String otp, BuildContext context) async {
 
   if (token == null) {
     // Handle the case where the token is not available in shared preferences
-    print('Error: Token not found in shared preferences');
     return false;
   }
 
@@ -20,8 +19,6 @@ Future<bool> getAccess(String qid, String otp, BuildContext context) async {
     'QID': qid,
     'OTP': otp,
   };
-
-  print(verify);
 
   final String verifyOtp =
       '$base_url/AcessSetupOTP?QID=${verify['QID']}&OtpToken=${verify['OTP']}';
@@ -37,7 +34,6 @@ Future<bool> getAccess(String qid, String otp, BuildContext context) async {
         await http.get(Uri.parse(verifyOtp), headers: headers);
 
     if (response.statusCode == 200) {
-      print(json.decode(response.body));
       var userId = json.decode(response.body);
       showDialog(
         context: context, // Use the context of the current screen
@@ -48,12 +44,10 @@ Future<bool> getAccess(String qid, String otp, BuildContext context) async {
       return true; // Return true if OTP verification is successful
     } else {
       // Handle error
-      print('Error: ${response.statusCode}');
       return false; // Return false to indicate OTP verification failure
     }
   } catch (err) {
     // Handle network errors
-    print('Error: $err');
     return false; // Return false to indicate OTP verification failure
   }
 }
