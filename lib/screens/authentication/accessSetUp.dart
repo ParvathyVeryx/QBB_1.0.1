@@ -36,7 +36,6 @@ class AccessUserState extends State<AccessUser> {
       if (!isOtpMatch) {
         // Show error indicating OTP mismatch
         // You can use Flutter's showDialog or any other method to show the popup
-        print('OTP mismatch error');
         return;
       }
 
@@ -106,27 +105,9 @@ class AccessUserState extends State<AccessUser> {
                   children: [
                     ElevatedButton(
                         onPressed: () async {
-                          // Show loader widget or navigate to loader screen here if needed
-                          // Navigator.push(
-                          //   context,
-                          //   MaterialPageRoute(builder: (context) => LoaderWidget()),
-                          // );
-
                           // Call the API function
                           await setPasswordAccessSetupNotCompleted(
                               QID, 'en', context);
-
-                          // After API call is completed, you can navigate to the next screen if needed
-                          // Navigator.pop(context);  // Example of popping the loader screen
-                          // Navigator.push(
-                          //   context,
-                          //   MaterialPageRoute(builder: (context) => NextScreen()),
-                          // );
-                          // Navigator.push(
-                          //   context,
-                          //   MaterialPageRoute(
-                          //       builder: (context) => LoaderWidget()),
-                          // );
                         },
                         style: ButtonStyle(
                             backgroundColor: MaterialStateProperty.all<Color>(

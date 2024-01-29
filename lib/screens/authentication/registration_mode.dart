@@ -203,8 +203,17 @@ class _RegistrationModeState extends State<RegistrationMode> {
                       labelText: 'lastnameOnBehalf'.tr,
                       keyboardType: TextInputType.emailAddress,
                     ),
-                    SizedBox(height: 10.0,),
-                    Text("nameOfThePersonWhoIsActingOnBehalfOfParticipant".tr, style: TextStyle(fontSize: 14, color: Colors.black,), textAlign: TextAlign.left,)
+                    SizedBox(
+                      height: 10.0,
+                    ),
+                    Text(
+                      "nameOfThePersonWhoIsActingOnBehalfOfParticipant".tr,
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.black,
+                      ),
+                      textAlign: TextAlign.left,
+                    )
                   ],
                 ),
               ),
@@ -214,9 +223,6 @@ class _RegistrationModeState extends State<RegistrationMode> {
               ElevatedButton(
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
-                    print('behalfFname: ${behalfNameController.text}');
-                    print('behalfLname: ${behalfEmailController.text}');
-
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -291,10 +297,13 @@ class _RegistrationModeState extends State<RegistrationMode> {
           contentPadding: const EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 5.0),
           labelText: labelText,
 
-          labelStyle:
-              TextStyle(color: Color.fromARGB(255, 173, 173, 173), fontSize: 12), // Set the label text color
+          labelStyle: TextStyle(
+              color: Color.fromARGB(255, 173, 173, 173),
+              fontSize: 12), // Set the label text color
           enabledBorder: const OutlineInputBorder(
-            borderSide: BorderSide(color: Color.fromARGB(255, 173, 173, 173),),
+            borderSide: BorderSide(
+              color: Color.fromARGB(255, 173, 173, 173),
+            ),
             borderRadius: BorderRadius.only(
               bottomLeft: Radius.circular(20.0),
             ),

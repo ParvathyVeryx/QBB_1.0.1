@@ -38,7 +38,6 @@ class AllAppointmentsState extends State<AllAppointments> {
 
       // Check if the token is available
       if (token.isEmpty) {
-        print('Error: Token not found in shared preferences.');
         return [];
       }
 
@@ -62,14 +61,12 @@ class AllAppointmentsState extends State<AllAppointments> {
         allAppointments = List<Map<String, dynamic>>.from(responseBody);
         allCancelMsg = allAppointments[0]["CancelExpiredMSG"];
 
-        print('ABGVCF' + allCancelMsg.toString());
 
         cancelMessages = allAppointments
             .map((appointment) => appointment["CancelExpiredMSG"])
             .cast<String>()
             .toList();
-        print("All Appointments" + allAppointments.toString());
-        print('ABGVCF' + cancelMessages.toString());
+        
         return allAppointments;
       } else {
         // Handle errors
@@ -77,8 +74,7 @@ class AllAppointmentsState extends State<AllAppointments> {
         return []; // Return an empty list in case of an error
       }
     } catch (e, stackTrace) {
-      print('Exception during API request: $e');
-      print('StackTrace: $stackTrace');
+
       return []; // Return an empty list in case of an exception
     }
   }

@@ -10,16 +10,6 @@ class RegisterApi {
   static Future<void> signup(
       Register register, BuildContext context, String? token,
       {required Null Function() onApiComplete}) async {
-    // print('Api token :$token');
-    // String? token = pref.getString("token").toString();
-    // Retrieve the token from shared preferences
-    // SharedPreferences prefs = await SharedPreferences.getInstance();
-    // String? token = prefs.getString('token');
-    // String tokenString = token.toString();
-
-    // print('token in api: $token');
-    // String? token =
-    //     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6Im1vYmFkbWluQGdtYWlsLmNvbSIsIm5iZiI6MTcwMzE3ODA1MywiZXhwIjoxNzAzNzgyODUzLCJpYXQiOjE3MDMxNzgwNTMsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTAxOTEiLCJhdWQiOiJodHRwOi8vbG9jYWxob3N0OjUwMTkxIn0.WYN0dROXwe3ys9yA2Ngd62p7Fr2h6JV4nSyHPcnF4tk";
     SharedPreferences pref = await SharedPreferences.getInstance();
     var lang = pref.getString("langEn").toString();
     Map<String, String> headers = {
@@ -40,17 +30,13 @@ class RegisterApi {
     }
 
     var url = Uri.parse('$base_url/QuickRegistrationAPI?language=$setLang');
-    // Print the JSON string before making the API call
-    print('Request Body: ${jsonEncode(register.toJson())}');
 
     final response = await http.post(
       url,
       headers: headers,
       body: jsonEncode(register.toJson()),
     );
-    print('ccccccccccccccc' + response.statusCode.toString());
-    print('ccccccccccccccc' + register.toJson().toString());
-    print('response body by nirmal : $response.body');
+
     // return response;
     if (response.statusCode == 200) {
       onApiComplete(); // Call the callback function to notify that the API is complete
@@ -69,7 +55,6 @@ class RegisterApi {
 
       ;
       // Successful response, you might want to handle this case
-      print('Signup successful!');
     } else {
       onApiComplete(); // Call the callback function to notify that the API is complete
       showDialog(
@@ -78,8 +63,7 @@ class RegisterApi {
             return ErrorPopup(errorMessage: response.body);
           });
       // Handle error response
-      print('Signup failed with status code: ${response.statusCode}');
-      print('Response body: ${response.body}');
+
       // You can throw an exception or handle the error in another way
     }
   }

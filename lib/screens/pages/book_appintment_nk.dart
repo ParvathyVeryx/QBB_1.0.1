@@ -92,21 +92,12 @@ class BookAppointmentsState extends State<BookAppointments> {
       String? token = pref.getString('token');
       String? qid = await getQIDFromSharedPreferences();
 
-      if (qid != null) {
-        print('QID: $qid');
-      } else {
-        print('Failed to retrieve QID');
-      }
       final http.Response response = await http.get(
         Uri.parse('$apiUrl?QID=$qid&language=$setLang'),
         headers: {
           'Authorization': 'Bearer ${token?.replaceAll('"', '')}',
         },
       );
-
-      print('API URL: $apiUrl');
-      print('Response Code: ${response.statusCode}');
-      print('Response Body: ${response.body}');
 
       if (response.statusCode == 200) {
         final List<dynamic> responseData = json.decode(response.body);
@@ -123,7 +114,6 @@ class BookAppointmentsState extends State<BookAppointments> {
         throw Exception('Failed to fetch data');
       }
     } catch (error) {
-      print('Error: $error');
     } finally {
       setState(() {
         isLoading = false;
@@ -134,13 +124,8 @@ class BookAppointmentsState extends State<BookAppointments> {
   Future<void> fetchVisitTypes(int studyId) async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     var lang = pref.getString("langEn").toString();
-    var setLang;
-    if (lang == "false") {
-      setLang = "ar";
-    } else {
-      setLang = "en";
-    }
-    print('fffffffffffffffffffffffffff' + setLang);
+    var setLang = "langChange".tr;
+
     setState(() {
       isLoading = true;
     });
@@ -156,11 +141,6 @@ class BookAppointmentsState extends State<BookAppointments> {
       String? token = pref.getString('token');
       String? qid = await getQIDFromSharedPreferences();
 
-      if (qid != null) {
-        print('QID: $qid');
-      } else {
-        print('Failed to retrieve QID');
-      }
 
       final http.Response response = await http.get(
         Uri.parse(
@@ -171,7 +151,6 @@ class BookAppointmentsState extends State<BookAppointments> {
       );
 
       if (response.statusCode == 200) {
-        print('successfully fetched visittypes');
         final List<dynamic> responseData = json.decode(response.body);
         setState(() {
           visitTypeNames =
@@ -183,7 +162,6 @@ class BookAppointmentsState extends State<BookAppointments> {
         throw Exception('Failed to fetch visit types');
       }
     } catch (error) {
-      print('Error: $error');
     } finally {
       setState(() {
         isLoading = false;

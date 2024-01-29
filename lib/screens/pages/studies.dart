@@ -27,13 +27,11 @@ class StudiesState extends State<Studies> {
   @override
   void initState() {
     // studies = [];
-    print('api calling...');
     super.initState();
   }
 
   refreshPage() {
     studies = [];
-    print('Refreshing api...');
 
     fetchStudyMasterAPI().then((studyList) {
       setState(() {

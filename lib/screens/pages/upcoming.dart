@@ -44,7 +44,6 @@ class UpcomingState extends State<Upcoming> {
 
       // Check if the token is available
       if (token.isEmpty) {
-        print('Error: Token not found in shared preferences.');
         return [];
       }
 
@@ -82,13 +81,10 @@ class UpcomingState extends State<Upcoming> {
         return allUpcomingAppointments;
       } else {
         // Handle errors
-        print('Error: ${response.statusCode}');
-        print('Response: ${response.body}');
+
         return []; // Return an empty list in case of an error
       }
     } catch (e, stackTrace) {
-      print('Exception during API request: $e');
-      print('StackTrace: $stackTrace');
       return []; // Return an empty list in case of an exception
     }
   }
@@ -106,15 +102,12 @@ class UpcomingState extends State<Upcoming> {
         'Authorization': 'Bearer ${token.replaceAll('"', '')}',
       },
     );
-    print(response.body.toString());
-    print(response.statusCode.toString());
+
     if (response.statusCode == 200) {
       // Parse and handle the response body
       var responseBody = json.decode(response.body);
-      print("reason names" + responseBody[0]["Name"].toString());
       reasons = List<Map<String, dynamic>>.from(responseBody);
 
-      print("Reasons" + reasons.toString());
       return reasons;
     } else {
       return [];
@@ -141,7 +134,6 @@ class UpcomingState extends State<Upcoming> {
     // Create a list of radio buttons based on the reasons
     return reasons.map((reason) {
       String reasonName = reason['Name'] ?? '';
-      print(reasonName.toString());
       return RadioListTile(
         title: Text(
           reasonName,
@@ -158,7 +150,6 @@ class UpcomingState extends State<Upcoming> {
           });
           pref.setString("selectedReason", value!);
           pref.getString("selectedReason");
-          print('Selected Reason: $value');
         },
       );
     }).toList();
@@ -172,10 +163,8 @@ class UpcomingState extends State<Upcoming> {
     try {
       // Retrieve the token from SharedPreferences
       String? token = pref.getString('token');
-      print('Authtoken: $token');
       if (token == null) {
         // Handle the case where the token is not available
-        print('Token not found in SharedPreferences');
         return;
       }
       Map<String, dynamic> requestBody = {
@@ -247,15 +236,11 @@ class UpcomingState extends State<Upcoming> {
         pref.getString("selectedAppointmentId").toString();
     String selectedReason = pref.getString("selectedReason").toString();
 
-    // print('the device token is $deviceToken');
-
     try {
       // Retrieve the token from SharedPreferences
       String? token = pref.getString('token');
-      print('Authtoken: $token');
       if (token == null) {
         // Handle the case where the token is not available
-        print('Token not found in SharedPreferences');
         return;
       }
 
@@ -275,13 +260,9 @@ class UpcomingState extends State<Upcoming> {
       Uri apiUrl = Uri.parse(
           'https://participantportal-test.qatarbiobank.org.qa/QbbAPIS/api/CancelAppointmentAPI');
 
-      print('API URL: $apiUrl');
-
       // Make the HTTP POST request
       final response =
           await http.post(apiUrl, headers: headers, body: requestBody);
-      print(response.statusCode);
-      print(response.body);
       if (response.statusCode == 200) {
         showDialog(
             context: context,
@@ -311,9 +292,7 @@ class UpcomingState extends State<Upcoming> {
               return ErrorPopup(errorMessage: response.body);
             });
       }
-    } catch (e) {
-      print(e);
-    }
+    } catch (e) {}
   }
 
   void rescheduleAppointment() async {
@@ -327,15 +306,11 @@ class UpcomingState extends State<Upcoming> {
         pref.getString("rescheduleVisitType").toString();
     var lang = 'langChange'.tr;
 
-    // print('the device token is $deviceToken');
-
     try {
       // Retrieve the token from SharedPreferences
       String? token = pref.getString('token');
-      print('Authtoken: $token');
       if (token == null) {
         // Handle the case where the token is not available
-        print('Token not found in SharedPreferences');
         return;
       }
 
@@ -359,13 +334,10 @@ class UpcomingState extends State<Upcoming> {
       Uri apiUrl = Uri.parse(
           'https://participantportal-test.qatarbiobank.org.qa/QbbAPIS/api/BookAppointmentAPI');
 
-      print('API URL: $apiUrl');
-
       // Make the HTTP POST request
       final response =
           await http.post(apiUrl, headers: headers, body: requestBody);
-      print(response.statusCode);
-      print(response.body);
+
       if (response.statusCode == 200) {
         await bookAppointmentApiCall(
           context,
@@ -380,9 +352,7 @@ class UpcomingState extends State<Upcoming> {
               return ErrorPopup(errorMessage: response.body);
             });
       }
-    } catch (e) {
-      print(e);
-    }
+    } catch (e) {}
   }
 
   // {\r\n    \"QID\": \"28900498437\",\r\n    \"AppoinmentId\": \"11488\",\r\n    \"Reason\": \"Reason\",\r\n    \"ReasonType\": \"ReasonType\"\r\n}
@@ -770,99 +740,95 @@ class UpcomingState extends State<Upcoming> {
                                             //         );
                                             //       });
                                             // } else {
-                                              appointment["AppoinmentId"];
-                                              showDialog(
-                                                context: context,
-                                                builder: (context) {
-                                                  return AlertDialog(
-                                                    shape:
-                                                        CustomAlertDialogShape(
-                                                            bottomLeftRadius:
-                                                                36.0),
-                                                    title: Column(
+                                            appointment["AppoinmentId"];
+                                            showDialog(
+                                              context: context,
+                                              builder: (context) {
+                                                return AlertDialog(
+                                                  shape: CustomAlertDialogShape(
+                                                      bottomLeftRadius: 36.0),
+                                                  title: Column(
+                                                    children: [
+                                                      Center(
+                                                          child: Text("",
+                                                              style: TextStyle(
+                                                                  fontSize: 15,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w600))),
+                                                      SizedBox(
+                                                        height: 10,
+                                                      ),
+                                                      // Divider(),
+                                                    ],
+                                                  ),
+                                                  content: StatefulBuilder(
+                                                    builder: (BuildContext
+                                                            context,
+                                                        StateSetter setState) {
+                                                      return Column(
+                                                        mainAxisSize:
+                                                            MainAxisSize.min,
+                                                        children: [
+                                                          ...buildReasonRadioButtons()
+
+                                                          // ),
+                                                        ],
+                                                      );
+                                                    },
+                                                  ),
+                                                  actions: [
+                                                    Column(
                                                       children: [
-                                                        Center(
-                                                            child: Text("",
-                                                                style: TextStyle(
-                                                                    fontSize:
-                                                                        15,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .w600))),
-                                                        SizedBox(
-                                                          height: 10,
+                                                        Row(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .end,
+                                                          children: [
+                                                            TextButton(
+                                                              onPressed:
+                                                                  () async {
+                                                                // SharedPreferences prefs =
+                                                                //     await SharedPreferences.getInstance();
+                                                                // var selectedLanguagePref =
+                                                                //     prefs.getString('langEn').toString();
+                                                                // if (selectedLanguagePref == "false") {
+                                                                //   selectedLanguage = 'Arabic';
+                                                                // } else {
+                                                                //   selectedLanguage = 'English';
+                                                                // }
+                                                                Navigator.of(
+                                                                        context)
+                                                                    .pop(); // Close the dialog
+                                                              },
+                                                              child: Text(
+                                                                  'cancelButton'
+                                                                      .tr),
+                                                            ),
+                                                            TextButton(
+                                                              onPressed:
+                                                                  () async {
+                                                                SharedPreferences
+                                                                    pref =
+                                                                    await SharedPreferences
+                                                                        .getInstance();
+                                                                pref.setString(
+                                                                    "selectedAppointmentId",
+                                                                    appointment[
+                                                                        "AppoinmentId"]);
+                                                                cancelAnAppointment();
+                                                              },
+                                                              child:
+                                                                  Text('ok'.tr),
+                                                            ),
+                                                          ],
                                                         ),
-                                                        // Divider(),
                                                       ],
                                                     ),
-                                                    content: StatefulBuilder(
-                                                      builder:
-                                                          (BuildContext context,
-                                                              StateSetter
-                                                                  setState) {
-                                                        return Column(
-                                                          mainAxisSize:
-                                                              MainAxisSize.min,
-                                                          children: [
-                                                            ...buildReasonRadioButtons()
-
-                                                            // ),
-                                                          ],
-                                                        );
-                                                      },
-                                                    ),
-                                                    actions: [
-                                                      Column(
-                                                        children: [
-                                                          Row(
-                                                            mainAxisAlignment:
-                                                                MainAxisAlignment
-                                                                    .end,
-                                                            children: [
-                                                              TextButton(
-                                                                onPressed:
-                                                                    () async {
-                                                                  // SharedPreferences prefs =
-                                                                  //     await SharedPreferences.getInstance();
-                                                                  // var selectedLanguagePref =
-                                                                  //     prefs.getString('langEn').toString();
-                                                                  // if (selectedLanguagePref == "false") {
-                                                                  //   selectedLanguage = 'Arabic';
-                                                                  // } else {
-                                                                  //   selectedLanguage = 'English';
-                                                                  // }
-                                                                  Navigator.of(
-                                                                          context)
-                                                                      .pop(); // Close the dialog
-                                                                },
-                                                                child: Text(
-                                                                    'cancelButton'
-                                                                        .tr),
-                                                              ),
-                                                              TextButton(
-                                                                onPressed:
-                                                                    () async {
-                                                                  SharedPreferences
-                                                                      pref =
-                                                                      await SharedPreferences
-                                                                          .getInstance();
-                                                                  pref.setString(
-                                                                      "selectedAppointmentId",
-                                                                      appointment[
-                                                                          "AppoinmentId"]);
-                                                                  cancelAnAppointment();
-                                                                },
-                                                                child: Text(
-                                                                    'ok'.tr),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ],
-                                                  );
-                                                },
-                                              );
+                                                  ],
+                                                );
+                                              },
+                                            );
                                             // }
                                           },
                                           child: Text(

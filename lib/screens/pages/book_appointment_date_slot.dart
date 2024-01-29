@@ -50,8 +50,6 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
         availableDates = List<String>.from(jsonResponse['datelist']);
         nextAvailableDates =
             List<String>.from(jsonResponse['nextAvilableDateList']);
-        print(availableDates);
-        print(nextAvailableDates);
       });
     }
   }
@@ -198,22 +196,16 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
       // parseDate = DateTime.parse(selectedSlot);
     });
 
-    print('vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv' + selectedSlot);
     String qid = pref.getString("userQID").toString();
 
     selectedSlot == "null" ? _selectedDate : _selectedDate = _selectedDate;
-    print('Appointment confirmed for $_selectedDate at $_selectedTimeSlot');
     var lang = 'langChange'.tr;
-
-    // print('the device token is $deviceToken');
 
     try {
       // Retrieve the token from SharedPreferences
       String? token = pref.getString('token');
-      print('Authtoken: $token');
       if (token == null) {
         // Handle the case where the token is not available
-        print('Token not found in SharedPreferences');
         return;
       }
 
@@ -237,13 +229,10 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
       Uri apiUrl = Uri.parse(
           'https://participantportal-test.qatarbiobank.org.qa/QbbAPIS/api/BookAppointmentAPI');
 
-      print('API URL: $apiUrl');
-
       // Make the HTTP POST request
       final response =
           await http.post(apiUrl, headers: headers, body: requestBody);
-      print(response.statusCode);
-      print(response.body);
+
       if (response.statusCode == 200) {
         showDialog(
             context: context,
@@ -266,7 +255,6 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
                 ],
               );
             });
-        print("Appointment booked");
       } else {
         showDialog(
             context: context, // Use the context of the current screen
@@ -274,9 +262,7 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
               return ErrorPopup(errorMessage: response.body);
             });
       }
-    } catch (e) {
-      print(e);
-    }
+    } catch (e) {}
   }
 }
 
@@ -312,8 +298,6 @@ class _SwipableDateRowState extends State<SwipableDateRow> {
         availableDates = List<String>.from(jsonResponse['datelist']);
         nextAvailableDates =
             List<String>.from(jsonResponse['nextAvilableDateList']);
-        print(availableDates);
-        print(nextAvailableDates);
       });
     }
   }
@@ -444,7 +428,6 @@ class _SwipableFourColumnWidgetState extends State<SwipableFourColumnWidget> {
         timeList = List<String>.from(jsonResponse['timelist']);
         // nextAvailableDates =
         //     List<String>.from(jsonResponse['nextAvilableDateList']);
-        // print(availab / eDates);
       });
     }
   }
@@ -474,16 +457,13 @@ class _SwipableFourColumnWidgetState extends State<SwipableFourColumnWidget> {
             datesOnly.add(dateOnly);
           } catch (e) {
             // Handle parsing errors if necessary
-            print("Error parsing date-time string: $dateTimeString");
           }
         }
 
         // Use the 'availableDates' list as needed
-        print("Decoded List");
-        print(availableDates);
+
         daysAndDates = availableDates;
 
-        print("daysandtime" + daysAndDates.toString());
         pref.setString("dateOnly", datesOnly.toString());
         pref.getString("dateOnly");
         // ==============================================================================
@@ -491,7 +471,6 @@ class _SwipableFourColumnWidgetState extends State<SwipableFourColumnWidget> {
           try {
             return DateTime.parse(dateString);
           } catch (e) {
-            print('Error parsing date string: $dateString');
             return null;
           }
         }).toList();
@@ -503,17 +482,12 @@ class _SwipableFourColumnWidgetState extends State<SwipableFourColumnWidget> {
             dayNames.add(dayName);
           }
         }
-        print("DatesAndDays");
-        print(dayNames);
 
-        // ===============================================================================
         return datesOnly;
       } else {
-        print("Decoded data is not a List");
         return [];
       }
     } else {
-      print("No data found in SharedPreferences for 'availableDates'");
       return [];
     }
   }
@@ -524,12 +498,9 @@ class _SwipableFourColumnWidgetState extends State<SwipableFourColumnWidget> {
       try {
         return DateTime.parse(dateString);
       } catch (e) {
-        print('Error parsing date string: $dateString');
         return null;
       }
     }).toList();
-
-    print(dates);
 
     // Check if any dates were successfully parsed
 
@@ -539,8 +510,7 @@ class _SwipableFourColumnWidgetState extends State<SwipableFourColumnWidget> {
         dayNames.add(dayName);
       }
     }
-    print("DatesAndDays");
-    print(dayNames);
+
     return dayNames;
   }
 
@@ -556,13 +526,10 @@ class _SwipableFourColumnWidgetState extends State<SwipableFourColumnWidget> {
           ? DateTime.parse(calendarPickedDate)
           : null;
     } catch (e) {
-      print("Error parsing date: $e");
       pickedDateParsed =
           null; // Handle the error by setting pickedDateParsed to null or provide a default value
     }
 
-    print(pickedDateParsed.toString() +
-        "ffffffffffffffffffffffffffffffffffffffffffffff");
     return pickedDateParsed;
   }
 
@@ -643,17 +610,13 @@ class _SwipableFourColumnWidgetState extends State<SwipableFourColumnWidget> {
                         } else {
                           selectedDates.add(datesOnly[pageIndex]);
                         }
-                        print("New selected Date");
-                        print(selectedDates);
-                        print(selectedDates.toString());
+
                         SharedPreferences pref =
                             await SharedPreferences.getInstance();
                         pref.setString(
                             "selectedData", selectedDates.toString());
                         String prefval =
                             pref.getString("selectedDate").toString();
-                        print("get");
-                        print(prefval ?? "Value is null");
                       },
                       child: Text(
                         'available'.tr,

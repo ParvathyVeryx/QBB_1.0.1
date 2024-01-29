@@ -383,7 +383,6 @@ class CompletedState extends State<Completed> {
 
       // Check if the token is available
       if (token.isEmpty) {
-        print('Error: Token not found in shared preferences.');
         return [];
       }
 
@@ -413,13 +412,10 @@ class CompletedState extends State<Completed> {
         return allCompletedAppointments;
       } else {
         // Handle errors
-        print('Error: ${response.statusCode}');
-        print('Response: ${response.body}');
+
         return []; // Return an empty list in case of an error
       }
     } catch (e, stackTrace) {
-      print('Exception during API request: $e');
-      print('StackTrace: $stackTrace');
       return []; // Return an empty list in case of an exception
     }
   }
@@ -429,7 +425,6 @@ class CompletedState extends State<Completed> {
     return FutureBuilder<List<Map<String, dynamic>>>(
       future: fetchData(),
       builder: (context, snapshot) {
-        
         if (snapshot.hasError) {
           // Display an error message if an error occurs
           return Text('Error: ${snapshot.error}');
@@ -444,7 +439,7 @@ class CompletedState extends State<Completed> {
           if (snapshot.data!.length == 0) {
             return SizedBox(
                 height: MediaQuery.of(context).size.height * 0.95,
-                child:  Center(child: Text('thereAreNoAppointments'.tr)));
+                child: Center(child: Text('thereAreNoAppointments'.tr)));
           }
           return Scaffold(
             body: SingleChildScrollView(

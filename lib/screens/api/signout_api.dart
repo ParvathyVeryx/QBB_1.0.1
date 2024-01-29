@@ -16,12 +16,6 @@ Future<void> signOut(BuildContext context) async {
 
   String? qid = await getQIDFromSharedPreferences();
 
-  if (qid != null) {
-    print('QID: $qid');
-  } else {
-    print('Failed to retrieve QID');
-  }
-
   const String apiUrl =
       'https://participantportal-test.qatarbiobank.org.qa/QbbAPIS/api/LogoutAPI';
 
@@ -45,12 +39,10 @@ Future<void> signOut(BuildContext context) async {
 
     if (response.statusCode == 200) {
       // Successful API call
-      print('API Response: ${response.body}');
 
       // Parse the JSON response
       final Map<String, dynamic> jsonResponse = json.decode(response.body);
       // Save the API response in shared preferences
-      print(response.body);
 
       // Now, navigate to the AppointmentBookingPage
       Navigator.push(
@@ -59,12 +51,12 @@ Future<void> signOut(BuildContext context) async {
           builder: (context) => const LoginPage(),
         ),
       );
-      Navigator.of(context)
-          .pushNamedAndRemoveUntil('/login', (Route<dynamic> route) => false, );
+      Navigator.of(context).pushNamedAndRemoveUntil(
+        '/login',
+        (Route<dynamic> route) => false,
+      );
     } else {
       // Handle errors
-      print('API Call Failed. Status Code: ${response.statusCode}');
-      print('Error Message: ${response.body}');
       showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -74,7 +66,6 @@ Future<void> signOut(BuildContext context) async {
     }
   } catch (error) {
     // Handle network errors
-    print('Error: $error');
     showDialog(
       context: context,
       builder: (BuildContext context) {

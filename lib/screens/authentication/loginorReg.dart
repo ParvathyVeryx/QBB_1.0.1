@@ -61,7 +61,6 @@ class loginOrRegState extends State<loginOrReg> {
                               builder: (context) => const AccessUser()),
                         );
 
-                        print('Container clicked!');
                       },
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -117,7 +116,6 @@ class loginOrRegState extends State<loginOrReg> {
                           MaterialPageRoute(
                               builder: (context) => RegistrationMode()),
                         );
-                        print('Container clicked!');
                       },
                       child: Center(
                         child: Row(

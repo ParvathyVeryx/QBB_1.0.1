@@ -78,7 +78,6 @@ void initState() {
       String responseBody = await callUserProfileAPIGet();
       return parseUserProfileData(responseBody);
     } catch (e) {
-      print("Exception during API request: $e");
       throw e;
     }
   }
@@ -121,10 +120,8 @@ void profilePic() async {
     Map<String, dynamic> jsonMap = json.decode(responseBody);
     setState(() {
       profilePicture = jsonMap['Photo'] ?? '';
-      print("profileP" + profilePicture);
     });
   } catch (e) {
-    print("Error loading user profile: $e");
     // Handle the error appropriately
   }
 }

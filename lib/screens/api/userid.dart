@@ -20,17 +20,14 @@ Future<int?> getUserIdFromSharedPreferences() async {
         int userId = userIdDynamic;
         return userId;
       } else {
-        print('User ID is not an integer');
         return null;
       }
     } else {
       // Handle the case where user details are not found
-      print('User details not found in SharedPreferences');
       return null;
     }
   } catch (e) {
     // Handle any exceptions that occurred during the process
-    print('Error extracting user ID: $e');
     return null;
   }
 }
@@ -53,17 +50,14 @@ Future<String?> getQIDFromSharedPreferences() async {
         String qid = qidDynamic;
         return qid;
       } else {
-        print('QID is not a string');
         return null;
       }
     } else {
       // Handle the case where user details are not found
-      print('User details not found in SharedPreferences');
       return null;
     }
   } catch (e) {
     // Handle any exceptions that occurred during the process
-    print('Error extracting QID: $e');
     return null;
   }
 }
@@ -86,17 +80,14 @@ Future<int?> getPersonGradeIdFromSharedPreferences() async {
         int personGradeId = personGradeIdDynamic;
         return personGradeId;
       } else {
-        print('PersonGradeId is not an integer');
         return null;
       }
     } else {
       // Handle the case where user details are not found
-      print('User details not found in SharedPreferences');
       return null;
     }
   } catch (e) {
     // Handle any exceptions that occurred during the process
-    print('Error extracting PersonGradeId: $e');
     return null;
   }
 }

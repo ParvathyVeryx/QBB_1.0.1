@@ -46,7 +46,6 @@ class ResultsState extends State<Results> {
 
       // Check if the token is available
       if (token.isEmpty) {
-        print('Error: Token not found in shared preferences.');
         return [];
       }
 
@@ -86,11 +85,10 @@ class ResultsState extends State<Results> {
         return allreslt;
       } else {
         // Handle errors
-      
+
         return []; // Return an empty list in case of an error
       }
     } catch (e, stackTrace) {
-     
       return []; // Return an empty list in case of an exception
     }
   }
@@ -862,14 +860,18 @@ class ResultsState extends State<Results> {
                                                       appointment["QID"]
                                                           .toString(),
                                                       appointment[
-                                                          "AppointmentTypeId"].toString(),
+                                                              "AppointmentTypeId"]
+                                                          .toString(),
                                                       appointment[
-                                                          'AppoinmentId'].toString(),
-                                                      appointment["StudyId"].toString(),
+                                                              'AppoinmentId']
+                                                          .toString(),
+                                                      appointment["StudyId"]
+                                                          .toString(),
+                                                      appointment["VisitTypeId"]
+                                                          .toString(),
                                                       appointment[
-                                                          "VisitTypeId"].toString(),
-                                                      appointment[
-                                                          'AvailabilityCalenderId'].toString(),
+                                                              'AvailabilityCalenderId']
+                                                          .toString(),
                                                     );
                                                   },
                                                   style: ButtonStyle(

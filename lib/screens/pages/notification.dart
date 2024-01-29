@@ -36,7 +36,6 @@ class _NotificationScreenState extends State<NotificationScreen> {
 
       // Check if the token is available
       if (token.isEmpty) {
-        print('Error: Token not found in shared preferences.');
         return [];
       }
 
@@ -53,23 +52,17 @@ class _NotificationScreenState extends State<NotificationScreen> {
           'Authorization': 'Bearer ${token.replaceAll('"', '')}',
         },
       );
-      // print('kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk' +
       //     response.body.toString());
       if (response.statusCode == 200) {
         // Parse and handle the response body
         var responseBody = json.decode(response.body);
         notifications = List<Map<String, dynamic>>.from(responseBody);
-        // print('jkjkjkjk' + notifications.toString());
         return notifications;
       } else {
         // Handle errors
-        print('Error: ${response.statusCode}');
-        // print('Response: ${response.body}');
         return []; // Return an empty list in case of an error
       }
     } catch (e, stackTrace) {
-      print('Exception during API request: $e');
-      print('StackTrace: $stackTrace');
       return []; // Return an empty list in case of an exception
     }
   }
@@ -245,7 +238,6 @@ class _NotificationScreenState extends State<NotificationScreen> {
                           label: 'profile'.tr.toUpperCase() + '\n'),
                     ]),
                 body: LoaderWidget());
-
           } else {
             allresults = snapshot.data!;
           }

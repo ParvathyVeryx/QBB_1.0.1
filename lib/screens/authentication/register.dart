@@ -90,21 +90,14 @@ class RegisterUserState extends State<RegisterUser> {
     super.initState();
     // Call a function to retrieve the token from shared preferences
     _retrieveToken();
-
-    // Print the received values in the initState method
-    print('Received behalfFname: ${widget.behalfFname}');
-    print('Received behalfLname: ${widget.behalfLname}');
   }
 
   Future<void> _retrieveToken() async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       token = prefs.getString('token').toString();
-      print('Tokrn in other screen $token');
       // Rest of the code...
-    } catch (e) {
-      print('Error retrieving token: $e');
-    }
+    } catch (e) {}
   }
 
   Future<void> _selectDate(BuildContext context) async {
@@ -502,7 +495,6 @@ class RegisterUserState extends State<RegisterUser> {
                       const SizedBox(height: 20.0),
                       ElevatedButton(
                         onPressed: () async {
-                          print('token before calling api $token');
                           if (token != null &&
                               _formKey.currentState!.validate()) {
                             setState(() {
@@ -530,8 +522,7 @@ class RegisterUserState extends State<RegisterUser> {
                                 isSelfRegistred: registrationMode,
                                 referralPersonFirstName: widget.behalfFname,
                                 referralPersonLastName: widget.behalfLname);
-                            print(widget.behalfFname);
-                            print(widget.behalfLname);
+
                             // Call the API with the populated Register instance
                             await RegisterApi.signup(
                               reg,
@@ -546,13 +537,8 @@ class RegisterUserState extends State<RegisterUser> {
                             );
 
                             // Add debug statements for tracking
-                            print('token from form $token');
-                            print('QID: ${reg.qid}');
-                            print('DOB: ${reg.dob}');
+
                             // Add more debug statements as needed
-                          } else {
-                            print(
-                                'Token is null. Check token retrieval or storage.');
                           }
                         },
                         style: ButtonStyle(

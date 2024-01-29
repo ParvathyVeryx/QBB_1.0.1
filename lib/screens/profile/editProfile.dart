@@ -82,10 +82,12 @@ class EditUserState extends State<EditUser> {
                       _emailController.text = snapshot.data ?? '';
                       return _buildRoundedBorderTextField(
                         labelText: 'Email',
-                        labelTextColor: const Color.fromARGB(255, 173, 173, 173),
+                        labelTextColor:
+                            const Color.fromARGB(255, 173, 173, 173),
                         validator: (value) {
                           if (value!.isEmpty) {
-                            _setEmailValidationMessage('Please enter your email');
+                            _setEmailValidationMessage(
+                                'Please enter your email');
                             return 'Please enter your email';
                           } else if (!isValidEmail(value)) {
                             _setEmailValidationMessage('Invalid email format');
@@ -116,7 +118,6 @@ class EditUserState extends State<EditUser> {
                   onChanged: (value) {
                     setState(() {
                       maritalStatusId = value!;
-                      print('Selected Marital Status Id: $maritalStatusId');
                       isButtonEnabled = _emailValidationMessage == null;
                     });
                   },
@@ -141,13 +142,10 @@ class EditUserState extends State<EditUser> {
                         setState(() {
                           isLoading = true;
                         });
-                        print('Validation passed, executing onPressed block');
                         String userEmail = _emailController.text;
                         int userMaritalId = int.parse(maritalStatusId ?? '1');
                         callUserProfileAPI(context, userEmail, userMaritalId);
-                      } else {
-                        print('Validation failed');
-                      }
+                      } else {}
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
@@ -158,8 +156,8 @@ class EditUserState extends State<EditUser> {
                     }
                   },
                   style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all<Color>(
-                          primaryColor),
+                      backgroundColor:
+                          MaterialStateProperty.all<Color>(primaryColor),
                       shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                         const RoundedRectangleBorder(
                           borderRadius: BorderRadius.only(
@@ -186,7 +184,6 @@ class EditUserState extends State<EditUser> {
   }
 
   void _setEmailValidationMessage(String? message) {
-    print('Email Validation Message: $message');
     setState(() {
       _emailValidationMessage = message;
     });
@@ -433,4 +430,3 @@ class EditUserState extends State<EditUser> {
     );
   }
 }
-

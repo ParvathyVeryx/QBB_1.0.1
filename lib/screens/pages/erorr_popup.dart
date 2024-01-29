@@ -9,7 +9,6 @@ class ErrorPopup extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print('Error Popup Content: $errorMessage'); // Add this line for debugging
 
     return AlertDialog(
       shape: const RoundedRectangleBorder(

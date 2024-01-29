@@ -39,7 +39,6 @@ class AppointmentsState extends State<Appointments> {
 
     try {
       var appointments = await viewAppointments('$qid', 1, '$lang');
-      print('dcfvfdx' + appointments.toString());
       setState(() {
         // Set all appointments
         allAppointments = appointments;
@@ -52,7 +51,6 @@ class AppointmentsState extends State<Appointments> {
       });
     } catch (error) {
       // Handle errors, e.g., show an error message.
-      print('Error fetching appointments: $error');
     }
   }
 

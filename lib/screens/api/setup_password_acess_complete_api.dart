@@ -16,7 +16,6 @@ Future<void> setPasswordAccessSetupNotCompleted(
 
     if (token == null) {
       // Handle the case where the token is not available in shared preferences
-      print('Error: Token not found in shared preferences');
       return;
     }
 
@@ -37,7 +36,6 @@ Future<void> setPasswordAccessSetupNotCompleted(
           return ErrorPopup(errorMessage: response.body);
         },
       );
-      print('SetPasswordAccessSetupNotCompleted API call successful!');
       // Handle the response data if needed
     } else {
       showDialog(
@@ -46,10 +44,6 @@ Future<void> setPasswordAccessSetupNotCompleted(
           return ErrorPopup(errorMessage: response.body);
         },
       );
-      print(
-          'SetPasswordAccessSetupNotCompleted API call failed with status code: ${response.body}');
     }
-  } catch (error) {
-    print('Error calling SetPasswordAccessSetupNotCompleted API: $error');
-  }
+  } catch (error) {}
 }

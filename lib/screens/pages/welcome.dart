@@ -60,10 +60,7 @@ class WelcomeState extends State<Welcome> {
         isButtonClickedWArabic = true;
       });
     }
-    print('DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD');
-    print(isButtonClickedW);
-    print(isButtonClickedWArabic);
-    print(selectedLang);
+
     return selectedLang;
   }
 
@@ -138,39 +135,6 @@ class WelcomeState extends State<Welcome> {
               crossAxisAlignment: CrossAxisAlignment.center,
               // mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                // ElevatedButton(
-                //     onPressed: () {
-                //       buildLanguageDialog(context);
-                //     },
-                //     child: Text('changelang'.tr)),
-                // Row(
-                //   mainAxisAlignment: MainAxisAlignment.center,
-                //   children: [
-                //     ElevatedButton(
-                //       onPressed: () async {
-                //         SharedPreferences pref =
-                //             await SharedPreferences.getInstance();
-                //         pref.setString("langEn", "true");
-                //         var lan = pref.getString("langEn").toString();
-                //         print("jjjjjjjjjjjjjjj" + lan);
-                //         updateLanguage(locale[0]['locale']);
-                //       },
-                //       child: const Text('English'),
-                //     ),
-                //     ElevatedButton(
-                //       onPressed: () async {
-                //         SharedPreferences pref =
-                //             await SharedPreferences.getInstance();
-                //         pref.setString("langEn", "false");
-                //         var lan = pref.getString("langAR").toString();
-                //         print("jjjjjjjjjjjjjjj" + lan);
-                //         updateLanguage(locale[1]['locale']);
-                //       },
-                //       child: const Text('عربي'),
-                //     ),
-                //   ],
-                // ),
-
                 Directionality(
                   textDirection: TextDirection.ltr,
                   child: Row(
@@ -210,12 +174,10 @@ class WelcomeState extends State<Welcome> {
                           isButtonClickedW = true;
                           isButtonClickedWArabic = false;
                           // });
-                          // print('token before calling api $token');
                           SharedPreferences pref =
                               await SharedPreferences.getInstance();
                           pref.setString("langSelected", "English");
                           var lan = pref.getString("langSelected").toString();
-                          print("jjjjjjjjjjjjjjj" + lan);
                           updateLanguage(locale[0]['locale']);
                         },
                         child: Padding(
@@ -298,39 +260,9 @@ class WelcomeState extends State<Welcome> {
                                 ),
                         ),
                       ),
-
-                      // ElevatedButton(
-                      //   onPressed: () async {
-                      //     SharedPreferences pref =
-                      //         await SharedPreferences
-                      //             .getInstance();
-                      //     pref.setString("langEn", "English");
-                      //     var lan =
-                      //         pref.getString("langEn").toString();
-                      //     print("jjjjjjjjjjjjjjj" + lan);
-                      //     updateLanguageLogin(
-                      //         locale[0]['locale']);
-                      //   },
-                      //   child: const Text('English'),
-                      // ),
-                      // ElevatedButton(
-                      //   onPressed: () async {
-                      //     SharedPreferences pref =
-                      //         await SharedPreferences
-                      //             .getInstance();
-                      //     pref.setString("langAR", "Arabic");
-                      //     var lan =
-                      //         pref.getString("langAR").toString();
-                      //     print("jjjjjjjjjjjjjjj" + lan);
-                      //     updateLanguageLogin(
-                      //         locale[1]['locale']);
-                      //   },
-                      //   child: const Text('عربي'),
-                      // ),
                     ],
                   ),
                 ),
-
                 const SizedBox(
                   height: 30,
                 ),
