@@ -97,31 +97,34 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(
-            Icons.arrow_back,
-            color: Color.fromARGB(255, 179, 179, 179),
-          ),
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => Welcome()),
-            );
-          },
-        ),
-      ),
+      // appBar: AppBar(
+      //   leading: IconButton(
+      //     icon: const Icon(
+      //       Icons.arrow_back,
+      //       color: Color.fromARGB(255, 179, 179, 179),
+      //     ),
+      //     onPressed: () {
+      //       // Navigator.push(
+      //       //   context,
+      //       //   MaterialPageRoute(builder: (context) => Welcome()),
+      //       // );
+      //       Navigator.pop(context);
+      //     },
+      //   ),
+      // ),
       body: isLoading
           ? Center(
               child: LoaderWidget(),
             )
           : SingleChildScrollView(
-              physics: const NeverScrollableScrollPhysics(),
+              // physics: const NeverScrollableScrollPhysics(),
               child: Stack(
+                // alignment: Alignment(10, 10),
                 children: [
                   Container(
                     // height:, // Set height to take the entire screen
-                    height: 790,
+                    // height: 790,
+                    height: MediaQuery.of(context).size.height,
                     decoration: const BoxDecoration(
                       image: DecorationImage(
                         image: AssetImage('assets/images/bg.png'),
@@ -212,7 +215,6 @@ class _LoginPageState extends State<LoginPage> {
                                           langen = pref
                                               .getString("langSelected")
                                               .toString();
-                                          print("jjjjjjjjjjjjjjj" + langen);
                                           updateLanguageLogin(
                                               locale[0]['locale']);
 
@@ -291,7 +293,6 @@ class _LoginPageState extends State<LoginPage> {
                                           langen = pref
                                               .getString("langSelected")
                                               .toString();
-                                          print("jjjjjjjjjjjjjjj" + langen);
                                           updateLanguageLogin(
                                               locale[1]['locale']);
                                           if (isLogginchecked == true) {
@@ -394,63 +395,73 @@ class _LoginPageState extends State<LoginPage> {
                                                   true, // Set isPassword to true for the password field
                                             ),
                                             const SizedBox(height: 20.0),
-                                            Container(
-                                              width: double.infinity,
-                                              child: ElevatedButton(
-                                                style: ButtonStyle(
-                                                  backgroundColor:
-                                                      MaterialStateProperty.all<
-                                                          Color>(primaryColor),
-                                                  shape:
-                                                      MaterialStateProperty.all<
-                                                          RoundedRectangleBorder>(
-                                                    const RoundedRectangleBorder(
-                                                      borderRadius:
-                                                          BorderRadius.only(
-                                                        bottomLeft:
-                                                            Radius.circular(
-                                                                20.0),
+                                            Padding(
+                                              padding: const EdgeInsets.only(
+                                                  bottom: 0.0),
+                                              child: Container(
+                                                width: double.infinity,
+                                                child: ElevatedButton(
+                                                  style: ButtonStyle(
+                                                    backgroundColor:
+                                                        MaterialStateProperty
+                                                            .all<Color>(
+                                                                primaryColor),
+                                                    shape: MaterialStateProperty
+                                                        .all<
+                                                            RoundedRectangleBorder>(
+                                                      const RoundedRectangleBorder(
+                                                        borderRadius:
+                                                            BorderRadius.only(
+                                                          bottomLeft:
+                                                              Radius.circular(
+                                                                  20.0),
+                                                        ),
                                                       ),
                                                     ),
                                                   ),
-                                                ),
-                                                onPressed: () async {
-                                                  isLogginchecked = true;
-                                                  // print('token before calling api $token');
-                                                  String deviceToken =
-                                                      getDeviceId().toString();
-                                                  // String deviceToken = 'qwd';
-                                                  String deviceType =
-                                                      getDeviceType()
-                                                          .toString();
-                                                  if (_formKey.currentState!
-                                                      .validate()) {
-                                                    setState(() {
-                                                      isLoading =
-                                                          true; // Set loading to true when button is pressed
-                                                    });
-                                                    await LoginApi.login(
-                                                      context,
-                                                      qidController.text,
-                                                      passwordController.text,
-                                                      deviceToken,
-                                                      deviceType,
-                                                      onApiComplete: () {
-                                                        setState(() {
-                                                          isLoading =
-                                                              false; // Set loading to false when API call is complete
-                                                        });
-                                                      },
-                                                    );
-                                                  }
-                                                },
-                                                child: Padding(
-                                                  padding: EdgeInsets.fromLTRB(
-                                                      10.0, 8.0, 10.0, 8.0),
-                                                  child: Text(
-                                                    'login'.tr,
-                                                    style: TextStyle(
-                                                      color: textcolor,
+                                                  onPressed: () async {
+                                                    isLogginchecked = true;
+                                                    // print('token before calling api $token');
+                                                    String deviceToken =
+                                                        getDeviceId()
+                                                            .toString();
+                                                    // String deviceToken = 'qwd';
+                                                    String deviceType =
+                                                        getDeviceType()
+                                                            .toString();
+                                                    if (_formKey.currentState!
+                                                        .validate()) {
+                                                      setState(() {
+                                                        isLoading =
+                                                            true; // Set loading to true when button is pressed
+                                                      });
+                                                      await LoginApi.login(
+                                                        context,
+                                                        qidController.text,
+                                                        passwordController.text,
+                                                        deviceToken,
+                                                        deviceType,
+                                                        onApiComplete: () {
+                                                          setState(() {
+                                                            isLoading =
+                                                                false; // Set loading to false when API call is complete
+                                                          });
+                                                        },
+                                                      );
+                                                    }
+                                                  },
+                                                  child: Padding(
+                                                    padding:
+                                                        EdgeInsets.fromLTRB(
+                                                            10.0,
+                                                            8.0,
+                                                            10.0,
+                                                            8.0),
+                                                    child: Text(
+                                                      'login'.tr,
+                                                      style: TextStyle(
+                                                        color: textcolor,
+                                                      ),
                                                     ),
                                                   ),
                                                 ),
@@ -527,8 +538,7 @@ class _LoginPageState extends State<LoginPage> {
     required TextEditingController controller,
   }) {
     return TextFormField(
-      scrollPadding: EdgeInsets.only(
-          bottom: MediaQuery.of(context).viewInsets.bottom + 12 * 4),
+      scrollPadding: EdgeInsets.only(bottom: 150),
       obscureText: _obscureText, // Set obscureText to true for password fields
       // obscuringCharacter: "*",
       decoration: InputDecoration(
@@ -618,8 +628,7 @@ class _LoginPageState extends State<LoginPage> {
     TextInputType? keyboardType,
   }) {
     return TextFormField(
-      scrollPadding: EdgeInsets.only(
-          bottom: MediaQuery.of(context).viewInsets.bottom + 12 * 4),
+      scrollPadding: EdgeInsets.only(bottom: 150),
       keyboardType: TextInputType.number,
       controller: qidController,
       // obscureText: _obscureText, // Set obscureText to true for password fields

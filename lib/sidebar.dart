@@ -16,6 +16,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 // ignore: unused_import
 // import 'package:flutter_gen/gen_l10n/app-localizations.dart';
 
+import 'screens/api/signout_api.dart';
 import 'screens/pages/studies.dart';
 
 class LanguageProvider extends ChangeNotifier {
@@ -376,8 +377,9 @@ class sideMenuclass extends State<SideMenu> {
                                     onPressed: () async {
                                       SharedPreferences prefs =
                                           await SharedPreferences.getInstance();
-                                      var selectedLanguagePref =
-                                          prefs.getString('langSelected').toString();
+                                      var selectedLanguagePref = prefs
+                                          .getString('langSelected')
+                                          .toString();
                                       if (selectedLanguagePref == "Arabic") {
                                         selectedLanguage = 'Arabic';
                                       } else {
@@ -442,10 +444,11 @@ class sideMenuclass extends State<SideMenu> {
                 onTap: () {
                   // Handle onTap action
                   // For example, you can navigate to a different screen.
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const LoginPage()),
-                  ); // Close the drawer
+                  // Navigator.push(
+                  //   context,
+                  //   MaterialPageRoute(builder: (context) => const LoginPage()),
+                  // ); // Close the drawer
+                  signOut(context);
                 },
               ),
             ],

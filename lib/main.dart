@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:QBB/localestring.dart';
 import 'package:QBB/localization/localization.dart';
+import 'package:QBB/nirmal/login_screen.dart';
 import 'package:QBB/providers/studymodel.dart';
 import 'package:QBB/providers/token_provider.dart';
 import 'package:QBB/screens/splash.dart';
@@ -59,7 +60,7 @@ class _MyAppState extends State<MyApp> {
     print('called initApp');
     _initApp();
     super.initState();
-    print("kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk");
+    _clearSharedPreferences();
   }
 
   @override
@@ -70,7 +71,7 @@ class _MyAppState extends State<MyApp> {
 
   _clearSharedPreferences() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.clear(); // Clear all data from shared preferences
+    await prefs.remove("langSelected"); // Clear all data from shared preferences
   }
 
   Future<void> _initApp() async {
@@ -109,14 +110,16 @@ class _MyAppState extends State<MyApp> {
           // AppLocalizationsDelegateEn(), // Default (English)
           // AppLocalizationsDelegateAr(), // Arabic
         ],
-      
+
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
           fontFamily: 'Arial',
         ),
+        routes: {
+          '/login': (BuildContext context) => const LoginPage(),
+        },
         home: const SplashScreen(),
-        
       ),
     );
   }
