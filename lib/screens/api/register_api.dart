@@ -1,8 +1,10 @@
 import 'dart:convert';
 import 'package:QBB/constants.dart';
+import 'package:QBB/screens/authentication/accessSetUp.dart';
 import 'package:QBB/screens/authentication/loginorReg.dart';
 import 'package:QBB/screens/pages/erorr_popup.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -32,15 +34,10 @@ class RegisterApi {
     // Register register = Register();
 
     // SharedPreferences prefs = await SharedPreferences.getInstance();
-    String langg = pref.getString("langEn").toString();
-    String setLang;
-    if (langg == "true") {
-      setLang = "en";
-    } else {
-      setLang = "ar";
-    }
+    String lang = "langChange".tr;
 
-    var url = Uri.parse('$base_url/QuickRegistrationAPI?language=$setLang');
+    var url = Uri.parse('$base_url/QuickRegistrationAPI?language=$lang');
+    print(register.toJson());
 
     final response = await http.post(
       url,
@@ -60,7 +57,7 @@ class RegisterApi {
         // Navigate to another widget here
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => loginOrReg()),
+          MaterialPageRoute(builder: (context) => AccessUser()),
         );
       });
 

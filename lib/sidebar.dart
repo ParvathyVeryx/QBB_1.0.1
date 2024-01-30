@@ -110,7 +110,6 @@ class sideMenuclass extends State<SideMenu> {
   void initState() {
     super.initState();
     loadSelectedLanguage();
-    getVersionCode();
   }
 
   @override

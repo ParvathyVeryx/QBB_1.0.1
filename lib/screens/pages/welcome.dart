@@ -37,10 +37,7 @@ class WelcomeState extends State<Welcome> {
     prefs.remove("langSelected");
   }
 
-  _clearSharedPreferences() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.remove("langSelected");
-  }
+
 
   String password = ''; // Store the entered password
   String confirmPassword = ''; // Store the entered confirm password
@@ -147,7 +144,6 @@ class WelcomeState extends State<Welcome> {
                     children: [
                       ElevatedButton(
                         style: isButtonClickedW
-                        style: isButtonClickedW
                             ? ButtonStyle(
                                 backgroundColor:
                                     MaterialStateProperty.all<Color>(appbar),
@@ -189,7 +185,6 @@ class WelcomeState extends State<Welcome> {
                         child: Padding(
                           padding:
                               const EdgeInsets.fromLTRB(6.0, 1.0, 6.0, 1.0),
-                          child: isButtonClickedW
                           child: isButtonClickedW
                               ? const Text(
                                   'English',
