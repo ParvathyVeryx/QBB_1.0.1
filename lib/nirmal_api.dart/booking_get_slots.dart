@@ -240,7 +240,6 @@ Future<void> getResultAppointmentApiCall(
   };
 
   SharedPreferences pref = await SharedPreferences.getInstance();
-  SharedPreferences pref = await SharedPreferences.getInstance();
   String? token = pref.getString('token');
 
   final Uri uri = Uri.parse(

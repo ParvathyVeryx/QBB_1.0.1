@@ -51,7 +51,6 @@ class _LoginPageState extends State<LoginPage> {
   bool isLoading = false;
 
   bool isButtonClicked = false;
-  bool isButtonClicked = false;
 
   bool _obscureText = true;
   var qidErr;
@@ -61,19 +60,11 @@ class _LoginPageState extends State<LoginPage> {
 
   String selectedLang = '';
   bool isButtonClickedArabic = true;
-  bool isButtonClickedArabic = true;
 
   void selectedLanguage() async {}
 
   Future<String> getLang() async {
-  Future<String> getLang() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
-    selectedLang = pref.getString("langSelected").toString();
-    if (selectedLang == "English") {
-      setState(() {
-        isButtonClicked = true;
-        isButtonClickedArabic = false;
-      });
     selectedLang = pref.getString("langSelected").toString();
     if (selectedLang == "English") {
       setState(() {
