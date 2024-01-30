@@ -136,10 +136,10 @@ class RegisterUserState extends State<RegisterUser> {
         ),
         title: Center(
           child: Padding(
-            padding: EdgeInsets.only(right: 40.0),
+            padding: const EdgeInsets.only(right: 40.0),
             child: Text(
               'register'.tr,
-              style: TextStyle(
+              style: const TextStyle(
                 color: appbar,
                 fontFamily: 'Impact',
               ),
@@ -395,7 +395,7 @@ class RegisterUserState extends State<RegisterUser> {
                         children: [
                           Text(
                             'howLong'.tr,
-                            style: TextStyle(
+                            style: const TextStyle(
                                 fontSize: 12, fontWeight: FontWeight.normal),
                           ),
                           const SizedBox(height: 10.0),
@@ -432,7 +432,7 @@ class RegisterUserState extends State<RegisterUser> {
                             alignment: Alignment.centerLeft,
                             child: Text(
                               'howDidYouComeToKnowAboutQBB'.tr,
-                              style: TextStyle(
+                              style: const TextStyle(
                                   fontSize: 12, fontWeight: FontWeight.normal),
                             ),
                           ),
@@ -468,7 +468,7 @@ class RegisterUserState extends State<RegisterUser> {
                               alignment: Alignment.centerLeft,
                               child: Text(
                                 'campaigns'.tr,
-                                style: TextStyle(
+                                style: const TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.normal),
                               ),
@@ -568,10 +568,11 @@ class RegisterUserState extends State<RegisterUser> {
                               ),
                             )),
                         child: Padding(
-                          padding: EdgeInsets.fromLTRB(10.0, 15.0, 10.0, 15.0),
+                          padding:
+                              const EdgeInsets.fromLTRB(10.0, 15.0, 10.0, 15.0),
                           child: Text(
                             'tutorialContinueButton'.tr,
-                            style: TextStyle(
+                            style: const TextStyle(
                               color: textcolor,
                             ),
                           ),
@@ -605,7 +606,7 @@ class RegisterUserState extends State<RegisterUser> {
       decoration: InputDecoration(
         contentPadding: const EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 5.0),
         labelText: labelText,
-        errorStyle: TextStyle(
+        errorStyle: const TextStyle(
           // Add your style properties here
           color: primaryColor,
           fontWeight: FontWeight.w600,
@@ -655,7 +656,7 @@ class RegisterUserState extends State<RegisterUser> {
       decoration: InputDecoration(
         contentPadding: const EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 5.0),
         labelText: labelText,
-        errorStyle: TextStyle(
+        errorStyle: const TextStyle(
           // Add your style properties here
           color: primaryColor,
           fontWeight: FontWeight.w600,
@@ -716,15 +717,15 @@ class RegisterUserState extends State<RegisterUser> {
           onChanged: onChanged,
           items: items,
           decoration: InputDecoration(
-            errorStyle: TextStyle(
+            errorStyle: const TextStyle(
               // Add your style properties here
               color: primaryColor,
               fontWeight: FontWeight.w600,
               fontSize: 14.0,
             ),
             labelText: labelText,
-            labelStyle: TextStyle(
-                color: const Color.fromARGB(255, 173, 173, 173), fontSize: 12),
+            labelStyle: const TextStyle(
+                color: Color.fromARGB(255, 173, 173, 173), fontSize: 12),
             // Set the label text color
 
             // Label text color
@@ -784,7 +785,7 @@ class RegisterUserState extends State<RegisterUser> {
                 color: Color.fromARGB(255, 173, 173, 173),
                 fontSize: 12 // Label text color
                 ),
-            errorStyle: TextStyle(
+            errorStyle: const TextStyle(
               // Add your style properties here
               color: primaryColor,
               fontWeight: FontWeight.w600,
@@ -900,7 +901,7 @@ class QIDTextField extends StatelessWidget {
       onChanged: onChanged,
       onFieldSubmitted: onFieldSubmitted,
       decoration: InputDecoration(
-        errorStyle: TextStyle(
+        errorStyle: const TextStyle(
           // Add your style properties here
           color: primaryColor,
           fontWeight: FontWeight.w600,

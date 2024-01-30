@@ -49,6 +49,12 @@ Future<bool> getAccess(String qid, String otp, BuildContext context) async {
     } else {
       // Handle error
       print('Error: ${response.statusCode}');
+      showDialog(
+        context: context, // Use the context of the current screen
+        builder: (BuildContext context) {
+          return ErrorPopup(errorMessage: response.body);
+        },
+      );
       return false; // Return false to indicate OTP verification failure
     }
   } catch (err) {
