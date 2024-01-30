@@ -29,10 +29,13 @@ Future<bool> checkQIDExist(
   void Function(int) updateNationalityId,
 ) async {
   try {
-    // Replace 'your_token' with the actual token you have
-    String token =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6Im1vYmFkbWluQGdtYWlsLmNvbSIsIm5iZiI6MTcwMzE3ODA1MywiZXhwIjoxNzAzNzgyODUzLCJpYXQiOjE3MDMxNzgwNTMsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTAxOTEiLCJhdWQiOiJodHRwOi8vbG9jYWxob3N0OjUwMTkxIn0.WYN0dROXwe3ys9yA2Ngd62p7Fr2h6JV4nSyHPcnF4tk";
+    String? token = await _retrieveToken();
 
+    if (token == null) {
+      // Handle the case where the token is null (not retrieved)
+      print('Error: Token is null');
+      return false;
+    }
     // Replace 'your_base_url' with the actual base URL of your API
     String baseUrl =
         "https://participantportal-test.qatarbiobank.org.qa/QbbAPIS/api";

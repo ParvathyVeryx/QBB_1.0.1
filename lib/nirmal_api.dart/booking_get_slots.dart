@@ -156,6 +156,7 @@ Future<void> bookAppointmentToGetResults(
       "AppoinmentId": AppoinmentId,
       'StudyId': studyId,
       'AvailabilityCalenderId': visitTypeId,
+      'AvailabilityCalenderId': visitTypeId,
       'AvailabilityCalenderId': availabilityCalendar,
       "ShiftCode": 'shft',
       'PersonGradeId': '$personGradeId',
@@ -238,6 +239,7 @@ Future<void> getResultAppointmentApiCall(
     'language': 'langChange'.tr,
   };
 
+  SharedPreferences pref = await SharedPreferences.getInstance();
   SharedPreferences pref = await SharedPreferences.getInstance();
   String? token = pref.getString('token');
 

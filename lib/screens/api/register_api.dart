@@ -10,17 +10,28 @@ class RegisterApi {
   static Future<void> signup(
       Register register, BuildContext context, String? token,
       {required Null Function() onApiComplete}) async {
+    // print('Api token :$token');
+    // String? token = pref.getString("token").toString();
+    // Retrieve the token from shared preferences
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('token');
+    // String tokenString = token.toString();
+
+    // print('token in api: $token');
+    // String? token =
+    //     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6Im1vYmFkbWluQGdtYWlsLmNvbSIsIm5iZiI6MTcwMzE3ODA1MywiZXhwIjoxNzAzNzgyODUzLCJpYXQiOjE3MDMxNzgwNTMsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTAxOTEiLCJhdWQiOiJodHRwOi8vbG9jYWxob3N0OjUwMTkxIn0.WYN0dROXwe3ys9yA2Ngd62p7Fr2h6JV4nSyHPcnF4tk";
     SharedPreferences pref = await SharedPreferences.getInstance();
-    var lang = pref.getString("langEn").toString();
+    // var lang = pref.getString("langEn").toString();
     Map<String, String> headers = {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
-      'Authorization': 'Bearer $token',
+      // 'Authorization': 'Bearer $token',
       // 'Authorization': token.toString(),
+      'Authorization': 'Bearer ${token?.replaceAll('"', '')}',
     };
     // Register register = Register();
 
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+    // SharedPreferences prefs = await SharedPreferences.getInstance();
     String langg = pref.getString("langEn").toString();
     String setLang;
     if (langg == "true") {

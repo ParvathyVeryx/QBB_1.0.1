@@ -150,7 +150,7 @@ class ResultsState extends State<Results> {
 
                       Text(
                         'results'.tr,
-                        style: TextStyle(
+                        style: const TextStyle(
                           color: Colors.white,
                           // fontWeight: FontWeight.w900 ,
                           fontFamily: 'Impact',
@@ -201,7 +201,7 @@ class ResultsState extends State<Results> {
                         // Handle tap for the "HOME" item
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => HomeScreen()),
+                          MaterialPageRoute(builder: (context) => const HomeScreen()),
                         );
                       }
                       if (index == 2) {
@@ -209,7 +209,7 @@ class ResultsState extends State<Results> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => BookAppointments()),
+                              builder: (context) => const BookAppointments()),
                         );
                       }
                       if (index == 1) {
@@ -217,14 +217,14 @@ class ResultsState extends State<Results> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => Appointments()),
+                              builder: (context) => const Appointments()),
                         );
                       }
                       if (index == 4) {
                         // Handle tap for the "HOME" item
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => Profile()),
+                          MaterialPageRoute(builder: (context) => const Profile()),
                         );
                       }
                     },
@@ -319,7 +319,7 @@ class ResultsState extends State<Results> {
 
                       Text(
                         'results'.tr,
-                        style: TextStyle(
+                        style: const TextStyle(
                           color: Colors.white,
                           // fontWeight: FontWeight.w900 ,
                           fontFamily: 'Impact',
@@ -370,7 +370,7 @@ class ResultsState extends State<Results> {
                         // Handle tap for the "HOME" item
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => HomeScreen()),
+                          MaterialPageRoute(builder: (context) => const HomeScreen()),
                         );
                       }
                       if (index == 2) {
@@ -378,7 +378,7 @@ class ResultsState extends State<Results> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => BookAppointments()),
+                              builder: (context) => const BookAppointments()),
                         );
                       }
                       if (index == 1) {
@@ -386,14 +386,14 @@ class ResultsState extends State<Results> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => Appointments()),
+                              builder: (context) => const Appointments()),
                         );
                       }
                       if (index == 4) {
                         // Handle tap for the "HOME" item
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => Profile()),
+                          MaterialPageRoute(builder: (context) => const Profile()),
                         );
                       }
                     },
@@ -462,7 +462,7 @@ class ResultsState extends State<Results> {
                 body: SingleChildScrollView(
                     child: Container(
                   height: MediaQuery.of(context).size.height * 0.95,
-                  child: Center(child: Text("No Results")),
+                  child: const Center(child: Text("No Results")),
                 )));
           }
 
@@ -486,7 +486,7 @@ class ResultsState extends State<Results> {
 
                   Text(
                     'results'.tr,
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Colors.white,
                       // fontWeight: FontWeight.w900 ,
                       fontFamily: 'Impact',
@@ -537,7 +537,7 @@ class ResultsState extends State<Results> {
                     // Handle tap for the "HOME" item
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => HomeScreen()),
+                      MaterialPageRoute(builder: (context) => const HomeScreen()),
                     );
                   }
                   if (index == 2) {
@@ -545,21 +545,21 @@ class ResultsState extends State<Results> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => BookAppointments()),
+                          builder: (context) => const BookAppointments()),
                     );
                   }
                   if (index == 1) {
                     // Handle tap for the "HOME" item
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => Appointments()),
+                      MaterialPageRoute(builder: (context) => const Appointments()),
                     );
                   }
                   if (index == 4) {
                     // Handle tap for the "HOME" item
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => Profile()),
+                      MaterialPageRoute(builder: (context) => const Profile()),
                     );
                   }
                 },
@@ -706,7 +706,7 @@ class ResultsState extends State<Results> {
                                         Container(
                                           color: Colors.blue,
                                           child: Padding(
-                                            padding: EdgeInsets.fromLTRB(
+                                            padding: const EdgeInsets.fromLTRB(
                                                 18, 3.0, 18, 3),
                                             child: Text(
                                               appointment['AppoinmentStatus']
@@ -714,7 +714,7 @@ class ResultsState extends State<Results> {
                                                       "4"
                                                   ? "result".tr
                                                   : "cancelled".tr,
-                                              style: TextStyle(
+                                              style: const TextStyle(
                                                 color: Color.fromARGB(
                                                     255, 255, 255, 255),
                                                 fontSize: 13,
@@ -759,7 +759,7 @@ class ResultsState extends State<Results> {
                                                     children: [
                                                       Text(
                                                         'visitType'.tr,
-                                                        style: TextStyle(
+                                                        style: const TextStyle(
                                                           color: Color.fromARGB(
                                                               255,
                                                               163,
@@ -772,7 +772,7 @@ class ResultsState extends State<Results> {
                                                         appointment[
                                                                 'VisittypeName']
                                                             .toString(),
-                                                        style: TextStyle(
+                                                        style: const TextStyle(
                                                             fontSize: 10),
                                                       ),
                                                     ],
@@ -810,7 +810,7 @@ class ResultsState extends State<Results> {
                                                     children: [
                                                       Text(
                                                         'studyName'.tr,
-                                                        style: TextStyle(
+                                                        style: const TextStyle(
                                                           color: Color.fromARGB(
                                                               255,
                                                               163,
@@ -822,7 +822,7 @@ class ResultsState extends State<Results> {
                                                       Text(
                                                         appointment['StudyName']
                                                             .toString(),
-                                                        style: TextStyle(
+                                                        style: const TextStyle(
                                                             fontSize: 10),
                                                       ),
                                                     ],
@@ -839,9 +839,9 @@ class ResultsState extends State<Results> {
                                       Center(
                                         child: Text(
                                           "yourResultIsReadyForCollection".tr,
-                                          style: TextStyle(
+                                          style: const TextStyle(
                                               fontSize: 12,
-                                              color: const Color.fromARGB(
+                                              color: Color.fromARGB(
                                                   255, 171, 171, 171)),
                                         ),
                                       ),
@@ -893,18 +893,18 @@ class ResultsState extends State<Results> {
                                                       )),
                                                   child: Padding(
                                                     padding:
-                                                        EdgeInsets.fromLTRB(
+                                                        const EdgeInsets.fromLTRB(
                                                             5.0, 5.0, 5.0, 5.0),
                                                     child: Text(
                                                       'collectResult'.tr,
-                                                      style: TextStyle(
+                                                      style: const TextStyle(
                                                           color: textcolor,
                                                           fontSize: 12),
                                                     ),
                                                   ),
                                                 )
                                               : Container(),
-                                          SizedBox(
+                                          const SizedBox(
                                             width: 20,
                                           ),
                                           ElevatedButton(
@@ -969,11 +969,11 @@ class ResultsState extends State<Results> {
                                                   ),
                                                 )),
                                             child: Padding(
-                                              padding: EdgeInsets.fromLTRB(
+                                              padding: const EdgeInsets.fromLTRB(
                                                   5.0, 5.0, 5.0, 5.0),
                                               child: Text(
                                                 'download'.tr,
-                                                style: TextStyle(
+                                                style: const TextStyle(
                                                     color: secondaryColor,
                                                     fontSize: 12),
                                               ),

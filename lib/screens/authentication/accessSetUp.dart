@@ -2,7 +2,6 @@ import 'package:QBB/constants.dart';
 import 'package:QBB/screens/api/access_setup_api.dart';
 import 'package:QBB/screens/api/getacess_otp.dart';
 import 'package:QBB/screens/api/setup_password_acess_complete_api.dart';
-import 'package:QBB/screens/pages/loader.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
