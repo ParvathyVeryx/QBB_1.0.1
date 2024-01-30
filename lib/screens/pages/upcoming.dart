@@ -14,6 +14,7 @@ import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
+import '../api/userid.dart';
 import 'appointments.dart';
 
 class Upcoming extends StatefulWidget {
@@ -78,6 +79,7 @@ class UpcomingState extends State<Upcoming> {
         }
 
         pref.getString("appointmentID");
+        print(allAppointments);
         return allUpcomingAppointments;
       } else {
         // Handle errors
@@ -227,13 +229,13 @@ class UpcomingState extends State<Upcoming> {
     }
   }
 
-  void cancelAnAppointment() async {
+  Future<void> cancelAnAppointment(String appointmentId) async {
     SharedPreferences pref = await SharedPreferences.getInstance();
 
-    String qid = pref.getString("userQID").toString();
+    String? qid = await getQIDFromSharedPreferences();
     var lang = 'langChange'.tr;
-    String selectedAppointmentId =
-        pref.getString("selectedAppointmentId").toString();
+    // String selectedAppointmentId =
+    //     pref.getString("selectedAppointmentId").toString();
     String selectedReason = pref.getString("selectedReason").toString();
 
     try {
@@ -250,11 +252,13 @@ class UpcomingState extends State<Upcoming> {
       };
 
       Map<String, dynamic> requestBody = {
-        "QID": '$qid',
-        "AppoinmentId": '$selectedAppointmentId',
+        "QID": qid,
+        "AppoinmentId": appointmentId,
         "Reason": '$selectedReason',
         "ReasonType": '0',
       };
+
+      print("Response Body" + requestBody.toString());
 
       // Construct the API URL
       Uri apiUrl = Uri.parse(
@@ -263,6 +267,10 @@ class UpcomingState extends State<Upcoming> {
       // Make the HTTP POST request
       final response =
           await http.post(apiUrl, headers: headers, body: requestBody);
+
+      print("REsponse Status COde and Response" +
+          response.body +
+          response.statusCode.toString());
       if (response.statusCode == 200) {
         showDialog(
             context: context,
@@ -295,15 +303,17 @@ class UpcomingState extends State<Upcoming> {
     } catch (e) {}
   }
 
-  void rescheduleAppointment() async {
+  void rescheduleAppointment(
+      String appID,
+      String appStatus,
+      String visitType,
+      String calendarId,
+      String apptypeId,
+      String visitTypeId,
+      String studyId) async {
     SharedPreferences pref = await SharedPreferences.getInstance();
-    String qid = pref.getString("userQID").toString();
-    String rescheduleId = pref.getString("rescheduleAppointmentID").toString();
-    String studyId = pref.getString("rescheduleStudyId").toString();
-    String visitTypeId = pref.getString("rescheduleVisitTypeID").toString();
+    String? qid = await getQIDFromSharedPreferences();
 
-    String rescheduleVisitType =
-        pref.getString("rescheduleVisitType").toString();
     var lang = 'langChange'.tr;
 
     try {
@@ -319,31 +329,32 @@ class UpcomingState extends State<Upcoming> {
         'Authorization': 'Bearer ${token.replaceAll('"', '')}',
       };
 
-      Map<String, dynamic> requestBody = {
+      Map<String, dynamic> queryParam = {
         "QID": '$qid',
-        "StudyId": '10',
+        "AppointmentStatus": appStatus,
         "ShiftCode": 'shft',
-        "VisitTypeId": '72',
-        "AvailabilityCalenderId": '15486',
-        "AppoinmentId": '$rescheduleId',
+        "VisitTypeId": visitTypeId,
+        "AvailabilityCalenderId": calendarId,
+        "AppoinmentId": appID,
         "language": "$lang",
-        "AppointmentTypeId": '1'
       };
 
       // Construct the API URL
       Uri apiUrl = Uri.parse(
-          'https://participantportal-test.qatarbiobank.org.qa/QbbAPIS/api/BookAppointmentAPI');
+          'https://participantportal-test.qatarbiobank.org.qa/QbbAPIS/api/RescheduleAppointmentAPI?QID=${queryParam['QID']}&ShiftCode=${queryParam['ShiftCode']}&VisitTypeId=${queryParam['VisitTypeId']}&AvailabilityCalenderId=${queryParam['AvailabilityCalenderId']}&AppoinmentId=${queryParam['AppoinmentId']}&language=${queryParam['language']}&AppointmentStatus=${queryParam['AppointmentStatus']}');
 
       // Make the HTTP POST request
       final response =
-          await http.post(apiUrl, headers: headers, body: requestBody);
+          await http.post(apiUrl, headers: headers, body: queryParam);
+      print(apiUrl);
+      print(response.body);
 
       if (response.statusCode == 200) {
         await bookAppointmentApiCall(
           context,
           studyId,
           visitTypeId,
-          rescheduleVisitType,
+          visitType,
         );
       } else {
         showDialog(
@@ -806,17 +817,22 @@ class UpcomingState extends State<Upcoming> {
                                                                       .tr),
                                                             ),
                                                             TextButton(
-                                                              onPressed:
-                                                                  () async {
-                                                                SharedPreferences
-                                                                    pref =
-                                                                    await SharedPreferences
-                                                                        .getInstance();
-                                                                pref.setString(
-                                                                    "selectedAppointmentId",
+                                                              onPressed: () {
+                                                                String appId =
                                                                     appointment[
-                                                                        "AppoinmentId"]);
-                                                                cancelAnAppointment();
+                                                                            "AppoinmentId"]
+                                                                        .toString();
+                                                                // SharedPreferences
+                                                                //     pref =
+                                                                //     await SharedPreferences
+                                                                //         .getInstance();
+                                                                // pref.setString(
+                                                                //     "selectedAppointmentId",
+                                                                //     appointment[
+                                                                //             "AppoinmentId"]
+                                                                //         .toString());
+                                                                cancelAnAppointment(
+                                                                    appId);
                                                               },
                                                               child:
                                                                   Text('ok'.tr),
@@ -832,7 +848,7 @@ class UpcomingState extends State<Upcoming> {
                                             // }
                                           },
                                           child: Text(
-                                            'reschedule'.tr,
+                                            'cancel'.tr,
                                             style: TextStyle(
                                                 color: Colors.deepPurple),
                                           ),
@@ -854,50 +870,39 @@ class UpcomingState extends State<Upcoming> {
                                                 color: Colors.black),
                                             elevation: 0,
                                           ),
-                                          onPressed: () async {
-                                            if (appointment[
-                                                    'ResultExpiredMSG'] !=
-                                                null) {
-                                              showDialog(
-                                                  context: context,
-                                                  builder:
-                                                      (BuildContext context) {
-                                                    return AlertDialog(
-                                                      title: Text(''),
-                                                      content: Text(appointment[
-                                                          'ResultExpiredMSG']),
-                                                      actions: [
-                                                        ElevatedButton(
-                                                          onPressed: () {
-                                                            Navigator.pop(
-                                                                context); // Close the dialog
-                                                          },
-                                                          child: Text('OK'),
-                                                        ),
-                                                      ],
-                                                    );
-                                                  });
-                                            } else {
-                                              SharedPreferences pref =
-                                                  await SharedPreferences
-                                                      .getInstance();
-                                              pref.setString(
-                                                  "rescheduleAppointmentID",
-                                                  appointment["AppoinmentId"]);
-                                              pref.setString(
-                                                  "rescheduleVisitType",
-                                                  appointment['VisittypeName']);
-                                              pref.setString(
-                                                  "rescheduleVisitTypeID",
-                                                  appointment['VisitTypeId']);
-                                              pref.setString(
-                                                  "rescheduleStudyId",
-                                                  appointment['StudyId']);
-                                              rescheduleAppointment();
-                                            }
+                                          onPressed: () {
+                                            String appId =
+                                                appointment["AppoinmentId"]
+                                                    .toString();
+                                            String Vtype =
+                                                appointment['VisittypeName']
+                                                    .toString();
+                                            String vTypeId =
+                                                appointment['VisitTypeId']
+                                                    .toString();
+                                            String appstatus =
+                                                appointment['AppoinmentStatus']
+                                                    .toString();
+                                            String calendarId = appointment[
+                                                    "AvailabilityCalenderId"]
+                                                .toString();
+                                            String appTypeId =
+                                                appointment["AppointmentTypeId"]
+                                                    .toString();
+                                            String studyId =
+                                                appointment["StudyId"]
+                                                    .toString();
+                                            rescheduleAppointment(
+                                                appId,
+                                                appstatus,
+                                                Vtype,
+                                                calendarId,
+                                                appTypeId,
+                                                vTypeId,
+                                                studyId);
                                           },
                                           child: Text(
-                                            'Reschedule',
+                                            'reschedule'.tr,
                                             style:
                                                 TextStyle(color: Colors.white),
                                           ),

@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:QBB/screens/api/userid.dart';
 import 'package:QBB/screens/pages/book_appointment_date_slot.dart';
+import 'package:QBB/screens/pages/bookappointment_screen.dart';
 import 'package:QBB/screens/pages/erorr_popup.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -55,17 +56,17 @@ Future<void> bookAppointmentApiCall(
     'language': 'langChange'.tr,
   };
 
-  final Uri urinew = Uri.parse(
-      "https://participantportal-test.qatarbiobank.org.qa/QbbAPIS/api/GetReasonForCancelAppoinmentAPI?language=en");
+  // final Uri urinew = Uri.parse(
+  //     "https://participantportal-test.qatarbiobank.org.qa/QbbAPIS/api/GetReasonForCancelAppoinmentAPI?language=en");
   SharedPreferences pref = await SharedPreferences.getInstance();
   String? token = pref.getString('token');
-  final responsen = await http.get(
-    urinew,
-    headers: {
-      'Authorization': 'Bearer ${token?.replaceAll('"', '')}',
-      'Content-Type': 'application/json',
-    },
-  );
+  // final responsen = await http.get(
+  //   urinew,
+  //   headers: {
+  //     'Authorization': 'Bearer ${token?.replaceAll('"', '')}',
+  //     'Content-Type': 'application/json',
+  //   },
+  // );
   final Uri uri = Uri.parse(
       '$apiUrl?qatarid=${queryParams['qatarid']}&StudyId=${queryParams['StudyId']}&Pregnant=${queryParams['Pregnant']}&VisitTypeId=${queryParams['VisitTypeId']}&PersonGradeId=${queryParams['PersonGradeId']}&VisitName=${queryParams['VisitName']}&page=${queryParams['page']}&language=${queryParams['language']}');
   // SharedPreferences pref = await SharedPreferences.getInstance();
@@ -84,7 +85,11 @@ Future<void> bookAppointmentApiCall(
 
       // Parse the JSON response
       final Map<String, dynamic> jsonResponse = json.decode(response.body);
-
+      pref.setString("availabilityCalendarId",
+          jsonResponse["AvailabilityCalenderId"].toString());
+      print(jsonResponse["AvailabilityCalenderId"].toString());
+      print("availabilty calendar");
+      print(response.body);
       // Save the API response in shared preferences
       pref.setString('apiResponse', json.encode(jsonResponse));
       pref.setString("availableDates", json.encode(jsonResponse['datelist']));
@@ -109,7 +114,7 @@ Future<void> bookAppointmentApiCall(
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => const AppointmentBookingPage(),
+          builder: (context) =>  BookAppScreen(),
         ),
       );
     } else {

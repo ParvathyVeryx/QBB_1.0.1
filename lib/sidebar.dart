@@ -11,6 +11,7 @@ import 'package:QBB/screens/pages/profile.dart';
 import 'package:QBB/screens/pages/results.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:package_info/package_info.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 // ignore: unused_import
@@ -21,8 +22,14 @@ import 'screens/pages/studies.dart';
 
 class LanguageProvider extends ChangeNotifier {
   String _selectedLanguage = 'English';
+  String versionCode = '';
 
   String get selectedLanguage => _selectedLanguage;
+
+  Future<void> getVersionCode() async {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    versionCode = packageInfo.version;
+  }
 
   void updateLanguage(String newLanguage) {
     _selectedLanguage = newLanguage;
@@ -60,12 +67,6 @@ class SideMenu extends StatefulWidget {
 }
 
 class sideMenuclass extends State<SideMenu> {
-  @override
-  void initState() {
-    super.initState();
-    loadSelectedLanguage();
-  }
-
   String selectedLanguage = '';
 
   Future<String> loadSelectedLanguage() async {
@@ -104,6 +105,14 @@ class sideMenuclass extends State<SideMenu> {
   }
 
   String lang = 'English';
+
+  @override
+  void initState() {
+    super.initState();
+    loadSelectedLanguage();
+    getVersionCode();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Drawer(

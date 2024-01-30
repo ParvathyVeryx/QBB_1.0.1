@@ -11,6 +11,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:http/http.dart' as http;
 
+import '../api/userid.dart';
 import 'erorr_popup.dart';
 
 class AppointmentBookingPage extends StatefulWidget {
@@ -25,7 +26,7 @@ class AppointmentBookingPage extends StatefulWidget {
 class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
   String _selectedTimeSlot = '10:00 AM';
   List<String> availableTimeSlots = [];
-  DateTime _selectedDate = DateTime.now();
+  DateTime selectedDate = DateTime.now();
   CalendarFormat _calendarFormat = CalendarFormat.month;
   RangeSelectionMode _rangeSelectionMode = RangeSelectionMode.toggledOff;
   DateTime _focusedDay = DateTime.now();
@@ -78,7 +79,7 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
                   controller: _dateController,
                   decoration: InputDecoration(
                     labelText:
-                        '${_selectedDate.day}/${_selectedDate.month}/${_selectedDate.year}',
+                        '${selectedDate.day}/${selectedDate.month}/${selectedDate.year}',
                     suffixIcon: const Icon(Icons.calendar_today),
                     border: const OutlineInputBorder(
                       borderRadius: BorderRadius.only(
@@ -154,7 +155,7 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
   void _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
       context: context,
-      initialDate: _selectedDate,
+      initialDate: selectedDate,
       firstDate: DateTime.now(),
       lastDate: DateTime.now().add(const Duration(days: 30)),
     );
@@ -167,9 +168,9 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
       return selectedDate;
     }
 
-    if (picked != null && picked != _selectedDate) {
+    if (picked != null && picked != selectedDate) {
       setState(() {
-        _selectedDate = picked;
+        selectedDate = picked;
         _dateController.text = '${picked.day}/${picked.month}/${picked.year}';
         availableTimeSlots = ['05:00 PM-06:00 PM'];
       });
@@ -196,9 +197,12 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
       // parseDate = DateTime.parse(selectedSlot);
     });
 
-    String qid = pref.getString("userQID").toString();
+    String? qid = await getQIDFromSharedPreferences();
+    String? studyId = pref.getString("selectedStudyId");
+    String visitTypeId = pref.getString("selectedVisitTypeID").toString();
+    String? availabiltyCalendarId = pref.getString("availabilityCalendarId");
 
-    selectedSlot == "null" ? _selectedDate : _selectedDate = _selectedDate;
+    selectedSlot == "null" ? selectedDate : selectedDate = selectedDate;
     var lang = 'langChange'.tr;
 
     try {
@@ -214,25 +218,27 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
         'Authorization': 'Bearer ${token.replaceAll('"', '')}',
       };
 
-      Map<String, dynamic> requestBody = {
+      Map<String, dynamic> queryParams = {
         "QID": '$qid',
-        "StudyId": '10',
+        "StudyId": '$studyId',
         "ShiftCode": 'shft',
-        "VisitTypeId": '72',
+        "VisitTypeId": visitTypeId,
         "PersonGradeId": '4',
-        "AvailabilityCalenderId": '15486',
+        "AvailabilityCalenderId": availabiltyCalendarId,
         "language": "$lang",
-        "AppointmentTypeId": '1'
+        "AppointmentTypeId": 1
       };
 
       // Construct the API URL
       Uri apiUrl = Uri.parse(
-          'https://participantportal-test.qatarbiobank.org.qa/QbbAPIS/api/BookAppointmentAPI');
+          "https://participantportal-test.qatarbiobank.org.qa/QbbAPIS/api/BookAppointmentAPI?QID=${queryParams['QID']}&StudyId=${queryParams['StudyId']}&ShiftCode=${queryParams['ShiftCode']}&VisitTypeId=${queryParams['VisitTypeId']}&PersonGradeId=${queryParams['PersonGradeId']}&AvailabilityCalenderId=${queryParams['AvailabilityCalenderId']}&language=${queryParams['language']}&AppointmentTypeId=${queryParams['AppointmentTypeId']}");
 
+      // print(apiUrl);
       // Make the HTTP POST request
       final response =
-          await http.post(apiUrl, headers: headers, body: requestBody);
-
+          await http.post(apiUrl, headers: headers, body: queryParams);
+      print(queryParams);
+      print(response.body);
       if (response.statusCode == 200) {
         showDialog(
             context: context,

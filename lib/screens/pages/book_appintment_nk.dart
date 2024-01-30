@@ -108,6 +108,8 @@ class BookAppointmentsState extends State<BookAppointments> {
             selectedValue = 'selectStudies'.tr; // Set the initial placeholder
           }
 
+          print("Appointment data" + responseData.toString());
+
           studyIds = responseData.map((data) => data['Id'] as int).toList();
         });
       } else {
@@ -140,7 +142,6 @@ class BookAppointmentsState extends State<BookAppointments> {
       SharedPreferences pref = await SharedPreferences.getInstance();
       String? token = pref.getString('token');
       String? qid = await getQIDFromSharedPreferences();
-
 
       final http.Response response = await http.get(
         Uri.parse(
@@ -480,6 +481,14 @@ class BookAppointmentsState extends State<BookAppointments> {
                                 elevation: 0,
                               ),
                               onPressed: () async {
+                                SharedPreferences pref =
+                                    await SharedPreferences.getInstance();
+                                pref.setString("selectedStudyId",
+                                    selectedStudyId.toString());
+                                pref.setString("selectedVisitTypeID",
+                                    selectedVisitTypeIdForBooking.toString());
+                                pref.setString("selectedvalue",
+                                    secondSelectedValue.toString());
                                 if (selectedValue != 'selectStudies'.tr &&
                                     secondSelectedValue !=
                                         'Select visit type') {
