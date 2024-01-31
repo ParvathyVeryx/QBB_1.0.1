@@ -109,20 +109,20 @@ class BookAppScreenState extends State<BookAppScreen> {
 
   List<DateTime> upcomingDateList = [];
 
-List<DateTime> generateDates() {
-  DateTime currentDate = DateTime.now();
+  List<DateTime> generateDates() {
+    DateTime currentDate = DateTime.now();
 
-  for (int i = 0; i < 5; i++) {
-    DateTime nextDate = currentDate.add(Duration(days: i));
+    for (int i = 0; i < 5; i++) {
+      DateTime nextDate = currentDate.add(Duration(days: i));
 
-    // Only add dates within the same month
-    if (nextDate.month == currentDate.month) {
-      upcomingDateList.add(nextDate);
+      // Only add dates within the same month
+      if (nextDate.month == currentDate.month) {
+        upcomingDateList.add(nextDate);
+      }
     }
-  }
 
-  return upcomingDateList;
-}
+    return upcomingDateList;
+  }
 
   void generateUpcomingDatesandDays(DateTime selectedDate) {
     upcomingDateList = [];
@@ -318,7 +318,7 @@ List<DateTime> generateDates() {
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
-              title: Text('Alert'),
+              title: const Text('Alert'),
               content: Text(json.decode(response.body)["Message"]),
               actions: [
                 ElevatedButton(
@@ -326,11 +326,11 @@ List<DateTime> generateDates() {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => Appointments(),
+                        builder: (context) => const Appointments(),
                       ),
                     );
                   },
-                  child: Text('OK'),
+                  child: const Text('OK'),
                 ),
               ],
             );
@@ -352,7 +352,7 @@ List<DateTime> generateDates() {
       showDialog(
         context: context,
         builder: (BuildContext context) {
-          return ErrorPopup(
+          return const ErrorPopup(
               errorMessage: 'Network error or other exception occurred.');
         },
       );
@@ -649,7 +649,9 @@ List<DateTime> generateDates() {
                       //         });
                       //   }),
                       // ),
-                      SizedBox(width: 30,),
+                      const SizedBox(
+                        width: 30,
+                      ),
                       Column(
                         children: [
                           SingleChildScrollView(
@@ -657,21 +659,40 @@ List<DateTime> generateDates() {
                             child: Row(
                               children: upcomingDateList.map((date) {
                                 int index = upcomingDateList.indexOf(date);
-                          
+
                                 return Column(
                                   children: [
                                     Text(
-                                      '${DateFormat('EEEE').format(date)},',
-                                      style: const TextStyle(fontSize: 14),
+                                      '${DateFormat('EEEE').format(date)}',
+                                      style: const TextStyle(
+                                          fontSize: 14, color: appbar),
                                     ),
                                     Container(
-                                      margin: const EdgeInsets.all(8),
+                                      // margin: const EdgeInsets.all(8),
                                       child: Center(
                                         child: Text(
                                           '${date.day}/${date.month}/${date.year}',
-                                          style: const TextStyle(fontSize: 14),
+                                          style: const TextStyle(
+                                              fontSize: 14, color: appbar, fontWeight: FontWeight.w300),
                                         ),
                                       ),
+                                    ),
+                                    SizedBox(height: 3,),
+                                    Container(
+                                      width: 80,
+                                      margin: const EdgeInsets.only(
+                                          bottom:
+                                              8.0), // Add margin for spacing
+                                      decoration: const BoxDecoration(
+                                        border: Border(
+                                          bottom: BorderSide(
+                                            color: appbar, // Choose your border color
+                                            width:
+                                                0.7, // Choose your border width
+                                          ),
+                                        ),
+                                      ),
+                                      
                                     ),
                                     const SizedBox(height: 8.0),
                                     ElevatedButton(
@@ -681,8 +702,12 @@ List<DateTime> generateDates() {
                                             bottomLeft: Radius.circular(0.0),
                                           ),
                                         ),
-                                        backgroundColor: selectedIndices.contains(index) ? primaryColor : Colors.white,
-                                        side: const BorderSide(color: primaryColor),
+                                        backgroundColor:
+                                            selectedIndices.contains(index)
+                                                ? primaryColor
+                                                : Colors.white,
+                                        side: const BorderSide(
+                                            color: primaryColor),
                                         elevation: 0,
                                       ),
                                       onPressed: () async {
@@ -691,39 +716,48 @@ List<DateTime> generateDates() {
                                         } else {
                                           selectedDates.add(datesOnly[index]);
                                         }
-                          
-                                        SharedPreferences pref = await SharedPreferences.getInstance();
-                                        pref.setString("selectedData", selectedDates.toString());
-                                        String prefval = pref.getString("selectedDate").toString();
-                          
+
+                                        SharedPreferences pref =
+                                            await SharedPreferences
+                                                .getInstance();
+                                        pref.setString("selectedData",
+                                            selectedDates.toString());
+                                        String prefval = pref
+                                            .getString("selectedDate")
+                                            .toString();
+
                                         setState(() {
                                           // Reset the color of the last selected button
                                           if (lastSelectedIndex != -1) {
-                                            selectedIndices.remove(lastSelectedIndex);
+                                            selectedIndices
+                                                .remove(lastSelectedIndex);
                                           }
-                          
+
                                           // Update the color of the current button
                                           if (selectedIndices.contains(index)) {
                                             selectedIndices.remove(index);
                                           } else {
                                             selectedIndices.add(index);
                                           }
-                          
+
                                           // Update the last selected index
                                           lastSelectedIndex = index;
                                         });
-                          
+
                                         // Print the selected date
-                                        print('Selected Date: ${datesOnly[index]}');
+                                        print(
+                                            'Selected Date: ${datesOnly[index]}');
                                       },
                                       child: selectedIndices.contains(index)
                                           ? Text(
                                               'available'.tr,
-                                              style: const TextStyle(color: textcolor),
+                                              style: const TextStyle(
+                                                  color: textcolor),
                                             )
                                           : Text(
                                               'available'.tr,
-                                              style: const TextStyle(color: primaryColor),
+                                              style: const TextStyle(
+                                                  color: primaryColor),
                                             ),
                                     )
                                   ],
@@ -733,7 +767,6 @@ List<DateTime> generateDates() {
                           ),
                         ],
                       ),
-
                     ],
                   ),
                   Center(
@@ -758,8 +791,8 @@ List<DateTime> generateDates() {
                               Navigator.pop(context);
                             },
                             child: Text(
-                              'cancel'.tr,
-                              style: TextStyle(color: Colors.deepPurple),
+                              'cancelButton'.tr,
+                              style: const TextStyle(color: Colors.deepPurple),
                             ),
                           ),
                         ),
@@ -773,11 +806,14 @@ List<DateTime> generateDates() {
                                   bottomLeft: Radius.circular(20.0),
                                 ),
                               ),
+                              backgroundColor: primaryColor,
+                              side: const BorderSide(color: primaryColor),
+                              elevation: 0,
                             ),
                             onPressed: () {
                               confirmAppointment(context);
                             },
-                            child: Text('confirm'.tr),
+                            child: Text('confirm'.tr, style: TextStyle(color: textcolor),),
                           ),
                         ),
                       ],
