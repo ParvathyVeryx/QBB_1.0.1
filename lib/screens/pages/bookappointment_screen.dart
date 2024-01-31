@@ -52,26 +52,102 @@ class BookAppScreenState extends State<BookAppScreen> {
     }
   }
 
+  // Future<void> _selectDate(BuildContext context) async {
+  //   DateTime? picked = await showDatePicker(
+  //     context: context,
+  //     initialDate: upcomingDates.isNotEmpty ? upcomingDates[0] : DateTime.now(),
+  //     firstDate: DateTime(2000),
+  //     lastDate: DateTime(2101),
+  //   );
+
+  //   if (picked == null) {
+  //     picked = DateTime.now();
+  //     setState(() {
+  //       generateUpcomingDates(picked!);
+  //       generateUpcomingDatesandDays(picked!);
+  //       // timeList.removeWhere((time) {
+  //       //   DateTime parsedDate = DateTime.parse(time);
+  //       //   return parsedDate.isBefore(picked);
+  //       // });
+  //     });
+  //   }
+
+  //   if (picked != null &&
+  //       (upcomingDates.isEmpty || picked != upcomingDates[0])) {
+  //     setState(() {
+  //       generateUpcomingDates(picked!);
+  //       generateUpcomingDatesandDays(picked!);
+  //       // timeList.removeWhere((time) {
+  //       //   DateTime parsedDate = DateTime.parse(time);
+  //       //   return parsedDate.isBefore(picked);
+  //       // });
+  //     });
+
+  //     // Fetch data after selecting a date
+  //   }
+  // }
+
   Future<void> _selectDate(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
+    DateTime? picked = await showDatePicker(
       context: context,
       initialDate: upcomingDates.isNotEmpty ? upcomingDates[0] : DateTime.now(),
       firstDate: DateTime(2000),
       lastDate: DateTime(2101),
     );
 
-    if (picked != null &&
-        (upcomingDates.isEmpty || picked != upcomingDates[0])) {
-      setState(() {
-        generateUpcomingDates(picked);
-        // timeList.removeWhere((time) {
-        //   DateTime parsedDate = DateTime.parse(time);
-        //   return parsedDate.isBefore(picked);
-        // });
-      });
-
-      // Fetch data after selecting a date
+    if (picked == null) {
+      picked = DateTime.now();
     }
+
+    setState(() {
+      generateUpcomingDates(picked!);
+      generateUpcomingDatesandDays(picked);
+    });
+
+    // Fetch data after selecting a date
+  }
+
+  List<DateTime> upcomingDateList = [];
+
+List<DateTime> generateDates() {
+  DateTime currentDate = DateTime.now();
+
+  for (int i = 0; i < 5; i++) {
+    DateTime nextDate = currentDate.add(Duration(days: i));
+
+    // Only add dates within the same month
+    if (nextDate.month == currentDate.month) {
+      upcomingDateList.add(nextDate);
+    }
+  }
+
+  return upcomingDateList;
+}
+
+  void generateUpcomingDatesandDays(DateTime selectedDate) {
+    upcomingDateList = [];
+    DateTime tempDate = DateTime.now(); // Start from today
+
+    // Generate the upcoming dates for the next five days within the same month
+    for (int i = 0; i < 5; i++) {
+      // Check if the current date is within the same month as the selected date
+      if (tempDate.month == selectedDate.month) {
+        upcomingDateList.add(tempDate);
+      }
+
+      tempDate = tempDate.add(const Duration(days: 1));
+
+      // Break if the next day is in the next month
+      if (tempDate.month != selectedDate.month) {
+        break;
+      }
+    }
+
+    // Now, upcomingDateList contains the upcoming dates within the same month
+    print("Upcoming Dates: " + upcomingDateList.toString());
+
+    _dateController.text =
+        '${selectedDate.day}/${selectedDate.month}/${selectedDate.year}';
   }
 
   void generateUpcomingDates(DateTime selectedDate) {
@@ -130,13 +206,10 @@ class BookAppScreenState extends State<BookAppScreen> {
           }
         }
 
-        // Use the 'availableDates' list as needed
-
         daysAndDates = availableDates;
 
         pref.setString("dateOnly", datesOnly.toString());
         pref.getString("dateOnly");
-        // ==============================================================================
         List<DateTime?> dates = datesOnly.map((dateString) {
           try {
             return DateTime.parse(dateString);
@@ -222,7 +295,7 @@ class BookAppScreenState extends State<BookAppScreen> {
       "language": 'langChange'.tr,
       "AppointmentTypeId": "1"
     };
-     print(queryParams);
+    print(queryParams);
 
     // Construct the API URL
     Uri apiUrl = Uri.parse(
@@ -246,7 +319,7 @@ class BookAppScreenState extends State<BookAppScreen> {
           builder: (BuildContext context) {
             return AlertDialog(
               title: Text('Alert'),
-              content: Text(response.body),
+              content: Text(json.decode(response.body)["Message"]),
               actions: [
                 ElevatedButton(
                   onPressed: () {
@@ -268,7 +341,8 @@ class BookAppScreenState extends State<BookAppScreen> {
         showDialog(
           context: context,
           builder: (BuildContext context) {
-            return ErrorPopup(errorMessage: response.body);
+            return ErrorPopup(
+                errorMessage: json.decode(response.body)["Message"]);
           },
         );
       }
@@ -303,6 +377,7 @@ class BookAppScreenState extends State<BookAppScreen> {
         dayNames = days;
       });
     });
+    generateDates();
   }
 
   @override
@@ -453,54 +528,149 @@ class BookAppScreenState extends State<BookAppScreen> {
                   ),
                   Row(
                     children: [
-                      Container(
-                        width: MediaQuery.of(context).size.width * 0.20,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'timeSlot'.tr,
-                              style: const TextStyle(
-                                fontSize: 14.0,
-                                fontWeight: FontWeight.bold,
-                              ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'timeSlot'.tr,
+                            style: const TextStyle(
+                              fontSize: 14.0,
+                              fontWeight: FontWeight.bold,
                             ),
-                            const SizedBox(height: 8.0),
-                            Text(
-                              timeList.first,
-                              style: const TextStyle(
-                                fontSize: 14.0,
-                                fontWeight: FontWeight.bold,
-                              ),
+                          ),
+                          const SizedBox(height: 8.0),
+                          Text(
+                            timeList.first,
+                            style: const TextStyle(
+                              fontSize: 14.0,
+                              fontWeight: FontWeight.bold,
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                       // const SizedBox(width: 16.0),
                       // pickedDate().toString() == "null"
                       //     ?
-                      Container(
-                        height: 200,
-                        width: MediaQuery.of(context).size.width * 0.75,
-                        child: LayoutBuilder(builder: (context, constraints) {
-                          return PageView.builder(
-                              itemCount: datesOnly.length,
-                              itemBuilder: (context, pageIndex) {
+                      // Container(
+                      //   height: 200,
+                      //   width: MediaQuery.of(context).size.width * 0.75,
+                      //   child: LayoutBuilder(builder: (context, constraints) {
+                      //     return PageView.builder(
+                      //         controller: _pageController,
+                      //         itemCount: upcomingDateList.length,
+                      //         itemBuilder: (context, index) {
+                      //           return Column(
+                      //             children: [
+                      //               Text(
+                      //                 '${DateFormat('EEEE').format(upcomingDateList[index])},',
+                      //                 style: const TextStyle(fontSize: 14),
+                      //               ),
+                      //               Container(
+                      //                 // width: constraints
+                      //                 //     .maxWidth, // or any desired width
+                      //                 // height: constraints
+                      //                 //     .maxHeight, // or any desired height
+                      //                 margin: const EdgeInsets.all(8),
+                      //                 child: Center(
+                      //                   child: Text(
+                      //                     '${upcomingDateList[index].day}/${upcomingDateList[index].month}/${upcomingDateList[index].year}',
+                      //                     style: const TextStyle(fontSize: 14),
+                      //                   ),
+                      //                 ),
+                      //               ),
+                      //               const SizedBox(height: 8.0),
+                      //               ElevatedButton(
+                      //                 style: ElevatedButton.styleFrom(
+                      //                   shape: const RoundedRectangleBorder(
+                      //                     borderRadius: BorderRadius.only(
+                      //                       bottomLeft: Radius.circular(0.0),
+                      //                     ),
+                      //                   ),
+                      //                   backgroundColor:
+                      //                       selectedIndices.contains(index)
+                      //                           ? primaryColor
+                      //                           : Colors.white,
+                      //                   side: const BorderSide(
+                      //                       color: primaryColor),
+                      //                   elevation: 0,
+                      //                 ),
+                      //                 onPressed: () async {
+                      //                   if (selectedDates.length == 1) {
+                      //                     selectedDates[0] = datesOnly[index];
+                      //                   } else {
+                      //                     selectedDates.add(datesOnly[index]);
+                      //                   }
+
+                      //                   SharedPreferences pref =
+                      //                       await SharedPreferences
+                      //                           .getInstance();
+                      //                   pref.setString("selectedData",
+                      //                       selectedDates.toString());
+                      //                   String prefval = pref
+                      //                       .getString("selectedDate")
+                      //                       .toString();
+
+                      //                   setState(() {
+                      //                     // Reset the color of the last selected button
+                      //                     if (lastSelectedIndex != -1) {
+                      //                       selectedIndices
+                      //                           .remove(lastSelectedIndex);
+                      //                     }
+
+                      //                     // Update the color of the current button
+                      //                     if (selectedIndices.contains(index)) {
+                      //                       selectedIndices.remove(index);
+                      //                     } else {
+                      //                       selectedIndices.add(index);
+                      //                     }
+
+                      //                     // Update the last selected index
+                      //                     lastSelectedIndex = index;
+                      //                   });
+
+                      //                   // Print the selected date
+                      //                   print(
+                      //                       'Selected Date: ${datesOnly[index]}');
+                      //                 },
+                      //                 child: selectedIndices.contains(index)
+                      //                     ? Text(
+                      //                         'available'.tr,
+                      //                         style: const TextStyle(
+                      //                             color: textcolor),
+                      //                       )
+                      //                     : Text(
+                      //                         'available'.tr,
+                      //                         style: const TextStyle(
+                      //                             color: primaryColor),
+                      //                       ),
+                      //               )
+                      //             ],
+                      //           );
+                      //         });
+                      //   }),
+                      // ),
+                      SizedBox(width: 30,),
+                      Column(
+                        children: [
+                          SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Row(
+                              children: upcomingDateList.map((date) {
+                                int index = upcomingDateList.indexOf(date);
+                          
                                 return Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      dayNames[pageIndex],
-                                      style: const TextStyle(
-                                        fontSize: 14.0,
-                                        fontWeight: FontWeight.bold,
-                                      ),
+                                      '${DateFormat('EEEE').format(date)},',
+                                      style: const TextStyle(fontSize: 14),
                                     ),
-                                    Text(
-                                      datesOnly[pageIndex],
-                                      style: const TextStyle(
-                                        fontSize: 14.0,
-                                        fontWeight: FontWeight.bold,
+                                    Container(
+                                      margin: const EdgeInsets.all(8),
+                                      child: Center(
+                                        child: Text(
+                                          '${date.day}/${date.month}/${date.year}',
+                                          style: const TextStyle(fontSize: 14),
+                                        ),
                                       ),
                                     ),
                                     const SizedBox(height: 8.0),
@@ -511,72 +681,59 @@ class BookAppScreenState extends State<BookAppScreen> {
                                             bottomLeft: Radius.circular(0.0),
                                           ),
                                         ),
-                                        backgroundColor:
-                                            selectedIndices.contains(pageIndex)
-                                                ? primaryColor
-                                                : Colors.white,
-                                        side: const BorderSide(
-                                            color: primaryColor),
+                                        backgroundColor: selectedIndices.contains(index) ? primaryColor : Colors.white,
+                                        side: const BorderSide(color: primaryColor),
                                         elevation: 0,
                                       ),
                                       onPressed: () async {
                                         if (selectedDates.length == 1) {
-                                          selectedDates[0] =
-                                              datesOnly[pageIndex];
+                                          selectedDates[0] = datesOnly[index];
                                         } else {
-                                          selectedDates
-                                              .add(datesOnly[pageIndex]);
+                                          selectedDates.add(datesOnly[index]);
                                         }
-
-                                        SharedPreferences pref =
-                                            await SharedPreferences
-                                                .getInstance();
-                                        pref.setString("selectedData",
-                                            selectedDates.toString());
-                                        String prefval = pref
-                                            .getString("selectedDate")
-                                            .toString();
-
+                          
+                                        SharedPreferences pref = await SharedPreferences.getInstance();
+                                        pref.setString("selectedData", selectedDates.toString());
+                                        String prefval = pref.getString("selectedDate").toString();
+                          
                                         setState(() {
                                           // Reset the color of the last selected button
                                           if (lastSelectedIndex != -1) {
-                                            selectedIndices
-                                                .remove(lastSelectedIndex);
+                                            selectedIndices.remove(lastSelectedIndex);
                                           }
-
+                          
                                           // Update the color of the current button
-                                          if (selectedIndices
-                                              .contains(pageIndex)) {
-                                            selectedIndices.remove(pageIndex);
+                                          if (selectedIndices.contains(index)) {
+                                            selectedIndices.remove(index);
                                           } else {
-                                            selectedIndices.add(pageIndex);
+                                            selectedIndices.add(index);
                                           }
-
+                          
                                           // Update the last selected index
-                                          lastSelectedIndex = pageIndex;
+                                          lastSelectedIndex = index;
                                         });
-
+                          
                                         // Print the selected date
-                                        print(
-                                            'Selected Date: ${datesOnly[pageIndex]}');
+                                        print('Selected Date: ${datesOnly[index]}');
                                       },
-                                      child: selectedIndices.contains(pageIndex)
+                                      child: selectedIndices.contains(index)
                                           ? Text(
                                               'available'.tr,
-                                              style: const TextStyle(
-                                                  color: textcolor),
+                                              style: const TextStyle(color: textcolor),
                                             )
                                           : Text(
                                               'available'.tr,
-                                              style: const TextStyle(
-                                                  color: primaryColor),
+                                              style: const TextStyle(color: primaryColor),
                                             ),
                                     )
                                   ],
                                 );
-                              });
-                        }),
+                              }).toList(),
+                            ),
+                          ),
+                        ],
                       ),
+
                     ],
                   ),
                   Center(
