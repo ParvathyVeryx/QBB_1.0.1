@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:ffi';
 
 import 'package:QBB/providers/studymodel.dart';
 import 'package:flutter/material.dart';
@@ -36,16 +37,18 @@ class BookAppScreenState extends State<BookAppScreen> {
   List<int> selectedIndices = [];
   int lastSelectedIndex = -1; // Initialize to an invalid index
   List<DateTime> selectedSlot = [];
+  String availabilityCalendarid = '';
   Future<void> fetchApiResponseFromSharedPrefs() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     String? apiResponseJson = pref.getString('apiResponse');
 
     if (apiResponseJson != null) {
       Map<String, dynamic> jsonResponse = json.decode(apiResponseJson);
+      print("Availability Calendar");
+      print(jsonResponse);
 
       setState(() {
         timeList = List<String>.from(jsonResponse['timelist']);
-        availCId = List<String>.from(jsonResponse['timelist']);
         // nextAvailableDates =
         //     List<String>.from(jsonResponse['nextAvilableDateList']);
       });
@@ -109,19 +112,71 @@ class BookAppScreenState extends State<BookAppScreen> {
 
   List<DateTime> upcomingDateList = [];
 
-  List<DateTime> generateDates() {
-    DateTime currentDate = DateTime.now();
+  // List<DateTime> generateDates() {
+  //   DateTime currentDate = DateTime.now();
 
-    for (int i = 0; i < 5; i++) {
-      DateTime nextDate = currentDate.add(Duration(days: i));
+  //   for (int i = 0; i < 5; i++) {
+  //     DateTime nextDate = currentDate.add(Duration(days: i));
 
-      // Only add dates within the same month
-      if (nextDate.month == currentDate.month) {
-        upcomingDateList.add(nextDate);
+  //     // Only add dates within the same month
+  //     if (nextDate.month == currentDate.month) {
+  //       upcomingDateList.add(nextDate);
+  //     }
+  //   }
+
+  //   return upcomingDateList;
+  // }
+
+  List<dynamic> availabiltyCandarId = [];
+
+  Future<void> fetchAvailabilityCalendar() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    String? apiResponseJson = pref.getString('apiResponse');
+
+    if (apiResponseJson != null) {
+      Map<String, dynamic> jsonResponse = json.decode(apiResponseJson);
+      print("Availability Calendar");
+      print(jsonResponse);
+
+      if (jsonResponse['BookAppoinmentModelList'] != null &&
+          jsonResponse['BookAppoinmentModelList'].isNotEmpty) {
+        availabiltyCandarId = jsonResponse['BookAppoinmentModelList']
+            .map((item) => item['AvailabilityCalenderId'].toString())
+            .toList();
+        print("AAAAAACI" + availabiltyCandarId.toString());
+      } else {
+        print("BookAppoinmentModelList is null or empty");
       }
-    }
 
-    return upcomingDateList;
+      // Set state if needed (depends on where this function is called)
+      // setState(() {
+      //   // Do something with availabiltyCandarId
+      // });
+    }
+  }
+
+  Future<void> fetchDateList() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    String? apiResponseJson = pref.getString('apiResponse');
+
+    if (apiResponseJson != null) {
+      Map<String, dynamic> jsonResponse = json.decode(apiResponseJson);
+      print("Availability Calendar");
+      print(jsonResponse);
+      List<dynamic> dynamicList = jsonResponse['datelist'];
+      List<String> dateStrings = List<String>.from(dynamicList);
+      List<DateTime> dateTimes = dateStrings.map((dateString) {
+        return DateTime.parse(dateString);
+      }).toList();
+
+      setState(() {
+        upcomingDateList = dateStrings.map((dateString) {
+          return DateTime.parse(dateString);
+        }).toList();
+        // nextAvailableDates =
+        //     List<String>.from(jsonResponse['nextAvilableDateList']);
+      });
+    }
   }
 
   void generateUpcomingDatesandDays(DateTime selectedDate) {
@@ -257,6 +312,11 @@ class BookAppScreenState extends State<BookAppScreen> {
     return dayNames;
   }
 
+  Future<String> getAvailabilityCalendar(String availabilityCalendar) async {
+    availabilityCalendarid = availabilityCalendar;
+    return availabilityCalendarid;
+  }
+
   Future<void> confirmAppointment(BuildContext context) async {
     SharedPreferences pref = await SharedPreferences.getInstance();
 
@@ -265,7 +325,7 @@ class BookAppScreenState extends State<BookAppScreen> {
     int? studyIdInt = int.tryParse(studyId);
     String visitTypeId = pref.getString("selectedVisitTypeID").toString();
     int? visitTypeIDInt = int.tryParse(visitTypeId);
-    String? availabilityCalendarId = pref.getString("availabilityCalendarId");
+    // String? availabilityCalendarId = pref.getString("availabilityCalendarId");
 
     // Check if selectedSlot is null, set selectedDate accordingly
     String? selectedSlot = pref.getString("selectDate");
@@ -291,7 +351,7 @@ class BookAppScreenState extends State<BookAppScreen> {
       "ShiftCode": 'shft',
       "VisitTypeId": visitTypeId,
       "PersonGradeId": "4",
-      "AvailabilityCalenderId": '11567',
+      "AvailabilityCalenderId": availabilityCalendarid,
       "language": 'langChange'.tr,
       "AppointmentTypeId": "1"
     };
@@ -377,7 +437,8 @@ class BookAppScreenState extends State<BookAppScreen> {
         dayNames = days;
       });
     });
-    generateDates();
+    fetchDateList();
+    fetchAvailabilityCalendar();
   }
 
   @override
@@ -673,11 +734,15 @@ class BookAppScreenState extends State<BookAppScreen> {
                                         child: Text(
                                           '${date.day}/${date.month}/${date.year}',
                                           style: const TextStyle(
-                                              fontSize: 14, color: appbar, fontWeight: FontWeight.w300),
+                                              fontSize: 14,
+                                              color: appbar,
+                                              fontWeight: FontWeight.w300),
                                         ),
                                       ),
                                     ),
-                                    SizedBox(height: 3,),
+                                    SizedBox(
+                                      height: 3,
+                                    ),
                                     Container(
                                       width: 80,
                                       margin: const EdgeInsets.only(
@@ -686,13 +751,13 @@ class BookAppScreenState extends State<BookAppScreen> {
                                       decoration: const BoxDecoration(
                                         border: Border(
                                           bottom: BorderSide(
-                                            color: appbar, // Choose your border color
+                                            color:
+                                                appbar, // Choose your border color
                                             width:
                                                 0.7, // Choose your border width
                                           ),
                                         ),
                                       ),
-                                      
                                     ),
                                     const SizedBox(height: 8.0),
                                     ElevatedButton(
@@ -711,6 +776,12 @@ class BookAppScreenState extends State<BookAppScreen> {
                                         elevation: 0,
                                       ),
                                       onPressed: () async {
+                                        // availabiltyCandarId[index];
+                                        // print("ACI" +
+                                        //     availabiltyCandarId[index]
+                                        //         .toString());
+                                        fetchAvailabilityCalendar();
+                                        getAvailabilityCalendar(availabiltyCandarId[index]);
                                         if (selectedDates.length == 1) {
                                           selectedDates[0] = datesOnly[index];
                                         } else {
@@ -813,7 +884,10 @@ class BookAppScreenState extends State<BookAppScreen> {
                             onPressed: () {
                               confirmAppointment(context);
                             },
-                            child: Text('confirm'.tr, style: TextStyle(color: textcolor),),
+                            child: Text(
+                              'confirm'.tr,
+                              style: TextStyle(color: textcolor),
+                            ),
                           ),
                         ),
                       ],

@@ -85,6 +85,9 @@ Future<void> bookAppointmentApiCall(
 
       // Parse the JSON response
       final Map<String, dynamic> jsonResponse = json.decode(response.body);
+      BookAppScreenState myWidget = BookAppScreenState();
+      String result =
+          await myWidget.getAvailabilityCalendar("yourAvailabilityCalendar");
       pref.setString("availabilityCalendarId",
           jsonResponse["AvailabilityCalenderId"].toString());
       print(jsonResponse["AvailabilityCalenderId"].toString());
@@ -114,7 +117,7 @@ Future<void> bookAppointmentApiCall(
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) =>  BookAppScreen(),
+          builder: (context) => BookAppScreen(),
         ),
       );
     } else {
