@@ -24,6 +24,7 @@ class EditUserState extends State<EditUser> {
   String? maritalStatus = "Single";
   String? maritalStatusId;
   bool isLoading = false;
+  int? maritalId;
 
   final TextEditingController _emailController = TextEditingController();
 
@@ -71,89 +72,79 @@ class EditUserState extends State<EditUser> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                FutureBuilder<String>(
-                  future: widget.emailFuture,
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return CircularProgressIndicator();
-                    } else if (snapshot.hasError) {
-                      return Text('Error: ${snapshot.error}');
-                    } else {
-                      _emailController.text = snapshot.data ?? '';
-                      return _buildRoundedBorderTextField(
-                        labelText: 'Email',
-                        labelTextColor:
-                            const Color.fromARGB(255, 173, 173, 173),
-                        validator: (value) {
-                          if (value!.isEmpty) {
-                            _setEmailValidationMessage(
-                                'Please enter your email');
-                            return 'Please enter your email';
-                          } else if (!isValidEmail(value)) {
-                            _setEmailValidationMessage('Invalid email format');
-                            return 'Invalid email format';
-                          } else {
-                            _setEmailValidationMessage(null);
+                _buildRoundedBorderTextField(
+                          labelText: '${'emailAddress'.tr}*',
+                          labelTextColor:
+                              const Color.fromARGB(255, 173, 173, 173),
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return 'pleaseEnterAValidEmailId'.tr;
+                            } // Email validation regular expression
+                            RegExp emailRegex = RegExp(
+                                r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$');
+
+                            if (!emailRegex.hasMatch(value)) {
+                              return 'pleaseEnterAValidEmailId'.tr;
+                            }
                             return null;
-                          }
-                        },
-                        controller: _emailController,
-                      );
-                    }
-                  },
-                ),
-                if (_emailValidationMessage != null)
-                  Padding(
-                    padding: const EdgeInsets.only(top: 8.0),
-                    child: Text(
-                      _emailValidationMessage!,
-                      style: TextStyle(color: Colors.red),
-                    ),
-                  ),
+                          },
+                          controller: _emailController),
                 const SizedBox(
                   height: 20.0,
                 ),
                 _buildDropdownFormField(
-                  value: '1',
+                  value: null,
                   onChanged: (value) {
                     setState(() {
-                      maritalStatusId = value!;
-                      isButtonEnabled = _emailValidationMessage == null;
+                      maritalStatus = value!;
+                      switch (maritalStatus) {
+                        case 'Single':
+                          maritalId = 1;
+                          break;
+                        case 'Married':
+                          maritalId = 2;
+                          break;
+                        case 'Divorced':
+                          maritalId = 3;
+                          break;
+                        case 'Widowed':
+                          maritalId = 4;
+                          break;
+                        default:
+                          maritalId = null;
+                          break;
+                      }
                     });
                   },
-                  items: [
-                    {'id': '1', 'label': 'Single'},
-                    {'id': '2', 'label': 'Married'},
-                    {'id': '3', 'label': 'Divorced'},
-                    {'id': '4', 'label': 'Widowed'},
-                  ].map((Map<String, String> item) {
+                  items: ['forsfemale', 'married', 'divorced', 'widowed']
+                      .map((String value) {
                     return DropdownMenuItem<String>(
-                      value: item['id'],
-                      child: Text(item['label']!),
+                      value: value.tr,
+                      child: Text(value.tr),
                     );
                   }).toList(),
-                  labelText: 'Marital Status*',
+                  labelText: '${'maritalStatus'.tr}*',
                 ),
                 const SizedBox(height: 20.0),
                 ElevatedButton(
                   onPressed: () {
-                    if (isButtonEnabled) {
-                      if (_formKey.currentState!.validate()) {
-                        setState(() {
-                          isLoading = true;
-                        });
-                        String userEmail = _emailController.text;
-                        int userMaritalId = int.parse(maritalStatusId ?? '1');
-                        callUserProfileAPI(context, userEmail, userMaritalId);
-                      } else {}
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text('No changes to save.'),
-                          duration: Duration(seconds: 2),
-                        ),
-                      );
-                    }
+                    // if (isButtonEnabled) {
+                    if (_formKey.currentState!.validate()) {
+                      setState(() {
+                        isLoading = true;
+                      });
+                      String userEmail = _emailController.text;
+                      int userMaritalId = int.parse(maritalStatusId ?? '1');
+                      callUserProfileAPI(context, userEmail, userMaritalId);
+                    } else {}
+                    // } else {
+                    //   ScaffoldMessenger.of(context).showSnackBar(
+                    //     SnackBar(
+                    //       content: Text('No changes to save.'),
+                    //       duration: Duration(seconds: 2),
+                    //     ),
+                    //   );
+                    // }
                   },
                   style: ButtonStyle(
                       backgroundColor:
@@ -198,216 +189,160 @@ class EditUserState extends State<EditUser> {
 
   // ... Existing code ...
 
-  Widget _buildRoundedBorderTextField({
-    required String labelText,
-    required FormFieldValidator<String> validator,
-    Color? labelTextColor,
-    required TextEditingController controller,
-    TextInputType? keyboardType,
-  }) {
-    return TextFormField(
-      controller: controller,
-      decoration: InputDecoration(
-        contentPadding: const EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 5.0),
-        labelText: labelText,
-        prefixIcon: Container(
-          height: 5,
-          width: 5,
-          child: Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: Image.asset(
-              "assets/images/id-card.png",
-              fit: BoxFit.cover,
-            ),
-          ),
-        ),
-        labelStyle: TextStyle(color: labelTextColor),
-        enabledBorder: const OutlineInputBorder(
-          borderSide: BorderSide(color: Color.fromARGB(255, 173, 173, 173)),
-          borderRadius: BorderRadius.only(
-            bottomLeft: Radius.circular(20.0),
-          ),
-        ),
-        focusedBorder: const OutlineInputBorder(
-          borderSide: BorderSide(color: Color.fromARGB(255, 173, 173, 173)),
-          borderRadius: BorderRadius.only(
-            bottomLeft: Radius.circular(20.0),
-          ),
-        ),
-      ),
-      onChanged: (value) {
-        setState(() {
-          _emailValidationMessage = validator!(value);
-        });
+  // Widget _buildRoundedBorderTextField({
+  //   required String labelText,
+  //   required FormFieldValidator<String> validator,
+  //   Color? labelTextColor,
+  //   required TextEditingController controller,
+  //   TextInputType? keyboardType,
+  // }) {
+  //   return TextFormField(
+  //     controller: controller,
+  //     decoration: InputDecoration(
+  //       contentPadding: const EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 5.0),
+  //       labelText: labelText,
+  //       prefixIcon: Container(
+  //         height: 5,
+  //         width: 5,
+  //         child: Padding(
+  //           padding: const EdgeInsets.all(12.0),
+  //           child: Image.asset(
+  //             "assets/images/id-card.png",
+  //             fit: BoxFit.cover,
+  //           ),
+  //         ),
+  //       ),
+  //       labelStyle: TextStyle(color: labelTextColor),
+  //       enabledBorder: const OutlineInputBorder(
+  //         borderSide: BorderSide(color: Color.fromARGB(255, 173, 173, 173)),
+  //         borderRadius: BorderRadius.only(
+  //           bottomLeft: Radius.circular(20.0),
+  //         ),
+  //       ),
+  //       focusedBorder: const OutlineInputBorder(
+  //         borderSide: BorderSide(color: Color.fromARGB(255, 173, 173, 173)),
+  //         borderRadius: BorderRadius.only(
+  //           bottomLeft: Radius.circular(20.0),
+  //         ),
+  //       ),
+  //     ),
+  //     onChanged: (value) {
+  //       setState(() {
+  //         _emailValidationMessage = validator(value);
+  //       });
 
-        setState(() {
-          QID = value;
-          isButtonEnabled = QID.isNotEmpty &&
-              otp.isNotEmpty &&
-              password.isNotEmpty &&
-              confirmPassword.isNotEmpty;
-        });
-      },
-      validator: validator,
-    );
-  }
+  //       setState(() {
+  //         QID = value;
+  //         isButtonEnabled = QID.isNotEmpty &&
+  //             otp.isNotEmpty &&
+  //             password.isNotEmpty &&
+  //             confirmPassword.isNotEmpty;
+  //       });
+  //     },
+  //     validator: validator,
+  //   );
+  // }
 
-  // ... Existing code ...
-
-  Widget _buildRoundedBorderOTPField({
-    required String labelText,
-    required FormFieldValidator<String> validator,
-    Color? labelTextColor,
-    TextInputType? keyboardType,
-  }) {
-    return TextFormField(
-      keyboardType: TextInputType.number,
-      decoration: InputDecoration(
-        contentPadding: const EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 5.0),
-        labelText: labelText,
-        prefixIcon: const Icon(
-          Icons.phone_android,
-          color: Color.fromARGB(255, 173, 173, 173),
-        ),
-        labelStyle: TextStyle(color: labelTextColor),
-        enabledBorder: const OutlineInputBorder(
-          borderSide: BorderSide(color: Color.fromARGB(255, 173, 173, 173)),
-          borderRadius: BorderRadius.only(
-            bottomLeft: Radius.circular(20.0),
-          ),
-        ),
-        focusedBorder: const OutlineInputBorder(
-          borderSide: BorderSide(color: Color.fromARGB(255, 173, 173, 173)),
-          borderRadius: BorderRadius.only(
-            bottomLeft: Radius.circular(20.0),
-          ),
-        ),
-      ),
-      onChanged: (value) {
-        setState(() {
-          otp = value;
-          isButtonEnabled = QID.isNotEmpty &&
-              otp.isNotEmpty &&
-              password.isNotEmpty &&
-              confirmPassword.isNotEmpty;
-        });
-      },
-      validator: validator,
-    );
-  }
+  // Widget _buildRoundedBorderTextField({
+  //   required String labelText,
+  //   required FormFieldValidator<String> validator,
+  //   Color? labelTextColor,
+  //   required TextEditingController controller,
+  //   TextInputType? keyboardType,
+  // }) {
+  //   return TextFormField(
+  //     controller: controller,
+  //     decoration: InputDecoration(
+  //       contentPadding: const EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 5.0),
+  //       labelText: labelText,
+  //       prefixIcon: Padding(
+  //         padding: const EdgeInsets.all(12.0),
+  //         child: Container(
+  //           width: 5,
+  //           height: 5,
+  //           child: Image.asset(
+  //             "assets/images/id-card.png",
+  //             fit: BoxFit.cover,
+  //           ),
+  //         ),
+  //       ),
+  //       labelStyle: TextStyle(color: labelTextColor),
+  //       enabledBorder: OutlineInputBorder(
+  //         borderSide: BorderSide(color: Color.fromARGB(255, 173, 173, 173)),
+  //         borderRadius: const BorderRadius.only(
+  //           bottomLeft: Radius.circular(20.0),
+  //         ),
+  //       ),
+  //       focusedBorder: OutlineInputBorder(
+  //         borderSide: BorderSide(color: Color.fromARGB(255, 173, 173, 173)),
+  //         borderRadius: const BorderRadius.only(
+  //           bottomLeft: Radius.circular(20.0),
+  //         ),
+  //       ),
+  //     ),
+  //     keyboardType: keyboardType ?? TextInputType.text,
+  //     validator: validator,
+  //   );
+  // }
 
   // ... Existing code ...
 
-  Widget _buildPasswordField() {
-    return TextFormField(
-      decoration: const InputDecoration(
-        contentPadding: EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 5.0),
-        labelText: 'Password*',
-        prefixIcon: Icon(
-          Icons.lock,
-          color: Color.fromARGB(255, 173, 173, 173),
-        ),
-        labelStyle: TextStyle(
-          color: Color.fromARGB(255, 173, 173, 173),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: Color.fromARGB(255, 173, 173, 173)),
-          borderRadius: BorderRadius.only(
-            bottomLeft: Radius.circular(20.0),
-          ),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: Color.fromARGB(255, 173, 173, 173)),
-          borderRadius: BorderRadius.only(
-            bottomLeft: Radius.circular(20.0),
-          ),
-        ),
-      ),
-      obscureText: true,
-      onChanged: (value) {
-        setState(() {
-          password = value;
-          isButtonEnabled = QID.isNotEmpty &&
-              otp.isNotEmpty &&
-              password.isNotEmpty &&
-              confirmPassword.isNotEmpty;
-        });
-      },
-      validator: (value) {
-        if (value == null || value.isEmpty) {
-          return 'Please enter a password';
-        }
-        return null;
-      },
-    );
-  }
+//   Widget _buildDropdownFormField({
+//     required String? value,
+//     required void Function(String?)? onChanged,
+//     required List<DropdownMenuItem<String>> items,
+//     required String labelText,
+//     String? defaultValue,
+//   }) {
+//     return Container(
+//       decoration: BoxDecoration(
+//         border: Border.all(
+//           color: const Color.fromARGB(255, 173, 173, 173),
+//           width: 1.0,
+//         ),
+//         borderRadius: const BorderRadius.only(
+//           bottomLeft: Radius.circular(20.0),
+//         ),
+//       ),
+//       child: Padding(
+//         padding: const EdgeInsets.fromLTRB(10.0, 0, 10.0, 0),
+//         child: DropdownButtonFormField<String>(
+//           value: value ?? defaultValue,
+//           onChanged: onChanged,
+//           items: items,
+//           decoration: InputDecoration(
+//             labelText: labelText,
+//             labelStyle: const TextStyle(
+//               color: Color.fromARGB(255, 173, 173, 173),
+//             ),
+//             border: InputBorder.none,
+//           ),
+//           validator: (value) {
+//             return null;
+//           },
+//         ),
+//       ),
+//     );
+//   }
+// }
 
-  // ... Existing code ...
-
-  Widget _buildConfirmPasswordField() {
-    return TextFormField(
-      decoration: const InputDecoration(
-        contentPadding: EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 5.0),
-        labelText: 'Confirm Password*',
-        labelStyle: TextStyle(
-          color: Color.fromARGB(255, 173, 173, 173),
-        ),
-        prefixIcon: Icon(
-          Icons.lock,
-          color: Color.fromARGB(255, 173, 173, 173),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: Color.fromARGB(255, 173, 173, 173)),
-          borderRadius: BorderRadius.only(
-            bottomLeft: Radius.circular(20.0),
-          ),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: Color.fromARGB(255, 173, 173, 173)),
-          borderRadius: BorderRadius.only(
-            bottomLeft: Radius.circular(20.0),
-          ),
-        ),
-      ),
-      obscureText: true,
-      onChanged: (value) {
-        setState(() {
-          confirmPassword = value;
-          isButtonEnabled = QID.isNotEmpty &&
-              otp.isNotEmpty &&
-              password.isNotEmpty &&
-              confirmPassword.isNotEmpty;
-        });
-      },
-      validator: (value) {
-        if (value == null || value.isEmpty) {
-          return 'Please confirm your password';
-        } else if (value != password) {
-          return 'Passwords do not match';
-        }
-        return null;
-      },
-    );
-  }
-
-  // ... Existing code ...
-
-  Widget _buildDropdownFormField({
-    required String? value,
-    required void Function(String?)? onChanged,
-    required List<DropdownMenuItem<String>> items,
-    required String labelText,
-    String? defaultValue,
-  }) {
+  Widget _buildDropdownFormField(
+      {required String? value,
+      required void Function(String?)? onChanged,
+      required List<DropdownMenuItem<String>> items,
+      required String labelText,
+      String? defaultValue}) {
     return Container(
       decoration: BoxDecoration(
         border: Border.all(
-          color: const Color.fromARGB(255, 173, 173, 173),
-          width: 1.0,
+          color: const Color.fromARGB(
+              255, 173, 173, 173), // Set the border color to grey
+          width: 1.0, // Set the border width
         ),
+
         borderRadius: const BorderRadius.only(
-          bottomLeft: Radius.circular(20.0),
-        ),
+          bottomLeft: Radius.circular(20.0), // Rounded border at bottom-left
+        ), // Rounded border corners
       ),
       child: Padding(
         padding: const EdgeInsets.fromLTRB(10.0, 0, 10.0, 0),
@@ -416,17 +351,76 @@ class EditUserState extends State<EditUser> {
           onChanged: onChanged,
           items: items,
           decoration: InputDecoration(
+            errorStyle: const TextStyle(
+              // Add your style properties here
+              color: primaryColor,
+              fontWeight: FontWeight.w600,
+              fontSize: 14.0,
+            ),
             labelText: labelText,
             labelStyle: const TextStyle(
-              color: Color.fromARGB(255, 173, 173, 173),
-            ),
-            border: InputBorder.none,
+                color: Color.fromARGB(255, 173, 173, 173), fontSize: 12),
+            // Set the label text color
+
+            // Label text color
+            border: InputBorder.none, // Remove the default border
           ),
           validator: (value) {
-            return null;
+            return null; // No error
           },
         ),
       ),
     );
   }
 }
+
+  Widget _buildRoundedBorderTextField({
+    required String labelText,
+    required FormFieldValidator<String> validator,
+    Color? labelTextColor,
+    TextInputType? keyboardType, // Added labelTextColor parameter
+    TextEditingController? controller,
+  }) {
+    return TextFormField(
+      controller: controller, // Set the controller
+      decoration: InputDecoration(
+        contentPadding: const EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 5.0),
+        labelText: labelText,
+        errorStyle: const TextStyle(
+          // Add your style properties here
+          color: primaryColor,
+          fontWeight: FontWeight.w600,
+          fontSize: 14.0,
+        ),
+        labelStyle: TextStyle(
+            color: labelTextColor, fontSize: 12), // Set the label text color
+        enabledBorder: const OutlineInputBorder(
+          borderSide: BorderSide(color: Color.fromARGB(255, 173, 173, 173)),
+          borderRadius: BorderRadius.only(
+            bottomLeft: Radius.circular(20.0),
+          ),
+        ),
+        focusedBorder: const OutlineInputBorder(
+          borderSide: BorderSide(color: Color.fromARGB(255, 173, 173, 173)),
+          borderRadius: BorderRadius.only(
+            bottomLeft: Radius.circular(20.0),
+          ),
+        ),
+        errorBorder: const OutlineInputBorder(
+          borderSide: BorderSide(color: Color.fromARGB(255, 173, 173, 173)),
+          borderRadius: BorderRadius.only(
+            bottomLeft: Radius.circular(20.0),
+          ),
+        ),
+        focusedErrorBorder: const OutlineInputBorder(
+          borderSide: BorderSide(color: Color.fromARGB(255, 173, 173, 173)),
+          borderRadius: BorderRadius.only(
+            bottomLeft: Radius.circular(20.0),
+          ),
+        ),
+      ),
+
+      validator: validator,
+    );
+  }
+

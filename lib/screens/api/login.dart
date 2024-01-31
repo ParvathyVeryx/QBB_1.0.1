@@ -19,7 +19,6 @@ class LoginApi {
     SharedPreferences pref = await SharedPreferences.getInstance();
     var lang = 'langChange'.tr;
 
-
     try {
       // Retrieve the token from SharedPreferences
       String? token = pref.getString('token');
@@ -47,11 +46,9 @@ class LoginApi {
         'Language': lang,
       };
 
-
       // Construct the API URL
       Uri apiUrl = Uri.parse(
           'https://participantportal-test.qatarbiobank.org.qa/QbbAPIS/api/LoginAPI');
-
 
       // Make the HTTP POST request
       final response = await http.post(
@@ -64,16 +61,17 @@ class LoginApi {
       if (response.statusCode == 200) {
         // Successful response, handle accordingly
 
-
         // Parse the response if needed
         Map<String, dynamic> responseData = json.decode(response.body);
 
         // Store the entire JSON response in shared preferences
         await pref.setString(
             'userDetails', json.encode(responseData).toString());
-        await pref
-            .setString('userQID', json.decode(response.body)["QID"])
-            .toString();
+        pref.setString(
+            'userID', json.decode(response.body)["UserId"].toString());
+        print("userId" + json.decode(response.body)["UserId"].toString());
+        await pref.setString(
+            'userQID', json.decode(response.body)["QID"].toString());
         await pref.setString(
             'userFName', json.decode(response.body)["FirstName"].toString());
         await pref.setString(
@@ -100,7 +98,7 @@ class LoginApi {
         // await pref.setString('studiesAR', "true");
 
         // Save user data to SharedPreferences or handle it based on your requirements
-        
+
         // Navigate to the home screen
         Navigator.pushReplacement(
           context,

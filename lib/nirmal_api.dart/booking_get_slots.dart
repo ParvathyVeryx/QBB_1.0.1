@@ -79,7 +79,9 @@ Future<void> bookAppointmentApiCall(
         'Content-Type': 'application/json',
       },
     );
-
+    print("Response Body for Book APp");
+    print(uri);
+    print(response.body);
     if (response.statusCode == 200) {
       // Successful API call
 
@@ -154,7 +156,7 @@ Future<void> bookAppointmentToGetResults(
 
   try {
     Map<String, dynamic> requestBody = {
-      'qatarid': Qid,
+      'QID': Qid,
       "AppointmentTypeId": AppointmentTypeId,
       "AppoinmentId": AppoinmentId,
       'StudyId': studyId,
@@ -167,10 +169,10 @@ Future<void> bookAppointmentToGetResults(
     };
 
     String apiUrl =
-        "https://participantportal-test.qatarbiobank.org.qa/QbbAPIS/api/BookResultAppointmentAPI?qatarid=${requestBody['qatarid']}&StudyId=${requestBody['StudyId']}&ShiftCode=${requestBody['ShiftCode']}&VisitTypeId=${requestBody['AvailabilityCalenderId']}&PersonGradeId=${requestBody['PersonGradeId']}&AvailabilityCalenderId=${requestBody['AvailabilityCalenderId']}&AppoinmentId=${requestBody['AppoinmentId']}&language=en&AppointmentTypeId=${requestBody['AppointmentTypeId']}";
+        "https://participantportal-test.qatarbiobank.org.qa/QbbAPIS/api/BookResultAppointmentAPI?QID=${requestBody['QID']}&StudyId=${requestBody['StudyId']}&ShiftCode=${requestBody['ShiftCode']}&VisitTypeId=${requestBody['AvailabilityCalenderId']}&PersonGradeId=${requestBody['PersonGradeId']}&AvailabilityCalenderId=${requestBody['AvailabilityCalenderId']}&AppoinmentId=${requestBody['AppoinmentId']}&language=en&AppointmentTypeId=${requestBody['AppointmentTypeId']}";
     SharedPreferences pref = await SharedPreferences.getInstance();
     String? token = pref.getString('token');
-
+    print(apiUrl);
     final Uri uri = Uri.parse('$apiUrl');
 
     final response = await http.post(
@@ -179,6 +181,7 @@ Future<void> bookAppointmentToGetResults(
         'Authorization': 'Bearer ${token?.replaceAll('"', '')}',
         'Accept': 'application/json'
       },
+      body: requestBody,
     );
 
     if (response.statusCode == 200) {

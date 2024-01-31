@@ -45,6 +45,8 @@ class RegisterApi {
       body: jsonEncode(register.toJson()),
     );
 
+    print(jsonEncode(register.toJson()));
+
     // return response;
     if (response.statusCode == 200) {
       onApiComplete(); // Call the callback function to notify that the API is complete
@@ -83,12 +85,12 @@ class RegisterApi {
 class Register {
   int? id;
   String? isQuickRegistration;
-  int? qid;
+  String? qid;
   int? userId;
   String? firstName;
   String? middleName;
   String? lastName;
-  int? gender;
+  String? gender;
   String? dob;
   String? livingPeriodId;
   int? registrationSourceID;

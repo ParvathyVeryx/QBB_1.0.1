@@ -74,7 +74,7 @@ class RegisterUserState extends State<RegisterUser> {
   String? _qidError;
   int? maritalId; // Added maritalId to store the mapped value
   var gender;
-  int? genderId; // Default value for Gender
+  String? genderId; // Default value for Gender
   String? maritalStatus; // Default value for Marital Status
   // String registrationMode = 'Self'; // Default value for Registration Mode
   DateTime? selectedDate; // Set initially to null
@@ -297,20 +297,18 @@ class RegisterUserState extends State<RegisterUser> {
                       _buildDropdownFormField(
                         value: gender, // Use the gender variable here
                         onChanged: (value) {
+                          print("Selected gender: $value");
                           setState(() {
                             gender = value;
-                            switch (gender) {
-                              case 'male':
-                                genderId = 1;
+                            switch (value) {
+                              case 'Male':
+                                genderId = "1";
                                 break;
-                              case 'female':
-                                genderId = 2;
-                                break;
-
-                              default:
-                                genderId = null;
+                              case 'Female':
+                                genderId = "2";
                                 break;
                             }
+                            print("Updated genderId: $genderId");
                           });
                         },
                         items: [
@@ -503,7 +501,8 @@ class RegisterUserState extends State<RegisterUser> {
                             });
                             // Create an instance of Register and populate its fields
                             Register reg = Register(
-                                qid: int.tryParse(_qidController.text),
+                                // qid: int.tryParse(_qidController.text),
+                                qid: _qidController.text,
                                 firstName: _firstNameController.text,
                                 middleName: _middleNameController.text,
                                 lastName: _lastNameController.text,
@@ -719,7 +718,7 @@ class RegisterUserState extends State<RegisterUser> {
           ),
           validator: (value) {
             if (selectedDate == null) {
-              return 'Please select a value'; // Validation error message
+              return 'pleaseSelectaValue'.tr; // Validation error message
             }
             return null; // No error
           },
@@ -808,7 +807,7 @@ class RegisterUserState extends State<RegisterUser> {
                         selectedDate!.year.toString().substring(2, 4)) {
                   setState(() {
                     // Set an error message or take appropriate action
-                    _qidError = 'QID and Date of Birth do not match';
+                    _qidError = 'validQid'.tr;
                   });
                   return;
                 }
@@ -831,7 +830,7 @@ class RegisterUserState extends State<RegisterUser> {
                     selectedDate!.year.toString().substring(2, 4)) {
               setState(() {
                 // Set an error message or take appropriate action
-                _qidError = 'QID and Date of Birth do not match';
+                _qidError = 'validQid'.tr;
               });
               return;
             }

@@ -65,17 +65,8 @@ class ResultsState extends State<Results> {
       // String qid = prefs.getString("userQID").toString();
       // var lang = 'langChange'.tr;
 
-      String apiUrlN =
-          'https://participantportal-test.qatarbiobank.org.qa/QbbAPIS/api/GetNotificationsAPI?QID=$qid&language=$lang';
-      String requestUrlN = '$apiUrlN?qid=$qid&page=1&language=$lang';
-
-      // Make the GET request with the token in the headers
-      var responseN = await http.get(
-        Uri.parse(requestUrlN),
-        headers: {
-          'Authorization': 'Bearer ${token.replaceAll('"', '')}',
-        },
-      );
+      print("Printing Results");
+      print(response.body);
 
       // Check if the request was successful (status code 200)
       if (response.statusCode == 200) {
@@ -201,7 +192,8 @@ class ResultsState extends State<Results> {
                         // Handle tap for the "HOME" item
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => const HomeScreen()),
+                          MaterialPageRoute(
+                              builder: (context) => const HomeScreen()),
                         );
                       }
                       if (index == 2) {
@@ -224,7 +216,8 @@ class ResultsState extends State<Results> {
                         // Handle tap for the "HOME" item
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => const Profile()),
+                          MaterialPageRoute(
+                              builder: (context) => const Profile()),
                         );
                       }
                     },
@@ -370,7 +363,8 @@ class ResultsState extends State<Results> {
                         // Handle tap for the "HOME" item
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => const HomeScreen()),
+                          MaterialPageRoute(
+                              builder: (context) => const HomeScreen()),
                         );
                       }
                       if (index == 2) {
@@ -393,7 +387,8 @@ class ResultsState extends State<Results> {
                         // Handle tap for the "HOME" item
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => const Profile()),
+                          MaterialPageRoute(
+                              builder: (context) => const Profile()),
                         );
                       }
                     },
@@ -537,7 +532,8 @@ class ResultsState extends State<Results> {
                     // Handle tap for the "HOME" item
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => const HomeScreen()),
+                      MaterialPageRoute(
+                          builder: (context) => const HomeScreen()),
                     );
                   }
                   if (index == 2) {
@@ -552,7 +548,8 @@ class ResultsState extends State<Results> {
                     // Handle tap for the "HOME" item
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => const Appointments()),
+                      MaterialPageRoute(
+                          builder: (context) => const Appointments()),
                     );
                   }
                   if (index == 4) {
@@ -852,58 +849,63 @@ class ResultsState extends State<Results> {
                                         mainAxisAlignment:
                                             MainAxisAlignment.center,
                                         children: [
-                                          appointment["showResultBookingBtn"]
-                                              ? ElevatedButton(
-                                                  onPressed: () async {
-                                                    await bookAppointmentToGetResults(
-                                                      context,
-                                                      appointment["QID"]
-                                                          .toString(),
-                                                      appointment[
-                                                              "AppointmentTypeId"]
-                                                          .toString(),
-                                                      appointment[
-                                                              'AppoinmentId']
-                                                          .toString(),
-                                                      appointment["StudyId"]
-                                                          .toString(),
-                                                      appointment["VisitTypeId"]
-                                                          .toString(),
-                                                      appointment[
-                                                              'AvailabilityCalenderId']
-                                                          .toString(),
-                                                    );
-                                                  },
-                                                  style: ButtonStyle(
-                                                      backgroundColor:
-                                                          MaterialStateProperty.all<
-                                                                  Color>(
-                                                              primaryColor), // Set background color
-                                                      shape: MaterialStateProperty
-                                                          .all<
-                                                              RoundedRectangleBorder>(
-                                                        const RoundedRectangleBorder(
-                                                          borderRadius:
-                                                              BorderRadius.only(
-                                                            bottomLeft:
-                                                                Radius.circular(
-                                                                    12.0), // Rounded border at bottom-left
-                                                          ),
-                                                        ),
-                                                      )),
-                                                  child: Padding(
-                                                    padding:
-                                                        const EdgeInsets.fromLTRB(
-                                                            5.0, 5.0, 5.0, 5.0),
-                                                    child: Text(
-                                                      'collectResult'.tr,
-                                                      style: const TextStyle(
-                                                          color: textcolor,
-                                                          fontSize: 12),
+                                          ElevatedButton(
+                                            onPressed: () async {
+                                              //   await bookAppointmentToGetResults(
+                                              //     context,
+                                              //     appointment["QID"]
+                                              //         .toString(),
+                                              //     appointment[
+                                              //             "AppointmentTypeId"]
+                                              //         .toString(),
+                                              //     appointment[
+                                              //             'AppoinmentId']
+                                              //         .toString(),
+                                              //     appointment["StudyId"]
+                                              //         .toString(),
+                                              //     appointment["VisitTypeId"]
+                                              //         .toString(),
+                                              //     appointment[
+                                              //             'AvailabilityCalenderId']
+                                              //         .toString(),
+                                              //   );
+                                              await bookAppointmentApiCall(
+                                                  context,
+                                                  appointment["StudyId"]
+                                                      .toString(),
+                                                  appointment['VisitTypeId']
+                                                      .toString(),
+                                                  appointment['VisittypeName']
+                                                      .toString());
+                                            },
+                                            style: ButtonStyle(
+                                                backgroundColor:
+                                                    MaterialStateProperty.all<
+                                                            Color>(
+                                                        primaryColor), // Set background color
+                                                shape:
+                                                    MaterialStateProperty.all<
+                                                        RoundedRectangleBorder>(
+                                                  const RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.only(
+                                                      bottomLeft: Radius.circular(
+                                                          12.0), // Rounded border at bottom-left
                                                     ),
                                                   ),
-                                                )
-                                              : Container(),
+                                                )),
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.fromLTRB(
+                                                      5.0, 5.0, 5.0, 5.0),
+                                              child: Text(
+                                                'collectResult'.tr,
+                                                style: const TextStyle(
+                                                    color: textcolor,
+                                                    fontSize: 12),
+                                              ),
+                                            ),
+                                          ),
                                           const SizedBox(
                                             width: 20,
                                           ),
@@ -969,8 +971,9 @@ class ResultsState extends State<Results> {
                                                   ),
                                                 )),
                                             child: Padding(
-                                              padding: const EdgeInsets.fromLTRB(
-                                                  5.0, 5.0, 5.0, 5.0),
+                                              padding:
+                                                  const EdgeInsets.fromLTRB(
+                                                      5.0, 5.0, 5.0, 5.0),
                                               child: Text(
                                                 'download'.tr,
                                                 style: const TextStyle(
