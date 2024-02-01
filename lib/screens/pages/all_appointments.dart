@@ -61,12 +61,11 @@ class AllAppointmentsState extends State<AllAppointments> {
         allAppointments = List<Map<String, dynamic>>.from(responseBody);
         allCancelMsg = allAppointments[0]["CancelExpiredMSG"];
 
-
         cancelMessages = allAppointments
             .map((appointment) => appointment["CancelExpiredMSG"])
             .cast<String>()
             .toList();
-        
+        print(allAppointments);
         return allAppointments;
       } else {
         // Handle errors
@@ -74,7 +73,6 @@ class AllAppointmentsState extends State<AllAppointments> {
         return []; // Return an empty list in case of an error
       }
     } catch (e, stackTrace) {
-
       return []; // Return an empty list in case of an exception
     }
   }

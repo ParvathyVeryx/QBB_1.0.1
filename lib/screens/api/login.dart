@@ -112,7 +112,7 @@ class LoginApi {
           context: context,
           builder: (BuildContext context) {
             return ErrorPopup(
-              errorMessage: 'Error: ${response.body}',
+              errorMessage: json.decode(response.body)["Message"],
             );
           },
         );

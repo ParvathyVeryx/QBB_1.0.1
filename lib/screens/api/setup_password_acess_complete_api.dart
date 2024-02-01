@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:QBB/constants.dart';
 import 'package:QBB/screens/pages/erorr_popup.dart';
 import 'package:flutter/material.dart';
@@ -33,7 +35,7 @@ Future<void> setPasswordAccessSetupNotCompleted(
       showDialog(
         context: context, // Use the context of the current screen
         builder: (BuildContext context) {
-          return ErrorPopup(errorMessage: response.body);
+          return ErrorPopup(errorMessage: json.decode(response.body)["Message"]);
         },
       );
       // Handle the response data if needed
@@ -41,7 +43,7 @@ Future<void> setPasswordAccessSetupNotCompleted(
       showDialog(
         context: context, // Use the context of the current screen
         builder: (BuildContext context) {
-          return ErrorPopup(errorMessage: response.body);
+          return ErrorPopup(errorMessage: json.decode(response.body)["Message"]);
         },
       );
     }

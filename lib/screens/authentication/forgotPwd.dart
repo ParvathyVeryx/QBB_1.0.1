@@ -47,10 +47,10 @@ class ForgotPasswordState extends State<ForgotPassword> {
         ),
         title: Center(
           child: Padding(
-            padding: EdgeInsets.only(right: 40.0),
+            padding: const EdgeInsets.only(right: 40.0),
             child: Text(
               'forgotPasswordTitle'.tr,
-              style: TextStyle(
+              style: const TextStyle(
                 color: appbar,
                 fontFamily: 'Impact',
               ),
@@ -95,10 +95,10 @@ class ForgotPasswordState extends State<ForgotPassword> {
                               ),
                             )),
                         child: Padding(
-                          padding: EdgeInsets.fromLTRB(5.0, 5.0, 5.0, 5.0),
+                          padding: const EdgeInsets.fromLTRB(5.0, 5.0, 5.0, 5.0),
                           child: Text(
                             'getOTP'.tr,
-                            style: TextStyle(color: textcolor, fontSize: 11),
+                            style: const TextStyle(color: textcolor, fontSize: 11),
                           ),
                         )),
                   ],
@@ -119,7 +119,7 @@ class ForgotPasswordState extends State<ForgotPassword> {
                 ),
                 const SizedBox(height: 20.0),
                 _buildPasswordField(),
-                const SizedBox(height: 0.0),
+                const SizedBox(height: 05.0),
                 _buildConfirmPasswordField(),
                 const SizedBox(height: 20.0),
                 ElevatedButton(
@@ -161,10 +161,10 @@ class ForgotPasswordState extends State<ForgotPassword> {
                           ),
                         ),
                   child: Padding(
-                    padding: EdgeInsets.fromLTRB(10.0, 15.0, 10.0, 15.0),
+                    padding: const EdgeInsets.fromLTRB(10.0, 15.0, 10.0, 15.0),
                     child: Text(
                       'submit'.tr,
-                      style: TextStyle(
+                      style: const TextStyle(
                         color: textcolor,
                       ),
                     ),
@@ -219,11 +219,11 @@ class ForgotPasswordState extends State<ForgotPassword> {
       // ],
       decoration: InputDecoration(
         errorText: errorText,
-        errorStyle: TextStyle(
+        errorStyle: const TextStyle(
           // Add your style properties here
           color: primaryColor,
           fontWeight: FontWeight.w600,
-          fontSize: 14.0,
+          fontSize: 11.0,
         ),
         contentPadding: const EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 5.0),
         labelText: labelText,
@@ -290,11 +290,11 @@ class ForgotPasswordState extends State<ForgotPassword> {
     return TextFormField(
       keyboardType: TextInputType.number,
       decoration: InputDecoration(
-        errorStyle: TextStyle(
+        errorStyle: const TextStyle(
           // Add your style properties here
           color: primaryColor,
           fontWeight: FontWeight.w600,
-          fontSize: 14.0,
+          fontSize: 11.0,
         ),
         contentPadding: const EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 5.0),
         labelText: labelText,
@@ -356,14 +356,17 @@ class ForgotPasswordState extends State<ForgotPassword> {
     return TextFormField(
       controller: passwordController,
       decoration: InputDecoration(
+        errorMaxLines: 3,
         errorText: errorPwd,
-        errorStyle: TextStyle(
+        errorStyle: const TextStyle(
+          
           // Add your style properties here
           color: primaryColor,
           fontWeight: FontWeight.w600,
-          fontSize: 14.0,
+          fontSize: 11.0,
+          overflow: TextOverflow.visible,
         ),
-        contentPadding: EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 5.0),
+        contentPadding: const EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 5.0),
         labelText: 'newPassword'.tr + '*',
         prefixIcon: Container(
           height: 10.0,
@@ -378,7 +381,7 @@ class ForgotPasswordState extends State<ForgotPassword> {
             ),
           ),
         ),
-        labelStyle: TextStyle(
+        labelStyle: const TextStyle(
             color: Color.fromARGB(
               255,
               173,
@@ -387,13 +390,13 @@ class ForgotPasswordState extends State<ForgotPassword> {
             ),
             fontSize: 12 // Label text color
             ),
-        enabledBorder: OutlineInputBorder(
+        enabledBorder: const OutlineInputBorder(
           borderSide: BorderSide(color: Color.fromARGB(255, 173, 173, 173)),
           borderRadius: BorderRadius.only(
             bottomLeft: Radius.circular(20.0),
           ),
         ),
-        focusedBorder: OutlineInputBorder(
+        focusedBorder: const OutlineInputBorder(
           borderSide: BorderSide(color: Color.fromARGB(255, 173, 173, 173)),
           borderRadius: BorderRadius.only(
             bottomLeft: Radius.circular(20.0),
@@ -435,15 +438,15 @@ class ForgotPasswordState extends State<ForgotPassword> {
   Widget _buildConfirmPasswordField() {
     return TextFormField(
       decoration: InputDecoration(
-        errorStyle: TextStyle(
+        errorStyle: const TextStyle(
           // Add your style properties here
           color: primaryColor,
           fontWeight: FontWeight.w600,
-          fontSize: 14.0,
+          fontSize: 11.0,
         ),
-        contentPadding: EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 5.0),
+        contentPadding: const EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 5.0),
         labelText: 'confirmPassword'.tr + '*',
-        labelStyle: TextStyle(
+        labelStyle: const TextStyle(
             color: Color.fromARGB(255, 173, 173, 173),
             fontSize: 12 // Label text color
             ),
@@ -460,13 +463,13 @@ class ForgotPasswordState extends State<ForgotPassword> {
             ),
           ),
         ),
-        enabledBorder: OutlineInputBorder(
+        enabledBorder: const OutlineInputBorder(
           borderSide: BorderSide(color: Color.fromARGB(255, 173, 173, 173)),
           borderRadius: BorderRadius.only(
             bottomLeft: Radius.circular(20.0),
           ),
         ),
-        focusedBorder: OutlineInputBorder(
+        focusedBorder: const OutlineInputBorder(
           borderSide: BorderSide(color: Color.fromARGB(255, 173, 173, 173)),
           borderRadius: BorderRadius.only(
             bottomLeft: Radius.circular(20.0),

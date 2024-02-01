@@ -38,7 +38,7 @@ Future<bool> getAccess(String qid, String otp, BuildContext context) async {
       showDialog(
         context: context, // Use the context of the current screen
         builder: (BuildContext context) {
-          return ErrorPopup(errorMessage: response.body);
+          return ErrorPopup(errorMessage: json.decode(response.body)["Message"]);
         },
       );
       return true; // Return true if OTP verification is successful
@@ -48,7 +48,7 @@ Future<bool> getAccess(String qid, String otp, BuildContext context) async {
       showDialog(
         context: context, // Use the context of the current screen
         builder: (BuildContext context) {
-          return ErrorPopup(errorMessage: response.body);
+          return ErrorPopup(errorMessage: json.decode(response.body)["Message"]);
         },
       );
       return false; // Return false to indicate OTP verification failure

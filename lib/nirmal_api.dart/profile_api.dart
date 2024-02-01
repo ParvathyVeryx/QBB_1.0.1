@@ -100,7 +100,7 @@ Future<void> callUserProfileAPI(
       showDialog(
         context: context,
         builder: (BuildContext context) {
-          return ErrorPopup(errorMessage: response.body);
+          return ErrorPopup(errorMessage: json.decode(response.body)["Message"]);
         },
       );
     } else {
@@ -108,7 +108,7 @@ Future<void> callUserProfileAPI(
       showDialog(
         context: context,
         builder: (BuildContext context) {
-          return ErrorPopup(errorMessage: response.body);
+          return ErrorPopup(errorMessage: json.decode(response.body)["Message"]);
         },
       );
     }

@@ -265,7 +265,7 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
         showDialog(
             context: context, // Use the context of the current screen
             builder: (BuildContext context) {
-              return ErrorPopup(errorMessage: response.body);
+              return ErrorPopup(errorMessage: json.decode(response.body)["Message"]);
             });
       }
     } catch (e) {}

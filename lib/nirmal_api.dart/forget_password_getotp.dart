@@ -36,7 +36,7 @@ Future<Map<String, dynamic>> callUpdatePasswordAPI(
       showDialog(
           context: context, // Use the context of the current screen
           builder: (BuildContext context) {
-            return ErrorPopup(errorMessage: response.body);
+            return ErrorPopup(errorMessage: json.decode(response.body)["Message"]);
           });
       return json.decode(response.body);
     } else {
@@ -44,7 +44,7 @@ Future<Map<String, dynamic>> callUpdatePasswordAPI(
       showDialog(
           context: context, // Use the context of the current screen
           builder: (BuildContext context) {
-            return ErrorPopup(errorMessage: response.body);
+            return ErrorPopup(errorMessage: json.decode(response.body)["Message"]);
           });
       throw Exception(
           'Failed to call UpdatePasswordAPI: ${response.statusCode}');

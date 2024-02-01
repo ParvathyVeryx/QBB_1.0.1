@@ -43,7 +43,7 @@ Future<Map<String, dynamic>> UpdatePasswordAPI(
     showDialog(
         context: context, // Use the context of the current screen
         builder: (BuildContext context) {
-          return ErrorPopup(errorMessage: response.body);
+          return ErrorPopup(errorMessage: json.decode(response.body)["Message"]);
         });
     return {'success': false, 'error': response.body};
 

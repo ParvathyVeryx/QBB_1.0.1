@@ -17,6 +17,8 @@ import 'package:http/http.dart' as http;
 import '../api/userid.dart';
 import 'appointments.dart';
 
+
+
 class Upcoming extends StatefulWidget {
   final List<Map<String, dynamic>> UpcomingAppointments;
 
@@ -229,6 +231,7 @@ class UpcomingState extends State<Upcoming> {
     }
   }
 
+
   Future<void> cancelAnAppointment(String appointmentId) async {
     SharedPreferences pref = await SharedPreferences.getInstance();
 
@@ -297,7 +300,7 @@ class UpcomingState extends State<Upcoming> {
         showDialog(
             context: context, // Use the context of the current screen
             builder: (BuildContext context) {
-              return ErrorPopup(errorMessage: response.body);
+              return ErrorPopup(errorMessage: json.decode(response.body)["Message"]);
             });
       }
     } catch (e) {}
@@ -350,7 +353,7 @@ class UpcomingState extends State<Upcoming> {
       print(response.body);
 
       if (response.statusCode == 200) {
-        await bookAppointmentApiCall(
+        await GetRescheduleAppointment(
           context,
           studyId,
           visitTypeId,

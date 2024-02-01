@@ -85,11 +85,25 @@ class RegisterUserState extends State<RegisterUser> {
   int? _campaignController;
   String? _selectedLivingPeriod;
   int? updatedNationalityId;
+  String errorText = '';
   @override
   void initState() {
     super.initState();
     // Call a function to retrieve the token from shared preferences
     _retrieveToken();
+    _qidController.addListener(_validateInput);
+  }
+
+    void _validateInput() {
+    setState(() {
+      if (_qidController.text.isEmpty) {
+        errorText = '';
+      } else if (!RegExp(r'^[0-9]*$').hasMatch(_qidController.text)) {
+        errorText = 'pleaseEnterValidQatarID'.tr;
+      } else {
+        errorText = '';
+      }
+    });
   }
 
   Future<void> _retrieveToken() async {
@@ -154,6 +168,7 @@ class RegisterUserState extends State<RegisterUser> {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       QIDTextField(
+                        keyboardType: TextInputType.number,
                         controller: _qidController,
                         labelText: 'qid'.tr + '*',
                         labelTextColor:
@@ -247,7 +262,7 @@ class RegisterUserState extends State<RegisterUser> {
                           labelText: 'lastName'.tr + '*',
                           validator: (value) {
                             if (value!.isEmpty) {
-                              return 'pleaseEnterFName'.tr;
+                              return 'pleaseEnterLName'.tr;
                             }
                             return null;
                           },

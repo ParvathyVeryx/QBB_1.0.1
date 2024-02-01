@@ -53,7 +53,7 @@ class RegisterApi {
       showDialog(
           context: context, // Use the context of the current screen
           builder: (BuildContext context) {
-            return ErrorPopup(errorMessage: response.body);
+            return ErrorPopup(errorMessage: json.decode(response.body)["Message"]);
           }).then((_) {
         // This code will run after the dialog is dismissed
         // Navigate to another widget here
@@ -70,7 +70,7 @@ class RegisterApi {
       showDialog(
           context: context, // Use the context of the current screen
           builder: (BuildContext context) {
-            return ErrorPopup(errorMessage: response.body);
+            return ErrorPopup(errorMessage: json.decode(response.body)["Message"]);
           });
       // Handle error response
 

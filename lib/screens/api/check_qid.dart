@@ -104,28 +104,28 @@ Future<bool> checkQIDExist(
           return false;
         }
       } else {
-        String errorMessage = response.body;
+        String errorMessage = json.decode(response.body)["Message"];
 
         // Handle error response for GetCountry API
         showDialog(
           context: context,
           builder: (BuildContext context) {
             return ErrorPopup(
-              errorMessage: 'Error fetching country: $errorMessage',
+              errorMessage: '$errorMessage',
             );
           },
         );
         return false;
       }
     } else {
-      String errorMessage = response.body;
+      String errorMessage = json.decode(response.body)["Message"];
 
       // Handle error response for CheckQIDExistAPI
       showDialog(
         context: context,
         builder: (BuildContext context) {
           return ErrorPopup(
-            errorMessage: 'Error: $errorMessage',
+            errorMessage: '$errorMessage',
           );
         },
       );

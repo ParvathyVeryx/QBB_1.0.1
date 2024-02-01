@@ -60,6 +60,110 @@ Future<void> bookAppointmentApiCall(
   //     "https://participantportal-test.qatarbiobank.org.qa/QbbAPIS/api/GetReasonForCancelAppoinmentAPI?language=en");
   SharedPreferences pref = await SharedPreferences.getInstance();
   String? token = pref.getString('token');
+
+  final Uri uri = Uri.parse(
+      '$apiUrl?qatarid=${queryParams['qatarid']}&StudyId=${queryParams['StudyId']}&Pregnant=${queryParams['Pregnant']}&VisitTypeId=${queryParams['VisitTypeId']}&PersonGradeId=${queryParams['PersonGradeId']}&VisitName=${queryParams['VisitName']}&page=${queryParams['page']}&language=${queryParams['language']}');
+  // SharedPreferences pref = await SharedPreferences.getInstance();
+  // String? token = pref.getString('token');
+  try {
+    final response = await http.get(
+      uri,
+      headers: {
+        'Authorization': 'Bearer ${token?.replaceAll('"', '')}',
+        'Content-Type': 'application/json',
+      },
+    );
+    print("Response Body for Book APp");
+    print(uri);
+    print(response.body);
+    if (response.statusCode == 200) {
+      // Successful API call
+
+      // Parse the JSON response
+      final Map<String, dynamic> jsonResponse = json.decode(response.body);
+      BookAppScreenState myWidget = BookAppScreenState();
+      String result =
+          await myWidget.getAvailabilityCalendar("yourAvailabilityCalendar");
+      pref.setString("availabilityCalendarId",
+          jsonResponse["AvailabilityCalenderId"].toString());
+      print(jsonResponse["AvailabilityCalenderId"].toString());
+      print("availabilty calendar");
+      print(response.body);
+      // Save the API response in shared preferences
+      pref.setString('apiResponse', json.encode(jsonResponse));
+      pref.setString("availableDates", json.encode(jsonResponse['datelist']));
+
+      String? jsonString = pref.getString("availableDates");
+
+// Check if the jsonString is not null
+      if (jsonString != null) {
+        // Use json.decode to parse the jsonString
+        dynamic decodedData = json.decode(jsonString);
+
+        // Check if the decodedData is a List
+        if (decodedData is List) {
+          // Now you can use the data as a List
+          List<String> availableDates = List<String>.from(decodedData);
+
+          // Use the 'availableDates' list as needed
+        }
+      }
+
+      // Now, navigate to the AppointmentBookingPage
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => BookAppScreen(),
+        ),
+      );
+    } else {
+      // Handle errors
+
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return ErrorPopup(errorMessage: json.decode(response.body)["Message"]);
+        },
+      );
+    }
+  } catch (error) {
+    // Handle network errors
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return ErrorPopup(errorMessage: 'Network Error');
+      },
+    );
+  }
+}
+Future<void> GetRescheduleAppointment(
+  BuildContext context,
+  String studyId,
+  String visitTypeId,
+  String visitTypeName,
+) async {
+  String? qid = await getQIDFromSharedPreferences();
+
+  int? personGradeId = await getPersonGradeIdFromSharedPreferences();
+
+  const String apiUrl =
+      'https://participantportal-test.qatarbiobank.org.qa/QbbAPIS/api/BookAppointmentapi';
+
+  final Map<String, dynamic> queryParams = {
+    'qatarid': qid,
+    'StudyId': studyId,
+    'VisitTypeId': visitTypeId,
+    'Pregnant': 'null',
+    'PersonGradeId': personGradeId,
+    'VisitName': visitTypeName,
+    'page': '1',
+    'language': 'langChange'.tr,
+  };
+
+  // final Uri urinew = Uri.parse(
+  //     "https://participantportal-test.qatarbiobank.org.qa/QbbAPIS/api/GetReasonForCancelAppoinmentAPI?language=en");
+  SharedPreferences pref = await SharedPreferences.getInstance();
+  String? token = pref.getString('token');
   // final responsen = await http.get(
   //   urinew,
   //   headers: {
@@ -128,7 +232,7 @@ Future<void> bookAppointmentApiCall(
       showDialog(
         context: context,
         builder: (BuildContext context) {
-          return ErrorPopup(errorMessage: response.body);
+          return ErrorPopup(errorMessage: json.decode(response.body)["Message"]);
         },
       );
     }
@@ -206,7 +310,7 @@ Future<void> bookAppointmentToGetResults(
       showDialog(
         context: context,
         builder: (BuildContext context) {
-          return ErrorPopup(errorMessage: response.body);
+          return ErrorPopup(errorMessage: json.decode(response.body)["Message"]);
         },
       );
     }
@@ -272,7 +376,7 @@ Future<void> getResultAppointmentApiCall(
       showDialog(
         context: context,
         builder: (BuildContext context) {
-          return ErrorPopup(errorMessage: response.body);
+          return ErrorPopup(errorMessage: json.decode(response.body)["Message"]);
         },
       );
     }
