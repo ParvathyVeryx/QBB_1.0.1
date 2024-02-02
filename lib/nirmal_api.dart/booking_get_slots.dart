@@ -9,6 +9,9 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../screens/pages/reschedule_app.dart';
+import '../screens/pages/upcoming.dart';
+
 // class ApiResponse {
 //   final bool success;
 //   final String message;
@@ -122,7 +125,8 @@ Future<void> bookAppointmentApiCall(
       showDialog(
         context: context,
         builder: (BuildContext context) {
-          return ErrorPopup(errorMessage: json.decode(response.body)["Message"]);
+          return ErrorPopup(
+              errorMessage: json.decode(response.body)["Message"]);
         },
       );
     }
@@ -136,18 +140,15 @@ Future<void> bookAppointmentApiCall(
     );
   }
 }
-Future<void> GetRescheduleAppointment(
-  BuildContext context,
-  String studyId,
-  String visitTypeId,
-  String visitTypeName,
-) async {
+
+Future<void> GetRescheduleAppointment(BuildContext context, String studyId,
+    String visitTypeId, String visitTypeName, String appID) async {
   String? qid = await getQIDFromSharedPreferences();
 
   int? personGradeId = await getPersonGradeIdFromSharedPreferences();
 
   const String apiUrl =
-      'https://participantportal-test.qatarbiobank.org.qa/QbbAPIS/api/BookAppointmentapi';
+      'https://participantportal-test.qatarbiobank.org.qa/QbbAPIS/api/RescheduleAppointmentAPI';
 
   final Map<String, dynamic> queryParams = {
     'qatarid': qid,
@@ -171,6 +172,9 @@ Future<void> GetRescheduleAppointment(
   //     'Content-Type': 'application/json',
   //   },
   // );
+  RescheduleAppState myWidget = RescheduleAppState();
+  myWidget.getAppID(appID);
+  pref.setString("appoinmentID", appID);
   final Uri uri = Uri.parse(
       '$apiUrl?qatarid=${queryParams['qatarid']}&StudyId=${queryParams['StudyId']}&Pregnant=${queryParams['Pregnant']}&VisitTypeId=${queryParams['VisitTypeId']}&PersonGradeId=${queryParams['PersonGradeId']}&VisitName=${queryParams['VisitName']}&page=${queryParams['page']}&language=${queryParams['language']}');
   // SharedPreferences pref = await SharedPreferences.getInstance();
@@ -189,11 +193,12 @@ Future<void> GetRescheduleAppointment(
     if (response.statusCode == 200) {
       // Successful API call
 
+      print("App Id" + appID);
       // Parse the JSON response
       final Map<String, dynamic> jsonResponse = json.decode(response.body);
-      BookAppScreenState myWidget = BookAppScreenState();
-      String result =
-          await myWidget.getAvailabilityCalendar("yourAvailabilityCalendar");
+      // BookAppScreenState myWidget = BookAppScreenState();
+      // String result =
+      //     await myWidget.getAvailabilityCalendar("yourAvailabilityCalendar");
       pref.setString("availabilityCalendarId",
           jsonResponse["AvailabilityCalenderId"].toString());
       print(jsonResponse["AvailabilityCalenderId"].toString());
@@ -223,7 +228,7 @@ Future<void> GetRescheduleAppointment(
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => BookAppScreen(),
+          builder: (context) => RescheduleApp(),
         ),
       );
     } else {
@@ -232,7 +237,8 @@ Future<void> GetRescheduleAppointment(
       showDialog(
         context: context,
         builder: (BuildContext context) {
-          return ErrorPopup(errorMessage: json.decode(response.body)["Message"]);
+          return ErrorPopup(
+              errorMessage: json.decode(response.body)["Message"]);
         },
       );
     }
@@ -310,7 +316,8 @@ Future<void> bookAppointmentToGetResults(
       showDialog(
         context: context,
         builder: (BuildContext context) {
-          return ErrorPopup(errorMessage: json.decode(response.body)["Message"]);
+          return ErrorPopup(
+              errorMessage: json.decode(response.body)["Message"]);
         },
       );
     }
@@ -376,7 +383,8 @@ Future<void> getResultAppointmentApiCall(
       showDialog(
         context: context,
         builder: (BuildContext context) {
-          return ErrorPopup(errorMessage: json.decode(response.body)["Message"]);
+          return ErrorPopup(
+              errorMessage: json.decode(response.body)["Message"]);
         },
       );
     }

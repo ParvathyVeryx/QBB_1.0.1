@@ -1,0 +1,267 @@
+{
+    "name": "BookResultAppointmentAPI",
+    "request": {
+        "auth": {
+            "type": "bearer",
+            "bearer": [
+                {
+                    "key": "token",
+                    "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6Im1vYmFkbWluQGdtYWlsLmNvbSIsIm5iZiI6MTcwMjM2MDg3OSwiZXhwIjoxNzAyOTY1Njc5LCJpYXQiOjE3MDIzNjA4NzksImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTAxOTEiLCJhdWQiOiJodHRwOi8vbG9jYWxob3N0OjUwMTkxIn0.NzGr2wzJgevE1yI1eM2a3ouwwYd7GbrOLG1ejVevuYo",
+                    "type": "string"
+                }
+            ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+            "mode": "raw",
+            "raw": ""
+        },
+        "url": {
+            "raw": "https://participantportal-test.qatarbiobank.org.qa/QbbAPIS/api/BookResultAppointmentAPI?qatarid=28900498437&StudyId=10&ShiftCode&VisitTypeId=72&PersonGradeId&AvailabilityCalenderId&AppoinmentId=&language=en&AppointmentTypeId",
+            "protocol": "https",
+            "host": [
+                "participantportal-test",
+                "qatarbiobank",
+                "org",
+                "qa"
+            ],
+            "path": [
+                "QbbAPIS",
+                "api",
+                "BookResultAppointmentAPI"
+            ],
+            "query": [
+                {
+                    "key": "qatarid",
+                    "value": "28900498437"
+                },
+                {
+                    "key": "StudyId",
+                    "value": "10"
+                },
+                {
+                    "key": "ShiftCode",
+                    "value": null
+                },
+                {
+                    "key": "VisitTypeId",
+                    "value": "72"
+                },
+                {
+                    "key": "PersonGradeId",
+                    "value": null
+                },
+                {
+                    "key": "AvailabilityCalenderId",
+                    "value": null
+                },
+                {
+                    "key": "AppoinmentId",
+                    "value": ""
+                },
+                {
+                    "key": "language",
+                    "value": "en"
+                },
+                {
+                    "key": "AppointmentTypeId",
+                    "value": null
+                }
+            ]
+        }
+    },
+    "response": []
+}
+
+{
+    "name": "RescheduleResultAppointmentAPI",
+    "request": {
+        "auth": {
+            "type": "bearer",
+            "bearer": [
+                {
+                    "key": "token",
+                    "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6Im1vYmFkbWluQGdtYWlsLmNvbSIsIm5iZiI6MTcwMjM2MDg3OSwiZXhwIjoxNzAyOTY1Njc5LCJpYXQiOjE3MDIzNjA4NzksImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTAxOTEiLCJhdWQiOiJodHRwOi8vbG9jYWxob3N0OjUwMTkxIn0.NzGr2wzJgevE1yI1eM2a3ouwwYd7GbrOLG1ejVevuYo",
+                    "type": "string"
+                }
+            ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+            "mode": "raw",
+            "raw": ""
+        },
+        "url": {
+            "raw": "https://participantportal-test.qatarbiobank.org.qa/QbbAPIS/api/RescheduleResultAppointmentAPI?QID=28900498437&StudyId=10&ShiftCode&VisitTypeId=72&AvailabilityCalenderId&AppoinmentId=&language=en&AppointmentStatus",
+            "protocol": "https",
+            "host": [
+                "participantportal-test",
+                "qatarbiobank",
+                "org",
+                "qa"
+            ],
+            "path": [
+                "QbbAPIS",
+                "api",
+                "RescheduleResultAppointmentAPI"
+            ],
+            "query": [
+                {
+                    "key": "QID",
+                    "value": "28900498437"
+                },
+                {
+                    "key": "StudyId",
+                    "value": "10"
+                },
+                {
+                    "key": "ShiftCode",
+                    "value": null
+                },
+                {
+                    "key": "VisitTypeId",
+                    "value": "72"
+                },
+                {
+                    "key": "AvailabilityCalenderId",
+                    "value": null
+                },
+                {
+                    "key": "AppoinmentId",
+                    "value": ""
+                },
+                {
+                    "key": "language",
+                    "value": "en"
+                },
+                {
+                    "key": "AppointmentStatus",
+                    "value": null
+                }
+            ]
+        }
+    },
+    "response": []
+},
+
+{
+    "name": "RescheduleResultAppointmentAPI Get",
+    "protocolProfileBehavior": {
+        "disableBodyPruning": true
+    },
+    "request": {
+        "auth": {
+            "type": "bearer",
+            "bearer": [
+                {
+                    "key": "token",
+                    "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6Im1vYmFkbWluQGdtYWlsLmNvbSIsIm5iZiI6MTcwMjM2MDg3OSwiZXhwIjoxNzAyOTY1Njc5LCJpYXQiOjE3MDIzNjA4NzksImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTAxOTEiLCJhdWQiOiJodHRwOi8vbG9jYWxob3N0OjUwMTkxIn0.NzGr2wzJgevE1yI1eM2a3ouwwYd7GbrOLG1ejVevuYo",
+                    "type": "string"
+                }
+            ]
+        },
+        "method": "GET",
+        "header": [],
+        "body": {
+            "mode": "raw",
+            "raw": ""
+        },
+        "url": {
+            "raw": "https://participantportal-test.qatarbiobank.org.qa/QbbAPIS/api/RescheduleResultAppointmentAPI?QID=28900498437&StudyId=10&Pregnant=72&VisitTypeId&PersonGradeId=&language=en&AppointmentId&Page=1",
+            "protocol": "https",
+            "host": [
+                "participantportal-test",
+                "qatarbiobank",
+                "org",
+                "qa"
+            ],
+            "path": [
+                "QbbAPIS",
+                "api",
+                "RescheduleResultAppointmentAPI"
+            ],
+            "query": [
+                {
+                    "key": "QID",
+                    "value": "28900498437"
+                },
+                {
+                    "key": "StudyId",
+                    "value": "10"
+                },
+                {
+                    "key": "Pregnant",
+                    "value": "72"
+                },
+                {
+                    "key": "VisitTypeId",
+                    "value": null
+                },
+                {
+                    "key": "PersonGradeId",
+                    "value": ""
+                },
+                {
+                    "key": "language",
+                    "value": "en"
+                },
+                {
+                    "key": "AppointmentId",
+                    "value": null
+                },
+                {
+                    "key": "Page",
+                    "value": "1"
+                }
+            ]
+        }
+    },
+    "response": []
+},
+
+{
+    "name": "CancelResultAppointmentAPI",
+    "request": {
+        "auth": {
+            "type": "bearer",
+            "bearer": [
+                {
+                    "key": "token",
+                    "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6Im1vYmFkbWluQGdtYWlsLmNvbSIsIm5iZiI6MTcwMDU2MTE0MCwiZXhwIjoxNzAxMTY1OTQwLCJpYXQiOjE3MDA1NjExNDAsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTAxOTEiLCJhdWQiOiJodHRwOi8vbG9jYWxob3N0OjUwMTkxIn0.BKyV2t6VQQreqMf4jm3tcUQbB0rTsp2mhOpBmr1t4Tc",
+                    "type": "string"
+                }
+            ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+            "mode": "raw",
+            "raw": "{\r\n    \"QID\": \"28900498437\",\r\n    \"AppoinmentId\": \"11488\",\r\n    \"Reason\": \"Reason\",\r\n    \"ReasonType\": \"ReasonType\"\r\n}",
+            "options": {
+                "raw": {
+                    "language": "json"
+                }
+            }
+        },
+        "url": {
+            "raw": "https://participantportal-test.qatarbiobank.org.qa/QbbAPIS/api/CancelResultAppointmentAPI",
+            "protocol": "https",
+            "host": [
+                "participantportal-test",
+                "qatarbiobank",
+                "org",
+                "qa"
+            ],
+            "path": [
+                "QbbAPIS",
+                "api",
+                "CancelResultAppointmentAPI"
+            ]
+        }
+    },
+    "response": []
+}
+]
+},

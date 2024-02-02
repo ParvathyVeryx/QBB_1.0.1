@@ -244,8 +244,8 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
             context: context,
             builder: (BuildContext context) {
               return AlertDialog(
-                title: Text('Alert'),
-                content: Text(response.body),
+                title: Text(''),
+                content: Text(json.decode(response.body)),
                 actions: [
                   ElevatedButton(
                     onPressed: () {

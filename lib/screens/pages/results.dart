@@ -706,11 +706,12 @@ class ResultsState extends State<Results> {
                                             padding: const EdgeInsets.fromLTRB(
                                                 18, 3.0, 18, 3),
                                             child: Text(
-                                              appointment['AppoinmentStatus']
-                                                          .toString() ==
-                                                      "4"
-                                                  ? "result".tr
-                                                  : "cancelled".tr,
+                                              // appointment['AppoinmentStatus']
+                                              //             .toString() ==
+                                              //         "4"
+                                              //     ? "results".tr
+                                              //     : "cancelled".tr,
+                                              "results".tr,
                                               style: const TextStyle(
                                                 color: Color.fromARGB(
                                                     255, 255, 255, 255),

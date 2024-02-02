@@ -17,8 +17,6 @@ import 'package:http/http.dart' as http;
 import '../api/userid.dart';
 import 'appointments.dart';
 
-
-
 class Upcoming extends StatefulWidget {
   final List<Map<String, dynamic>> UpcomingAppointments;
 
@@ -72,7 +70,8 @@ class UpcomingState extends State<Upcoming> {
         allUpcomingAppointments = allAppointments
             .where((appointment) =>
                 appointment['AppoinmentStatus'] is int &&
-                appointment['AppoinmentStatus'] == 1)
+                    appointment['AppoinmentStatus'] == 1 ||
+                appointment['AppoinmentStatus'] == 2)
             .toList();
 
         if (allUpcomingAppointments.isNotEmpty) {
@@ -81,7 +80,6 @@ class UpcomingState extends State<Upcoming> {
         }
 
         pref.getString("appointmentID");
-        print(allAppointments);
         return allUpcomingAppointments;
       } else {
         // Handle errors
@@ -138,6 +136,7 @@ class UpcomingState extends State<Upcoming> {
     // Create a list of radio buttons based on the reasons
     return reasons.map((reason) {
       String reasonName = reason['Name'] ?? '';
+      print(reason);
       return RadioListTile(
         title: Text(
           reasonName,
@@ -159,78 +158,79 @@ class UpcomingState extends State<Upcoming> {
     }).toList();
   }
 
-  void cancelAppointment() async {
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    String qid = pref.getString("userQID").toString();
-    String reason = pref.getString("selectedReason").toString();
-    String appId = pref.getString("appointmentID").toString();
-    try {
-      // Retrieve the token from SharedPreferences
-      String? token = pref.getString('token');
-      if (token == null) {
-        // Handle the case where the token is not available
-        return;
-      }
-      Map<String, dynamic> requestBody = {
-        'QID': qid,
-        'AppoinmentId': appId,
-        'Reason': reason,
-        'ReasonType': 0,
-        'ReasonType': 0,
-      };
-      Map<String, String> headers = {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'Authorization': 'Bearer ${token.replaceAll('"', '')}',
-      };
+  // void cancelAppointment() async {
+  //   SharedPreferences pref = await SharedPreferences.getInstance();
+  //   String qid = pref.getString("userQID").toString();
+  //   String reason = pref.getString("selectedReason").toString();
+  //   String appId = pref.getString("appointmentID").toString();
+  //   try {
+  //     // Retrieve the token from SharedPreferences
+  //     String? token = pref.getString('token');
+  //     if (token == null) {
+  //       // Handle the case where the token is not available
+  //       return;
+  //     }
+  //     Map<String, dynamic> requestBody = {
+  //       'QID': qid,
+  //       'AppoinmentId': appId,
+  //       'Reason': reason,
+  //       'ReasonType': 0,
+  //       'ReasonType': 0,
+  //     };
+  //     Map<String, String> headers = {
+  //       'Content-Type': 'application/json',
+  //       'Accept': 'application/json',
+  //       'Authorization': 'Bearer ${token.replaceAll('"', '')}',
+  //     };
 
-      Uri apiUrl = Uri.parse(
-          'https://participantportal-test.qatarbiobank.org.qa/QbbAPIS/api/CancelAppointmentAPI');
+  //     Uri apiUrl = Uri.parse(
+  //         'https://participantportal-test.qatarbiobank.org.qa/QbbAPIS/api/CancelAppointmentAPI');
 
-      final response = await http.post(
-        apiUrl,
-        body: jsonEncode(requestBody),
-      );
+  //     final response = await http.post(
+  //       apiUrl,
+  //       body: jsonEncode(requestBody),
+  //     );
 
-      if (response.statusCode == 200) {
-        AlertDialog(
-          title: Text('Success'),
-          content: Text(response.body),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text('OK'),
-            ),
-          ],
-        );
-      } else {
-        AlertDialog(
-          title: Text('Success'),
-          content: Text(response.body),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text('OK'),
-            ),
-          ],
-        );
-      }
-    } catch (e) {
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return ErrorPopup(
-            errorMessage: '$e',
-          );
-        },
-      );
-    }
-  }
+  //     print(requestBody);
 
+  //     if (response.statusCode == 200) {
+  //       AlertDialog(
+  //         title: Text('Success'),
+  //         content: Text(response.body),
+  //         actions: <Widget>[
+  //           TextButton(
+  //             onPressed: () {
+  //               Navigator.of(context).pop();
+  //             },
+  //             child: Text('OK'),
+  //           ),
+  //         ],
+  //       );
+  //     } else {
+  //       AlertDialog(
+  //         title: Text('Success'),
+  //         content: Text(response.body),
+  //         actions: <Widget>[
+  //           TextButton(
+  //             onPressed: () {
+  //               Navigator.of(context).pop();
+  //             },
+  //             child: Text('OK'),
+  //           ),
+  //         ],
+  //       );
+  //     }
+  //   } catch (e) {
+  //     showDialog(
+  //       context: context,
+  //       builder: (BuildContext context) {
+  //         return ErrorPopup(
+  //           errorMessage: '$e',
+  //         );
+  //       },
+  //     );
+  //   }
+  // }
 
   Future<void> cancelAnAppointment(String appointmentId) async {
     SharedPreferences pref = await SharedPreferences.getInstance();
@@ -239,7 +239,7 @@ class UpcomingState extends State<Upcoming> {
     var lang = 'langChange'.tr;
     // String selectedAppointmentId =
     //     pref.getString("selectedAppointmentId").toString();
-    String selectedReason = pref.getString("selectedReason").toString();
+    // String selectedReason = pref.getString("selectedReason").toString();
 
     try {
       // Retrieve the token from SharedPreferences
@@ -257,11 +257,9 @@ class UpcomingState extends State<Upcoming> {
       Map<String, dynamic> requestBody = {
         "QID": qid,
         "AppoinmentId": appointmentId,
-        "Reason": '$selectedReason',
-        "ReasonType": '0',
+        "Reason": selectedReason,
+        "ReasonType": "4",
       };
-
-      print("Response Body" + requestBody.toString());
 
       // Construct the API URL
       Uri apiUrl = Uri.parse(
@@ -270,17 +268,15 @@ class UpcomingState extends State<Upcoming> {
       // Make the HTTP POST request
       final response =
           await http.post(apiUrl, headers: headers, body: requestBody);
+      print(requestBody);
 
-      print("REsponse Status COde and Response" +
-          response.body +
-          response.statusCode.toString());
       if (response.statusCode == 200) {
         showDialog(
             context: context,
             builder: (BuildContext context) {
               return AlertDialog(
                 title: Text('Alert'),
-                content: Text(response.body),
+                content: Text(json.decode(response.body)),
                 actions: [
                   ElevatedButton(
                     onPressed: () {
@@ -300,10 +296,16 @@ class UpcomingState extends State<Upcoming> {
         showDialog(
             context: context, // Use the context of the current screen
             builder: (BuildContext context) {
-              return ErrorPopup(errorMessage: json.decode(response.body)["Message"]);
+              return ErrorPopup(
+                  errorMessage: json.decode(response.body)["Message"]);
             });
       }
-    } catch (e) {}
+    } catch (e) {
+      print("Exception caught: $e");
+      ErrorPopup(
+        errorMessage: '$e',
+      );
+    }
   }
 
   void rescheduleAppointment(
@@ -349,21 +351,16 @@ class UpcomingState extends State<Upcoming> {
       // Make the HTTP POST request
       final response =
           await http.post(apiUrl, headers: headers, body: queryParam);
-      print(apiUrl);
-      print(response.body);
 
       if (response.statusCode == 200) {
         await GetRescheduleAppointment(
-          context,
-          studyId,
-          visitTypeId,
-          visitType,
-        );
+            context, studyId, visitTypeId, visitType, appID);
       } else {
         showDialog(
             context: context, // Use the context of the current screen
             builder: (BuildContext context) {
-              return ErrorPopup(errorMessage: json.decode(response.body)["Message"]);
+              return ErrorPopup(
+                  errorMessage: json.decode(response.body)["Message"]);
             });
       }
     } catch (e) {}
@@ -480,7 +477,11 @@ class UpcomingState extends State<Upcoming> {
                                             padding: const EdgeInsets.fromLTRB(
                                                 18, 3.0, 18, 3),
                                             child: Text(
-                                              "upcoming".tr,
+                                              appointment['AppoinmentStatus']
+                                                          .toString() ==
+                                                      "2"
+                                                  ? 'rescheduled'.tr
+                                                  : "upcoming".tr,
                                               style: const TextStyle(
                                                 color: Color.fromARGB(
                                                     255, 255, 255, 255),
@@ -722,7 +723,7 @@ class UpcomingState extends State<Upcoming> {
                                             shape: const RoundedRectangleBorder(
                                               borderRadius: BorderRadius.only(
                                                 bottomLeft:
-                                                    Radius.circular(20.0),
+                                                    Radius.circular(10.0),
                                               ),
                                             ),
                                             backgroundColor: Colors.white,
@@ -825,15 +826,7 @@ class UpcomingState extends State<Upcoming> {
                                                                     appointment[
                                                                             "AppoinmentId"]
                                                                         .toString();
-                                                                // SharedPreferences
-                                                                //     pref =
-                                                                //     await SharedPreferences
-                                                                //         .getInstance();
-                                                                // pref.setString(
-                                                                //     "selectedAppointmentId",
-                                                                //     appointment[
-                                                                //             "AppoinmentId"]
-                                                                //         .toString());
+
                                                                 cancelAnAppointment(
                                                                     appId);
                                                               },
@@ -851,9 +844,10 @@ class UpcomingState extends State<Upcoming> {
                                             // }
                                           },
                                           child: Text(
-                                            'cancel'.tr,
+                                            'cancelButton'.tr,
                                             style: TextStyle(
-                                                color: Colors.deepPurple),
+                                              color: Colors.deepPurple,
+                                            ),
                                           ),
                                         ),
                                       ),
@@ -865,12 +859,12 @@ class UpcomingState extends State<Upcoming> {
                                             shape: const RoundedRectangleBorder(
                                               borderRadius: BorderRadius.only(
                                                 bottomLeft:
-                                                    Radius.circular(20.0),
+                                                    Radius.circular(10.0),
                                               ),
                                             ),
                                             backgroundColor: primaryColor,
-                                            side: const BorderSide(
-                                                color: Colors.black),
+                                            // side: const BorderSide(
+                                            //     color: Colors.black),
                                             elevation: 0,
                                           ),
                                           onPressed: () {
@@ -895,14 +889,16 @@ class UpcomingState extends State<Upcoming> {
                                             String studyId =
                                                 appointment["StudyId"]
                                                     .toString();
-                                            rescheduleAppointment(
-                                                appId,
-                                                appstatus,
-                                                Vtype,
-                                                calendarId,
-                                                appTypeId,
-                                                vTypeId,
-                                                studyId);
+                                            // rescheduleAppointment(
+                                            //     appId,
+                                            //     appstatus,
+                                            //     Vtype,
+                                            //     calendarId,
+                                            //     appTypeId,
+                                            //     vTypeId,
+                                            //     studyId);
+                                            GetRescheduleAppointment(context,
+                                                studyId, vTypeId, Vtype, appId);
                                           },
                                           child: Text(
                                             'reschedule'.tr,

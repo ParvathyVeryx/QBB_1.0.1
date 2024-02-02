@@ -1,6 +1,8 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:QBB/constants.dart';
 import 'package:QBB/screens/pages/erorr_popup.dart';
+import 'package:QBB/screens/pages/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
@@ -67,10 +69,10 @@ Future<void> callUserProfileAPI(
   var lang = 'langChange'.tr;
 
   final Map<String, dynamic> requestBody = {
-    "QID": "$qid",
+    "QID": qid,
     "Email": email,
     "MaritalId": maritalId,
-    "language": "$lang",
+    "language": lang,
   };
 
   String? userID = prefs.getString("userID");
@@ -84,6 +86,7 @@ Future<void> callUserProfileAPI(
       Uri.parse(apiUrl),
       headers: {
         'Authorization': 'Bearer ${token.replaceAll('"', '')}',
+        'Content-Type': 'application/json',
       },
       body: jsonEncode(requestBody),
     );
@@ -91,16 +94,19 @@ Future<void> callUserProfileAPI(
     print("Request URL: $apiUrl");
     print("Request Headers: ${{
       'Authorization': 'Bearer ${token.replaceAll('"', '')}',
+      'Content-Type': 'application/json',
     }}");
     print("Request Body: ${jsonEncode(requestBody)}");
     print("Response Code: ${response.statusCode}");
     print("Response Body: ${response.body}");
 
     if (response.statusCode == 200) {
+      // Successful response, display a success popup or handle it accordingly
       showDialog(
         context: context,
         builder: (BuildContext context) {
-          return ErrorPopup(errorMessage: json.decode(response.body)["Message"]);
+          return ErrorPopup(
+              errorMessage: json.decode(response.body)["Message"]);
         },
       );
     } else {
@@ -108,7 +114,35 @@ Future<void> callUserProfileAPI(
       showDialog(
         context: context,
         builder: (BuildContext context) {
-          return ErrorPopup(errorMessage: json.decode(response.body)["Message"]);
+          return AlertDialog(
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.only(
+                bottomLeft:
+                    Radius.circular(20.0), // Adjust the radius as needed
+              ),
+            ),
+            title: const Text(
+              '',
+              style: TextStyle(color: primaryColor),
+            ),
+            content: Text(
+              json.decode(response.body)["Message"],
+              style: const TextStyle(color: primaryColor),
+            ),
+            actions: <Widget>[
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const Profile(),
+                    ),
+                  );
+                },
+                child: Text('ok'.tr),
+              ),
+            ],
+          );
         },
       );
     }
@@ -121,5 +155,7 @@ Future<void> callUserProfileAPI(
         return ErrorPopup(errorMessage: "An error occurred");
       },
     );
+  } finally {
+    // Add any cleanup code here if needed
   }
 }

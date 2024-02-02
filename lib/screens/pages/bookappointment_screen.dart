@@ -266,8 +266,7 @@ class BookAppScreenState extends State<BookAppScreen> {
       }
     }
 
-    _dateController.text =
-        '${DateFormat('dd/MM/yyyy').format(selectedDate)}';
+    _dateController.text = '${DateFormat('dd/MM/yyyy').format(selectedDate)}';
   }
 
   Future<List<String>> fetchAvailableDates() async {
@@ -382,24 +381,36 @@ class BookAppScreenState extends State<BookAppScreen> {
       'Authorization': 'Bearer ${token.replaceAll('"', '')}',
     };
 
+    // Map<String, dynamic> queryParams = {
+    //   "QID": qid,
+    //   "StudyId": studyId,
+    //   "ShiftCode": "shft",
+    //   "VisitTypeId": visitTypeId,
+    //   "PersonGradeId": "4",
+    //   "AvailabilityCalenderId": availabilityCalendarid,
+    //   "language": 'langChange'.tr,
+    //   "AppointmentTypeId": "1",
+    // };
+
     Map<String, dynamic> queryParams = {
       "QID": '$qid',
       "StudyId": studyId,
-      "ShiftCode": 'shft',
+      "ShiftCode": "shft",
       "VisitTypeId": visitTypeId,
       "PersonGradeId": "4",
       "AvailabilityCalenderId": availabilityCalendarid,
       "language": 'langChange'.tr,
       "AppointmentTypeId": "1",
     };
-    print(queryParams);
+    print("Query PArameter" + queryParams.toString());
 
     // Construct the API URL
     Uri apiUrl = Uri.parse(
-        "https://participantportal-test.qatarbiobank.org.qa/QbbAPIS/api/RescheduleAppointmentAPI?QID=${queryParams['QID']}&StudyId=${queryParams['StudyId']}&ShiftCode=${queryParams['ShiftCode']}&VisitTypeId=${queryParams['VisitTypeId']}&PersonGradeId=${queryParams['PersonGradeId']}&AvailabilityCalenderId=${queryParams['AvailabilityCalenderId']}&language=${queryParams['language']}&AppointmentTypeId=${queryParams['AppointmentTypeId']}");
+        "https://participantportal-test.qatarbiobank.org.qa/QbbAPIS/api/BookAppointmentAPI?QID=${queryParams['QID']}&StudyId=${queryParams['StudyId']}&ShiftCode=${queryParams['ShiftCode']}&VisitTypeId=${queryParams['VisitTypeId']}&PersonGradeId=${queryParams['PersonGradeId']}&AvailabilityCalenderId=${queryParams['AvailabilityCalenderId']}&language=${queryParams['language']}&AppointmentTypeId=${queryParams['AppointmentTypeId']}");
 
     print("API URL");
     print(apiUrl);
+    print(jsonEncode(queryParams));
 
     try {
       // Make the HTTP POST request
@@ -407,7 +418,9 @@ class BookAppScreenState extends State<BookAppScreen> {
           await http.post(apiUrl, headers: headers, body: queryParams);
 
       // Process the response here
-      print(queryParams);
+
+      print(response.statusCode);
+      print(response);
 
       if (response.statusCode == 200) {
         // Successful response, show a success dialog
@@ -1027,6 +1040,7 @@ class BookAppScreenState extends State<BookAppScreen> {
                                   );
                                 },
                               );
+                              // confirmAppointment(context);
                             },
                             child: Text(
                               'confirm'.tr,

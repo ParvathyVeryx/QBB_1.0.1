@@ -217,6 +217,10 @@ class AllAppointmentsState extends State<AllAppointments> {
                                                                   .toString() ==
                                                               "10"
                                                           ? 'noShow'.tr
+                                                          : appointment['AppoinmentStatus']
+                                                                  .toString() ==
+                                                              "2"
+                                                          ? 'rescheduled'.tr
                                                           : 'cancelled'.tr,
                                               style: TextStyle(
                                                 color: Color.fromARGB(

@@ -181,17 +181,20 @@ class RescheduleAppState extends State<RescheduleApp> {
           if (tempDate.month == selectedDate.month) {
             print("j");
 
-            setState(() {
-              upcomingDateList.add(tempDate);
-            });
+            // setState(() {
+            //   upcomingDateList.add(tempDate);
+            // });
+            upcomingDateList = dateStrings.map((tempDate) {
+            return DateTime.parse(tempDate);
+          }).toList();
             print(upcomingDateList);
           }
           tempDate = tempDate.add(const Duration(days: 1));
         }
       } else {
         setState(() {
-          upcomingDateList = dateStrings.map((dateString) {
-            return DateTime.parse(dateString);
+          upcomingDateList = dateStrings.map((tempDate) {
+            return DateTime.parse(tempDate);
           }).toList();
         });
       }
@@ -336,6 +339,16 @@ class RescheduleAppState extends State<RescheduleApp> {
     return availabilityCalendarid;
   }
 
+  String appointmentId = '';
+
+  void getAppID(String appID) async {
+    // appointmentId = appID;
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    appointmentId = pref.getString("appoinmentID").toString();
+    print("Appointment ID" + appointmentId);
+    print(appID);
+  }
+
   Future<void> confirmAppointment(BuildContext context) async {
     SharedPreferences pref = await SharedPreferences.getInstance();
 
@@ -369,17 +382,16 @@ class RescheduleAppState extends State<RescheduleApp> {
       "StudyId": studyId,
       "ShiftCode": 'shft',
       "VisitTypeId": visitTypeId,
-      "PersonGradeId": "4",
       "AvailabilityCalenderId": availabilityCalendarid,
+      "AppoinmentId": appointmentId,
       "language": 'langChange'.tr,
-      "AppointmentTypeId": "1",
-      "AppointmentStatus" : 1,
+      "AppointmentStatus": "2",
     };
     print(queryParams);
 
     // Construct the API URL
     Uri apiUrl = Uri.parse(
-        "https://participantportal-test.qatarbiobank.org.qa/QbbAPIS/api/BookAppointmentAPI?QID=${queryParams['QID']}&StudyId=${queryParams['StudyId']}&ShiftCode=${queryParams['ShiftCode']}&VisitTypeId=${queryParams['VisitTypeId']}&PersonGradeId=${queryParams['PersonGradeId']}&AvailabilityCalenderId=${queryParams['AvailabilityCalenderId']}&language=${queryParams['language']}&AppointmentTypeId=${queryParams['AppointmentTypeId']}&AppointmentStatus=${queryParams['AppointmentStatus']}");
+        "https://participantportal-test.qatarbiobank.org.qa/QbbAPIS/api/RescheduleAppointmentAPI?QID=${queryParams['QID']}&StudyId=${queryParams['StudyId']}&ShiftCode=${queryParams['ShiftCode']}&VisitTypeId=${queryParams['VisitTypeId']}&AppoinmentId=${queryParams['AppoinmentId']}&AvailabilityCalenderId=${queryParams['AvailabilityCalenderId']}&language=${queryParams['language']}&AppointmentTypeId=${queryParams['AppointmentTypeId']}&AppointmentStatus=${queryParams['AppointmentStatus']}");
 
     print("API URL");
     print(apiUrl);
@@ -443,6 +455,7 @@ class RescheduleAppState extends State<RescheduleApp> {
   void initState() {
     // bookAppScreen = [];
     super.initState();
+    getAppID(appointmentId);
     timeList = [];
     generateUpcomingDates(DateTime.now());
     _pageController = PageController(initialPage: 0);
@@ -568,7 +581,8 @@ class RescheduleAppState extends State<RescheduleApp> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Container(
-                        width: MediaQuery.of(context).size.width*0.9, // or a fixed width
+                        width: MediaQuery.of(context).size.width *
+                            0.9, // or a fixed width
                         height: 70, // or any fixed height
                         child: LayoutBuilder(
                           builder: (context, constraints) {
@@ -578,7 +592,8 @@ class RescheduleAppState extends State<RescheduleApp> {
                               itemBuilder: (context, index) {
                                 return Center(
                                   child: Container(
-                                    width: MediaQuery.of(context).size.width*0.9,
+                                    width:
+                                        MediaQuery.of(context).size.width * 0.9,
                                     // width: constraints
                                     //     .maxWidth, // or any desired width
                                     // height: constraints
@@ -826,7 +841,7 @@ class RescheduleAppState extends State<RescheduleApp> {
                                               selectedDates
                                                   .add(datesOnly[index]);
                                             }
-                                  
+
                                             SharedPreferences pref =
                                                 await SharedPreferences
                                                     .getInstance();
@@ -835,14 +850,14 @@ class RescheduleAppState extends State<RescheduleApp> {
                                             String prefval = pref
                                                 .getString("selectedDate")
                                                 .toString();
-                                  
+
                                             setState(() {
                                               // Reset the color of the last selected button
                                               if (lastSelectedIndex != -1) {
                                                 selectedIndices
                                                     .remove(lastSelectedIndex);
                                               }
-                                  
+
                                               // Update the color of the current button
                                               if (selectedIndices
                                                   .contains(index)) {
@@ -850,11 +865,11 @@ class RescheduleAppState extends State<RescheduleApp> {
                                               } else {
                                                 selectedIndices.add(index);
                                               }
-                                  
+
                                               // Update the last selected index
                                               lastSelectedIndex = index;
                                             });
-                                  
+
                                             // Print the selected date
                                             print(
                                                 'Selected Date: ${datesOnly[index]}');
@@ -931,7 +946,7 @@ class RescheduleAppState extends State<RescheduleApp> {
                               confirmAppointment(context);
                             },
                             child: Text(
-                              'confirm'.tr,
+                              'reschedule'.tr,
                               style: TextStyle(color: textcolor),
                             ),
                           ),
