@@ -51,27 +51,43 @@ class ProfileState extends State<Profile> {
   String profilePicture = '';
 
   bool _isLoadingData = true;
+  late ImagePicker imagePicker;
+  XFile? pickedImage;
 
-@override
-void initState() {
-  super.initState();
+  @override
+  void initState() {
+    super.initState();
+    imagePicker = ImagePicker();
 
-  // Assume you have a variable _isLoading to track whether data is still loading
-  _isLoading = true;
+    // Assume you have a variable _isLoading to track whether data is still loading
+    _isLoading = true;
 
-  // Start loading user profile data
-  _userProfileFuture = getUserProfileData();
+    // Start loading user profile data
+    _userProfileFuture = getUserProfileData();
 
-  // After 2 seconds, set isLoading to false to stop showing the LoaderWidget
-  Future.delayed(Duration(seconds: 2), () {
-    setState(() {
-      _isLoading = false;
+    // After 2 seconds, set isLoading to false to stop showing the LoaderWidget
+    Future.delayed(Duration(seconds: 2), () {
+      setState(() {
+        _isLoading = false;
+      });
     });
-  });
 
-  // Call the profilePic method to update profilePicture after loading data
-  profilePic();
-}
+    // Call the profilePic method to update profilePicture after loading data
+    profilePic();
+    UserProfileData();
+  }
+
+  Future<void> pickImage() async {
+    try {
+      XFile? pickedImage =
+          await imagePicker.pickImage(source: ImageSource.gallery);
+      setState(() {
+        pickedImage = pickedImage;
+      });
+    } catch (e) {
+      print('Error picking image: $e');
+    }
+  }
 
   Future<UserProfileData> getUserProfileData() async {
     try {
@@ -114,18 +130,37 @@ void initState() {
     return "${dateTime.year}-${dateTime.month.toString().padLeft(2, '0')}-${dateTime.day.toString().padLeft(2, '0')}";
   }
 
-void profilePic() async {
-  try {
-    String responseBody = await callUserProfileAPIGet();
-    Map<String, dynamic> jsonMap = json.decode(responseBody);
-    setState(() {
-      profilePicture = jsonMap['Photo'] ?? '';
-    });
-  } catch (e) {
-    // Handle the error appropriately
+  void profilePic() async {
+    try {
+      String responseBody = await callUserProfileAPIGet();
+      Map<String, dynamic> jsonMap = json.decode(responseBody);
+      setState(() {
+        profilePicture = jsonMap['Photo'] ?? '';
+      });
+    } catch (e) {
+      // Handle the error appropriately
+    }
   }
-}
 
+  Future<void> pickImageFromGallery() async {
+    final pickedImage =
+        await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (pickedImage != null) {
+      print('Selected Image Path: ${pickedImage.path}');
+      setState(() {
+        _selectedImage = File(pickedImage.path);
+      });
+
+      print('Uploading Image...');
+      await uploadUserProfilePhoto(
+          context,
+          _userProfileFuture
+              .then((userProfileData) => userProfileData.qid)
+              .toString(),
+          _selectedImage!);
+      print('Image Upload Complete');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -313,17 +348,18 @@ void profilePic() async {
                                   color: Colors.white,
                                   size: 20,
                                 ),
-                                onPressed: () async {
-                                  final pickedImage = await ImagePicker()
-                                      .pickImage(source: ImageSource.gallery);
-                                  if (pickedImage != null) {
-                                    setState(() {
-                                      _selectedImage = File(pickedImage.path);
-                                    });
-                                    await uploadUserProfilePhoto(
-                                        _qid, _selectedImage!);
-                                  }
-                                },
+                                // onPressed: () async {
+                                //   final pickedImage = await ImagePicker()
+                                //       .pickImage(source: ImageSource.gallery);
+                                //   if (pickedImage != null) {
+                                //     setState(() {
+                                //       _selectedImage = File(pickedImage.path);
+                                //     });
+                                //     await uploadUserProfilePhoto(
+                                //         _qid, _selectedImage!);
+                                //   }
+                                // },
+                                onPressed: pickImageFromGallery,
                               ),
                             ),
                           ),
@@ -407,13 +443,25 @@ void profilePic() async {
                       child: SizedBox(
                         width: double.infinity,
                         child: ElevatedButton(
-                          onPressed: () {
+                          onPressed: () async {
+                            SharedPreferences pref =
+                                await SharedPreferences.getInstance();
+                            pref.setString(
+                                "userGenderrr",
+                                _userProfileFuture
+                                    .then((userProfileData) =>
+                                        userProfileData.maritalStatus)
+                                    .toString());
                             Navigator.of(context).push(
                               MaterialPageRoute(
                                 builder: (context) => EditUser(
                                   emailFuture: _userProfileFuture.then(
-                                      (userProfileData) =>
-                                          userProfileData.email),
+                                    (userProfileData) => userProfileData.email,
+                                  ),
+                                  // maritalstatus: _userProfileFuture.then(
+                                  //   (userProfileData) =>
+                                  //       userProfileData.maritalStatus.toString(),
+                                  // ),
                                 ),
                               ),
                             );

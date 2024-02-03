@@ -1,14 +1,20 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:QBB/screens/pages/profile.dart';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
-Future<void> uploadUserProfilePhoto(String qid, File photo) async {
+Future<void> uploadUserProfilePhoto(BuildContext context, String qid, File photo) async {
+  SharedPreferences pref = await SharedPreferences.getInstance();
+  String qid = pref.getString("userQID").toString();
   try {
     // Read the file as bytes
     List<int> photoBytes = await photo.readAsBytes();
 
     // Encode the bytes to base64
     String base64Photo = base64Encode(photoBytes);
+    String? token = pref.getString('token');
 
     // Append the 'data:image/png;base64,' prefix to the base64-encoded photo
     String prefixedBase64Photo = 'data:image/png;base64,' + base64Photo;
@@ -21,6 +27,9 @@ Future<void> uploadUserProfilePhoto(String qid, File photo) async {
 
     // Convert the request body to JSON
     String requestBodyJson = jsonEncode(requestBody);
+    final Map<String, String> headers = {
+      'Authorization': 'Bearer ${token?.replaceAll('"', '')}',
+    };
 
     // Make the API call using http.post
     var response = await http.post(
@@ -28,12 +37,12 @@ Future<void> uploadUserProfilePhoto(String qid, File photo) async {
           'https://participantportal-test.qatarbiobank.org.qa/QbbAPIS/api/UserProfilePhotoAPI'),
       headers: {
         'Content-Type': 'application/json',
-        'Authorization':
-            'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6Im1vYmFkbWluQGdtYWlsLmNvbSIsIm5iZiI6MTcwMzE3ODA1MywiZXhwIjoxNzAzNzgyODUzLCJpYXQiOjE3MDMxNzgwNTMsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTAxOTEiLCJhdWQiOiJodHRwOi8vbG9jYWxob3N0OjUwMTkxIn0.WYN0dROXwe3ys9yA2Ngd62p7Fr2h6JV4nSyHPcnF4tk',
+        'Authorization': 'Bearer ${token?.replaceAll('"', '')}',
       },
       body: requestBodyJson,
     );
-
+    print(response.body);
+    print(response.statusCode);
     // Check if the request was successful (status code 200)
     if (response.statusCode == 200) {
       // Check if the response is JSON
@@ -41,9 +50,32 @@ Future<void> uploadUserProfilePhoto(String qid, File photo) async {
           false) {
         // Parse the response body as JSON
         var responseBody = json.decode(response.body);
+        
       } else {
         // Handle non-JSON response (e.g., log or print the raw response)
       }
+              showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text(''),
+              content: Text(json.decode(response.body)["Message"]),
+              actions: [
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const Profile(),
+                      ),
+                    );
+                  },
+                  child: const Text('OK'),
+                ),
+              ],
+            );
+          },
+        );
     }
   } catch (e, stackTrace) {}
 }

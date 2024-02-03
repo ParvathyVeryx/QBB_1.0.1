@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:ffi';
 
 import 'package:QBB/providers/studymodel.dart';
+import 'package:QBB/screens/pages/loader.dart';
 import 'package:flutter/material.dart';
 import 'package:QBB/constants.dart';
 import 'package:flutter/rendering.dart';
@@ -352,6 +353,8 @@ class BookAppScreenState extends State<BookAppScreen> {
     availabilityCalendarid = availabilityCalendar;
     return availabilityCalendarid;
   }
+
+  bool isLoadingLoader = false;
 
   Future<void> confirmAppointment(BuildContext context) async {
     SharedPreferences pref = await SharedPreferences.getInstance();

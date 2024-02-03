@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:QBB/screens/api/userid.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
@@ -35,7 +37,7 @@ Future<String> callUserProfileAPIGet() async {
 
     if (response.statusCode == 200) {
       // Successful response, return the body
-
+      pref.setString("userMStatus", json.decode(response.body)["MaritalStatus"]).toString();
       return response.body;
     } else {
       // Error handling, log or display an error message

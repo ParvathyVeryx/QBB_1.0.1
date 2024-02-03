@@ -132,7 +132,7 @@ class UpcomingState extends State<Upcoming> {
 
   String selectedReason = '';
 
-  List<Widget> buildReasonRadioButtons() {
+  List<Widget> buildReasonRadioButtons(StateSetter setState) {
     // Create a list of radio buttons based on the reasons
     return reasons.map((reason) {
       String reasonName = reason['Name'] ?? '';
@@ -149,88 +149,13 @@ class UpcomingState extends State<Upcoming> {
           SharedPreferences pref = await SharedPreferences.getInstance();
           // Handle radio button selection
           setState(() {
-            selectedReason = value!;
+            selectedReason = value as String;
           });
-          pref.setString("selectedReason", value!);
-          pref.getString("selectedReason");
+          pref.setString("selectedReason", value as String);
         },
       );
     }).toList();
   }
-
-  // void cancelAppointment() async {
-  //   SharedPreferences pref = await SharedPreferences.getInstance();
-  //   String qid = pref.getString("userQID").toString();
-  //   String reason = pref.getString("selectedReason").toString();
-  //   String appId = pref.getString("appointmentID").toString();
-  //   try {
-  //     // Retrieve the token from SharedPreferences
-  //     String? token = pref.getString('token');
-  //     if (token == null) {
-  //       // Handle the case where the token is not available
-  //       return;
-  //     }
-  //     Map<String, dynamic> requestBody = {
-  //       'QID': qid,
-  //       'AppoinmentId': appId,
-  //       'Reason': reason,
-  //       'ReasonType': 0,
-  //       'ReasonType': 0,
-  //     };
-  //     Map<String, String> headers = {
-  //       'Content-Type': 'application/json',
-  //       'Accept': 'application/json',
-  //       'Authorization': 'Bearer ${token.replaceAll('"', '')}',
-  //     };
-
-  //     Uri apiUrl = Uri.parse(
-  //         'https://participantportal-test.qatarbiobank.org.qa/QbbAPIS/api/CancelAppointmentAPI');
-
-  //     final response = await http.post(
-  //       apiUrl,
-  //       body: jsonEncode(requestBody),
-  //     );
-
-  //     print(requestBody);
-
-  //     if (response.statusCode == 200) {
-  //       AlertDialog(
-  //         title: Text('Success'),
-  //         content: Text(response.body),
-  //         actions: <Widget>[
-  //           TextButton(
-  //             onPressed: () {
-  //               Navigator.of(context).pop();
-  //             },
-  //             child: Text('OK'),
-  //           ),
-  //         ],
-  //       );
-  //     } else {
-  //       AlertDialog(
-  //         title: Text('Success'),
-  //         content: Text(response.body),
-  //         actions: <Widget>[
-  //           TextButton(
-  //             onPressed: () {
-  //               Navigator.of(context).pop();
-  //             },
-  //             child: Text('OK'),
-  //           ),
-  //         ],
-  //       );
-  //     }
-  //   } catch (e) {
-  //     showDialog(
-  //       context: context,
-  //       builder: (BuildContext context) {
-  //         return ErrorPopup(
-  //           errorMessage: '$e',
-  //         );
-  //       },
-  //     );
-  //   }
-  // }
 
   Future<void> cancelAnAppointment(String appointmentId) async {
     SharedPreferences pref = await SharedPreferences.getInstance();
@@ -268,15 +193,14 @@ class UpcomingState extends State<Upcoming> {
       // Make the HTTP POST request
       final response =
           await http.post(apiUrl, headers: headers, body: requestBody);
-      print(requestBody);
 
       if (response.statusCode == 200) {
         showDialog(
             context: context,
             builder: (BuildContext context) {
               return AlertDialog(
-                title: Text('Alert'),
-                content: Text(json.decode(response.body)),
+                title: Text(''),
+                content: Text(json.decode(response.body)["Message"]),
                 actions: [
                   ElevatedButton(
                     onPressed: () {
@@ -308,63 +232,63 @@ class UpcomingState extends State<Upcoming> {
     }
   }
 
-  void rescheduleAppointment(
-      String appID,
-      String appStatus,
-      String visitType,
-      String calendarId,
-      String apptypeId,
-      String visitTypeId,
-      String studyId) async {
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    String? qid = await getQIDFromSharedPreferences();
+  // void rescheduleAppointment(
+  //     String appID,
+  //     String appStatus,
+  //     String visitType,
+  //     String calendarId,
+  //     String apptypeId,
+  //     String visitTypeId,
+  //     String studyId) async {
+  //   SharedPreferences pref = await SharedPreferences.getInstance();
+  //   String? qid = await getQIDFromSharedPreferences();
 
-    var lang = 'langChange'.tr;
+  //   var lang = 'langChange'.tr;
 
-    try {
-      // Retrieve the token from SharedPreferences
-      String? token = pref.getString('token');
-      if (token == null) {
-        // Handle the case where the token is not available
-        return;
-      }
+  //   try {
+  //     // Retrieve the token from SharedPreferences
+  //     String? token = pref.getString('token');
+  //     if (token == null) {
+  //       // Handle the case where the token is not available
+  //       return;
+  //     }
 
-      // Construct headers with the retrieved token
-      Map<String, String> headers = {
-        'Authorization': 'Bearer ${token.replaceAll('"', '')}',
-      };
+  //     // Construct headers with the retrieved token
+  //     Map<String, String> headers = {
+  //       'Authorization': 'Bearer ${token.replaceAll('"', '')}',
+  //     };
 
-      Map<String, dynamic> queryParam = {
-        "QID": '$qid',
-        "AppointmentStatus": appStatus,
-        "ShiftCode": 'shft',
-        "VisitTypeId": visitTypeId,
-        "AvailabilityCalenderId": calendarId,
-        "AppoinmentId": appID,
-        "language": "$lang",
-      };
+  //     Map<String, dynamic> queryParam = {
+  //       "QID": '$qid',
+  //       "AppointmentStatus": appStatus,
+  //       "ShiftCode": 'shft',
+  //       "VisitTypeId": visitTypeId,
+  //       "AvailabilityCalenderId": calendarId,
+  //       "AppoinmentId": appID,
+  //       "language": "$lang",
+  //     };
 
-      // Construct the API URL
-      Uri apiUrl = Uri.parse(
-          'https://participantportal-test.qatarbiobank.org.qa/QbbAPIS/api/RescheduleAppointmentAPI?QID=${queryParam['QID']}&ShiftCode=${queryParam['ShiftCode']}&VisitTypeId=${queryParam['VisitTypeId']}&AvailabilityCalenderId=${queryParam['AvailabilityCalenderId']}&AppoinmentId=${queryParam['AppoinmentId']}&language=${queryParam['language']}&AppointmentStatus=${queryParam['AppointmentStatus']}');
+  //     // Construct the API URL
+  //     Uri apiUrl = Uri.parse(
+  //         'https://participantportal-test.qatarbiobank.org.qa/QbbAPIS/api/RescheduleAppointmentAPI?QID=${queryParam['QID']}&ShiftCode=${queryParam['ShiftCode']}&VisitTypeId=${queryParam['VisitTypeId']}&AvailabilityCalenderId=${queryParam['AvailabilityCalenderId']}&AppoinmentId=${queryParam['AppoinmentId']}&language=${queryParam['language']}&AppointmentStatus=${queryParam['AppointmentStatus']}');
 
-      // Make the HTTP POST request
-      final response =
-          await http.post(apiUrl, headers: headers, body: queryParam);
+  //     // Make the HTTP POST request
+  //     final response =
+  //         await http.post(apiUrl, headers: headers, body: queryParam);
 
-      if (response.statusCode == 200) {
-        await GetRescheduleAppointment(
-            context, studyId, visitTypeId, visitType, appID);
-      } else {
-        showDialog(
-            context: context, // Use the context of the current screen
-            builder: (BuildContext context) {
-              return ErrorPopup(
-                  errorMessage: json.decode(response.body)["Message"]);
-            });
-      }
-    } catch (e) {}
-  }
+  //     if (response.statusCode == 200) {
+  //       await GetRescheduleAppointment(
+  //           context, studyId, visitTypeId, visitType, appID);
+  //     } else {
+  //       showDialog(
+  //           context: context, // Use the context of the current screen
+  //           builder: (BuildContext context) {
+  //             return ErrorPopup(
+  //                 errorMessage: json.decode(response.body)["Message"]);
+  //           });
+  //     }
+  //   } catch (e) {}
+  // }
 
   // {\r\n    \"QID\": \"28900498437\",\r\n    \"AppoinmentId\": \"11488\",\r\n    \"Reason\": \"Reason\",\r\n    \"ReasonType\": \"ReasonType\"\r\n}
 
@@ -755,7 +679,29 @@ class UpcomingState extends State<Upcoming> {
                                             //         );
                                             //       });
                                             // } else {
-                                            appointment["AppoinmentId"];
+                                            appointment["EndDate"] ==
+                                                    DateTime.now()
+                                                ? //   showDialog(
+                                                showDialog(
+                                                    context: context,
+                                                    builder:
+                                                        (BuildContext context) {
+                                                      return AlertDialog(
+                                                        title: Text(''),
+                                                        content: Text(appointment[
+                                                            'CancelExpiredMSG']),
+                                                        actions: [
+                                                          ElevatedButton(
+                                                            onPressed: () {
+                                                              Navigator.pop(
+                                                                  context); // Close the dialog
+                                                            },
+                                                            child: Text('OK'),
+                                                          ),
+                                                        ],
+                                                      );
+                                                    })
+                                                : appointment["AppoinmentId"];
                                             showDialog(
                                               context: context,
                                               builder: (context) {
@@ -785,7 +731,8 @@ class UpcomingState extends State<Upcoming> {
                                                         mainAxisSize:
                                                             MainAxisSize.min,
                                                         children: [
-                                                          ...buildReasonRadioButtons()
+                                                          ...buildReasonRadioButtons(
+                                                              setState)
 
                                                           // ),
                                                         ],
@@ -889,6 +836,8 @@ class UpcomingState extends State<Upcoming> {
                                             String studyId =
                                                 appointment["StudyId"]
                                                     .toString();
+                                            String appDate =
+                                                appointment["AppoimentDate"];
                                             // rescheduleAppointment(
                                             //     appId,
                                             //     appstatus,
@@ -897,8 +846,13 @@ class UpcomingState extends State<Upcoming> {
                                             //     appTypeId,
                                             //     vTypeId,
                                             //     studyId);
-                                            GetRescheduleAppointment(context,
-                                                studyId, vTypeId, Vtype, appId);
+                                            GetRescheduleAppointment(
+                                                context,
+                                                studyId,
+                                                vTypeId,
+                                                Vtype,
+                                                appId,
+                                                appDate);
                                           },
                                           child: Text(
                                             'reschedule'.tr,

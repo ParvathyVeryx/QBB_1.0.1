@@ -14,7 +14,8 @@ import 'appointments.dart';
 import 'erorr_popup.dart';
 
 class RescheduleApp extends StatefulWidget {
-  const RescheduleApp({Key? key}) : super(key: key);
+  final Future<String> appDate;
+  const RescheduleApp({required this.appDate, Key? key}) : super(key: key);
 
   @override
   RescheduleAppState createState() => RescheduleAppState();
@@ -38,9 +39,11 @@ class RescheduleAppState extends State<RescheduleApp> {
   int lastSelectedIndex = -1; // Initialize to an invalid index
   List<DateTime> selectedSlot = [];
   String availabilityCalendarid = '';
+  String appointmentDate = '';
+
   Future<void> fetchApiResponseFromSharedPrefs() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
-    String? apiResponseJson = pref.getString('apiResponse');
+    String? apiResponseJson = pref.getString('apiResponseReschedule');
 
     if (apiResponseJson != null) {
       Map<String, dynamic> jsonResponse = json.decode(apiResponseJson);
@@ -113,27 +116,11 @@ class RescheduleAppState extends State<RescheduleApp> {
   }
 
   List<DateTime> upcomingDateList = [];
-
-  // List<DateTime> generateDates() {
-  //   DateTime currentDate = DateTime.now();
-
-  //   for (int i = 0; i < 5; i++) {
-  //     DateTime nextDate = currentDate.add(Duration(days: i));
-
-  //     // Only add dates within the same month
-  //     if (nextDate.month == currentDate.month) {
-  //       upcomingDateList.add(nextDate);
-  //     }
-  //   }
-
-  //   return upcomingDateList;
-  // }
-
   List<dynamic> availabiltyCandarId = [];
 
   Future<void> fetchAvailabilityCalendar() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
-    String? apiResponseJson = pref.getString('apiResponse');
+    String? apiResponseJson = pref.getString('apiResponseReschedule');
 
     if (apiResponseJson != null) {
       Map<String, dynamic> jsonResponse = json.decode(apiResponseJson);
@@ -157,9 +144,11 @@ class RescheduleAppState extends State<RescheduleApp> {
     }
   }
 
+  bool isNextWeek = false;
+
   Future<void> fetchDateList(DateTime selectedDate) async {
     SharedPreferences pref = await SharedPreferences.getInstance();
-    String? apiResponseJson = pref.getString('apiResponse');
+    String? apiResponseJson = pref.getString('apiResponseReschedule');
 
     if (apiResponseJson != null) {
       Map<String, dynamic> jsonResponse = json.decode(apiResponseJson);
@@ -167,37 +156,53 @@ class RescheduleAppState extends State<RescheduleApp> {
       DateTime tempDate = selectedDate;
       print(jsonResponse);
       List<dynamic> dynamicList = jsonResponse['datelist'];
+      print("Dates" + dynamicList.toString());
       List<String> dateStrings = List<String>.from(dynamicList);
       List<DateTime> dateTimes = dateStrings.map((dateString) {
         return DateTime.parse(dateString);
       }).toList();
+      DateTime appointmentDateParse = DateTime.parse(appointmentDate);
+
+      print(ispicked);
 
       print(ispicked);
       if (ispicked == true) {
         upcomingDateList = [];
+
         for (int i = 0; i < 5; i++) {
-          print("i");
           // Check if the current date is within the same month as the selected date
           if (tempDate.month == selectedDate.month) {
-            print("j");
-
-            // setState(() {
-            //   upcomingDateList.add(tempDate);
-            // });
-            upcomingDateList = dateStrings.map((tempDate) {
-            return DateTime.parse(tempDate);
-          }).toList();
-            print(upcomingDateList);
+            if (appointmentDateParse != tempDate) {
+              setState(() {
+                upcomingDateList.add(tempDate);
+              });
+              print(upcomingDateList);
+            }
+          }
+          tempDate = tempDate.add(const Duration(days: 1));
+        }
+      } else if (isNextWeek == true) {
+        upcomingDateList = [];
+        for (int i = 0; i < 5; i++) {
+          if (appointmentDateParse != tempDate) {
+            // Check if the current date is within the same month as the selected date
+            if (tempDate.month == selectedDate.month) {
+              setState(() {
+                upcomingDateList.add(tempDate);
+              });
+              print(upcomingDateList);
+            }
           }
           tempDate = tempDate.add(const Duration(days: 1));
         }
       } else {
-        setState(() {
-          upcomingDateList = dateStrings.map((tempDate) {
-            return DateTime.parse(tempDate);
-          }).toList();
-        });
-      }
+  setState(() {
+    upcomingDateList = dateStrings
+        .map((tempDate) => DateTime.parse(tempDate))
+        .where((date) => date != appointmentDateParse)
+        .toList();
+  });
+}
     }
   }
 
@@ -251,8 +256,7 @@ class RescheduleAppState extends State<RescheduleApp> {
       }
     }
 
-    _dateController.text =
-        '${selectedDate.day}/${selectedDate.month}/${selectedDate.year}';
+    _dateController.text = '${DateFormat('dd/MM/yyyy').format(selectedDate)}';
   }
 
   Future<List<String>> fetchAvailableDates() async {
@@ -455,6 +459,9 @@ class RescheduleAppState extends State<RescheduleApp> {
   void initState() {
     // bookAppScreen = [];
     super.initState();
+    widget.appDate.then((appDate) {
+      appointmentDate = appDate;
+    });
     getAppID(appointmentId);
     timeList = [];
     generateUpcomingDates(DateTime.now());
@@ -513,7 +520,7 @@ class RescheduleAppState extends State<RescheduleApp> {
                         decoration: InputDecoration(
                           contentPadding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
                           labelText:
-                              '${selectedDate.day}/${selectedDate.month}/${selectedDate.year}',
+                              '${DateFormat('dd/MM/yyyy').format(selectedDate)}',
                           labelStyle: const TextStyle(fontSize: 11),
                           suffixIcon: const Icon(
                             Icons.calendar_today,
@@ -565,15 +572,32 @@ class RescheduleAppState extends State<RescheduleApp> {
                       )
                     ],
                   ),
-                  const Row(
+                  Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        "Next Available Dates",
-                        style: TextStyle(
+                        "nextAvailableDates".tr,
+                        style: const TextStyle(
                             color: appbar,
                             fontSize: 11,
                             fontWeight: FontWeight.bold),
+                      )
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Center(
+                        child: Text(
+                          "swipeRightToViewMoreDates".tr,
+                          style: const TextStyle(
+                              color: primaryColor,
+                              fontSize: 11,
+                              fontWeight: FontWeight.w500),
+                        ),
                       )
                     ],
                   ),
@@ -583,7 +607,7 @@ class RescheduleAppState extends State<RescheduleApp> {
                       Container(
                         width: MediaQuery.of(context).size.width *
                             0.9, // or a fixed width
-                        height: 70, // or any fixed height
+                        height: 40, // or any fixed height
                         child: LayoutBuilder(
                           builder: (context, constraints) {
                             return PageView.builder(
@@ -600,11 +624,30 @@ class RescheduleAppState extends State<RescheduleApp> {
                                     //     .maxHeight, // or any desired height
                                     margin: const EdgeInsets.all(8),
                                     child: Center(
-                                      child: Text(
-                                        '${upcomingDates[index].day}/${upcomingDates[index].month}/${upcomingDates[index].year}',
-                                        style: const TextStyle(fontSize: 14),
+                                        child: ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Colors
+                                            .white, // Background color of the button
+                                        side: BorderSide(
+                                            color:
+                                                Colors.black), // Border color
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(
+                                              0.0), // Set the border radius
+                                        ),
+                                        padding: EdgeInsets.all(
+                                            4.0), // Set the content padding
                                       ),
-                                    ),
+                                      onPressed: () {
+                                        isNextWeek = true;
+                                        fetchDateList(upcomingDates[index]);
+                                      },
+                                      child: Text(
+                                        '${DateFormat('dd/MM/yyyy').format(upcomingDates[index])}',
+                                        style: const TextStyle(
+                                            fontSize: 11, color: Colors.black),
+                                      ),
+                                    )),
                                   ),
                                 );
                               },
@@ -613,6 +656,9 @@ class RescheduleAppState extends State<RescheduleApp> {
                         ),
                       )
                     ],
+                  ),
+                  const SizedBox(
+                    height: 50,
                   ),
                   const Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -643,7 +689,7 @@ class RescheduleAppState extends State<RescheduleApp> {
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          const SizedBox(height: 8.0),
+                          const SizedBox(height: 20.0),
                           Text(
                             timeList.first,
                             style: const TextStyle(
@@ -757,143 +803,159 @@ class RescheduleAppState extends State<RescheduleApp> {
                       const SizedBox(
                         width: 30,
                       ),
-                      Column(
-                        children: [
-                          Container(
-                            // clipBehavior: Clip.antiAlias,
-                            // width: MediaQuery.of(context).size.width * 2.5,
-                            width: 1200,
-                            child: SingleChildScrollView(
-                              scrollDirection: Axis.horizontal,
-                              child: Row(
-                                children: upcomingDateList.map((date) {
-                                  int index = upcomingDateList.indexOf(date);
+                      Container(
+                        width: MediaQuery.of(context).size.height,
+                        child: SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Column(
+                            children: [
+                              SingleChildScrollView(
+                                scrollDirection: Axis.horizontal,
+                                child: Container(
+                                  width: 1100,
+                                  height: 120,
+                                  child: ListView(
+                                    scrollDirection: Axis.horizontal,
+                                    children: upcomingDateList.map((date) {
+                                      int index =
+                                          upcomingDateList.indexOf(date);
 
-                                  return Padding(
-                                    padding: const EdgeInsets.only(right: 12.0),
-                                    child: Column(
-                                      children: [
-                                        Text(
-                                          '${DateFormat('EEEE').format(date)}',
-                                          style: const TextStyle(
-                                              fontSize: 14, color: appbar),
-                                        ),
-                                        Container(
-                                          // margin: const EdgeInsets.all(8),
-                                          child: Center(
-                                            child: Text(
-                                              '${date.day}/${date.month}/${date.year}',
+                                      return Padding(
+                                        padding:
+                                            const EdgeInsets.only(right: 12.0),
+                                        child: Column(
+                                          children: [
+                                            Text(
+                                              '${DateFormat('EEEE').format(date)}',
                                               style: const TextStyle(
-                                                  fontSize: 14,
-                                                  color: appbar,
-                                                  fontWeight: FontWeight.w300),
+                                                  fontSize: 11, color: appbar),
                                             ),
-                                          ),
-                                        ),
-                                        SizedBox(
-                                          height: 3,
-                                        ),
-                                        Container(
-                                          width: 80,
-                                          margin: const EdgeInsets.only(
-                                              bottom:
-                                                  8.0), // Add margin for spacing
-                                          decoration: const BoxDecoration(
-                                            border: Border(
-                                              bottom: BorderSide(
-                                                color:
-                                                    appbar, // Choose your border color
-                                                width:
-                                                    0.7, // Choose your border width
+                                            Container(
+                                              // margin: const EdgeInsets.all(8),
+                                              child: Center(
+                                                child: Text(
+                                                  '${DateFormat('dd/MM/yyyy').format(date)}',
+                                                  style: const TextStyle(
+                                                      fontSize: 11,
+                                                      color: appbar,
+                                                      fontWeight:
+                                                          FontWeight.w300),
+                                                ),
                                               ),
                                             ),
-                                          ),
-                                        ),
-                                        const SizedBox(height: 8.0),
-                                        ElevatedButton(
-                                          style: ElevatedButton.styleFrom(
-                                            shape: const RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.only(
-                                                bottomLeft:
-                                                    Radius.circular(0.0),
+                                            const SizedBox(
+                                              height: 3,
+                                            ),
+                                            Container(
+                                              width: 80,
+                                              margin: const EdgeInsets.only(
+                                                  bottom:
+                                                      8.0), // Add margin for spacing
+                                              decoration: const BoxDecoration(
+                                                border: Border(
+                                                  bottom: BorderSide(
+                                                    color:
+                                                        appbar, // Choose your border color
+                                                    width:
+                                                        0.7, // Choose your border width
+                                                  ),
+                                                ),
                                               ),
                                             ),
-                                            backgroundColor:
-                                                selectedIndices.contains(index)
+                                            const SizedBox(height: 8.0),
+                                            ElevatedButton(
+                                              style: ElevatedButton.styleFrom(
+                                                shape:
+                                                    const RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.only(
+                                                    bottomLeft:
+                                                        Radius.circular(0.0),
+                                                  ),
+                                                ),
+                                                backgroundColor: selectedIndices
+                                                        .contains(index)
                                                     ? primaryColor
                                                     : Colors.white,
-                                            side: const BorderSide(
-                                                color: primaryColor),
-                                            elevation: 0,
-                                          ),
-                                          onPressed: () async {
-                                            // availabiltyCandarId[index];
-                                            // print("ACI" +
-                                            //     availabiltyCandarId[index]
-                                            //         .toString());
-                                            fetchAvailabilityCalendar();
-                                            getAvailabilityCalendar(
-                                                availabiltyCandarId[index]);
-                                            if (selectedDates.length == 1) {
-                                              selectedDates[0] =
-                                                  datesOnly[index];
-                                            } else {
-                                              selectedDates
-                                                  .add(datesOnly[index]);
-                                            }
+                                                side: const BorderSide(
+                                                    color: primaryColor),
+                                                elevation: 0,
+                                              ),
+                                              onPressed: () async {
+                                                // availabiltyCandarId[index];
+                                                // print("ACI" +
+                                                //     availabiltyCandarId[index]
+                                                //         .toString());
+                                                fetchAvailabilityCalendar();
+                                                getAvailabilityCalendar(
+                                                    availabiltyCandarId[index]);
+                                                if (selectedDates.length == 1) {
+                                                  selectedDates[0] =
+                                                      datesOnly[index];
+                                                } else {
+                                                  selectedDates
+                                                      .add(datesOnly[index]);
+                                                }
 
-                                            SharedPreferences pref =
-                                                await SharedPreferences
-                                                    .getInstance();
-                                            pref.setString("selectedData",
-                                                selectedDates.toString());
-                                            String prefval = pref
-                                                .getString("selectedDate")
-                                                .toString();
+                                                SharedPreferences pref =
+                                                    await SharedPreferences
+                                                        .getInstance();
+                                                pref.setString(
+                                                    "selectedDateReschedule",
+                                                    selectedDates.toString());
+                                                String prefval = pref
+                                                    .getString(
+                                                        "selectedDateReschedule")
+                                                    .toString();
 
-                                            setState(() {
-                                              // Reset the color of the last selected button
-                                              if (lastSelectedIndex != -1) {
-                                                selectedIndices
-                                                    .remove(lastSelectedIndex);
-                                              }
+                                                setState(() {
+                                                  // Reset the color of the last selected button
+                                                  if (lastSelectedIndex != -1) {
+                                                    selectedIndices.remove(
+                                                        lastSelectedIndex);
+                                                  }
 
-                                              // Update the color of the current button
-                                              if (selectedIndices
-                                                  .contains(index)) {
-                                                selectedIndices.remove(index);
-                                              } else {
-                                                selectedIndices.add(index);
-                                              }
+                                                  // Update the color of the current button
+                                                  if (selectedIndices
+                                                      .contains(index)) {
+                                                    selectedIndices
+                                                        .remove(index);
+                                                  } else {
+                                                    selectedIndices.add(index);
+                                                  }
 
-                                              // Update the last selected index
-                                              lastSelectedIndex = index;
-                                            });
+                                                  // Update the last selected index
+                                                  lastSelectedIndex = index;
+                                                });
 
-                                            // Print the selected date
-                                            print(
-                                                'Selected Date: ${datesOnly[index]}');
-                                          },
-                                          child: selectedIndices.contains(index)
-                                              ? Text(
-                                                  'available'.tr,
-                                                  style: const TextStyle(
-                                                      color: textcolor),
-                                                )
-                                              : Text(
-                                                  'available'.tr,
-                                                  style: const TextStyle(
-                                                      color: primaryColor),
-                                                ),
-                                        )
-                                      ],
-                                    ),
-                                  );
-                                }).toList(),
+                                                // Print the selected date
+                                                print(
+                                                    'Selected Date: ${datesOnly[index]}');
+                                              },
+                                              child: selectedIndices
+                                                      .contains(index)
+                                                  ? Text(
+                                                      'available'.tr,
+                                                      style: const TextStyle(
+                                                          color: textcolor),
+                                                    )
+                                                  : Text(
+                                                      'available'.tr,
+                                                      style: const TextStyle(
+                                                          color: primaryColor,
+                                                          fontSize: 11),
+                                                    ),
+                                            )
+                                          ],
+                                        ),
+                                      );
+                                    }).toList(),
+                                  ),
+                                ),
                               ),
-                            ),
+                            ],
                           ),
-                        ],
+                        ),
                       ),
                     ],
                   ),

@@ -141,9 +141,15 @@ Future<void> bookAppointmentApiCall(
   }
 }
 
-Future<void> GetRescheduleAppointment(BuildContext context, String studyId,
-    String visitTypeId, String visitTypeName, String appID) async {
+Future<void> GetRescheduleAppointment(
+    BuildContext context,
+    String studyId,
+    String visitTypeId,
+    String visitTypeName,
+    String appID,
+    String appointmentDate) async {
   String? qid = await getQIDFromSharedPreferences();
+  Future<String> appDateFuture = Future.value(appointmentDate);
 
   int? personGradeId = await getPersonGradeIdFromSharedPreferences();
 
@@ -205,7 +211,7 @@ Future<void> GetRescheduleAppointment(BuildContext context, String studyId,
       print("availabilty calendar");
       print(response.body);
       // Save the API response in shared preferences
-      pref.setString('apiResponse', json.encode(jsonResponse));
+      pref.setString('apiResponseReschedule', json.encode(jsonResponse));
       pref.setString("availableDates", json.encode(jsonResponse['datelist']));
 
       String? jsonString = pref.getString("availableDates");
@@ -225,11 +231,10 @@ Future<void> GetRescheduleAppointment(BuildContext context, String studyId,
       }
 
       // Now, navigate to the AppointmentBookingPage
-      Navigator.push(
-        context,
+
+      Navigator.of(context).push(
         MaterialPageRoute(
-          builder: (context) => RescheduleApp(),
-        ),
+            builder: (context) => RescheduleApp(appDate: appDateFuture)),
       );
     } else {
       // Handle errors

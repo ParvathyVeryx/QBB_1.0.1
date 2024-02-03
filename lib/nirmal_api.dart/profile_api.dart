@@ -102,11 +102,38 @@ Future<void> callUserProfileAPI(
 
     if (response.statusCode == 200) {
       // Successful response, display a success popup or handle it accordingly
-      showDialog(
+            showDialog(
         context: context,
         builder: (BuildContext context) {
-          return ErrorPopup(
-              errorMessage: json.decode(response.body)["Message"]);
+          return AlertDialog(
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.only(
+                bottomLeft:
+                    Radius.circular(20.0), // Adjust the radius as needed
+              ),
+            ),
+            title: const Text(
+              '',
+              style: TextStyle(color: primaryColor),
+            ),
+            content: Text(
+              json.decode(response.body)["Message"],
+              style: const TextStyle(color: primaryColor),
+            ),
+            actions: <Widget>[
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const Profile(),
+                    ),
+                  );
+                },
+                child: Text('ok'.tr),
+              ),
+            ],
+          );
         },
       );
     } else {
