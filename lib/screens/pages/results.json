@@ -221,47 +221,47 @@
     "response": []
 },
 
-{
-    "name": "CancelResultAppointmentAPI",
-    "request": {
-        "auth": {
-            "type": "bearer",
-            "bearer": [
-                {
-                    "key": "token",
-                    "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6Im1vYmFkbWluQGdtYWlsLmNvbSIsIm5iZiI6MTcwMDU2MTE0MCwiZXhwIjoxNzAxMTY1OTQwLCJpYXQiOjE3MDA1NjExNDAsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTAxOTEiLCJhdWQiOiJodHRwOi8vbG9jYWxob3N0OjUwMTkxIn0.BKyV2t6VQQreqMf4jm3tcUQbB0rTsp2mhOpBmr1t4Tc",
-                    "type": "string"
-                }
-            ]
-        },
-        "method": "POST",
-        "header": [],
-        "body": {
-            "mode": "raw",
-            "raw": "{\r\n    \"QID\": \"28900498437\",\r\n    \"AppoinmentId\": \"11488\",\r\n    \"Reason\": \"Reason\",\r\n    \"ReasonType\": \"ReasonType\"\r\n}",
-            "options": {
-                "raw": {
-                    "language": "json"
-                }
-            }
-        },
-        "url": {
-            "raw": "https://participantportal-test.qatarbiobank.org.qa/QbbAPIS/api/CancelResultAppointmentAPI",
-            "protocol": "https",
-            "host": [
-                "participantportal-test",
-                "qatarbiobank",
-                "org",
-                "qa"
-            ],
-            "path": [
-                "QbbAPIS",
-                "api",
-                "CancelResultAppointmentAPI"
-            ]
-        }
-    },
-    "response": []
-}
-]
-},
+// {
+//     "name": "CancelResultAppointmentAPI",
+//     "request": {
+//         "auth": {
+//             "type": "bearer",
+//             "bearer": [
+//                 {
+//                     "key": "token",
+//                     "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6Im1vYmFkbWluQGdtYWlsLmNvbSIsIm5iZiI6MTcwMDU2MTE0MCwiZXhwIjoxNzAxMTY1OTQwLCJpYXQiOjE3MDA1NjExNDAsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTAxOTEiLCJhdWQiOiJodHRwOi8vbG9jYWxob3N0OjUwMTkxIn0.BKyV2t6VQQreqMf4jm3tcUQbB0rTsp2mhOpBmr1t4Tc",
+//                     "type": "string"
+//                 }
+//             ]
+//         },
+//         "method": "POST",
+//         "header": [],
+//         "body": {
+//             "mode": "raw",
+//             "raw": "{\r\n    \"QID\": \"28900498437\",\r\n    \"AppoinmentId\": \"11488\",\r\n    \"Reason\": \"Reason\",\r\n    \"ReasonType\": \"ReasonType\"\r\n}",
+//             "options": {
+//                 "raw": {
+//                     "language": "json"
+//                 }
+//             }
+//         },
+//         "url": {
+//             "raw": "https://participantportal-test.qatarbiobank.org.qa/QbbAPIS/api/CancelResultAppointmentAPI",
+//             "protocol": "https",
+//             "host": [
+//                 "participantportal-test",
+//                 "qatarbiobank",
+//                 "org",
+//                 "qa"
+//             ],
+//             "path": [
+//                 "QbbAPIS",
+//                 "api",
+//                 "CancelResultAppointmentAPI"
+//             ]
+//         }
+//     },
+//     "response": []
+// }
+// ]
+// },

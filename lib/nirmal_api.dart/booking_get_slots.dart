@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:QBB/screens/api/userid.dart';
 import 'package:QBB/screens/pages/book_appointment_date_slot.dart';
+import 'package:QBB/screens/pages/book_results_appointment.dart';
 import 'package:QBB/screens/pages/bookappointment_screen.dart';
 import 'package:QBB/screens/pages/erorr_popup.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +11,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../screens/pages/reschedule_app.dart';
+import '../screens/pages/reschedule_result_app.dart';
 import '../screens/pages/upcoming.dart';
 
 // class ApiResponse {
@@ -76,9 +78,7 @@ Future<void> bookAppointmentApiCall(
         'Content-Type': 'application/json',
       },
     );
-    print("Response Body for Book APp");
-    print(uri);
-    print(response.body);
+    print("Print Response");
     if (response.statusCode == 200) {
       // Successful API call
 
@@ -89,9 +89,7 @@ Future<void> bookAppointmentApiCall(
           await myWidget.getAvailabilityCalendar("yourAvailabilityCalendar");
       pref.setString("availabilityCalendarId",
           jsonResponse["AvailabilityCalenderId"].toString());
-      print(jsonResponse["AvailabilityCalenderId"].toString());
-      print("availabilty calendar");
-      print(response.body);
+
       // Save the API response in shared preferences
       pref.setString('apiResponse', json.encode(jsonResponse));
       pref.setString("availableDates", json.encode(jsonResponse['datelist']));
@@ -193,13 +191,10 @@ Future<void> GetRescheduleAppointment(
         'Content-Type': 'application/json',
       },
     );
-    print("Response Body for Book APp");
-    print(uri);
-    print(response.body);
+
     if (response.statusCode == 200) {
       // Successful API call
 
-      print("App Id" + appID);
       // Parse the JSON response
       final Map<String, dynamic> jsonResponse = json.decode(response.body);
       // BookAppScreenState myWidget = BookAppScreenState();
@@ -207,9 +202,7 @@ Future<void> GetRescheduleAppointment(
       //     await myWidget.getAvailabilityCalendar("yourAvailabilityCalendar");
       pref.setString("availabilityCalendarId",
           jsonResponse["AvailabilityCalenderId"].toString());
-      print(jsonResponse["AvailabilityCalenderId"].toString());
-      print("availabilty calendar");
-      print(response.body);
+
       // Save the API response in shared preferences
       pref.setString('apiResponseReschedule', json.encode(jsonResponse));
       pref.setString("availableDates", json.encode(jsonResponse['datelist']));
@@ -235,6 +228,122 @@ Future<void> GetRescheduleAppointment(
       Navigator.of(context).push(
         MaterialPageRoute(
             builder: (context) => RescheduleApp(appDate: appDateFuture)),
+      );
+    } else {
+      // Handle errors
+
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return ErrorPopup(
+              errorMessage: json.decode(response.body)["Message"]);
+        },
+      );
+    }
+  } catch (error) {
+    // Handle network errors
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return ErrorPopup(errorMessage: 'Network Error');
+      },
+    );
+  }
+}
+
+Future<void> GetResultRescheduleAppointment(
+    BuildContext context,
+    String studyId,
+    String visitTypeId,
+    String visitTypeName,
+    String appID,
+    String appointmentDate) async {
+  String? qid = await getQIDFromSharedPreferences();
+  Future<String> appDateFuture = Future.value(appointmentDate);
+  SharedPreferences pref = await SharedPreferences.getInstance();
+  String appID = pref.getString("resultsAppID").toString();
+
+  int? personGradeId = await getPersonGradeIdFromSharedPreferences();
+
+  const String apiUrl =
+      'https://participantportal-test.qatarbiobank.org.qa/QbbAPIS/api/RescheduleResultAppointmentAPI';
+
+  final Map<String, dynamic> queryParams = {
+    'QID': qid,
+    'StudyId': studyId,
+    'VisitTypeId': visitTypeId,
+    'Pregnant': 'null',
+    'PersonGradeId': personGradeId,
+    // 'VisitName': visitTypeName,
+    'AppointmentId': appID,
+    'page': '1',
+    'language': 'langChange'.tr,
+  };
+
+  // final Uri urinew = Uri.parse(
+  //     "https://participantportal-test.qatarbiobank.org.qa/QbbAPIS/api/GetReasonForCancelAppoinmentAPI?language=en");
+  String? token = pref.getString('token');
+  // final responsen = await http.get(
+  //   urinew,
+  //   headers: {
+  //     'Authorization': 'Bearer ${token?.replaceAll('"', '')}',
+  //     'Content-Type': 'application/json',
+  //   },
+  // );
+  RescheduleAppState myWidget = RescheduleAppState();
+  myWidget.getAppID(appID);
+  pref.setString("ResultsappoinmentID", appID);
+  final Uri uri = Uri.parse(
+      '$apiUrl?QID=${queryParams['QID']}&StudyId=${queryParams['StudyId']}&Pregnant=${queryParams['Pregnant']}&VisitTypeId=${queryParams['VisitTypeId']}&PersonGradeId=${queryParams['PersonGradeId']}&AppointmentId=${queryParams['AppointmentId']}&page=${queryParams['page']}&language=${queryParams['language']}');
+  // SharedPreferences pref = await SharedPreferences.getInstance();
+  // String? token = pref.getString('token');
+  try {
+    final response = await http.get(
+      uri,
+      headers: {
+        'Authorization': 'Bearer ${token?.replaceAll('"', '')}',
+        'Content-Type': 'application/json',
+      },
+    );
+
+    print("Reschedule Result");
+
+    if (response.statusCode == 200) {
+      // Successful API call
+
+      // Parse the JSON response
+      final Map<String, dynamic> jsonResponse = json.decode(response.body);
+      // BookAppScreenState myWidget = BookAppScreenState();
+      // String result =
+      //     await myWidget.getAvailabilityCalendar("yourAvailabilityCalendar");
+      pref.setString("availabilityCalendarId",
+          jsonResponse["AvailabilityCalenderId"].toString());
+
+      // Save the API response in shared preferences
+      pref.setString('apiResponseReschedule', json.encode(jsonResponse));
+      pref.setString("availableDates", json.encode(jsonResponse['datelist']));
+
+      String? jsonString = pref.getString("availableDates");
+
+// Check if the jsonString is not null
+      if (jsonString != null) {
+        // Use json.decode to parse the jsonString
+        dynamic decodedData = json.decode(jsonString);
+
+        // Check if the decodedData is a List
+        if (decodedData is List) {
+          // Now you can use the data as a List
+          List<String> availableDates = List<String>.from(decodedData);
+
+          // Use the 'availableDates' list as needed
+        }
+      }
+
+      // Now, navigate to the AppointmentBookingPage
+
+      Navigator.of(context).push(
+        MaterialPageRoute(
+            builder: (context) => RescheduleResult(appDate: appDateFuture)),
       );
     } else {
       // Handle errors
@@ -287,7 +396,6 @@ Future<void> bookAppointmentToGetResults(
         "https://participantportal-test.qatarbiobank.org.qa/QbbAPIS/api/BookResultAppointmentAPI?QID=${requestBody['QID']}&StudyId=${requestBody['StudyId']}&ShiftCode=${requestBody['ShiftCode']}&VisitTypeId=${requestBody['AvailabilityCalenderId']}&PersonGradeId=${requestBody['PersonGradeId']}&AvailabilityCalenderId=${requestBody['AvailabilityCalenderId']}&AppoinmentId=${requestBody['AppoinmentId']}&language=en&AppointmentTypeId=${requestBody['AppointmentTypeId']}";
     SharedPreferences pref = await SharedPreferences.getInstance();
     String? token = pref.getString('token');
-    print(apiUrl);
     final Uri uri = Uri.parse('$apiUrl');
 
     final response = await http.post(
@@ -348,24 +456,29 @@ Future<void> getResultAppointmentApiCall(
   int? personGradeId = await getPersonGradeIdFromSharedPreferences();
 
   const String apiUrl =
-      'https://participantportal-test.qatarbiobank.org.qa/QbbAPIS/api/BookResultAppointmentAPI';
+      'https://participantportal-test.qatarbiobank.org.qa/QbbAPIS/api/BookAppointmentapi';
 
   final Map<String, dynamic> queryParams = {
-    'qatarid': qid,
+    'isResultGetAppointment': 'true',
+    'QID': qid,
     'StudyId': studyId,
     'VisitTypeId': visitTypeId,
     'Pregnant': 'null',
     'PersonGradeId': personGradeId,
     'AppointmentId': AppointmentId,
-    'page': '1',
-    'language': 'langChange'.tr,
+    // 'page': '1',
+    // 'language': 'langChange'.tr,
   };
 
   SharedPreferences pref = await SharedPreferences.getInstance();
   String? token = pref.getString('token');
 
   final Uri uri = Uri.parse(
-      '$apiUrl?qatarid=${queryParams['qatarid']}&StudyId=${queryParams['StudyId']}&Pregnant=${queryParams['Pregnant']}&VisitTypeId=${queryParams['VisitTypeId']}&PersonGradeId=${queryParams['PersonGradeId']}&AppointmentId=${queryParams['AppointmentId']}&page=${queryParams['page']}&language=${queryParams['language']}');
+      '$apiUrl?isResultGetAppointment=${queryParams['isResultGetAppointment']}&QID=${queryParams['QID']}&StudyId=${queryParams['StudyId']}&Pregnant=${queryParams['Pregnant']}&VisitTypeId=${queryParams['VisitTypeId']}&PersonGradeId=${queryParams['PersonGradeId']}&AppointmentId=${queryParams['AppointmentId']}');
+  print(uri);
+
+  // final Uri uri = Uri.parse(
+  //     '$apiUrl?isResultGetAppointment=${queryParams['isResultGetAppointment']}&QID=${queryParams['QID']}&StudyId=${queryParams['StudyId']}&Pregnant=${queryParams['Pregnant']}&VisitTypeId=${queryParams['VisitTypeId']}&PersonGradeId=${queryParams['PersonGradeId']}&AppointmentId=${queryParams['AppointmentId']}&page=${queryParams['page']}&language=${queryParams['language']}');
   // SharedPreferences pref = await SharedPreferences.getInstance();
   // String? token = pref.getString('token');
   try {
@@ -382,6 +495,105 @@ Future<void> getResultAppointmentApiCall(
 
       // Parse the JSON response
       final Map<String, dynamic> jsonResponse = json.decode(response.body);
+    } else {
+      // Handle errors
+
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return ErrorPopup(
+              errorMessage: json.decode(response.body)["Message"]);
+        },
+      );
+    }
+  } catch (error) {
+    // Handle network errors
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return ErrorPopup(errorMessage: 'Network Error');
+      },
+    );
+  }
+}
+
+Future<void> getResultsSlot(BuildContext context, String studyId,
+    String visitTypeId, String visitTypeName, String appointmentID) async {
+  String? qid = await getQIDFromSharedPreferences();
+
+  int? personGradeId = await getPersonGradeIdFromSharedPreferences();
+
+  const String apiUrl =
+      'https://participantportal-test.qatarbiobank.org.qa/QbbAPIS/api/BookResultAppointmentAPI';
+
+  final Map<String, dynamic> queryParams = {
+    'QID': qid,
+    'StudyId': studyId,
+    'VisitTypeId': visitTypeId,
+    'Pregnant': 'null',
+    'PersonGradeId': personGradeId,
+    'AppointmentId': appointmentID,
+    'VisitName': visitTypeName,
+    'page': '1',
+    'language': 'langChange'.tr,
+  };
+
+  // final Uri urinew = Uri.parse(
+  //     "https://participantportal-test.qatarbiobank.org.qa/QbbAPIS/api/GetReasonForCancelAppoinmentAPI?language=en");
+  SharedPreferences pref = await SharedPreferences.getInstance();
+  String? token = pref.getString('token');
+
+  final Uri uri = Uri.parse(
+      '$apiUrl?QID=${queryParams['QID']}&StudyId=${queryParams['StudyId']}&Pregnant=${queryParams['Pregnant']}&VisitTypeId=${queryParams['VisitTypeId']}&PersonGradeId=${queryParams['PersonGradeId']}&AppointmentId=${queryParams['AppointmentId']}&VisitName=${queryParams['VisitName']}&page=${queryParams['page']}&language=${queryParams['language']}');
+  // SharedPreferences pref = await SharedPreferences.getInstance();
+  // String? token = pref.getString('token');
+  try {
+    final response = await http.get(
+      uri,
+      headers: {
+        'Authorization': 'Bearer ${token?.replaceAll('"', '')}',
+        'Content-Type': 'application/json',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      // Successful API call
+
+      // Parse the JSON response
+      final Map<String, dynamic> jsonResponse = json.decode(response.body);
+      BookAppScreenState myWidget = BookAppScreenState();
+      String result =
+          await myWidget.getAvailabilityCalendar("yourAvailabilityCalendar");
+      pref.setString("availabilityCalendarId",
+          jsonResponse["AvailabilityCalenderId"].toString());
+
+      // Save the API response in shared preferences
+      pref.setString('apiResponseResults', json.encode(jsonResponse));
+      pref.setString("availableDates", json.encode(jsonResponse['datelist']));
+
+      String? jsonString = pref.getString("availableDates");
+
+// Check if the jsonString is not null
+      if (jsonString != null) {
+        // Use json.decode to parse the jsonString
+        dynamic decodedData = json.decode(jsonString);
+
+        // Check if the decodedData is a List
+        if (decodedData is List) {
+          // Now you can use the data as a List
+          List<String> availableDates = List<String>.from(decodedData);
+
+          // Use the 'availableDates' list as needed
+        }
+      }
+
+      // Now, navigate to the AppointmentBookingPage
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => BookResults(),
+        ),
+      );
     } else {
       // Handle errors
 

@@ -15,14 +15,14 @@ import '../api/userid.dart';
 import 'appointments.dart';
 import 'erorr_popup.dart';
 
-class BookAppScreen extends StatefulWidget {
-  const BookAppScreen({Key? key}) : super(key: key);
+class BookResults extends StatefulWidget {
+  const BookResults({Key? key}) : super(key: key);
 
   @override
-  BookAppScreenState createState() => BookAppScreenState();
+  BookResultsState createState() => BookResultsState();
 }
 
-class BookAppScreenState extends State<BookAppScreen> {
+class BookResultsState extends State<BookResults> {
   late List<Study> bookAppScreen;
   List<DateTime> upcomingDates = [];
   TextEditingController _dateController = TextEditingController();
@@ -57,40 +57,6 @@ class BookAppScreenState extends State<BookAppScreen> {
     }
   }
 
-  // Future<void> _selectDate(BuildContext context) async {
-  //   DateTime? picked = await showDatePicker(
-  //     context: context,
-  //     initialDate: upcomingDates.isNotEmpty ? upcomingDates[0] : DateTime.now(),
-  //     firstDate: DateTime(2000),
-  //     lastDate: DateTime(2101),
-  //   );
-
-  //   if (picked == null) {
-  //     picked = DateTime.now();
-  //     setState(() {
-  //       generateUpcomingDates(picked!);
-  //       generateUpcomingDatesandDays(picked!);
-  //       // timeList.removeWhere((time) {
-  //       //   DateTime parsedDate = DateTime.parse(time);
-  //       //   return parsedDate.isBefore(picked);
-  //       // });
-  //     });
-  //   }
-
-  //   if (picked != null &&
-  //       (upcomingDates.isEmpty || picked != upcomingDates[0])) {
-  //     setState(() {
-  //       generateUpcomingDates(picked!);
-  //       generateUpcomingDatesandDays(picked!);
-  //       // timeList.removeWhere((time) {
-  //       //   DateTime parsedDate = DateTime.parse(time);
-  //       //   return parsedDate.isBefore(picked);
-  //       // });
-  //     });
-
-  //     // Fetch data after selecting a date
-  //   }
-  // }
   bool ispicked = false;
   Future<void> _selectDate(BuildContext context) async {
     DateTime? picked = await showDatePicker(
@@ -135,7 +101,7 @@ class BookAppScreenState extends State<BookAppScreen> {
 
   Future<void> fetchAvailabilityCalendar() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
-    String? apiResponseJson = pref.getString('apiResponse');
+    String? apiResponseJson = pref.getString('apiResponseResults');
 
     if (apiResponseJson != null) {
       Map<String, dynamic> jsonResponse = json.decode(apiResponseJson);
@@ -147,7 +113,7 @@ class BookAppScreenState extends State<BookAppScreen> {
         availabiltyCandarId = jsonResponse['BookAppoinmentModelList']
             .map((item) => item['AvailabilityCalenderId'].toString())
             .toList();
-        print("AAAAAACI" + availabiltyCandarId.toString());
+        print("AAAAAACI Results" + availabiltyCandarId.toString());
       } else {
         print("BookAppoinmentModelList is null or empty");
       }
@@ -360,13 +326,15 @@ class BookAppScreenState extends State<BookAppScreen> {
     SharedPreferences pref = await SharedPreferences.getInstance();
 
     String? qid = await getQIDFromSharedPreferences();
-    String studyId = pref.getString("selectedStudyId").toString();
+    String studyId = pref.getString("resultsStudyID").toString();
     int? studyIdInt = int.tryParse(studyId);
-    String visitTypeId = pref.getString("selectedVisitTypeID").toString();
+    String visitTypeId = pref.getString("resultsVisitTypeID").toString();
+    String appiontmentID = pref.getString("resultsAppID").toString();
     int? visitTypeIDInt = int.tryParse(visitTypeId);
-    // String? availabilityCalendarId = pref.getString("availabilityCalendarId");
+    String appointmentTypeID =
+        pref.getString("resultsAppointmentTypeID").toString();
+    int? personGradeId = await getPersonGradeIdFromSharedPreferences();
 
-    // Check if selectedSlot is null, set selectedDate accordingly
     String? selectedSlot = pref.getString("selectDate");
     DateTime _selectedDate =
         selectedSlot != null ? DateTime.parse(selectedSlot) : DateTime.now();
@@ -379,42 +347,30 @@ class BookAppScreenState extends State<BookAppScreen> {
       return;
     }
 
-        int? personGradeId = await getPersonGradeIdFromSharedPreferences();
-
-
     // Construct headers with the retrieved token
     Map<String, String> headers = {
+      'Accept': 'application/json',
       'Authorization': 'Bearer ${token.replaceAll('"', '')}',
     };
 
-    // Map<String, dynamic> queryParams = {
-    //   "QID": qid,
-    //   "StudyId": studyId,
-    //   "ShiftCode": "shft",
-    //   "VisitTypeId": visitTypeId,
-    //   "PersonGradeId": "4",
-    //   "AvailabilityCalenderId": availabilityCalendarid,
-    //   "language": 'langChange'.tr,
-    //   "AppointmentTypeId": "1",
-    // };
-
     Map<String, dynamic> queryParams = {
       "QID": '$qid',
+      "AppointmentTypeId": appointmentTypeID,
+      "PersonGradeId": personGradeId.toString(),
+      "AppoinmentId": appiontmentID,
       "StudyId": studyId,
-      "ShiftCode": "shft",
       "VisitTypeId": visitTypeId,
-      "PersonGradeId": "4",
       "AvailabilityCalenderId": availabilityCalendarid,
+      "ShiftCode": 'shft',
       "language": 'langChange'.tr,
-      "AppointmentTypeId": "1",
     };
     print("Query PArameter" + queryParams.toString());
 
     // Construct the API URL
     Uri apiUrl = Uri.parse(
-        "https://participantportal-test.qatarbiobank.org.qa/QbbAPIS/api/BookAppointmentAPI?QID=${queryParams['QID']}&StudyId=${queryParams['StudyId']}&ShiftCode=${queryParams['ShiftCode']}&VisitTypeId=${queryParams['VisitTypeId']}&PersonGradeId=${queryParams['PersonGradeId']}&AvailabilityCalenderId=${queryParams['AvailabilityCalenderId']}&language=${queryParams['language']}&AppointmentTypeId=${queryParams['AppointmentTypeId']}");
+        "https://participantportal-test.qatarbiobank.org.qa/QbbAPIS/api/BookResultAppointmentAPI?QID=${queryParams['QID']}&StudyId=${queryParams['StudyId']}&ShiftCode=${queryParams['ShiftCode']}&VisitTypeId=${queryParams['VisitTypeId']}&PersonGradeId=${queryParams['PersonGradeId']}&AvailabilityCalenderId=${queryParams['AvailabilityCalenderId']}&language=${queryParams['language']}&AppoinmentId=${queryParams['AppoinmentId']}&AppointmentTypeId=${queryParams['AppointmentTypeId']}");
 
-    print("API URL");
+    print("API URL results");
     print(apiUrl);
     print(jsonEncode(queryParams));
 
@@ -426,7 +382,7 @@ class BookAppScreenState extends State<BookAppScreen> {
       // Process the response here
 
       print(response.statusCode);
-      print(response);
+      print(response.body);
 
       if (response.statusCode == 200) {
         // Successful response, show a success dialog

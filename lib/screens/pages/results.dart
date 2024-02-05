@@ -852,6 +852,26 @@ class ResultsState extends State<Results> {
                                         children: [
                                           ElevatedButton(
                                             onPressed: () async {
+                                              SharedPreferences pref =
+                                                  await SharedPreferences
+                                                      .getInstance();
+                                              pref.setString(
+                                                  "resultsStudyID",
+                                                  appointment["StudyId"]
+                                                      .toString());
+                                              pref.setString(
+                                                  "resultsVisitTypeID",
+                                                  appointment['VisitTypeId']
+                                                      .toString());
+                                              pref.setString(
+                                                  "resultsAppID",
+                                                  appointment['AppoinmentId']
+                                                      .toString());
+                                              pref.setString(
+                                                  "resultsAppointmentTypeID",
+                                                  appointment[
+                                                          "AppointmentTypeId"]
+                                                      .toString());
                                               //   await bookAppointmentToGetResults(
                                               //     context,
                                               //     appointment["QID"]
@@ -870,14 +890,24 @@ class ResultsState extends State<Results> {
                                               //             'AvailabilityCalenderId']
                                               //         .toString(),
                                               //   );
-                                              await bookAppointmentApiCall(
+                                              await getResultsSlot(
                                                   context,
                                                   appointment["StudyId"]
                                                       .toString(),
                                                   appointment['VisitTypeId']
                                                       .toString(),
                                                   appointment['VisittypeName']
+                                                      .toString(),
+                                                  appointment['AppoinmentId']
                                                       .toString());
+                                              // await getResultAppointmentApiCall(
+                                              //     context,
+                                              //     appointment["StudyId"]
+                                              //         .toString(),
+                                              //     appointment["VisitTypeId"]
+                                              //         .toString(),
+                                              //     appointment["AppoinmentId"]
+                                              //         .toString());
                                             },
                                             style: ButtonStyle(
                                                 backgroundColor:

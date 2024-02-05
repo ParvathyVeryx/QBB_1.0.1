@@ -3,10 +3,8 @@ import 'dart:convert';
 import 'dart:ffi';
 
 import 'package:QBB/providers/studymodel.dart';
-import 'package:QBB/screens/pages/loader.dart';
 import 'package:flutter/material.dart';
 import 'package:QBB/constants.dart';
-import 'package:flutter/rendering.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -15,14 +13,15 @@ import '../api/userid.dart';
 import 'appointments.dart';
 import 'erorr_popup.dart';
 
-class BookAppScreen extends StatefulWidget {
-  const BookAppScreen({Key? key}) : super(key: key);
+class RescheduleResult extends StatefulWidget {
+  final Future<String> appDate;
+  const RescheduleResult({required this.appDate, Key? key}) : super(key: key);
 
   @override
-  BookAppScreenState createState() => BookAppScreenState();
+  RescheduleResultState createState() => RescheduleResultState();
 }
 
-class BookAppScreenState extends State<BookAppScreen> {
+class RescheduleResultState extends State<RescheduleResult> {
   late List<Study> bookAppScreen;
   List<DateTime> upcomingDates = [];
   TextEditingController _dateController = TextEditingController();
@@ -40,9 +39,11 @@ class BookAppScreenState extends State<BookAppScreen> {
   int lastSelectedIndex = -1; // Initialize to an invalid index
   List<DateTime> selectedSlot = [];
   String availabilityCalendarid = '';
+  String appointmentDate = '';
+
   Future<void> fetchApiResponseFromSharedPrefs() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
-    String? apiResponseJson = pref.getString('apiResponse');
+    String? apiResponseJson = pref.getString('apiResponseReschedule');
 
     if (apiResponseJson != null) {
       Map<String, dynamic> jsonResponse = json.decode(apiResponseJson);
@@ -115,27 +116,11 @@ class BookAppScreenState extends State<BookAppScreen> {
   }
 
   List<DateTime> upcomingDateList = [];
-
-  // List<DateTime> generateDates() {
-  //   DateTime currentDate = DateTime.now();
-
-  //   for (int i = 0; i < 5; i++) {
-  //     DateTime nextDate = currentDate.add(Duration(days: i));
-
-  //     // Only add dates within the same month
-  //     if (nextDate.month == currentDate.month) {
-  //       upcomingDateList.add(nextDate);
-  //     }
-  //   }
-
-  //   return upcomingDateList;
-  // }
-
   List<dynamic> availabiltyCandarId = [];
 
   Future<void> fetchAvailabilityCalendar() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
-    String? apiResponseJson = pref.getString('apiResponse');
+    String? apiResponseJson = pref.getString('apiResponseReschedule');
 
     if (apiResponseJson != null) {
       Map<String, dynamic> jsonResponse = json.decode(apiResponseJson);
@@ -163,7 +148,7 @@ class BookAppScreenState extends State<BookAppScreen> {
 
   Future<void> fetchDateList(DateTime selectedDate) async {
     SharedPreferences pref = await SharedPreferences.getInstance();
-    String? apiResponseJson = pref.getString('apiResponse');
+    String? apiResponseJson = pref.getString('apiResponseReschedule');
 
     if (apiResponseJson != null) {
       Map<String, dynamic> jsonResponse = json.decode(apiResponseJson);
@@ -171,47 +156,51 @@ class BookAppScreenState extends State<BookAppScreen> {
       DateTime tempDate = selectedDate;
       print(jsonResponse);
       List<dynamic> dynamicList = jsonResponse['datelist'];
+      print("Dates" + dynamicList.toString());
       List<String> dateStrings = List<String>.from(dynamicList);
       List<DateTime> dateTimes = dateStrings.map((dateString) {
         return DateTime.parse(dateString);
       }).toList();
+      DateTime appointmentDateParse = DateTime.parse(appointmentDate);
+
+      print(ispicked);
 
       print(ispicked);
       if (ispicked == true) {
         upcomingDateList = [];
+
         for (int i = 0; i < 5; i++) {
-          print("i");
           // Check if the current date is within the same month as the selected date
           if (tempDate.month == selectedDate.month) {
-            print("j");
-
-            setState(() {
-              upcomingDateList.add(tempDate);
-            });
-            print(upcomingDateList);
+            if (appointmentDateParse != tempDate) {
+              setState(() {
+                upcomingDateList.add(tempDate);
+              });
+              print(upcomingDateList);
+            }
           }
           tempDate = tempDate.add(const Duration(days: 1));
         }
       } else if (isNextWeek == true) {
         upcomingDateList = [];
         for (int i = 0; i < 5; i++) {
-          print("i");
-          // Check if the current date is within the same month as the selected date
-          if (tempDate.month == selectedDate.month) {
-            print("j");
-
-            setState(() {
-              upcomingDateList.add(tempDate);
-            });
-            print(upcomingDateList);
+          if (appointmentDateParse != tempDate) {
+            // Check if the current date is within the same month as the selected date
+            if (tempDate.month == selectedDate.month) {
+              setState(() {
+                upcomingDateList.add(tempDate);
+              });
+              print(upcomingDateList);
+            }
           }
           tempDate = tempDate.add(const Duration(days: 1));
         }
       } else {
         setState(() {
-          upcomingDateList = dateStrings.map((dateString) {
-            return DateTime.parse(dateString);
-          }).toList();
+          upcomingDateList = dateStrings
+              .map((tempDate) => DateTime.parse(tempDate))
+              .where((date) => date != appointmentDateParse)
+              .toList();
         });
       }
     }
@@ -239,8 +228,8 @@ class BookAppScreenState extends State<BookAppScreen> {
     // Now, upcomingDateList contains the upcoming dates within the same month
     print("Upcoming Dates: " + upcomingDateList.toString());
 
-    // _dateController.text =
-    //     '${selectedDate.day}/${selectedDate.month}/${selectedDate.year}';
+    _dateController.text =
+        '${selectedDate.day}/${selectedDate.month}/${selectedDate.year}';
   }
 
   void generateUpcomingDates(DateTime selectedDate) {
@@ -248,7 +237,7 @@ class BookAppScreenState extends State<BookAppScreen> {
     DateTime tempDate = selectedDate;
 
     // Move to the next week's starting day (7 days from the selected date)
-    tempDate = tempDate.add(Duration(days: (7 - tempDate.weekday + 2) % 7));
+    tempDate = tempDate.add(Duration(days: (7 - tempDate.weekday + 1) % 7));
 
     DateTime currentDate = DateTime.now();
 
@@ -354,7 +343,15 @@ class BookAppScreenState extends State<BookAppScreen> {
     return availabilityCalendarid;
   }
 
-  bool isLoadingLoader = false;
+  String appointmentId = '';
+
+  void getAppID(String appID) async {
+    // appointmentId = appID;
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    appointmentId = pref.getString("ResultsappoinmentID").toString();
+    print("Appointment ID" + appointmentId);
+    print(appID);
+  }
 
   Future<void> confirmAppointment(BuildContext context) async {
     SharedPreferences pref = await SharedPreferences.getInstance();
@@ -379,44 +376,29 @@ class BookAppScreenState extends State<BookAppScreen> {
       return;
     }
 
-        int? personGradeId = await getPersonGradeIdFromSharedPreferences();
-
-
     // Construct headers with the retrieved token
     Map<String, String> headers = {
       'Authorization': 'Bearer ${token.replaceAll('"', '')}',
     };
 
-    // Map<String, dynamic> queryParams = {
-    //   "QID": qid,
-    //   "StudyId": studyId,
-    //   "ShiftCode": "shft",
-    //   "VisitTypeId": visitTypeId,
-    //   "PersonGradeId": "4",
-    //   "AvailabilityCalenderId": availabilityCalendarid,
-    //   "language": 'langChange'.tr,
-    //   "AppointmentTypeId": "1",
-    // };
-
     Map<String, dynamic> queryParams = {
       "QID": '$qid',
       "StudyId": studyId,
-      "ShiftCode": "shft",
+      "ShiftCode": 'shft',
       "VisitTypeId": visitTypeId,
-      "PersonGradeId": "4",
       "AvailabilityCalenderId": availabilityCalendarid,
+      "AppoinmentId": appointmentId,
       "language": 'langChange'.tr,
-      "AppointmentTypeId": "1",
+      "AppointmentStatus": "5",
     };
-    print("Query PArameter" + queryParams.toString());
+    print(queryParams);
 
     // Construct the API URL
     Uri apiUrl = Uri.parse(
-        "https://participantportal-test.qatarbiobank.org.qa/QbbAPIS/api/BookAppointmentAPI?QID=${queryParams['QID']}&StudyId=${queryParams['StudyId']}&ShiftCode=${queryParams['ShiftCode']}&VisitTypeId=${queryParams['VisitTypeId']}&PersonGradeId=${queryParams['PersonGradeId']}&AvailabilityCalenderId=${queryParams['AvailabilityCalenderId']}&language=${queryParams['language']}&AppointmentTypeId=${queryParams['AppointmentTypeId']}");
+        "https://participantportal-test.qatarbiobank.org.qa/QbbAPIS/api/RescheduleResultAppointmentAPI?QID=${queryParams['QID']}&StudyId=${queryParams['StudyId']}&ShiftCode=${queryParams['ShiftCode']}&VisitTypeId=${queryParams['VisitTypeId']}&AppoinmentId=${queryParams['AppoinmentId']}&AvailabilityCalenderId=${queryParams['AvailabilityCalenderId']}&language=${queryParams['language']}&AppointmentTypeId=${queryParams['AppointmentTypeId']}&AppointmentStatus=${queryParams['AppointmentStatus']}");
 
     print("API URL");
     print(apiUrl);
-    print(jsonEncode(queryParams));
 
     try {
       // Make the HTTP POST request
@@ -424,17 +406,17 @@ class BookAppScreenState extends State<BookAppScreen> {
           await http.post(apiUrl, headers: headers, body: queryParams);
 
       // Process the response here
-
+      print(queryParams);
+      print("Reschedule results");
       print(response.statusCode);
-      print(response);
-
+      print(response.body);
       if (response.statusCode == 200) {
         // Successful response, show a success dialog
         showDialog(
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
-              title: const Text(''),
+              title: const Text('Alert'),
               content: Text(json.decode(response.body)["Message"]),
               actions: [
                 ElevatedButton(
@@ -479,6 +461,10 @@ class BookAppScreenState extends State<BookAppScreen> {
   void initState() {
     // bookAppScreen = [];
     super.initState();
+    widget.appDate.then((appDate) {
+      appointmentDate = appDate;
+    });
+    getAppID(appointmentId);
     timeList = [];
     generateUpcomingDates(DateTime.now());
     _pageController = PageController(initialPage: 0);
@@ -568,9 +554,9 @@ class BookAppScreenState extends State<BookAppScreen> {
                         color: primaryColor,
                         iconSize: 11,
                       ),
-                      Text(
-                        "nextWeek".tr,
-                        style: const TextStyle(
+                      const Text(
+                        "Next Week",
+                        style: TextStyle(
                             color: primaryColor,
                             fontSize: 11,
                             fontWeight: FontWeight.bold),
@@ -587,9 +573,6 @@ class BookAppScreenState extends State<BookAppScreen> {
                         iconSize: 11,
                       )
                     ],
-                  ),
-                  const SizedBox(
-                    height: 10,
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -679,13 +662,13 @@ class BookAppScreenState extends State<BookAppScreen> {
                   const SizedBox(
                     height: 50,
                   ),
-                  Row(
+                  const Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Center(
                         child: Text(
-                          "swipeRightToViewMoreSlots".tr,
-                          style: const TextStyle(
+                          "Swipe right to see more slots",
+                          style: TextStyle(
                               color: primaryColor,
                               fontSize: 11,
                               fontWeight: FontWeight.w500),
@@ -693,19 +676,18 @@ class BookAppScreenState extends State<BookAppScreen> {
                       )
                     ],
                   ),
-                  const SizedBox(
+                  SizedBox(
                     height: 30,
                   ),
                   Row(
                     children: [
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
                             'timeSlot'.tr,
                             style: const TextStyle(
-                              fontSize: 12.0,
+                              fontSize: 14.0,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
@@ -713,7 +695,7 @@ class BookAppScreenState extends State<BookAppScreen> {
                           Text(
                             timeList.first,
                             style: const TextStyle(
-                              fontSize: 12.0,
+                              fontSize: 14.0,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
@@ -920,10 +902,12 @@ class BookAppScreenState extends State<BookAppScreen> {
                                                 SharedPreferences pref =
                                                     await SharedPreferences
                                                         .getInstance();
-                                                pref.setString("selectedData",
+                                                pref.setString(
+                                                    "selectedDateReschedule",
                                                     selectedDates.toString());
                                                 String prefval = pref
-                                                    .getString("selectedDate")
+                                                    .getString(
+                                                        "selectedDateReschedule")
                                                     .toString();
 
                                                 setState(() {
@@ -977,8 +961,8 @@ class BookAppScreenState extends State<BookAppScreen> {
                       ),
                     ],
                   ),
-                  const SizedBox(
-                    height: 30,
+                  SizedBox(
+                    height: 50,
                   ),
                   Center(
                     child: Row(
@@ -1023,34 +1007,11 @@ class BookAppScreenState extends State<BookAppScreen> {
                               elevation: 0,
                             ),
                             onPressed: () {
-                              showDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return AlertDialog(
-                                    title: const Text(''),
-                                    content: Text("areYouSure".tr),
-                                    actions: [
-                                      ElevatedButton(
-                                        onPressed: () {
-                                          Navigator.pop(context);
-                                        },
-                                        child: Text('cancelButton'.tr),
-                                      ),
-                                      ElevatedButton(
-                                        onPressed: () {
-                                          confirmAppointment(context);
-                                        },
-                                        child: Text('confirm'.tr),
-                                      ),
-                                    ],
-                                  );
-                                },
-                              );
-                              // confirmAppointment(context);
+                              confirmAppointment(context);
                             },
                             child: Text(
-                              'confirm'.tr,
-                              style: const TextStyle(color: textcolor),
+                              'reschedule'.tr,
+                              style: TextStyle(color: textcolor),
                             ),
                           ),
                         ),
