@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:QBB/screens/pages/erorr_popup.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -9,12 +10,8 @@ Future<Map<String, dynamic>> callUpdatePasswordAPI(
   try {
     SharedPreferences pref = await SharedPreferences.getInstance();
     String lang = pref.getString("langEn").toString();
-    String setLang;
-    if (lang == "true") {
-      setLang = "en";
-    } else {
-      setLang = "ar";
-    }
+    String setLang = 'langChange'.tr;
+
 
     // Replace the following URL with your actual API endpoint
     final apiUrl =

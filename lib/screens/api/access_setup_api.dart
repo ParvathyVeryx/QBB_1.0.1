@@ -24,8 +24,6 @@ Future<void> accessSetupOTP({
       return;
     }
 
-    final url = Uri.parse('$base_url/AcessSetupOTP');
-
     String encryptedPassword = _sha512(userPassword);
     Map<String, dynamic> requestBody = {
       'QID': qid,
@@ -35,6 +33,10 @@ Future<void> accessSetupOTP({
       'language': language,
     };
 
+    final url = Uri.parse(
+        '$base_url/AcessSetupOTP?QID=${requestBody['QID']}&OTP=${requestBody['OTP']}&UserPassword=${requestBody['UserPassword']}&Userid=${requestBody['Userid']}&language=${requestBody['language']}');
+    print("Acccesstoken");
+    print("Access Token" + url.toString());
     final response = await http.post(
       url,
       headers: {
@@ -48,7 +50,8 @@ Future<void> accessSetupOTP({
       showDialog(
         context: context,
         builder: (BuildContext context) {
-          return ErrorPopup(errorMessage: json.decode(response.body)["Message"]);
+          return ErrorPopup(
+              errorMessage: json.decode(response.body)["Message"]);
         },
       );
       // Handle successful response
@@ -56,7 +59,8 @@ Future<void> accessSetupOTP({
       showDialog(
         context: context,
         builder: (BuildContext context) {
-          return ErrorPopup(errorMessage: json.decode(response.body)["Message"]);
+          return ErrorPopup(
+              errorMessage: json.decode(response.body)["Message"]);
         },
       );
 

@@ -1,4 +1,5 @@
 import 'dart:convert';
+// import 'dart:html';
 import 'package:QBB/constants.dart';
 import 'package:QBB/screens/pages/erorr_popup.dart';
 import 'package:flutter/material.dart';
@@ -30,27 +31,30 @@ Future<bool> getAccess(String qid, String otp, BuildContext context) async {
   };
 
   try {
-    final http.Response response =
-        await http.get(Uri.parse(verifyOtp), headers: headers);
-
+    final response = await http.get(Uri.parse(verifyOtp), headers: headers);
+    print(verifyOtp);
     if (response.statusCode == 200) {
       var userId = json.decode(response.body);
-      showDialog(
-        context: context, // Use the context of the current screen
-        builder: (BuildContext context) {
-          return ErrorPopup(errorMessage: json.decode(response.body)["Message"]);
-        },
-      );
+      // showDialog(
+      //   context: context, // Use the context of the current screen
+      //   builder: (BuildContext context) {
+      //     return ErrorPopup(
+      //         errorMessage: json.decode(response.body)["Message"]);
+      //   },
+      // );
+      print(response.body);
       return true; // Return true if OTP verification is successful
     } else {
       // Handle error
       print('Error: ${response.statusCode}');
-      showDialog(
-        context: context, // Use the context of the current screen
-        builder: (BuildContext context) {
-          return ErrorPopup(errorMessage: json.decode(response.body)["Message"]);
-        },
-      );
+      // showDialog(
+      //   context: context, // Use the context of the current screen
+      //   builder: (BuildContext context) {
+      //     return ErrorPopup(
+      //         errorMessage: json.decode(response.body)["Message"]);
+      //   },
+      // );
+      print(response.body);
       return false; // Return false to indicate OTP verification failure
     }
   } catch (err) {

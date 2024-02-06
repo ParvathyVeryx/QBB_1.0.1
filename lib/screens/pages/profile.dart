@@ -142,23 +142,101 @@ class ProfileState extends State<Profile> {
     }
   }
 
+  bool isImageSizeValid(Uint8List imageData, int maxSizeInBytes) {
+    return imageData.length <= maxSizeInBytes;
+  }
+
+  // Future<void> pickImageFromGallery() async {
+  //   final pickedImage =
+  //       await ImagePicker().pickImage(source: ImageSource.gallery);
+  //   if (pickedImage != null) {
+  //     // print('Selected Image Path: ${pickedImage.path}');
+  //     // setState(() {
+  //     //   _selectedImage = File(pickedImage.path);
+  //     // });
+
+  //     // print('Uploading Image...');
+  //     // await uploadUserProfilePhoto(
+  //     //     context,
+  //     //     _userProfileFuture
+  //     //         .then((userProfileData) => userProfileData.qid)
+  //     //         .toString(),
+  //     //     _selectedImage!);
+  //     // print('Image Upload Complete');
+
+  //         if (isImageSizeValid(_selectedImage, 70 * 1024)) {
+  //     await uploadUserProfilePhoto(
+  //         context,
+  //         _userProfileFuture
+  //             .then((userProfileData) => userProfileData.qid)
+  //             .toString(),
+  //         _selectedImage!);
+
+  //     print('Image Upload Complete');
+  //   } else {
+  //     // Show an error message or handle the case where the image size exceeds 70KB
+  //     print('Image size exceeds 70KB. Please choose a smaller image.');
+  //   }
+  //   }
+  // }
+
   Future<void> pickImageFromGallery() async {
     final pickedImage =
         await ImagePicker().pickImage(source: ImageSource.gallery);
-    if (pickedImage != null) {
-      print('Selected Image Path: ${pickedImage.path}');
-      setState(() {
-        _selectedImage = File(pickedImage.path);
-      });
 
-      print('Uploading Image...');
-      await uploadUserProfilePhoto(
+    if (pickedImage != null) {
+      // Read the file as bytes (Uint8List)
+      Uint8List? imageBytes = await pickedImage.readAsBytes();
+
+      // Check if the image size is less than 70KB (70 * 1024 bytes)
+      if (isImageSizeValid(imageBytes, 70 * 1024)) {
+        // Set the _selectedImage variable
+        setState(() {
+          _selectedImage = File(pickedImage.path);
+        });
+
+        // Continue with your image upload logic
+        await uploadUserProfilePhoto(
           context,
           _userProfileFuture
               .then((userProfileData) => userProfileData.qid)
               .toString(),
-          _selectedImage!);
-      print('Image Upload Complete');
+          _selectedImage!,
+        );
+
+        print('Image Upload Complete');
+      } else {
+        // Show an error message or handle the case where the image size exceeds 70KB
+        showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.only(
+                    bottomLeft:
+                        Radius.circular(20.0), // Adjust the radius as needed
+                  ),
+                ),
+                title: const Text(
+                  '',
+                  style: TextStyle(color: primaryColor),
+                ),
+                content: Text(
+                  "editImgError".tr,
+                  style: const TextStyle(color: primaryColor),
+                ),
+                actions: <Widget>[
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: Text('ok'.tr),
+                  ),
+                ],
+              );
+            });
+        print('Image size exceeds 70KB. Please choose a smaller image.');
+      }
     }
   }
 

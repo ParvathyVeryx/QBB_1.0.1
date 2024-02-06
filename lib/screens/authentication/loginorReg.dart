@@ -1,4 +1,5 @@
 import 'package:QBB/constants.dart';
+import 'package:QBB/nirmal/login_screen.dart';
 import 'package:QBB/screens/authentication/accessSetUp.dart';
 import 'package:QBB/screens/authentication/registration_mode.dart';
 import 'package:QBB/screens/pages/terms_and_conditions.dart';
@@ -17,10 +18,11 @@ class loginOrRegState extends State<loginOrReg> {
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
+    // ignore: deprecated_member_use
     return WillPopScope(
       onWillPop: () async {
-        SystemNavigator.pop();
-        return false;
+        Navigator.push(context, MaterialPageRoute(builder: (context) => const LoginPage()),);
+        return true;
       },
       child: Scaffold(
           appBar: AppBar(
@@ -37,7 +39,7 @@ class loginOrRegState extends State<loginOrReg> {
             ),
             title: Text(
               'create/activateAcc'.tr,
-              style: TextStyle(
+              style: const TextStyle(
                 color: Colors.white,
                 fontFamily: 'Impact', // Set the text color to white
               ),
@@ -54,13 +56,12 @@ class loginOrRegState extends State<loginOrReg> {
                     ClickableContainer(
                       onTap: () {
                         // Define the action you want to perform when the container is clicked.
-                        RegistrationMode();
+                        const RegistrationMode();
                         Navigator.push(
                           context,
                           MaterialPageRoute(
                               builder: (context) => const AccessUser()),
                         );
-
                       },
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -74,8 +75,8 @@ class loginOrRegState extends State<loginOrReg> {
                                     30.0, 10.0, 10.0, 10.0),
                                 child: Image.asset(
                                   "assets/images/active-acc.png",
-                                  width: 60.0,
-                                  height: 60.0,
+                                  width: 40.0,
+                                  height: 40.0,
                                   fit: BoxFit
                                       .cover, // Adjust to your needs (e.g., BoxFit.contain, BoxFit.fill)
                                 ),
@@ -84,19 +85,22 @@ class loginOrRegState extends State<loginOrReg> {
                           ),
 
                           // Add some spacing between the image and text
-                           Expanded(
+                          Expanded(
                             child: Padding(
-                              padding: EdgeInsets.all(8.0),
+                              padding: const EdgeInsets.all(8.0),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Text(
                                     'activateAccount'.tr,
-                                    style: TextStyle(fontSize: 18),
+                                    style: const TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.bold),
                                   ),
                                   Text(
                                     'activateAccMsg'.tr,
+                                    style: const TextStyle(fontSize: 11),
                                   ),
                                 ],
                               ),
@@ -114,7 +118,7 @@ class loginOrRegState extends State<loginOrReg> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => RegistrationMode()),
+                              builder: (context) => const RegistrationMode()),
                         );
                       },
                       child: Center(
@@ -130,8 +134,8 @@ class loginOrRegState extends State<loginOrReg> {
                                       30.0, 10.0, 10.0, 10.0),
                                   child: Image.asset(
                                     "assets/images/add.png",
-                                    width: 60.0,
-                                    height: 60.0,
+                                    width: 40.0,
+                                    height: 40.0,
                                     fit: BoxFit
                                         .cover, // Adjust to your needs (e.g., BoxFit.contain, BoxFit.fill)
                                   ),
@@ -140,19 +144,22 @@ class loginOrRegState extends State<loginOrReg> {
                             ),
 
                             // Add some spacing between the image and text
-                             Expanded(
+                            Expanded(
                               child: Padding(
-                                padding: EdgeInsets.all(8.0),
+                                padding: const EdgeInsets.all(8.0),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Text(
                                       'register'.tr,
-                                      style: TextStyle(fontSize: 18),
+                                      style: const TextStyle(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.bold),
                                     ),
                                     Text(
                                       'ifYouWantToParticipate'.tr,
+                                      style: const TextStyle(fontSize: 11),
                                     ),
                                   ],
                                 ),
@@ -163,30 +170,30 @@ class loginOrRegState extends State<loginOrReg> {
                       ),
                     ),
                     const SizedBox(
-                  height: 15.0,
-                ),
-                // Text(
-                //   'byRegisteringOrActivatingAccountYouAgreeToOurTermsAndConditions'.tr,
-                //   style: const TextStyle(
-                //       color: Color.fromARGB(255, 107, 107, 107)),
-                // ),
-                // TextButton(
-                //   onPressed: () {
-                //     // const RegistrationMode();  showDialog(
-                //     showDialog(
-                //       context: context,
-                //       builder: (BuildContext context) {
-                //         return TermsAndConditionsDialog();
-                //       },
-                //     );
-                //   },
-                //   child: Text(
-                //     'termsConditions'.tr,
-                //     style: const TextStyle(
-                //         color: primaryColor,
-                //         decoration: TextDecoration.underline),
-                //   ),
-                // )
+                      height: 15.0,
+                    ),
+                    // Text(
+                    //   'byRegisteringOrActivatingAccountYouAgreeToOurTermsAndConditions'.tr,
+                    //   style: const TextStyle(
+                    //       color: Color.fromARGB(255, 107, 107, 107)),
+                    // ),
+                    // TextButton(
+                    //   onPressed: () {
+                    //     // const RegistrationMode();  showDialog(
+                    //     showDialog(
+                    //       context: context,
+                    //       builder: (BuildContext context) {
+                    //         return TermsAndConditionsDialog();
+                    //       },
+                    //     );
+                    //   },
+                    //   child: Text(
+                    //     'termsConditions'.tr,
+                    //     style: const TextStyle(
+                    //         color: primaryColor,
+                    //         decoration: TextDecoration.underline),
+                    //   ),
+                    // )
                   ],
                 ),
               ),
@@ -211,7 +218,7 @@ class ClickableContainer extends StatelessWidget {
         child: Container(
           alignment: Alignment.center,
           // width: 150,
-          height: 150,
+          height: 120,
           decoration: BoxDecoration(
             image: const DecorationImage(
               image: AssetImage(

@@ -1,4 +1,6 @@
 import 'package:QBB/constants.dart';
+import 'package:QBB/nirmal_api.dart/forget_password_getotp.dart';
+import 'package:QBB/nirmal_api.dart/update_password.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -24,6 +26,7 @@ class ForgotPasswordState extends State<ForgotPassword> {
   final TextEditingController _controller = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   bool isbuttonCLicked = false;
+  TextEditingController qidController = TextEditingController();
 
   @override
   void initState() {
@@ -76,12 +79,25 @@ class ForgotPasswordState extends State<ForgotPassword> {
                     }
                     return null;
                   },
+                  controller:
+                      _controller, // Assign the controller to the text field
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     ElevatedButton(
-                        onPressed: () {},
+                        onPressed: () async {
+                          print('button pressed');
+                          print("qid: ${_controller.text}");
+                          // Validate the form before making the API call
+
+                          // Access the QID from the form field
+                          String qid = _controller.text;
+                          print('QID: $qid');
+                          // Call the update password API
+                          await callUpdatePasswordAPI(qid, context);
+                          print('button pressed');
+                        },
                         style: ButtonStyle(
                             backgroundColor: MaterialStateProperty.all<Color>(
                                 primaryColor), // Set background color
@@ -95,10 +111,12 @@ class ForgotPasswordState extends State<ForgotPassword> {
                               ),
                             )),
                         child: Padding(
-                          padding: const EdgeInsets.fromLTRB(5.0, 5.0, 5.0, 5.0),
+                          padding:
+                              const EdgeInsets.fromLTRB(5.0, 5.0, 5.0, 5.0),
                           child: Text(
                             'getOTP'.tr,
-                            style: const TextStyle(color: textcolor, fontSize: 11),
+                            style:
+                                const TextStyle(color: textcolor, fontSize: 11),
                           ),
                         )),
                   ],
@@ -127,7 +145,18 @@ class ForgotPasswordState extends State<ForgotPassword> {
                       ? () {
                           if (_formKey.currentState!.validate()) {
                             // Process the form data
-                            // Submit the form or perform necessary actions
+                            print('Submitting Form Data:');
+                            print('QID: $QID');
+                            print('OTP: $otp');
+                            print('Password: $password');
+
+                            // Call the API function with the required parameters
+                            UpdatePasswordAPI(
+                              QID,
+                              otp,
+                              password,
+                              context,
+                            );
                           }
                         }
                       : null,
@@ -210,6 +239,7 @@ class ForgotPasswordState extends State<ForgotPassword> {
     required FormFieldValidator<String> validator,
     Color? labelTextColor,
     TextInputType? keyboardType, // Added labelTextColor parameter
+    required TextEditingController controller, // Add this line
   }) {
     return TextFormField(
       controller: _controller,
@@ -359,7 +389,6 @@ class ForgotPasswordState extends State<ForgotPassword> {
         errorMaxLines: 3,
         errorText: errorPwd,
         errorStyle: const TextStyle(
-          
           // Add your style properties here
           color: primaryColor,
           fontWeight: FontWeight.w600,

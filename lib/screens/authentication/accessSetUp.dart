@@ -5,6 +5,8 @@ import 'package:QBB/screens/api/setup_password_acess_complete_api.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../nirmal_api.dart/forget_password_getotp.dart';
+
 class AccessUser extends StatefulWidget {
   const AccessUser({super.key});
 
@@ -24,6 +26,8 @@ class AccessUserState extends State<AccessUser> {
   bool isButtonEnabled = false;
   String otp = '';
   String QID = '';
+  String errorPwd = '';
+  String errorText = '';
   void _checkAndSubmitForm() async {
     // Validate the form
     if (_formKey.currentState!.validate()) {
@@ -43,11 +47,46 @@ class AccessUserState extends State<AccessUser> {
         otp: otp,
         userPassword: password,
         userId: '1',
-        language: 'en',
+        language: 'langChange'.tr,
         qid: QID,
         context: context,
       );
     }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    qidController.addListener(_validateInput);
+    passwordController.addListener(_validatePwd);
+  }
+
+  void _validateInput() {
+    print("validating");
+    setState(() {
+      if (qidController.text.isEmpty) {
+        errorText = '';
+      } else if (!RegExp(r'^[0-9]*$').hasMatch(qidController.text)) {
+        errorText = 'pleaseEnterValidQatarID'.tr;
+      } else {
+        errorText = '';
+      }
+    });
+  }
+
+  void _validatePwd() {
+    setState(() {
+      if (passwordController.text.isEmpty) {
+        errorPwd = '';
+      } else if (!RegExp(r'^(?=.*[!@#$%^&*(),.?":{}|<>])(?=.*\d)(?=.*[A-Z]).*$')
+          .hasMatch(passwordController.text)) {
+        errorPwd =
+            'passwordsMustBeAtLeast8CharactersAndContainAt3Of4OfTheFollowingUpperCaseAZLowerCaseAAnumber09AndSpecialCharacterEG'
+                .tr;
+      } else {
+        errorPwd = '';
+      }
+    });
   }
 
   @override
@@ -106,7 +145,7 @@ class AccessUserState extends State<AccessUser> {
                         onPressed: () async {
                           // Call the API function
                           await setPasswordAccessSetupNotCompleted(
-                              QID, 'en', context);
+                              QID, 'langChange'.tr, context);
                         },
                         style: ButtonStyle(
                             backgroundColor: MaterialStateProperty.all<Color>(
@@ -232,11 +271,12 @@ class AccessUserState extends State<AccessUser> {
     return TextFormField(
       controller: controller,
       decoration: InputDecoration(
+        errorText: errorText,
         errorStyle: TextStyle(
           // Add your style properties here
           color: primaryColor,
           fontWeight: FontWeight.w600,
-          fontSize: 14.0,
+          fontSize: 11.0,
         ),
         contentPadding: const EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 5.0),
         labelText: labelText,
@@ -308,7 +348,7 @@ class AccessUserState extends State<AccessUser> {
           // Add your style properties here
           color: primaryColor,
           fontWeight: FontWeight.w600,
-          fontSize: 14.0,
+          fontSize: 11.0,
         ),
         contentPadding: const EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 5.0),
         labelText: labelText,
@@ -370,11 +410,13 @@ class AccessUserState extends State<AccessUser> {
   }) {
     return TextFormField(
       decoration: InputDecoration(
+        errorMaxLines: 4,
+        errorText: errorPwd,
         errorStyle: TextStyle(
           // Add your style properties here
           color: primaryColor,
           fontWeight: FontWeight.w600,
-          fontSize: 14.0,
+          fontSize: 11.0,
         ),
         contentPadding: EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 5.0),
         labelText: 'password'.tr + '*',
@@ -454,7 +496,7 @@ class AccessUserState extends State<AccessUser> {
           // Add your style properties here
           color: primaryColor,
           fontWeight: FontWeight.w600,
-          fontSize: 14.0,
+          fontSize: 11.0,
         ),
         contentPadding: EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 5.0),
         labelText: 'confirmPassword'.tr + '*',
@@ -475,13 +517,25 @@ class AccessUserState extends State<AccessUser> {
             ),
           ),
         ),
-        enabledBorder: OutlineInputBorder(
+        enabledBorder: const OutlineInputBorder(
           borderSide: BorderSide(color: Color.fromARGB(255, 173, 173, 173)),
           borderRadius: BorderRadius.only(
             bottomLeft: Radius.circular(20.0),
           ),
         ),
-        focusedBorder: OutlineInputBorder(
+        focusedBorder: const OutlineInputBorder(
+          borderSide: BorderSide(color: Color.fromARGB(255, 173, 173, 173)),
+          borderRadius: BorderRadius.only(
+            bottomLeft: Radius.circular(20.0),
+          ),
+        ),
+        errorBorder: const OutlineInputBorder(
+          borderSide: BorderSide(color: Color.fromARGB(255, 173, 173, 173)),
+          borderRadius: BorderRadius.only(
+            bottomLeft: Radius.circular(20.0),
+          ),
+        ),
+        focusedErrorBorder: const OutlineInputBorder(
           borderSide: BorderSide(color: Color.fromARGB(255, 173, 173, 173)),
           borderRadius: BorderRadius.only(
             bottomLeft: Radius.circular(20.0),
