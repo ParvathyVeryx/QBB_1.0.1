@@ -499,7 +499,7 @@ class CompletedState extends State<Completed> {
                                               style: const TextStyle(
                                                 color: Color.fromARGB(
                                                     255, 255, 255, 255),
-                                                fontSize: 16,
+                                                fontSize: 11,
                                                 backgroundColor: appbar,
                                               ),
                                             ),
@@ -512,7 +512,7 @@ class CompletedState extends State<Completed> {
                                             DateFormat('MM-yyyy')
                                                 .format(
                                                     dateExtract(appointment))
-                                                .toString(),
+                                                .toString(), style: TextStyle(fontSize: 11),
                                           ),
                                         ),
                                       ],
@@ -537,7 +537,7 @@ class CompletedState extends State<Completed> {
                                               style: TextStyle(
                                                 color: Color.fromARGB(
                                                     255, 255, 255, 255),
-                                                fontSize: 13,
+                                                fontSize: 11,
                                               ),
                                             ),
                                           ),
@@ -585,7 +585,7 @@ class CompletedState extends State<Completed> {
                                                               163,
                                                               163,
                                                               163),
-                                                          fontSize: 13,
+                                                          fontSize: 11,
                                                         ),
                                                       ),
                                                       Text(
@@ -635,7 +635,7 @@ class CompletedState extends State<Completed> {
                                                               163,
                                                               163,
                                                               163),
-                                                          fontSize: 13,
+                                                          fontSize: 11,
                                                         ),
                                                       ),
                                                       Text(
@@ -690,7 +690,7 @@ class CompletedState extends State<Completed> {
                                                               163,
                                                               163,
                                                               163),
-                                                          fontSize: 13,
+                                                          fontSize: 11,
                                                         ),
                                                       ),
                                                       Text(
@@ -741,7 +741,7 @@ class CompletedState extends State<Completed> {
                                                               163,
                                                               163,
                                                               163),
-                                                          fontSize: 13,
+                                                          fontSize: 11,
                                                         ),
                                                       ),
                                                       Text(

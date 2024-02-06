@@ -8,12 +8,17 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../nirmal_api.dart/profile_api.dart';
+import '../pages/loader.dart';
+
 Future<void> getresults(
   BuildContext context,
   String qid,
   String appointmentId,
   String language,
 ) async {
+  final GlobalKey<State> _keyLoader = GlobalKey<State>();
+  LoaderWidget _loader = LoaderWidget();
   String? qid = await getQIDFromSharedPreferences();
 
   int? personGradeId = await getPersonGradeIdFromSharedPreferences();
@@ -35,6 +40,7 @@ Future<void> getresults(
   // SharedPreferences pref = await SharedPreferences.getInstance();
   // String? token = pref.getString('token');
   try {
+    Dialogs.showLoadingDialog(context, _keyLoader, _loader);
     final response = await http.get(
       uri,
       headers: {
@@ -44,6 +50,7 @@ Future<void> getresults(
     );
 
     if (response.statusCode == 200) {
+      Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
       // Successful API call
 
       // Parse the JSON response
@@ -62,6 +69,7 @@ Future<void> getresults(
       //   ),
       // );
     } else {
+      Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
       // Handle errors
       showDialog(
         context: context,
@@ -72,6 +80,7 @@ Future<void> getresults(
       );
     }
   } catch (error) {
+    Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
     // Handle network errors
     showDialog(
       context: context,
@@ -85,6 +94,8 @@ Future<void> getresults(
 Future<void> getOTPForDownload(
   BuildContext context,
 ) async {
+  final GlobalKey<State> _keyLoader = GlobalKey<State>();
+  LoaderWidget _loader = LoaderWidget();
   // String qid = '';
   String otp = '';
   String appointmentId = '';
@@ -111,6 +122,7 @@ Future<void> getOTPForDownload(
   // SharedPreferences pref = await SharedPreferences.getInstance();
   // String? token = pref.getString('token');
   try {
+    Dialogs.showLoadingDialog(context, _keyLoader, _loader);
     final response = await http.get(
       uri,
       headers: {
@@ -121,7 +133,7 @@ Future<void> getOTPForDownload(
 
     if (response.statusCode == 200) {
       // Successful API call
-
+Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
       // Parse the JSON response
       final Map<String, dynamic> jsonResponse = json.decode(response.body);
       // Save the API response in shared preferences
@@ -130,7 +142,7 @@ Future<void> getOTPForDownload(
           'https://participantportal-test.qatarbiobank.org.qa/QbbAPIS/api/GetOTPForResultDataAPI';
     } else {
       // Handle errors
-
+Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
       showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -140,6 +152,7 @@ Future<void> getOTPForDownload(
       );
     }
   } catch (error) {
+    Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
     // Handle network errors
     showDialog(
       context: context,

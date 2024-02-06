@@ -1,14 +1,48 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:QBB/screens/pages/erorr_popup.dart';
 import 'package:QBB/screens/pages/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../screens/pages/loader.dart';
+
+class Dialogs {
+  static Future<void> showLoadingDialog(
+    BuildContext context,
+    GlobalKey key,
+    Widget? child,
+  ) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return WillPopScope(
+          onWillPop: () async => false,
+          child: SimpleDialog(
+            key: key,
+            backgroundColor: Colors.transparent,
+            children: <Widget>[
+              Center(
+                child: child,
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+}
+
 Future<void> uploadUserProfilePhoto(BuildContext context, String qid, File photo) async {
+  final GlobalKey<State> _keyLoader = GlobalKey<State>();
+  LoaderWidget _loader = LoaderWidget();
   SharedPreferences pref = await SharedPreferences.getInstance();
   String qid = pref.getString("userQID").toString();
   try {
+      Dialogs.showLoadingDialog(context, _keyLoader, _loader);
+
     // Read the file as bytes
     List<int> photoBytes = await photo.readAsBytes();
 
@@ -45,6 +79,7 @@ Future<void> uploadUserProfilePhoto(BuildContext context, String qid, File photo
     print(response.statusCode);
     // Check if the request was successful (status code 200)
     if (response.statusCode == 200) {
+      Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
       // Check if the response is JSON
       if (response.headers['content-type']?.contains('application/json') ??
           false) {
@@ -77,5 +112,9 @@ Future<void> uploadUserProfilePhoto(BuildContext context, String qid, File photo
           },
         );
     }
-  } catch (e, stackTrace) {}
+
+  } catch (e, stackTrace) {
+    Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
+     ErrorPopup(errorMessage: '$e');
+  }
 }

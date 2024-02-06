@@ -149,6 +149,7 @@ class RegisterUserState extends State<RegisterUser> {
               style: const TextStyle(
                 color: appbar,
                 fontFamily: 'Impact',
+                fontSize: 16
               ),
             ),
           ),

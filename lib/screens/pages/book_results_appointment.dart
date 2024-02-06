@@ -11,6 +11,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
+import '../../nirmal_api.dart/profile_api.dart';
 import '../api/userid.dart';
 import 'appointments.dart';
 import 'erorr_popup.dart';
@@ -323,6 +324,8 @@ class BookResultsState extends State<BookResults> {
   bool isLoadingLoader = false;
 
   Future<void> confirmAppointment(BuildContext context) async {
+    final GlobalKey<State> _keyLoader = GlobalKey<State>();
+    LoaderWidget _loader = LoaderWidget();
     SharedPreferences pref = await SharedPreferences.getInstance();
 
     String? qid = await getQIDFromSharedPreferences();
@@ -375,6 +378,7 @@ class BookResultsState extends State<BookResults> {
     print(jsonEncode(queryParams));
 
     try {
+      Dialogs.showLoadingDialog(context, _keyLoader, _loader);
       // Make the HTTP POST request
       final response =
           await http.post(apiUrl, headers: headers, body: queryParams);
@@ -385,6 +389,7 @@ class BookResultsState extends State<BookResults> {
       print(response.body);
 
       if (response.statusCode == 200) {
+        Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
         // Successful response, show a success dialog
         showDialog(
           context: context,
@@ -409,6 +414,7 @@ class BookResultsState extends State<BookResults> {
           },
         );
       } else {
+        Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
         // Error response, show an error dialog
         showDialog(
           context: context,
@@ -419,6 +425,7 @@ class BookResultsState extends State<BookResults> {
         );
       }
     } catch (e) {
+      Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
       // Handle network errors or other exceptions
       print('Error: $e');
       showDialog(
@@ -470,6 +477,7 @@ class BookResultsState extends State<BookResults> {
                 style: const TextStyle(
                   color: appbar,
                   fontFamily: 'Impact',
+                  fontSize: 16
                 ),
               ),
             ],

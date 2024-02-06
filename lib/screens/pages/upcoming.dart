@@ -162,6 +162,8 @@ class UpcomingState extends State<Upcoming> {
   }
 
   Future<void> cancelResultAppointment(String appointmentId) async {
+    final GlobalKey<State> _keyLoader = GlobalKey<State>();
+  LoaderWidget _loader = LoaderWidget();
     SharedPreferences pref = await SharedPreferences.getInstance();
 
     String? qid = await getQIDFromSharedPreferences();
@@ -171,6 +173,7 @@ class UpcomingState extends State<Upcoming> {
     // String selectedReason = pref.getString("selectedReason").toString();
 
     try {
+      Dialogs.showLoadingDialog(context, _keyLoader, _loader);
       // Retrieve the token from SharedPreferences
       String? token = pref.getString('token');
       if (token == null) {
@@ -199,6 +202,7 @@ class UpcomingState extends State<Upcoming> {
           await http.post(apiUrl, headers: headers, body: requestBody);
       print("Cancel Result Appointment");
       if (response.statusCode == 200) {
+        Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
         showDialog(
             context: context,
             builder: (BuildContext context) {
@@ -221,6 +225,7 @@ class UpcomingState extends State<Upcoming> {
               );
             });
       } else {
+        Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
         showDialog(
             context: context, // Use the context of the current screen
             builder: (BuildContext context) {
@@ -229,6 +234,7 @@ class UpcomingState extends State<Upcoming> {
             });
       }
     } catch (e) {
+      Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
       print("Exception caught: $e");
       ErrorPopup(
         errorMessage: '$e',
@@ -237,6 +243,8 @@ class UpcomingState extends State<Upcoming> {
   }
 
   Future<void> cancelAnAppointment(String appointmentId) async {
+    final GlobalKey<State> _keyLoader = GlobalKey<State>();
+  LoaderWidget _loader = LoaderWidget();
     SharedPreferences pref = await SharedPreferences.getInstance();
 
     String? qid = await getQIDFromSharedPreferences();
@@ -246,6 +254,7 @@ class UpcomingState extends State<Upcoming> {
     // String selectedReason = pref.getString("selectedReason").toString();
 
     try {
+      Dialogs.showLoadingDialog(context, _keyLoader, _loader);
       // Retrieve the token from SharedPreferences
       String? token = pref.getString('token');
       if (token == null) {
@@ -274,6 +283,7 @@ class UpcomingState extends State<Upcoming> {
           await http.post(apiUrl, headers: headers, body: requestBody);
 
       if (response.statusCode == 200) {
+        Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
         showDialog(
             context: context,
             builder: (BuildContext context) {
@@ -296,6 +306,7 @@ class UpcomingState extends State<Upcoming> {
               );
             });
       } else {
+        Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
         showDialog(
             context: context, // Use the context of the current screen
             builder: (BuildContext context) {
@@ -304,72 +315,13 @@ class UpcomingState extends State<Upcoming> {
             });
       }
     } catch (e) {
+      Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
       print("Exception caught: $e");
       ErrorPopup(
         errorMessage: '$e',
       );
     }
   }
-
-  // void rescheduleAppointment(
-  //     String appID,
-  //     String appStatus,
-  //     String visitType,
-  //     String calendarId,
-  //     String apptypeId,
-  //     String visitTypeId,
-  //     String studyId) async {
-  //   SharedPreferences pref = await SharedPreferences.getInstance();
-  //   String? qid = await getQIDFromSharedPreferences();
-
-  //   var lang = 'langChange'.tr;
-
-  //   try {
-  //     // Retrieve the token from SharedPreferences
-  //     String? token = pref.getString('token');
-  //     if (token == null) {
-  //       // Handle the case where the token is not available
-  //       return;
-  //     }
-
-  //     // Construct headers with the retrieved token
-  //     Map<String, String> headers = {
-  //       'Authorization': 'Bearer ${token.replaceAll('"', '')}',
-  //     };
-
-  //     Map<String, dynamic> queryParam = {
-  //       "QID": '$qid',
-  //       "AppointmentStatus": appStatus,
-  //       "ShiftCode": 'shft',
-  //       "VisitTypeId": visitTypeId,
-  //       "AvailabilityCalenderId": calendarId,
-  //       "AppoinmentId": appID,
-  //       "language": "$lang",
-  //     };
-
-  //     // Construct the API URL
-  //     Uri apiUrl = Uri.parse(
-  //         'https://participantportal-test.qatarbiobank.org.qa/QbbAPIS/api/RescheduleAppointmentAPI?QID=${queryParam['QID']}&ShiftCode=${queryParam['ShiftCode']}&VisitTypeId=${queryParam['VisitTypeId']}&AvailabilityCalenderId=${queryParam['AvailabilityCalenderId']}&AppoinmentId=${queryParam['AppoinmentId']}&language=${queryParam['language']}&AppointmentStatus=${queryParam['AppointmentStatus']}');
-
-  //     // Make the HTTP POST request
-  //     final response =
-  //         await http.post(apiUrl, headers: headers, body: queryParam);
-
-  //     if (response.statusCode == 200) {
-  //       await GetRescheduleAppointment(
-  //           context, studyId, visitTypeId, visitType, appID);
-  //     } else {
-  //       showDialog(
-  //           context: context, // Use the context of the current screen
-  //           builder: (BuildContext context) {
-  //             return ErrorPopup(
-  //                 errorMessage: json.decode(response.body)["Message"]);
-  //           });
-  //     }
-  //   } catch (e) {}
-  // }
-
-  // {\r\n    \"QID\": \"28900498437\",\r\n    \"AppoinmentId\": \"11488\",\r\n    \"Reason\": \"Reason\",\r\n    \"ReasonType\": \"ReasonType\"\r\n}
 
   @override
   Widget build(BuildContext context) {
@@ -450,7 +402,7 @@ class UpcomingState extends State<Upcoming> {
                                               style: const TextStyle(
                                                 color: Color.fromARGB(
                                                     255, 255, 255, 255),
-                                                fontSize: 16,
+                                                fontSize: 11,
                                                 backgroundColor: appbar,
                                               ),
                                             ),
@@ -464,6 +416,7 @@ class UpcomingState extends State<Upcoming> {
                                                 .format(
                                                     dateExtract(appointment))
                                                 .toString(),
+                                                style: TextStyle(fontSize: 11),
                                           ),
                                         ),
                                       ],
@@ -488,7 +441,7 @@ class UpcomingState extends State<Upcoming> {
                                               style: const TextStyle(
                                                 color: Color.fromARGB(
                                                     255, 255, 255, 255),
-                                                fontSize: 13,
+                                                fontSize: 11,
                                               ),
                                             ),
                                           ),
@@ -536,7 +489,7 @@ class UpcomingState extends State<Upcoming> {
                                                               163,
                                                               163,
                                                               163),
-                                                          fontSize: 13,
+                                                          fontSize: 11,
                                                         ),
                                                       ),
                                                       Text(
@@ -586,7 +539,7 @@ class UpcomingState extends State<Upcoming> {
                                                               163,
                                                               163,
                                                               163),
-                                                          fontSize: 13,
+                                                          fontSize: 11,
                                                         ),
                                                       ),
                                                       Text(
@@ -641,7 +594,7 @@ class UpcomingState extends State<Upcoming> {
                                                               163,
                                                               163,
                                                               163),
-                                                          fontSize: 13,
+                                                          fontSize: 11,
                                                         ),
                                                       ),
                                                       Text(
@@ -692,7 +645,7 @@ class UpcomingState extends State<Upcoming> {
                                                               163,
                                                               163,
                                                               163),
-                                                          fontSize: 13,
+                                                          fontSize: 11,
                                                         ),
                                                       ),
                                                       Text(
@@ -972,6 +925,7 @@ class UpcomingState extends State<Upcoming> {
                                             'cancelButton'.tr,
                                             style: TextStyle(
                                               color: Colors.deepPurple,
+                                              fontSize: 11
                                             ),
                                           ),
                                         ),
@@ -1041,7 +995,8 @@ class UpcomingState extends State<Upcoming> {
                                           child: Text(
                                             'reschedule'.tr,
                                             style:
-                                                TextStyle(color: Colors.white),
+                                                TextStyle(color: Colors.white, fontSize: 11),
+                                                
                                           ),
                                         ),
                                       ),

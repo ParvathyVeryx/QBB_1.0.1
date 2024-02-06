@@ -8,6 +8,8 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../screens/pages/loader.dart';
+
 // Future<void> callUserProfileAPI(
 //     BuildContext context, String email, int maritalId) async {
 //   SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -62,8 +64,38 @@ import 'package:shared_preferences/shared_preferences.dart';
 //         });
 //   }
 // }
+
+class Dialogs {
+  static Future<void> showLoadingDialog(
+    BuildContext context,
+    GlobalKey key,
+    Widget? child,
+  ) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return WillPopScope(
+          onWillPop: () async => false,
+          child: SimpleDialog(
+            key: key,
+            backgroundColor: Colors.transparent,
+            children: <Widget>[
+              Center(
+                child: child,
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+}
+
 Future<void> callUserProfileAPI(
     BuildContext context, String email, int maritalId) async {
+  final GlobalKey<State> _keyLoader = GlobalKey<State>();
+  LoaderWidget _loader = LoaderWidget();
   SharedPreferences prefs = await SharedPreferences.getInstance();
   String qid = prefs.getString("userQID").toString();
   var lang = 'langChange'.tr;
@@ -82,6 +114,7 @@ Future<void> callUserProfileAPI(
   String token = prefs.getString('token') ?? '';
 
   try {
+    Dialogs.showLoadingDialog(context, _keyLoader, _loader);
     final http.Response response = await http.post(
       Uri.parse(apiUrl),
       headers: {
@@ -101,8 +134,9 @@ Future<void> callUserProfileAPI(
     print("Response Body: ${response.body}");
 
     if (response.statusCode == 200) {
+      Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
       // Successful response, display a success popup or handle it accordingly
-            showDialog(
+      showDialog(
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
@@ -137,6 +171,7 @@ Future<void> callUserProfileAPI(
         },
       );
     } else {
+      Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
       // Unsuccessful response, display an error popup or handle it accordingly
       showDialog(
         context: context,
@@ -174,6 +209,7 @@ Future<void> callUserProfileAPI(
       );
     }
   } catch (error) {
+    Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
     // Handle exceptions, e.g., network errors
     print("Error: $error");
     showDialog(

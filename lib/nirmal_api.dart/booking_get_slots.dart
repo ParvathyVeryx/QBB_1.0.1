@@ -10,6 +10,7 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../screens/pages/loader.dart';
 import '../screens/pages/reschedule_app.dart';
 import '../screens/pages/reschedule_result_app.dart';
 import '../screens/pages/upcoming.dart';
@@ -43,6 +44,8 @@ Future<void> bookAppointmentApiCall(
   String visitTypeId,
   String visitTypeName,
 ) async {
+  final GlobalKey<State> _keyLoader = GlobalKey<State>();
+  LoaderWidget _loader = LoaderWidget();
   String? qid = await getQIDFromSharedPreferences();
 
   int? personGradeId = await getPersonGradeIdFromSharedPreferences();
@@ -71,6 +74,7 @@ Future<void> bookAppointmentApiCall(
   // SharedPreferences pref = await SharedPreferences.getInstance();
   // String? token = pref.getString('token');
   try {
+    Dialogs.showLoadingDialog(context, _keyLoader, _loader);
     final response = await http.get(
       uri,
       headers: {
@@ -80,6 +84,7 @@ Future<void> bookAppointmentApiCall(
     );
     print("Print Response");
     if (response.statusCode == 200) {
+      Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
       // Successful API call
 
       // Parse the JSON response
@@ -119,7 +124,7 @@ Future<void> bookAppointmentApiCall(
       );
     } else {
       // Handle errors
-
+      Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
       showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -129,6 +134,7 @@ Future<void> bookAppointmentApiCall(
       );
     }
   } catch (error) {
+    Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
     // Handle network errors
     showDialog(
       context: context,
@@ -146,6 +152,8 @@ Future<void> GetRescheduleAppointment(
     String visitTypeName,
     String appID,
     String appointmentDate) async {
+  final GlobalKey<State> _keyLoader = GlobalKey<State>();
+  LoaderWidget _loader = LoaderWidget();
   String? qid = await getQIDFromSharedPreferences();
   Future<String> appDateFuture = Future.value(appointmentDate);
 
@@ -184,6 +192,7 @@ Future<void> GetRescheduleAppointment(
   // SharedPreferences pref = await SharedPreferences.getInstance();
   // String? token = pref.getString('token');
   try {
+    Dialogs.showLoadingDialog(context, _keyLoader, _loader);
     final response = await http.get(
       uri,
       headers: {
@@ -194,7 +203,7 @@ Future<void> GetRescheduleAppointment(
 
     if (response.statusCode == 200) {
       // Successful API call
-
+      Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
       // Parse the JSON response
       final Map<String, dynamic> jsonResponse = json.decode(response.body);
       // BookAppScreenState myWidget = BookAppScreenState();
@@ -231,7 +240,7 @@ Future<void> GetRescheduleAppointment(
       );
     } else {
       // Handle errors
-
+      Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
       showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -241,6 +250,7 @@ Future<void> GetRescheduleAppointment(
       );
     }
   } catch (error) {
+    Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
     // Handle network errors
     showDialog(
       context: context,
@@ -258,6 +268,8 @@ Future<void> GetResultRescheduleAppointment(
     String visitTypeName,
     String appID,
     String appointmentDate) async {
+  final GlobalKey<State> _keyLoader = GlobalKey<State>();
+  LoaderWidget _loader = LoaderWidget();
   String? qid = await getQIDFromSharedPreferences();
   Future<String> appDateFuture = Future.value(appointmentDate);
   SharedPreferences pref = await SharedPreferences.getInstance();
@@ -298,6 +310,7 @@ Future<void> GetResultRescheduleAppointment(
   // SharedPreferences pref = await SharedPreferences.getInstance();
   // String? token = pref.getString('token');
   try {
+    Dialogs.showLoadingDialog(context, _keyLoader, _loader);
     final response = await http.get(
       uri,
       headers: {
@@ -310,7 +323,7 @@ Future<void> GetResultRescheduleAppointment(
 
     if (response.statusCode == 200) {
       // Successful API call
-
+      Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
       // Parse the JSON response
       final Map<String, dynamic> jsonResponse = json.decode(response.body);
       // BookAppScreenState myWidget = BookAppScreenState();
@@ -347,7 +360,7 @@ Future<void> GetResultRescheduleAppointment(
       );
     } else {
       // Handle errors
-
+      Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
       showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -357,6 +370,7 @@ Future<void> GetResultRescheduleAppointment(
       );
     }
   } catch (error) {
+    Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
     // Handle network errors
     showDialog(
       context: context,
@@ -376,9 +390,12 @@ Future<void> bookAppointmentToGetResults(
   String visitTypeId,
   String availabilityCalendar,
 ) async {
+  final GlobalKey<State> _keyLoader = GlobalKey<State>();
+  LoaderWidget _loader = LoaderWidget();
   int? personGradeId = await getPersonGradeIdFromSharedPreferences();
 
   try {
+    Dialogs.showLoadingDialog(context, _keyLoader, _loader);
     Map<String, dynamic> requestBody = {
       'QID': Qid,
       "AppointmentTypeId": AppointmentTypeId,
@@ -408,6 +425,7 @@ Future<void> bookAppointmentToGetResults(
     );
 
     if (response.statusCode == 200) {
+      Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
       // Successful API call
 
       // Parse the JSON response
@@ -424,6 +442,7 @@ Future<void> bookAppointmentToGetResults(
         ),
       );
     } else {
+      Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
       // Handle errors
 
       showDialog(
@@ -435,6 +454,7 @@ Future<void> bookAppointmentToGetResults(
       );
     }
   } catch (error) {
+    Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
     // Handle network errors
     showDialog(
       context: context,
@@ -451,6 +471,8 @@ Future<void> getResultAppointmentApiCall(
   String visitTypeId,
   String AppointmentId,
 ) async {
+  final GlobalKey<State> _keyLoader = GlobalKey<State>();
+  LoaderWidget _loader = LoaderWidget();
   String? qid = await getQIDFromSharedPreferences();
 
   int? personGradeId = await getPersonGradeIdFromSharedPreferences();
@@ -482,6 +504,7 @@ Future<void> getResultAppointmentApiCall(
   // SharedPreferences pref = await SharedPreferences.getInstance();
   // String? token = pref.getString('token');
   try {
+    Dialogs.showLoadingDialog(context, _keyLoader, _loader);
     final response = await http.get(
       uri,
       headers: {
@@ -491,13 +514,14 @@ Future<void> getResultAppointmentApiCall(
     );
 
     if (response.statusCode == 200) {
+      Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
       // Successful API call
 
       // Parse the JSON response
       final Map<String, dynamic> jsonResponse = json.decode(response.body);
     } else {
       // Handle errors
-
+      Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
       showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -507,6 +531,7 @@ Future<void> getResultAppointmentApiCall(
       );
     }
   } catch (error) {
+    Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
     // Handle network errors
     showDialog(
       context: context,
@@ -519,6 +544,8 @@ Future<void> getResultAppointmentApiCall(
 
 Future<void> getResultsSlot(BuildContext context, String studyId,
     String visitTypeId, String visitTypeName, String appointmentID) async {
+  final GlobalKey<State> _keyLoader = GlobalKey<State>();
+  LoaderWidget _loader = LoaderWidget();
   String? qid = await getQIDFromSharedPreferences();
 
   int? personGradeId = await getPersonGradeIdFromSharedPreferences();
@@ -548,6 +575,7 @@ Future<void> getResultsSlot(BuildContext context, String studyId,
   // SharedPreferences pref = await SharedPreferences.getInstance();
   // String? token = pref.getString('token');
   try {
+    Dialogs.showLoadingDialog(context, _keyLoader, _loader);
     final response = await http.get(
       uri,
       headers: {
@@ -558,7 +586,7 @@ Future<void> getResultsSlot(BuildContext context, String studyId,
 
     if (response.statusCode == 200) {
       // Successful API call
-
+      Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
       // Parse the JSON response
       final Map<String, dynamic> jsonResponse = json.decode(response.body);
       BookAppScreenState myWidget = BookAppScreenState();
@@ -595,6 +623,7 @@ Future<void> getResultsSlot(BuildContext context, String studyId,
         ),
       );
     } else {
+      Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
       // Handle errors
 
       showDialog(
@@ -606,11 +635,39 @@ Future<void> getResultsSlot(BuildContext context, String studyId,
       );
     }
   } catch (error) {
+    Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
     // Handle network errors
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return ErrorPopup(errorMessage: 'Network Error');
+      },
+    );
+  }
+}
+
+class Dialogs {
+  static Future<void> showLoadingDialog(
+    BuildContext context,
+    GlobalKey key,
+    Widget? child,
+  ) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return WillPopScope(
+          onWillPop: () async => false,
+          child: SimpleDialog(
+            key: key,
+            backgroundColor: Colors.transparent,
+            children: <Widget>[
+              Center(
+                child: child,
+              ),
+            ],
+          ),
+        );
       },
     );
   }

@@ -189,6 +189,7 @@ class BookAppointmentsState extends State<BookAppointments> {
                     style: const TextStyle(
                       color: Colors.white,
                       fontFamily: 'Impact',
+                      fontSize: 16
                     ),
                   ),
                   IconButton(
@@ -477,7 +478,7 @@ class BookAppointmentsState extends State<BookAppointments> {
                                   ),
                                 ),
                                 backgroundColor: primaryColor,
-                                side: const BorderSide(color: Colors.black),
+                                // side: const BorderSide(color: Colors.black),
                                 elevation: 0,
                               ),
                               onPressed: () async {

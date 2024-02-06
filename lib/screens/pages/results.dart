@@ -145,6 +145,7 @@ class ResultsState extends State<Results> {
                           color: Colors.white,
                           // fontWeight: FontWeight.w900 ,
                           fontFamily: 'Impact',
+                          fontSize: 16
                         ),
                       ),
                       // SizedBox(
@@ -316,6 +317,7 @@ class ResultsState extends State<Results> {
                           color: Colors.white,
                           // fontWeight: FontWeight.w900 ,
                           fontFamily: 'Impact',
+                          fontSize: 16
                         ),
                       ),
                       // SizedBox(
@@ -485,6 +487,7 @@ class ResultsState extends State<Results> {
                       color: Colors.white,
                       // fontWeight: FontWeight.w900 ,
                       fontFamily: 'Impact',
+                      fontSize: 16
                     ),
                   ),
                   // SizedBox(
@@ -676,7 +679,7 @@ class ResultsState extends State<Results> {
                                               style: const TextStyle(
                                                 color: Color.fromARGB(
                                                     255, 255, 255, 255),
-                                                fontSize: 16,
+                                                fontSize: 12,
                                                 backgroundColor: appbar,
                                               ),
                                             ),
@@ -689,7 +692,7 @@ class ResultsState extends State<Results> {
                                             DateFormat('MM-yyyy')
                                                 .format(
                                                     dateExtract(appointment))
-                                                .toString(),
+                                                .toString(), style: TextStyle(fontSize: 11),
                                           ),
                                         ),
                                       ],
@@ -715,7 +718,7 @@ class ResultsState extends State<Results> {
                                               style: const TextStyle(
                                                 color: Color.fromARGB(
                                                     255, 255, 255, 255),
-                                                fontSize: 13,
+                                                fontSize: 11,
                                               ),
                                             ),
                                           ),
@@ -763,7 +766,7 @@ class ResultsState extends State<Results> {
                                                               163,
                                                               163,
                                                               163),
-                                                          fontSize: 13,
+                                                          fontSize: 11,
                                                         ),
                                                       ),
                                                       Text(
@@ -814,7 +817,7 @@ class ResultsState extends State<Results> {
                                                               163,
                                                               163,
                                                               163),
-                                                          fontSize: 13,
+                                                          fontSize: 11,
                                                         ),
                                                       ),
                                                       Text(

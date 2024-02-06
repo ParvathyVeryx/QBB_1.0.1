@@ -84,6 +84,7 @@ class AppointmentsState extends State<Appointments> {
                     color: Colors.white,
                     // fontWeight: FontWeight.w900 ,
                     fontFamily: 'Impact',
+                    fontSize: 16
                   ),
                 ),
                 // SizedBox(
@@ -115,9 +116,10 @@ class AppointmentsState extends State<Appointments> {
             // ],
             bottom: TabBar(
                 tabs: [
+                  
                   Padding(
                     padding: EdgeInsets.only(left: 30.0),
-                    child: Tab(text: 'upcoming'.tr),
+                    child: Tab(text: 'upcoming'.tr,),
                   ),
                   Tab(text: 'completed'.tr),
                   Padding(
@@ -125,6 +127,7 @@ class AppointmentsState extends State<Appointments> {
                     child: Tab(text: 'all'.tr),
                   ),
                 ],
+                labelStyle: TextStyle(fontSize: 12),
                 indicatorColor: Colors.white, // Set the color of the indicator
                 labelColor:
                     Colors.white, // Set the color of the active tab text
@@ -233,27 +236,14 @@ class AppointmentsState extends State<Appointments> {
               ]),
           body: TabBarView(
             children: [
-              // Content of Tab 1
-              // SizedBox(
-              //     height: MediaQuery.of(context).size.height * 0.9,
-              //     child:
-              //     Center(
-              //         child: Text(
-              //       "thereAreNoAppointments".tr,
-              //       style: TextStyle(fontSize: 18),
-              //     ))
-              //     ),
+             
               Upcoming(
                 UpcomingAppointments: upcoming,
               ),
               // Content of Tab 2
               SizedBox(
                 height: MediaQuery.of(context).size.height * 0.9,
-                // child: Center(
-                //     child: Text(
-                //   "There are no appointments !",
-                //   style: TextStyle(fontSize: 18),
-                // ))
+                
                 child: Completed(
                   completedAppointments: completedAppointments,
                 ),

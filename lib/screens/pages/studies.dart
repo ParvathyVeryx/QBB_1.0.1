@@ -182,10 +182,12 @@ class StudiesState extends State<Studies> {
                 ),
               ),
               Text(
-                'studies'.tr,
+                'studiesAppointment'.tr,
                 style: const TextStyle(
+                  fontSize: 16,
                   color: Colors.white,
                   fontFamily: 'Impact',
+                  
                 ),
               ),
               IconButton(
@@ -204,161 +206,159 @@ class StudiesState extends State<Studies> {
           ),
           backgroundColor: appbar,
         ),
-        body: RefreshIndicator(
-          onRefresh: () => refreshPage(),
-          child: FutureBuilder<List<Study>>(
-            future: fetchStudyMasterAPI(),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                // return Center(child: CircularProgressIndicator());
-                isLoading = true;
-                return LoaderWidget();
-              } else if (snapshot.hasError) {
-                return Center(child: Text('Error: ${snapshot.error}'));
-              } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                return Center(child: Text('No data available'));
-              } else {
-                List<Study> studies = snapshot.data!;
-
-                return SingleChildScrollView(
-                  child: Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: Column(
-                      children: studies.map((study) {
-                        return Padding(
-                          padding: const EdgeInsets.only(bottom: 16.0),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: const BorderRadius.only(
-                                bottomLeft: Radius.circular(20.0),
-                              ),
-                              boxShadow: [
-                                BoxShadow(
-                                  color:
-                                      const Color.fromARGB(255, 188, 188, 188)
-                                          .withOpacity(0.5),
-                                  spreadRadius: 5,
-                                  blurRadius: 7,
-                                  offset: const Offset(0, 3),
-                                ),
-                              ],
+        body: FutureBuilder<List<Study>>(
+          future: fetchStudyMasterAPI(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              // return Center(child: CircularProgressIndicator());
+              isLoading = true;
+              return LoaderWidget();
+            } else if (snapshot.hasError) {
+              return Center(child: Text('Error: ${snapshot.error}'));
+            } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+              return Center(child: Text('No data available'));
+            } else {
+              List<Study> studies = snapshot.data!;
+        
+              return SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Column(
+                    children: studies.map((study) {
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 16.0),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: const BorderRadius.only(
+                              bottomLeft: Radius.circular(20.0),
                             ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(15.0),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  const SizedBox(height: 20.0),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Column(
+                            boxShadow: [
+                              BoxShadow(
+                                color:
+                                    const Color.fromARGB(255, 188, 188, 188)
+                                        .withOpacity(0.5),
+                                spreadRadius: 5,
+                                blurRadius: 7,
+                                offset: const Offset(0, 3),
+                              ),
+                            ],
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(15.0),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                const SizedBox(height: 20.0),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.start,
+                                  children: [
+                                    Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          'studyCode'.tr,
+                                          style: const TextStyle(
+                                            color: Color.fromARGB(
+                                                255, 195, 195, 195),
+                                            fontSize: 11,
+                                          ),
+                                        ),
+                                        Text(study.studyCode, style: TextStyle(fontSize: 11),),
+                                      ],
+                                    ),
+                                    Padding(
+                                      padding:
+                                          const EdgeInsets.only(right: 18.0),
+                                      child: Column(
                                         mainAxisAlignment:
                                             MainAxisAlignment.start,
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
                                           Text(
-                                            'studyCode'.tr,
+                                            'studyName'.tr,
                                             style: const TextStyle(
                                               color: Color.fromARGB(
                                                   255, 195, 195, 195),
-                                              fontSize: 14,
+                                              fontSize: 11,
                                             ),
                                           ),
-                                          Text(study.studyCode),
+                                          Text(study.studyName, style: TextStyle(fontSize: 11),),
+                                          // Text()
                                         ],
                                       ),
-                                      Padding(
-                                        padding:
-                                            const EdgeInsets.only(right: 18.0),
-                                        child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.start,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              'studyName'.tr,
-                                              style: const TextStyle(
-                                                color: Color.fromARGB(
-                                                    255, 195, 195, 195),
-                                                fontSize: 14,
-                                              ),
-                                            ),
-                                            Text(study.studyName),
-                                            // Text()
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(height: 20.0),
-                                  Text(
-                                    study.studyDescription,
-                                    style: const TextStyle(
-                                        color: Colors.black, fontSize: 16.0),
-                                    textAlign: TextAlign.justify,
-                                  ),
-                                  const SizedBox(height: 20.0),
-                                  ElevatedButton(
-                                    onPressed: () {
-                                      // Fetch the "Id" from the study JSON
-                                      int? studyId = study
-                                          .Id; // Replace "id" with the actual getter in your Study class
-
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) =>
-                                              BookAppointments(
-                                            studyName: study
-                                                .studyName, // Pass the study name as an argument
-                                            studyId: studyId,
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                    style: ButtonStyle(
-                                      backgroundColor:
-                                          MaterialStateProperty.all<Color>(
-                                              primaryColor),
-                                      shape: MaterialStateProperty.all<
-                                          RoundedRectangleBorder>(
-                                        const RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.only(
-                                            bottomLeft: Radius.circular(20.0),
-                                          ),
-                                        ),
-                                      ),
                                     ),
-                                    child: Padding(
-                                      padding: const EdgeInsets.fromLTRB(
-                                          10.0, 15.0, 10.0, 15.0),
-                                      child: Text(
-                                        'bookAnAppointment'.tr,
-                                        style: const TextStyle(
-                                          color: textcolor,
+                                  ],
+                                ),
+                                const SizedBox(height: 20.0),
+                                Text(
+                                  study.studyDescription,
+                                  style: const TextStyle(
+                                      color: Colors.black, fontSize: 12.0),
+                                  textAlign: TextAlign.justify,
+                                ),
+                                const SizedBox(height: 20.0),
+                                ElevatedButton(
+                                  onPressed: () {
+                                    // Fetch the "Id" from the study JSON
+                                    int? studyId = study
+                                        .Id; // Replace "id" with the actual getter in your Study class
+        
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            BookAppointments(
+                                          studyName: study
+                                              .studyName, // Pass the study name as an argument
+                                          studyId: studyId,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                  style: ButtonStyle(
+                                    backgroundColor:
+                                        MaterialStateProperty.all<Color>(
+                                            primaryColor),
+                                    shape: MaterialStateProperty.all<
+                                        RoundedRectangleBorder>(
+                                      const RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.only(
+                                          bottomLeft: Radius.circular(20.0),
                                         ),
                                       ),
                                     ),
                                   ),
-                                ],
-                              ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.fromLTRB(
+                                        0.0, 0.0, 0.0, 0.0),
+                                    child: Text(
+                                      'bookAnAppointment'.tr,
+                                      style: const TextStyle(
+                                        color: textcolor,
+                                        fontSize: 11
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
-                        );
-                      }).toList(),
-                    ),
+                        ),
+                      );
+                    }).toList(),
                   ),
-                );
-              }
-            },
-          ),
+                ),
+              );
+            }
+          },
         ),
       ),
     );

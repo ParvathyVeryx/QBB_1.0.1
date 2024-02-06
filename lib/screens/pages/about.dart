@@ -42,6 +42,7 @@ class AboutUsState extends State<AboutUs> {
                     color: Colors.white,
                     // fontWeight: FontWeight.w900 ,
                     fontFamily: 'Impact',
+                    fontSize: 16
                   ),
                 ),
                 // SizedBox(

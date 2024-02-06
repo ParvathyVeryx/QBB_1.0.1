@@ -148,15 +148,13 @@ class _RegistrationModeState extends State<RegistrationMode> {
             Navigator.of(context).pop();
           },
         ),
-        title: const Center(
+        title: Center(
           child: Padding(
             padding: EdgeInsets.only(right: 40.0),
             child: Text(
-              'Register',
-              style: TextStyle(
-                color: appbar,
-                fontFamily: 'Impact',
-              ),
+              'register'.tr,
+              style:
+                  TextStyle(color: appbar, fontFamily: 'Impact', fontSize: 16),
             ),
           ),
         ),

@@ -110,6 +110,7 @@ class AccessUserState extends State<AccessUser> {
               style: TextStyle(
                 color: appbar,
                 fontFamily: 'Impact',
+                fontSize: 16
               ),
             ),
           ),

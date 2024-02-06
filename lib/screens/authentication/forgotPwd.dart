@@ -56,6 +56,7 @@ class ForgotPasswordState extends State<ForgotPassword> {
               style: const TextStyle(
                 color: appbar,
                 fontFamily: 'Impact',
+                fontSize: 16
               ),
             ),
           ),

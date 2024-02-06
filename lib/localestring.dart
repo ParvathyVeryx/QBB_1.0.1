@@ -147,7 +147,7 @@ class LocaleString extends Translations {
           "bookAn": "BOOK AN",
           "socialMedia": "Social Media",
           "selectCampaigns": "Select Campaigns",
-          // "results": "RESULTS",
+          "results": "RESULTS",
           "appointment": "APPOINTMENT",
           "status": "STATUS",
           "profile": "My Profile",

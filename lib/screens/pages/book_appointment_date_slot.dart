@@ -61,7 +61,7 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
       appBar: AppBar(
         title: Text(
           'pageATitle'.tr,
-          style: TextStyle(fontFamily: 'impact', color: Colors.white),
+          style: TextStyle(fontFamily: 'impact', color: Colors.white, fontSize: 16),
         ),
         backgroundColor: Colors.blue,
         iconTheme: const IconThemeData(color: Colors.white),

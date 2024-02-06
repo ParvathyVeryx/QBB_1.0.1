@@ -117,6 +117,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                 color: Colors.white,
                                 // fontWeight: FontWeight.w900 ,
                                 fontFamily: 'Impact',
+                                fontSize: 16
                               ),
                             ),
                           ),
@@ -274,6 +275,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                 color: Colors.white,
                                 // fontWeight: FontWeight.w900 ,
                                 fontFamily: 'Impact',
+                                fontSize: 16
                               ),
                             ),
                           ),
@@ -429,6 +431,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                             color: Colors.white,
                             // fontWeight: FontWeight.w900 ,
                             fontFamily: 'Impact',
+                            fontSize: 16
                           ),
                         ),
                       ),

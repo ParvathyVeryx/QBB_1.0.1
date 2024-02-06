@@ -262,6 +262,7 @@ class ProfileState extends State<Profile> {
               style: const TextStyle(
                 color: Colors.white,
                 fontFamily: 'Impact',
+                fontSize: 16
               ),
             ),
             IconButton(

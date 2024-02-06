@@ -5,7 +5,7 @@ class LoaderWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       color:
-          Colors.white.withOpacity(0.5), // Set a transparent white background
+          Colors.white.withOpacity(0), // Set a transparent white background
 
       child: Center(
         child: Image.asset(

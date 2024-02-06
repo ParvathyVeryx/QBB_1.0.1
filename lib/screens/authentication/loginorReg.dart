@@ -41,7 +41,8 @@ class loginOrRegState extends State<loginOrReg> {
               'create/activateAcc'.tr,
               style: const TextStyle(
                 color: Colors.white,
-                fontFamily: 'Impact', // Set the text color to white
+                fontFamily: 'Impact',
+                fontSize: 16 // Set the text color to white
               ),
             ),
             backgroundColor: appbar,
