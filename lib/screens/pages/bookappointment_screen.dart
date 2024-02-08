@@ -356,7 +356,7 @@ class BookAppScreenState extends State<BookAppScreen> {
   }
 
   bool isLoadingLoader = false;
-
+  final GlobalKey<ScaffoldState>? _scaffoldKey = GlobalKey<ScaffoldState>();
   Future<void> confirmAppointment(BuildContext context) async {
     final GlobalKey<State> _keyLoader = GlobalKey<State>();
     LoaderWidget _loader = LoaderWidget();
@@ -419,9 +419,9 @@ class BookAppScreenState extends State<BookAppScreen> {
     print("API URL");
     print(apiUrl);
     print(jsonEncode(queryParams));
-
+    BuildContext parentContext = context;
     try {
-      Dialogs.showLoadingDialog(context, _keyLoader, _loader);
+      Dialogs.showLoadingDialog(parentContext, _keyLoader, _loader);
       // Make the HTTP POST request
       final response =
           await http.post(apiUrl, headers: headers, body: queryParams);
@@ -429,14 +429,14 @@ class BookAppScreenState extends State<BookAppScreen> {
       // Process the response here
 
       print(response.statusCode);
-      print(response);
+      print(response.body);
 
       if (response.statusCode == 200) {
         Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
-        // Successful response, show a success dialog
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
+
+        await showDialog(
+          context: parentContext,
+          builder: (BuildContext parentcontext) {
             return AlertDialog(
               backgroundColor: Colors.white,
               shape: const RoundedRectangleBorder(
@@ -458,7 +458,7 @@ class BookAppScreenState extends State<BookAppScreen> {
                 TextButton(
                   onPressed: () async {
                     Navigator.push(
-                      context,
+                      parentContext,
                       MaterialPageRoute(
                         builder: (context) => const Appointments(),
                       ),
@@ -476,8 +476,8 @@ class BookAppScreenState extends State<BookAppScreen> {
       } else {
         Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
         // Error response, show an error dialog
-        showDialog(
-          context: context,
+        await showDialog(
+          context: parentContext,
           builder: (BuildContext context) {
             return ErrorPopup(
                 errorMessage: json.decode(response.body)["Message"]);
@@ -488,13 +488,9 @@ class BookAppScreenState extends State<BookAppScreen> {
       Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
       // Handle network errors or other exceptions
       print('Error: $e');
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return const ErrorPopup(
-              errorMessage: 'Network error or other exception occurred.');
-        },
-      );
+      ErrorPopup(errorMessage: 'Network error or other exception occurred.');
+      //   },
+      // );
     }
   }
 
@@ -1066,27 +1062,36 @@ class BookAppScreenState extends State<BookAppScreen> {
                                     ),
                                     actions: <Widget>[
                                       Divider(),
-                                      TextButton(
-                                        onPressed: () async {
-                                          Navigator.of(context)
-                                              .pop(); // Close the dialog
-                                        },
-                                        child: Text(
-                                          'cancelButton'.tr,
-                                          style:
-                                              TextStyle(color: secondaryColor),
-                                        ),
-                                      ),
-                                      TextButton(
-                                        onPressed: () async {
-                                          confirmAppointment(context);
-                                          Navigator.pop(context);
-                                        },
-                                        child: Text(
-                                          'confirm'.tr,
-                                          style:
-                                              TextStyle(color: secondaryColor),
-                                        ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.end,
+                                        children: [
+                                          TextButton(
+                                            onPressed: () async {
+                                              Navigator.of(context)
+                                                  .pop(); // Close the dialog
+                                            },
+                                            child: Text(
+                                              'cancelButton'.tr,
+                                              style: TextStyle(
+                                                  color: secondaryColor),
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            width: 20,
+                                          ),
+                                          TextButton(
+                                            onPressed: () async {
+                                              confirmAppointment(context);
+                                              Navigator.pop(context);
+                                            },
+                                            child: Text(
+                                              'confirm'.tr,
+                                              style: TextStyle(
+                                                  color: secondaryColor),
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ],
                                   );

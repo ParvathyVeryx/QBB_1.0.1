@@ -38,8 +38,8 @@ Future<void> setPasswordAccessSetupNotCompleted(
     );
 
     if (response.statusCode == 200) {
-      Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
-      showDialog(
+       Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
+      await showDialog(
         context: context, // Use the context of the current screen
         builder: (BuildContext context) {
           return ErrorPopup(errorMessage: json.decode(response.body)["Message"]);
@@ -47,8 +47,8 @@ Future<void> setPasswordAccessSetupNotCompleted(
       );
       // Handle the response data if needed
     } else {
-      Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
-      showDialog(
+       Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
+      await showDialog(
         context: context, // Use the context of the current screen
         builder: (BuildContext context) {
           return ErrorPopup(errorMessage: json.decode(response.body)["Message"]);
@@ -57,7 +57,7 @@ Future<void> setPasswordAccessSetupNotCompleted(
     }
   } catch (error) {
     Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
-    showDialog(
+    await showDialog(
         context: context, // Use the context of the current screen
         builder: (BuildContext context) {
           return ErrorPopup(errorMessage: '$error');

@@ -71,7 +71,7 @@ Future<void> getresults(
     } else {
       Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
       // Handle errors
-      showDialog(
+      await showDialog(
         context: context,
         builder: (BuildContext context) {
           return ErrorPopup(
@@ -82,7 +82,7 @@ Future<void> getresults(
   } catch (error) {
     Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
     // Handle network errors
-    showDialog(
+    await showDialog(
       context: context,
       builder: (BuildContext context) {
         return ErrorPopup(errorMessage: 'Network Error');
@@ -143,7 +143,7 @@ Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
     } else {
       // Handle errors
 Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
-      showDialog(
+    await  showDialog(
         context: context,
         builder: (BuildContext context) {
           return ErrorPopup(
@@ -154,7 +154,7 @@ Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
   } catch (error) {
     Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
     // Handle network errors
-    showDialog(
+  await  showDialog(
       context: context,
       builder: (BuildContext context) {
         return ErrorPopup(errorMessage: 'Network Error');

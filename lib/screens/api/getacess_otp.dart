@@ -55,7 +55,7 @@ Future<bool> getAccess(String qid, String otp, BuildContext context) async {
       Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
       // Handle error
       print('Error: ${response.statusCode}');
-      showDialog(
+      await showDialog(
         context: context, // Use the context of the current screen
         builder: (BuildContext context) {
           return ErrorPopup(
@@ -68,7 +68,7 @@ Future<bool> getAccess(String qid, String otp, BuildContext context) async {
   } catch (err) {
     Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
     // Handle network errors
-    showDialog(
+    await showDialog(
         context: context, // Use the context of the current screen
         builder: (BuildContext context) {
           return ErrorPopup(

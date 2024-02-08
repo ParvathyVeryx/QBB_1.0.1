@@ -54,7 +54,7 @@ Future<void> accessSetupOTP({
 
     if (response.statusCode == 200) {
       Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
-      showDialog(
+      await showDialog(
         context: context,
         builder: (BuildContext context) {
           return ErrorPopup(
@@ -64,7 +64,7 @@ Future<void> accessSetupOTP({
       // Handle successful response
     } else {
       Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
-      showDialog(
+      await showDialog(
         context: context,
         builder: (BuildContext context) {
           return ErrorPopup(
@@ -77,7 +77,7 @@ Future<void> accessSetupOTP({
   } catch (e) {
     Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
     // Handle network errors
-    showDialog(
+    await showDialog(
       context: context,
       builder: (BuildContext context) {
         return ErrorPopup(errorMessage: 'Error: $e.');

@@ -92,7 +92,7 @@ Future<void> uploadUserProfilePhoto(
         // Handle non-JSON response (e.g., log or print the raw response)
       }
 
-      showDialog(
+      await showDialog(
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(

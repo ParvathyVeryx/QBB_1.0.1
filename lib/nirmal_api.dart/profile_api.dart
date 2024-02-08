@@ -212,7 +212,7 @@ Future<void> callUserProfileAPI(
     } else {
       Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
       // Unsuccessful response, display an error popup or handle it accordingly
-      showDialog(
+      await showDialog(
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
@@ -251,7 +251,7 @@ Future<void> callUserProfileAPI(
     Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
     // Handle exceptions, e.g., network errors
     print("Error: $error");
-    showDialog(
+    await showDialog(
       context: context,
       builder: (BuildContext context) {
         return ErrorPopup(errorMessage: "An error occurred");

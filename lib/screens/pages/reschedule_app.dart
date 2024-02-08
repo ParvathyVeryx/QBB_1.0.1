@@ -416,7 +416,7 @@ class RescheduleAppState extends State<RescheduleApp> {
       if (response.statusCode == 200) {
         Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
         // Successful response, show a success dialog
-        showDialog(
+        await showDialog(
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
@@ -458,7 +458,7 @@ class RescheduleAppState extends State<RescheduleApp> {
       } else {
         Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
         // Error response, show an error dialog
-        showDialog(
+        await showDialog(
           context: context,
           builder: (BuildContext context) {
             return ErrorPopup(
@@ -470,7 +470,7 @@ class RescheduleAppState extends State<RescheduleApp> {
       Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
       // Handle network errors or other exceptions
       print('Error: $e');
-      showDialog(
+      await showDialog(
         context: context,
         builder: (BuildContext context) {
           return const ErrorPopup(
@@ -1050,18 +1050,22 @@ class RescheduleAppState extends State<RescheduleApp> {
                                     ),
                                     actions: <Widget>[
                                       Divider(),
-                                      TextButton(
-                                        onPressed: () async {
-                                          Navigator.of(context)
-                                              .pop(); // Close the dialog
-                                        },
-                                        child: Text(
-                                          'cancelButton'.tr,
-                                          style:
-                                              TextStyle(color: secondaryColor),
-                                        ),
-                                      ),
-                                      TextButton(
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.end,
+                                        children: [
+                                          TextButton(
+                                            onPressed: () async {
+                                              Navigator.of(context)
+                                                  .pop(); // Close the dialog
+                                            },
+                                            child: Text(
+                                              'cancelButton'.tr,
+                                              style:
+                                                  TextStyle(color: secondaryColor),
+                                            ),
+                                          ),
+                                          SizedBox(width: 30,),
+                                          TextButton(
                                         onPressed: () async {
                                           confirmAppointment(context);
                                         },
@@ -1071,6 +1075,9 @@ class RescheduleAppState extends State<RescheduleApp> {
                                               TextStyle(color: secondaryColor),
                                         ),
                                       ),
+                                        ],
+                                      ),
+                                      
                                     ],
                                   );
                                 },

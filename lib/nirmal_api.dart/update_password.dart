@@ -49,7 +49,7 @@ Future<Map<String, dynamic>> UpdatePasswordAPI(
       return data;
     } else {
       Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
-      showDialog(
+      await showDialog(
           context: context, // Use the context of the current screen
           builder: (BuildContext context) {
             return ErrorPopup(
@@ -61,7 +61,7 @@ Future<Map<String, dynamic>> UpdatePasswordAPI(
     }
   } catch (e) {
     Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
-    showDialog(
+    await showDialog(
         context: context, // Use the context of the current screen
         builder: (BuildContext context) {
           return ErrorPopup(errorMessage: '$e');

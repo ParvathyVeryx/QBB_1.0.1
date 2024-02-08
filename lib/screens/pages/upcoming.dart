@@ -163,7 +163,7 @@ class UpcomingState extends State<Upcoming> {
 
   Future<void> cancelResultAppointment(String appointmentId) async {
     final GlobalKey<State> _keyLoader = GlobalKey<State>();
-  LoaderWidget _loader = LoaderWidget();
+    LoaderWidget _loader = LoaderWidget();
     SharedPreferences pref = await SharedPreferences.getInstance();
 
     String? qid = await getQIDFromSharedPreferences();
@@ -203,7 +203,7 @@ class UpcomingState extends State<Upcoming> {
       print("Cancel Result Appointment");
       if (response.statusCode == 200) {
         Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
-        showDialog(
+        await showDialog(
             context: context,
             builder: (BuildContext context) {
               return AlertDialog(
@@ -226,7 +226,7 @@ class UpcomingState extends State<Upcoming> {
             });
       } else {
         Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
-        showDialog(
+        await showDialog(
             context: context, // Use the context of the current screen
             builder: (BuildContext context) {
               return ErrorPopup(
@@ -236,15 +236,19 @@ class UpcomingState extends State<Upcoming> {
     } catch (e) {
       Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
       print("Exception caught: $e");
-      ErrorPopup(
-        errorMessage: '$e',
-      );
+      await showDialog(
+          context: context, // Use the context of the current screen
+          builder: (BuildContext context) {
+            return ErrorPopup(
+              errorMessage: '$e',
+            );
+          });
     }
   }
 
   Future<void> cancelAnAppointment(String appointmentId) async {
     final GlobalKey<State> _keyLoader = GlobalKey<State>();
-  LoaderWidget _loader = LoaderWidget();
+    LoaderWidget _loader = LoaderWidget();
     SharedPreferences pref = await SharedPreferences.getInstance();
 
     String? qid = await getQIDFromSharedPreferences();
@@ -284,30 +288,48 @@ class UpcomingState extends State<Upcoming> {
 
       if (response.statusCode == 200) {
         Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
-        showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                title: Text(''),
-                content: Text(json.decode(response.body)["Message"]),
-                actions: [
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => Appointments(),
-                        ),
-                      ); // Close the dialog
-                    },
-                    child: Text('OK'),
+        await showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              backgroundColor: Colors.white,
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.only(
+                  bottomLeft:
+                      Radius.circular(50.0), // Adjust the radius as needed
+                ),
+              ),
+              content: Padding(
+                padding: const EdgeInsets.only(top: 12.0),
+                child: Text(
+                  json.decode(response.body)["Message"],
+                  style:
+                      const TextStyle(color: Color.fromARGB(255, 74, 74, 74)),
+                ),
+              ),
+              actions: <Widget>[
+                // Divider(),
+                TextButton(
+                  onPressed: () async {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const Appointments(),
+                      ),
+                    );
+                  },
+                  child: Text(
+                    'ok'.tr,
+                    style: TextStyle(color: secondaryColor),
                   ),
-                ],
-              );
-            });
+                ),
+              ],
+            );
+          },
+        );
       } else {
         Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
-        showDialog(
+        await showDialog(
             context: context, // Use the context of the current screen
             builder: (BuildContext context) {
               return ErrorPopup(
@@ -317,9 +339,13 @@ class UpcomingState extends State<Upcoming> {
     } catch (e) {
       Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
       print("Exception caught: $e");
-      ErrorPopup(
-        errorMessage: '$e',
-      );
+      await showDialog(
+          context: context, // Use the context of the current screen
+          builder: (BuildContext context) {
+            return ErrorPopup(
+              errorMessage: '$e',
+            );
+          });
     }
   }
 
@@ -416,7 +442,7 @@ class UpcomingState extends State<Upcoming> {
                                                 .format(
                                                     dateExtract(appointment))
                                                 .toString(),
-                                                style: TextStyle(fontSize: 11),
+                                            style: TextStyle(fontSize: 11),
                                           ),
                                         ),
                                       ],
@@ -734,7 +760,8 @@ class UpcomingState extends State<Upcoming> {
                                                       );
                                                     })
                                                 : appointment["AppoinmentId"];
-                                            appointment["AppoinmenttypName"] == "Result"
+                                            appointment["AppoinmenttypName"] ==
+                                                    "Result"
                                                 ? showDialog(
                                                     context: context,
                                                     builder: (context) {
@@ -815,6 +842,8 @@ class UpcomingState extends State<Upcoming> {
 
                                                                       cancelResultAppointment(
                                                                           appId);
+                                                                      Navigator.pop(
+                                                                          context);
                                                                     },
                                                                     child: Text(
                                                                         'ok'.tr),
@@ -907,6 +936,8 @@ class UpcomingState extends State<Upcoming> {
 
                                                                       cancelAnAppointment(
                                                                           appId);
+                                                                          Navigator.pop(
+                                                                          context);
                                                                     },
                                                                     child: Text(
                                                                         'ok'.tr),
@@ -924,9 +955,8 @@ class UpcomingState extends State<Upcoming> {
                                           child: Text(
                                             'cancelButton'.tr,
                                             style: TextStyle(
-                                              color: Colors.deepPurple,
-                                              fontSize: 11
-                                            ),
+                                                color: Colors.deepPurple,
+                                                fontSize: 11),
                                           ),
                                         ),
                                       ),
@@ -978,25 +1008,28 @@ class UpcomingState extends State<Upcoming> {
                                             //     appTypeId,
                                             //     vTypeId,
                                             //     studyId);
-                                           appointment["AppoinmenttypName"] == "Result" ? GetResultRescheduleAppointment(
-                                                context,
-                                                studyId,
-                                                vTypeId,
-                                                Vtype,
-                                                appId,
-                                                appDate) : GetRescheduleAppointment(
-                                                context,
-                                                studyId,
-                                                vTypeId,
-                                                Vtype,
-                                                appId,
-                                                appDate);
+                                            appointment["AppoinmenttypName"] ==
+                                                    "Result"
+                                                ? GetResultRescheduleAppointment(
+                                                    context,
+                                                    studyId,
+                                                    vTypeId,
+                                                    Vtype,
+                                                    appId,
+                                                    appDate)
+                                                : GetRescheduleAppointment(
+                                                    context,
+                                                    studyId,
+                                                    vTypeId,
+                                                    Vtype,
+                                                    appId,
+                                                    appDate);
                                           },
                                           child: Text(
                                             'reschedule'.tr,
-                                            style:
-                                                TextStyle(color: Colors.white, fontSize: 11),
-                                                
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 11),
                                           ),
                                         ),
                                       ),

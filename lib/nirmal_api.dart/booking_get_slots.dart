@@ -125,7 +125,7 @@ Future<void> bookAppointmentApiCall(
     } else {
       // Handle errors
       Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
-      showDialog(
+      await showDialog(
         context: context,
         builder: (BuildContext context) {
           return ErrorPopup(
@@ -136,7 +136,7 @@ Future<void> bookAppointmentApiCall(
   } catch (error) {
     Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
     // Handle network errors
-    showDialog(
+    await showDialog(
       context: context,
       builder: (BuildContext context) {
         return ErrorPopup(errorMessage: 'Network Error');
@@ -241,7 +241,7 @@ Future<void> GetRescheduleAppointment(
     } else {
       // Handle errors
       Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
-      showDialog(
+      await showDialog(
         context: context,
         builder: (BuildContext context) {
           return ErrorPopup(
@@ -252,7 +252,7 @@ Future<void> GetRescheduleAppointment(
   } catch (error) {
     Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
     // Handle network errors
-    showDialog(
+    await showDialog(
       context: context,
       builder: (BuildContext context) {
         return ErrorPopup(errorMessage: 'Network Error');
@@ -361,7 +361,7 @@ Future<void> GetResultRescheduleAppointment(
     } else {
       // Handle errors
       Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
-      showDialog(
+      await showDialog(
         context: context,
         builder: (BuildContext context) {
           return ErrorPopup(
@@ -372,7 +372,7 @@ Future<void> GetResultRescheduleAppointment(
   } catch (error) {
     Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
     // Handle network errors
-    showDialog(
+    await showDialog(
       context: context,
       builder: (BuildContext context) {
         return ErrorPopup(errorMessage: 'Network Error');
@@ -445,7 +445,7 @@ Future<void> bookAppointmentToGetResults(
       Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
       // Handle errors
 
-      showDialog(
+      await showDialog(
         context: context,
         builder: (BuildContext context) {
           return ErrorPopup(
@@ -456,7 +456,7 @@ Future<void> bookAppointmentToGetResults(
   } catch (error) {
     Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
     // Handle network errors
-    showDialog(
+    await showDialog(
       context: context,
       builder: (BuildContext context) {
         return ErrorPopup(errorMessage: 'Network Error');
@@ -522,7 +522,7 @@ Future<void> getResultAppointmentApiCall(
     } else {
       // Handle errors
       Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
-      showDialog(
+      await showDialog(
         context: context,
         builder: (BuildContext context) {
           return ErrorPopup(
@@ -533,7 +533,7 @@ Future<void> getResultAppointmentApiCall(
   } catch (error) {
     Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
     // Handle network errors
-    showDialog(
+    await showDialog(
       context: context,
       builder: (BuildContext context) {
         return ErrorPopup(errorMessage: 'Network Error');
@@ -626,7 +626,7 @@ Future<void> getResultsSlot(BuildContext context, String studyId,
       Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
       // Handle errors
 
-      showDialog(
+      await showDialog(
         context: context,
         builder: (BuildContext context) {
           return ErrorPopup(
@@ -637,7 +637,7 @@ Future<void> getResultsSlot(BuildContext context, String studyId,
   } catch (error) {
     Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
     // Handle network errors
-    showDialog(
+    await showDialog(
       context: context,
       builder: (BuildContext context) {
         return ErrorPopup(errorMessage: 'Network Error');

@@ -391,7 +391,7 @@ class BookResultsState extends State<BookResults> {
       if (response.statusCode == 200) {
         Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
         // Successful response, show a success dialog
-        showDialog(
+        await showDialog(
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
@@ -433,7 +433,7 @@ class BookResultsState extends State<BookResults> {
       } else {
         Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
         // Error response, show an error dialog
-        showDialog(
+        await showDialog(
           context: context,
           builder: (BuildContext context) {
             return ErrorPopup(
@@ -445,7 +445,7 @@ class BookResultsState extends State<BookResults> {
       Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
       // Handle network errors or other exceptions
       print('Error: $e');
-      showDialog(
+      await showDialog(
         context: context,
         builder: (BuildContext context) {
           return const ErrorPopup(
@@ -1023,17 +1023,21 @@ class BookResultsState extends State<BookResults> {
                                     ),
                                     actions: <Widget>[
                                       Divider(),
-                                      TextButton(
-                                        onPressed: () async {
-                                          Navigator.of(context)
-                                              .pop(); // Close the dialog
-                                        },
-                                        child: Text(
-                                          'cancelButton'.tr,
-                                          style:
-                                              TextStyle(color: secondaryColor),
-                                        ),
-                                      ),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.end,
+                                        children: [
+                                          TextButton(
+                                            onPressed: () async {
+                                              Navigator.of(context)
+                                                  .pop(); // Close the dialog
+                                            },
+                                            child: Text(
+                                              'cancelButton'.tr,
+                                              style:
+                                                  TextStyle(color: secondaryColor),
+                                            ),
+                                          ),
+                                          SizedBox(width: 30,),
                                       TextButton(
                                         onPressed: () async {
                                           confirmAppointment(context);
@@ -1044,6 +1048,9 @@ class BookResultsState extends State<BookResults> {
                                               TextStyle(color: secondaryColor),
                                         ),
                                       ),
+                                        ],
+                                      ),
+                                      
                                     ],
                                   );
                                 },

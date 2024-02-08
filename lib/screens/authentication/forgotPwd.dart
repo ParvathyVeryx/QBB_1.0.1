@@ -56,7 +56,6 @@ class ForgotPasswordState extends State<ForgotPassword> {
               style: const TextStyle(
                 color: appbar,
                 fontFamily: 'Impact',
-                fontSize: 16
               ),
             ),
           ),
@@ -88,16 +87,35 @@ class ForgotPasswordState extends State<ForgotPassword> {
                   children: [
                     ElevatedButton(
                         onPressed: () async {
-                          print('button pressed');
-                          print("qid: ${_controller.text}");
-                          // Validate the form before making the API call
+                          // print('button pressed');
+                          // print("qid: ${_controller.text}");
+                          // // Validate the form before making the API call
 
-                          // Access the QID from the form field
-                          String qid = _controller.text;
-                          print('QID: $qid');
-                          // Call the update password API
-                          await callUpdatePasswordAPI(qid, context);
-                          print('button pressed');
+                          // // Access the QID from the form field
+                          // String qid = _controller.text;
+                          // print('QID: $qid');
+                          // // Call the update password API
+                          // await callUpdatePasswordAPI(qid, context);
+                          // print('button pressed');
+                          try {
+                            print('Button pressed');
+                            print("QID: ${_controller.text}");
+
+                            // Validate the form before making the API call
+
+                            // Access the QID from the form field
+                            String qid = _controller.text;
+                            print('QID: $qid');
+
+                            // Call the update password API
+                            await callUpdatePasswordAPI(qid, context);
+
+                            // Additional code to execute after a successful API call
+                            print('Button pressed');
+                          } catch (e) {
+                            // Handle errors
+                            print('Error during button press: $e');
+                          }
                         },
                         style: ButtonStyle(
                             backgroundColor: MaterialStateProperty.all<Color>(
@@ -191,7 +209,7 @@ class ForgotPasswordState extends State<ForgotPassword> {
                           ),
                         ),
                   child: Padding(
-                    padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
+                    padding: const EdgeInsets.fromLTRB(10.0, 15.0, 10.0, 15.0),
                     child: Text(
                       'submit'.tr,
                       style: const TextStyle(
