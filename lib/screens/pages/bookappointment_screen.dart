@@ -438,11 +438,25 @@ class BookAppScreenState extends State<BookAppScreen> {
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
-              title: const Text(''),
-              content: Text(json.decode(response.body)["Message"]),
-              actions: [
-                ElevatedButton(
-                  onPressed: () {
+              backgroundColor: Colors.white,
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.only(
+                  bottomLeft:
+                      Radius.circular(50.0), // Adjust the radius as needed
+                ),
+              ),
+              content: Padding(
+                padding: const EdgeInsets.only(top: 12.0),
+                child: Text(
+                  json.decode(response.body)["Message"],
+                  style:
+                      const TextStyle(color: Color.fromARGB(255, 74, 74, 74)),
+                ),
+              ),
+              actions: <Widget>[
+                Divider(),
+                TextButton(
+                  onPressed: () async {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -450,7 +464,10 @@ class BookAppScreenState extends State<BookAppScreen> {
                       ),
                     );
                   },
-                  child: const Text('OK'),
+                  child: Text(
+                    'ok'.tr,
+                    style: TextStyle(color: secondaryColor),
+                  ),
                 ),
               ],
             );
@@ -518,10 +535,7 @@ class BookAppScreenState extends State<BookAppScreen> {
               Text(
                 'bookAnAppointment'.tr,
                 style: const TextStyle(
-                  color: appbar,
-                  fontFamily: 'Impact',
-                  fontSize: 16
-                ),
+                    color: appbar, fontFamily: 'Impact', fontSize: 16),
               ),
             ],
           ),
@@ -1034,20 +1048,45 @@ class BookAppScreenState extends State<BookAppScreen> {
                                 context: context,
                                 builder: (BuildContext context) {
                                   return AlertDialog(
-                                    title: const Text(''),
-                                    content: Text("areYouSure".tr),
-                                    actions: [
-                                      ElevatedButton(
-                                        onPressed: () {
+                                    backgroundColor: Colors.white,
+                                    shape: const RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.only(
+                                        bottomLeft: Radius.circular(
+                                            50.0), // Adjust the radius as needed
+                                      ),
+                                    ),
+                                    content: Padding(
+                                      padding: const EdgeInsets.only(top: 12.0),
+                                      child: Text(
+                                        "areYouSure".tr,
+                                        style: const TextStyle(
+                                            color: Color.fromARGB(
+                                                255, 74, 74, 74)),
+                                      ),
+                                    ),
+                                    actions: <Widget>[
+                                      Divider(),
+                                      TextButton(
+                                        onPressed: () async {
+                                          Navigator.of(context)
+                                              .pop(); // Close the dialog
+                                        },
+                                        child: Text(
+                                          'cancelButton'.tr,
+                                          style:
+                                              TextStyle(color: secondaryColor),
+                                        ),
+                                      ),
+                                      TextButton(
+                                        onPressed: () async {
+                                          confirmAppointment(context);
                                           Navigator.pop(context);
                                         },
-                                        child: Text('cancelButton'.tr),
-                                      ),
-                                      ElevatedButton(
-                                        onPressed: () {
-                                          confirmAppointment(context);
-                                        },
-                                        child: Text('confirm'.tr),
+                                        child: Text(
+                                          'confirm'.tr,
+                                          style:
+                                              TextStyle(color: secondaryColor),
+                                        ),
                                       ),
                                     ],
                                   );

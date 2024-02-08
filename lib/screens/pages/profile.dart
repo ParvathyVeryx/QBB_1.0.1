@@ -207,34 +207,41 @@ class ProfileState extends State<Profile> {
         print('Image Upload Complete');
       } else {
         // Show an error message or handle the case where the image size exceeds 70KB
-        showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.only(
-                    bottomLeft:
-                        Radius.circular(20.0), // Adjust the radius as needed
-                  ),
+            // ignore: use_build_context_synchronously
+            showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            backgroundColor: Colors.white,
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.only(
+                bottomLeft:
+                    Radius.circular(50.0), // Adjust the radius as needed
+              ),
+            ),
+            content: Padding(
+              padding: const EdgeInsets.only(top: 12.0),
+              child: Text(
+                "editImgError".tr,
+                style: const TextStyle(color: Color.fromARGB(255, 74, 74, 74)),
+              ),
+            ),
+            actions: <Widget>[
+              // Divider(),
+              TextButton(
+                onPressed: () async {
+                  Navigator.of(context).pop();
+                },
+                child: Text(
+                  'ok'.tr,
+                  style: TextStyle(color: secondaryColor),
                 ),
-                title: const Text(
-                  '',
-                  style: TextStyle(color: primaryColor),
-                ),
-                content: Text(
-                  "editImgError".tr,
-                  style: const TextStyle(color: primaryColor),
-                ),
-                actions: <Widget>[
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: Text('ok'.tr),
-                  ),
-                ],
-              );
-            });
+              ),
+            ],
+          );
+        },
+      );
+
         print('Image size exceeds 70KB. Please choose a smaller image.');
       }
     }

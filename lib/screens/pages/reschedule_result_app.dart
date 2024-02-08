@@ -422,11 +422,25 @@ class RescheduleResultState extends State<RescheduleResult> {
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
-              title: const Text('Alert'),
-              content: Text(json.decode(response.body)["Message"]),
-              actions: [
-                ElevatedButton(
-                  onPressed: () {
+              backgroundColor: Colors.white,
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.only(
+                  bottomLeft:
+                      Radius.circular(50.0), // Adjust the radius as needed
+                ),
+              ),
+              content: Padding(
+                padding: const EdgeInsets.only(top: 12.0),
+                child: Text(
+                  json.decode(response.body)["Message"],
+                  style:
+                      const TextStyle(color: Color.fromARGB(255, 74, 74, 74)),
+                ),
+              ),
+              actions: <Widget>[
+                Divider(),
+                TextButton(
+                  onPressed: () async {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -434,7 +448,10 @@ class RescheduleResultState extends State<RescheduleResult> {
                       ),
                     );
                   },
-                  child: const Text('OK'),
+                  child: Text(
+                    'ok'.tr,
+                    style: TextStyle(color: secondaryColor),
+                  ),
                 ),
               ],
             );
@@ -506,10 +523,7 @@ class RescheduleResultState extends State<RescheduleResult> {
               Text(
                 'bookAnAppointment'.tr,
                 style: const TextStyle(
-                  color: appbar,
-                  fontFamily: 'Impact',
-                  fontSize: 16
-                ),
+                    color: appbar, fontFamily: 'Impact', fontSize: 16),
               ),
             ],
           ),
@@ -1016,7 +1030,53 @@ class RescheduleResultState extends State<RescheduleResult> {
                               elevation: 0,
                             ),
                             onPressed: () {
-                              confirmAppointment(context);
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    backgroundColor: Colors.white,
+                                    shape: const RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.only(
+                                        bottomLeft: Radius.circular(
+                                            50.0), // Adjust the radius as needed
+                                      ),
+                                    ),
+                                    content: Padding(
+                                      padding: const EdgeInsets.only(top: 12.0),
+                                      child: Text(
+                                        "areYouSure".tr,
+                                        style: const TextStyle(
+                                            color: Color.fromARGB(
+                                                255, 74, 74, 74)),
+                                      ),
+                                    ),
+                                    actions: <Widget>[
+                                      Divider(),
+                                      TextButton(
+                                        onPressed: () async {
+                                          Navigator.of(context)
+                                              .pop(); // Close the dialog
+                                        },
+                                        child: Text(
+                                          'cancelButton'.tr,
+                                          style:
+                                              TextStyle(color: secondaryColor),
+                                        ),
+                                      ),
+                                      TextButton(
+                                        onPressed: () async {
+                                          confirmAppointment(context);
+                                        },
+                                        child: Text(
+                                          'confirm'.tr,
+                                          style:
+                                              TextStyle(color: secondaryColor),
+                                        ),
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
                             },
                             child: Text(
                               'reschedule'.tr,

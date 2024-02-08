@@ -6,6 +6,9 @@ import 'package:http/http.dart' as http;
 import 'package:crypto/crypto.dart' as crypto;
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../nirmal_api.dart/profile_api.dart';
+import '../pages/loader.dart';
+
 Future<void> accessSetupOTP({
   required String qid,
   required String otp,
@@ -14,7 +17,10 @@ Future<void> accessSetupOTP({
   required String language,
   required BuildContext context,
 }) async {
+  final GlobalKey<State> _keyLoader = GlobalKey<State>();
+  LoaderWidget _loader = LoaderWidget();
   try {
+    Dialogs.showLoadingDialog(context, _keyLoader, _loader);
     // Retrieve token from shared preferences
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? token = prefs.getString('token');
@@ -47,6 +53,7 @@ Future<void> accessSetupOTP({
     );
 
     if (response.statusCode == 200) {
+      Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
       showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -56,6 +63,7 @@ Future<void> accessSetupOTP({
       );
       // Handle successful response
     } else {
+      Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
       showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -67,6 +75,7 @@ Future<void> accessSetupOTP({
       // Handle error
     }
   } catch (e) {
+    Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
     // Handle network errors
     showDialog(
       context: context,

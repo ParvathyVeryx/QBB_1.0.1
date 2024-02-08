@@ -192,10 +192,10 @@ class EditUserState extends State<EditUser> {
                                 ),
                               ),
                             )),
-                        child: const Padding(
+                        child: Padding(
                           padding: EdgeInsets.fromLTRB(10.0, 15.0, 10.0, 15.0),
                           child: Text(
-                            'Save',
+                            'save'.tr,
                             style: TextStyle(
                               color: textcolor,
                             ),

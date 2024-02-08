@@ -9,27 +9,30 @@ class ErrorPopup extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return AlertDialog(
+      backgroundColor: Colors.white,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
-          bottomLeft: Radius.circular(20.0), // Adjust the radius as needed
+          bottomLeft: Radius.circular(50.0), // Adjust the radius as needed
         ),
       ),
-      title: const Text(
-        '',
-        style: TextStyle(color: primaryColor),
-      ),
-      content: Text(
-        errorMessage,
-        style: const TextStyle(color: primaryColor),
+      content: Padding(
+        padding: const EdgeInsets.only(top: 12.0),
+        child: Text(
+          errorMessage,
+          style: const TextStyle(color: Color.fromARGB(255, 74, 74, 74)),
+        ),
       ),
       actions: <Widget>[
-        ElevatedButton(
-          onPressed: () {
-            Navigator.of(context).pop();
+        Divider(),
+        TextButton(
+          onPressed: () async {
+            Navigator.of(context).pop(); // Close the dialog
           },
-          child: Text('ok'.tr),
+          child: Text(
+            'ok'.tr,
+            style: TextStyle(color: secondaryColor),
+          ),
         ),
       ],
     );

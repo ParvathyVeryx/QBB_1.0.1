@@ -100,7 +100,7 @@ class AboutUsState extends State<AboutUs> {
                       ),
                       Text(
                         'aboutContent'.tr,
-                        style: TextStyle(color: Colors.black, fontSize: 16.0),
+                        style: TextStyle(color: Colors.black, fontSize: 14.0),
                         textAlign: TextAlign.justify,
                       ),
                       SizedBox(
@@ -110,7 +110,7 @@ class AboutUsState extends State<AboutUs> {
                         'aboutContentt'.tr,
                         style: TextStyle(
                           color: Colors.black,
-                          fontSize: 16.0,
+                          fontSize: 14.0,
                         ),
                         textAlign: TextAlign.justify,
                       ),

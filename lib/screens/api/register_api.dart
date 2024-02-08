@@ -37,6 +37,7 @@ class RegisterApi {
     String lang = "langChange".tr;
 
     var url = Uri.parse('$base_url/QuickRegistrationAPI?language=$lang');
+    print(url);
     print(register.toJson());
 
     final response = await http.post(
@@ -53,11 +54,12 @@ class RegisterApi {
       showDialog(
           context: context, // Use the context of the current screen
           builder: (BuildContext context) {
-            return ErrorPopup(errorMessage: json.decode(response.body)["Message"]);
+            return ErrorPopup(
+                errorMessage: json.decode(response.body)["Message"]);
           }).then((_) {
         // This code will run after the dialog is dismissed
         // Navigate to another widget here
-        Navigator.push(
+        Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => AccessUser()),
         );
@@ -70,7 +72,8 @@ class RegisterApi {
       showDialog(
           context: context, // Use the context of the current screen
           builder: (BuildContext context) {
-            return ErrorPopup(errorMessage: json.decode(response.body)["Message"]);
+            return ErrorPopup(
+                errorMessage: json.decode(response.body)["Message"]);
           });
       // Handle error response
 

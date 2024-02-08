@@ -6,12 +6,18 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../nirmal_api.dart/profile_api.dart';
+import '../pages/loader.dart';
+
 Future<void> setPasswordAccessSetupNotCompleted(
   String qid,
   String language,
   BuildContext context,
 ) async {
+  final GlobalKey<State> _keyLoader = GlobalKey<State>();
+  LoaderWidget _loader = LoaderWidget();
   try {
+    Dialogs.showLoadingDialog(context, _keyLoader, _loader);
     // Retrieve token from shared preferences
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? token = prefs.getString('token');
@@ -32,6 +38,7 @@ Future<void> setPasswordAccessSetupNotCompleted(
     );
 
     if (response.statusCode == 200) {
+      Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
       showDialog(
         context: context, // Use the context of the current screen
         builder: (BuildContext context) {
@@ -40,6 +47,7 @@ Future<void> setPasswordAccessSetupNotCompleted(
       );
       // Handle the response data if needed
     } else {
+      Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
       showDialog(
         context: context, // Use the context of the current screen
         builder: (BuildContext context) {
@@ -47,5 +55,13 @@ Future<void> setPasswordAccessSetupNotCompleted(
         },
       );
     }
-  } catch (error) {}
+  } catch (error) {
+    Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
+    showDialog(
+        context: context, // Use the context of the current screen
+        builder: (BuildContext context) {
+          return ErrorPopup(errorMessage: '$error');
+        },
+      );
+  }
 }

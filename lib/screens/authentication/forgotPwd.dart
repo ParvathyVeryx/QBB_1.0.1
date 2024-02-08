@@ -191,7 +191,7 @@ class ForgotPasswordState extends State<ForgotPassword> {
                           ),
                         ),
                   child: Padding(
-                    padding: const EdgeInsets.fromLTRB(10.0, 15.0, 10.0, 15.0),
+                    padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
                     child: Text(
                       'submit'.tr,
                       style: const TextStyle(

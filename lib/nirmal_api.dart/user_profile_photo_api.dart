@@ -3,9 +3,11 @@ import 'dart:io';
 import 'package:QBB/screens/pages/erorr_popup.dart';
 import 'package:QBB/screens/pages/profile.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../constants.dart';
 import '../screens/pages/loader.dart';
 
 class Dialogs {
@@ -35,13 +37,14 @@ class Dialogs {
   }
 }
 
-Future<void> uploadUserProfilePhoto(BuildContext context, String qid, File photo) async {
+Future<void> uploadUserProfilePhoto(
+    BuildContext context, String qid, File photo) async {
   final GlobalKey<State> _keyLoader = GlobalKey<State>();
   LoaderWidget _loader = LoaderWidget();
   SharedPreferences pref = await SharedPreferences.getInstance();
   String qid = pref.getString("userQID").toString();
   try {
-      Dialogs.showLoadingDialog(context, _keyLoader, _loader);
+    Dialogs.showLoadingDialog(context, _keyLoader, _loader);
 
     // Read the file as bytes
     List<int> photoBytes = await photo.readAsBytes();
@@ -85,36 +88,51 @@ Future<void> uploadUserProfilePhoto(BuildContext context, String qid, File photo
           false) {
         // Parse the response body as JSON
         var responseBody = json.decode(response.body);
-        
       } else {
         // Handle non-JSON response (e.g., log or print the raw response)
       }
-              showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: const Text(''),
-              content: Text(json.decode(response.body)["Message"]),
-              actions: [
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const Profile(),
-                      ),
-                    );
-                  },
-                  child: const Text('OK'),
-                ),
-              ],
-            );
-          },
-        );
-    }
 
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            backgroundColor: Colors.white,
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.only(
+                bottomLeft:
+                    Radius.circular(50.0), // Adjust the radius as needed
+              ),
+            ),
+            content: Padding(
+              padding: const EdgeInsets.only(top: 12.0),
+              child: Text(
+                json.decode(response.body)["Message"],
+                style: const TextStyle(color: Color.fromARGB(255, 74, 74, 74)),
+              ),
+            ),
+            actions: <Widget>[
+              Divider(),
+              TextButton(
+                onPressed: () async {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const Profile(),
+                    ),
+                  );
+                },
+                child: Text(
+                  'ok'.tr,
+                  style: TextStyle(color: secondaryColor),
+                ),
+              ),
+            ],
+          );
+        },
+      );
+    }
   } catch (e, stackTrace) {
     Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
-     ErrorPopup(errorMessage: '$e');
+    ErrorPopup(errorMessage: '$e');
   }
 }

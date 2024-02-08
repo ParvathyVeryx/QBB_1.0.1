@@ -140,36 +140,75 @@ Future<void> callUserProfileAPI(
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
+            backgroundColor: Colors.white,
             shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.only(
                 bottomLeft:
-                    Radius.circular(20.0), // Adjust the radius as needed
+                    Radius.circular(50.0), // Adjust the radius as needed
               ),
             ),
-            title: const Text(
-              '',
-              style: TextStyle(color: primaryColor),
-            ),
-            content: Text(
-              json.decode(response.body)["Message"],
-              style: const TextStyle(color: primaryColor),
+            content: Padding(
+              padding: const EdgeInsets.only(top: 12.0),
+              child: Text(
+                json.decode(response.body)["Message"],
+                style: const TextStyle(color: Color.fromARGB(255, 74, 74, 74)),
+              ),
             ),
             actions: <Widget>[
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
+              Divider(),
+              TextButton(
+                onPressed: () async {
+                  Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
                       builder: (context) => const Profile(),
                     ),
                   );
                 },
-                child: Text('ok'.tr),
+                child: Text(
+                  'ok'.tr,
+                  style: TextStyle(color: secondaryColor),
+                ),
               ),
             ],
           );
         },
       );
+
+      // showDialog(
+      //   context: context,
+      //   builder: (BuildContext context) {
+      //     return AlertDialog(
+      //       shape: const RoundedRectangleBorder(
+      //         borderRadius: BorderRadius.only(
+      //           bottomLeft:
+      //               Radius.circular(20.0), // Adjust the radius as needed
+      //         ),
+      //       ),
+      //       title: const Text(
+      //         '',
+      //         style: TextStyle(color: primaryColor),
+      //       ),
+      //       content: Text(
+      //         json.decode(response.body)["Message"],
+      //         style: const TextStyle(color: primaryColor),
+      //       ),
+      //       actions: <Widget>[
+      //         ElevatedButton(
+      //           onPressed: () {
+      //             Navigator.push(
+      //               context,
+      //               MaterialPageRoute(
+      //                 builder: (context) => const Profile(),
+      //               ),
+      //             );
+      //           },
+      //           child: Text('ok'.tr),
+      //         ),
+      //       ],
+      //     );
+      //   },
+      // );
     } else {
       Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
       // Unsuccessful response, display an error popup or handle it accordingly

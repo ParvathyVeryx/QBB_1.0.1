@@ -45,7 +45,7 @@ Future<void> signOut(BuildContext context) async {
       // Save the API response in shared preferences
 
       // Now, navigate to the AppointmentBookingPage
-      Navigator.push(
+      Navigator.pushReplacement(
         context,
         MaterialPageRoute(
           builder: (context) => const LoginPage(),

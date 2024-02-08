@@ -6,7 +6,12 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../nirmal_api.dart/profile_api.dart';
+import '../pages/loader.dart';
+
 Future<bool> getAccess(String qid, String otp, BuildContext context) async {
+  final GlobalKey<State> _keyLoader = GlobalKey<State>();
+  LoaderWidget _loader = LoaderWidget();
   // Retrieve token from shared preferences
   SharedPreferences prefs = await SharedPreferences.getInstance();
   String? token = prefs.getString('token');
@@ -31,9 +36,11 @@ Future<bool> getAccess(String qid, String otp, BuildContext context) async {
   };
 
   try {
+    Dialogs.showLoadingDialog(context, _keyLoader, _loader);
     final response = await http.get(Uri.parse(verifyOtp), headers: headers);
     print(verifyOtp);
     if (response.statusCode == 200) {
+      Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
       var userId = json.decode(response.body);
       // showDialog(
       //   context: context, // Use the context of the current screen
@@ -45,20 +52,29 @@ Future<bool> getAccess(String qid, String otp, BuildContext context) async {
       print(response.body);
       return true; // Return true if OTP verification is successful
     } else {
+      Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
       // Handle error
       print('Error: ${response.statusCode}');
-      // showDialog(
-      //   context: context, // Use the context of the current screen
-      //   builder: (BuildContext context) {
-      //     return ErrorPopup(
-      //         errorMessage: json.decode(response.body)["Message"]);
-      //   },
-      // );
+      showDialog(
+        context: context, // Use the context of the current screen
+        builder: (BuildContext context) {
+          return ErrorPopup(
+              errorMessage: json.decode(response.body)["Message"]);
+        },
+      );
       print(response.body);
       return false; // Return false to indicate OTP verification failure
     }
   } catch (err) {
+    Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
     // Handle network errors
+    showDialog(
+        context: context, // Use the context of the current screen
+        builder: (BuildContext context) {
+          return ErrorPopup(
+              errorMessage: '$err');
+        },
+      );
     return false; // Return false to indicate OTP verification failure
   }
 }
