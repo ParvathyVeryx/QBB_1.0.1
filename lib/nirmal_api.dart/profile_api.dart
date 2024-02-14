@@ -72,23 +72,40 @@ class Dialogs {
     Widget? child,
   ) async {
     return showDialog<void>(
+
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
-        return WillPopScope(
+        // return WillPopScope(
+        //   onWillPop: () async => false,
+        //   child: SimpleDialog(
+        //     key: key,
+        //     backgroundColor: Colors.transparent,
+        //     children: <Widget>[
+        //       Center(
+        //         child: child,
+        //       ),
+        //     ],
+        //   ),
+        // );
+                return WillPopScope(
           onWillPop: () async => false,
-          child: SimpleDialog(
+          child: AlertDialog(
             key: key,
+            contentPadding: EdgeInsets.zero, // Set content padding to zero
             backgroundColor: Colors.transparent,
-            children: <Widget>[
-              Center(
+            content: Container(
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height,
+              child: Center(
                 child: child,
               ),
-            ],
+            ),
           ),
         );
       },
     );
+
   }
 }
 

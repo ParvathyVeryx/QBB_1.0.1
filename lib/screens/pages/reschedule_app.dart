@@ -112,6 +112,7 @@ class RescheduleAppState extends State<RescheduleApp> {
 
       generateUpcomingDates(picked!);
       fetchDateList(picked);
+      fetchAvailabilityCalendar(picked);
     });
 
     // Fetch data after selecting a date
@@ -120,7 +121,7 @@ class RescheduleAppState extends State<RescheduleApp> {
   List<DateTime> upcomingDateList = [];
   List<dynamic> availabiltyCandarId = [];
 
-  Future<void> fetchAvailabilityCalendar() async {
+  Future<void> fetchAvailabilityCalendar(DateTime selectedDate) async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     String? apiResponseJson = pref.getString('apiResponseReschedule');
 
@@ -129,21 +130,63 @@ class RescheduleAppState extends State<RescheduleApp> {
       print("Availability Calendar");
       print(jsonResponse);
 
-      if (jsonResponse['BookAppoinmentModelList'] != null &&
-          jsonResponse['BookAppoinmentModelList'].isNotEmpty) {
-        availabiltyCandarId = jsonResponse['BookAppoinmentModelList']
-            .map((item) => item['AvailabilityCalenderId'].toString())
-            .toList();
-        print("AAAAAACI" + availabiltyCandarId.toString());
-      } else {
-        print("BookAppoinmentModelList is null or empty");
-      }
+      // if (jsonResponse['BookAppoinmentModelList'] != null &&
+      //     jsonResponse['BookAppoinmentModelList'].isNotEmpty) {
+      //   availabiltyCandarId = jsonResponse['BookAppoinmentModelList']
+      //       .map((item) => item['AvailabilityCalenderId'].toString())
+      //       .toList();
+      //   print("AAAAAACI" + availabiltyCandarId.toString());
+      // } else {
+      //   print("BookAppoinmentModelList is null or empty");
+      // }
+      int startIndex = 0;
+      DateTime currentDate = DateTime.now();
+      if (ispicked == true) {
+        availabiltyCandarId = [];
+        if (selectedDate.isAfter(currentDate)) {
+          // Calculate the difference in days between selectedDate and currentDate
+          int daysDifference = selectedDate.difference(currentDate).inDays;
+          print(daysDifference);
+          // Start from the 2nd index if the difference is 2 or more days
+          startIndex = daysDifference + 1;
 
-      // Set state if needed (depends on where this function is called)
-      // setState(() {
-      //   // Do something with availabiltyCandarId
-      // });
+          if (jsonResponse['BookAppoinmentModelList'] != null &&
+              jsonResponse['BookAppoinmentModelList'].isNotEmpty) {
+            availabiltyCandarId = jsonResponse['BookAppoinmentModelList']
+                .map((item) => item['AvailabilityCalenderId'].toString())
+                .toList();
+
+            if (daysDifference > 0) {
+              // Remove elements based on the daysDifference
+              availabiltyCandarId.removeRange(0, startIndex);
+            }
+
+            print("ACI SUbList" + availabiltyCandarId.toString());
+          } else {
+            print("BookAppoinmentModelList is null or empty");
+          }
+        } else {
+          if (jsonResponse['BookAppoinmentModelList'] != null &&
+              jsonResponse['BookAppoinmentModelList'].isNotEmpty) {
+            availabiltyCandarId = jsonResponse['BookAppoinmentModelList']
+                .map((item) => item['AvailabilityCalenderId'].toString())
+                .toList();
+            print("ACI For today" + availabiltyCandarId.toString());
+          }
+        }
+        print("ACI Sub List" + availabiltyCandarId.toString());
+      } else {
+        if (jsonResponse['BookAppoinmentModelList'] != null &&
+            jsonResponse['BookAppoinmentModelList'].isNotEmpty) {
+          availabiltyCandarId = jsonResponse['BookAppoinmentModelList']
+              .map((item) => item['AvailabilityCalenderId'].toString())
+              .toList();
+          print("AAAAAACI" + availabiltyCandarId.toString());
+        }
+      }
     }
+    print("Updated ACI");
+    print(availabiltyCandarId);
   }
 
   bool isNextWeek = false;
@@ -167,23 +210,80 @@ class RescheduleAppState extends State<RescheduleApp> {
 
       print(ispicked);
 
-      print(ispicked);
+      int startIndex = 0;
+      DateTime currentDate = DateTime.now();
       if (ispicked == true) {
         upcomingDateList = [];
+        if (selectedDate.isAfter(currentDate)) {
+          print("This loop is working");
+          // Calculate the difference in days between selectedDate and currentDate
+          int daysDifference = selectedDate.difference(currentDate).inDays;
+          print(daysDifference);
+          // Start from the 2nd index if the difference is 2 or more days
+          startIndex = daysDifference;
 
-        for (int i = 0; i < 5; i++) {
-          // Check if the current date is within the same month as the selected date
-          if (tempDate.month == selectedDate.month) {
-            if (appointmentDateParse != tempDate) {
-              setState(() {
-                upcomingDateList.add(tempDate);
-              });
-              print(upcomingDateList);
-            }
-          }
-          tempDate = tempDate.add(const Duration(days: 1));
+          upcomingDateList = dateStrings
+              .map((tempDate) => DateTime.parse(tempDate))
+              .where((date) =>
+                  date.isAfter(selectedDate) ||
+                  date ==
+                      selectedDate) // Include the selected date and dates after it
+              .toList();
+
+          print("ACI Dates SUbList" + upcomingDateList.toString());
+        } else {
+          print("BookAppoinmentModelList is null or empty");
         }
-      } else if (isNextWeek == true) {
+      }
+      // if (ispicked == true) {
+      //   upcomingDateList = [];
+      //   if (selectedDate.isAfter(currentDate)) {
+      //     print("This loop is working");
+      //     // Calculate the difference in days between selectedDate and currentDate
+      //     int daysDifference = selectedDate.difference(currentDate).inDays;
+      //     print(daysDifference);
+      //     // Start from the 2nd index if the difference is 2 or more days
+      //     startIndex = daysDifference;
+
+      //     upcomingDateList = dateStrings
+      //         .map((tempDate) => DateTime.parse(tempDate))
+      //         .where((date) => date != appointmentDateParse)
+      //         .toList();
+
+      //     if (daysDifference > 0) {
+      //       // Remove elements based on the daysDifference
+      //       upcomingDateList.removeRange(0, startIndex);
+      //     }
+
+      //     print("ACI Dates SUbList" + upcomingDateList.toString());
+      //   } else {
+      //     print("BookAppoinmentModelList is null or empty");
+      //   }
+      // }
+
+      // print(ispicked);
+      // if (ispicked == true) {
+      //   upcomingDateList = [];
+      //    upcomingDateList = dateStrings
+      //         .map((tempDate) => DateTime.parse(tempDate))
+      //         .where((date) => date != appointmentDateParse)
+      //         .toList();
+
+      //   // for (int i = 0; i < 5; i++) {
+      //   //   // Check if the current date is within the same month as the selected date
+      //   //   if (tempDate.month == selectedDate.month) {
+      //   //     if (appointmentDateParse != tempDate) {
+      //   //       setState(() {
+      //   //         upcomingDateList.add(tempDate);
+      //   //       });
+      //   //       print("Upcoming dates");
+      //   //       print(upcomingDateList);
+      //   //     }
+      //   //   }
+      //   //   tempDate = tempDate.add(const Duration(days: 1));
+      //   // }
+      // }
+      else if (isNextWeek == true) {
         upcomingDateList = [];
         for (int i = 0; i < 5; i++) {
           if (appointmentDateParse != tempDate) {
@@ -198,12 +298,12 @@ class RescheduleAppState extends State<RescheduleApp> {
           tempDate = tempDate.add(const Duration(days: 1));
         }
       } else {
-        setState(() {
-          upcomingDateList = dateStrings
-              .map((tempDate) => DateTime.parse(tempDate))
-              .where((date) => date != appointmentDateParse)
-              .toList();
-        });
+        upcomingDateList = dateStrings
+            .map((tempDate) => DateTime.parse(tempDate))
+            .where((date) => date != appointmentDateParse)
+            .toList();
+        print("This is working");
+        print(upcomingDateList);
       }
     }
   }
@@ -261,84 +361,84 @@ class RescheduleAppState extends State<RescheduleApp> {
     _dateController.text = '${DateFormat('dd/MM/yyyy').format(selectedDate)}';
   }
 
-  Future<List<String>> fetchAvailableDates() async {
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    String? jsonString = pref.getString("availableDates");
+//   Future<List<String>> fetchAvailableDates() async {
+//     SharedPreferences pref = await SharedPreferences.getInstance();
+//     String? jsonString = pref.getString("availableDates");
 
-// Check if the jsonString is not null
-    if (jsonString != null) {
-      // Use json.decode to parse the jsonString
-      dynamic decodedData = json.decode(jsonString);
+// // Check if the jsonString is not null
+//     if (jsonString != null) {
+//       // Use json.decode to parse the jsonString
+//       dynamic decodedData = json.decode(jsonString);
 
-      // Check if the decodedData is a List
-      if (decodedData is List) {
-        // Now you can use the data as a List
-        List<String> availableDates = List<String>.from(decodedData);
-        for (String dateTimeString in availableDates) {
-          try {
-            // Parse the date-time string to DateTime
-            DateTime dateTime = DateTime.parse(dateTimeString);
+//       // Check if the decodedData is a List
+//       if (decodedData is List) {
+//         // Now you can use the data as a List
+//         List<String> availableDates = List<String>.from(decodedData);
+//         for (String dateTimeString in availableDates) {
+//           try {
+//             // Parse the date-time string to DateTime
+//             DateTime dateTime = DateTime.parse(dateTimeString);
 
-            // Format the DateTime to get only the date part
-            String dateOnly = DateFormat('yyyy-MM-dd').format(dateTime);
+//             // Format the DateTime to get only the date part
+//             String dateOnly = DateFormat('yyyy-MM-dd').format(dateTime);
 
-            // Add the date to the result list
-            datesOnly.add(dateOnly);
-          } catch (e) {
-            // Handle parsing errors if necessary
-          }
-        }
+//             // Add the date to the result list
+//             datesOnly.add(dateOnly);
+//           } catch (e) {
+//             // Handle parsing errors if necessary
+//           }
+//         }
 
-        daysAndDates = availableDates;
+//         daysAndDates = availableDates;
 
-        pref.setString("dateOnly", datesOnly.toString());
-        pref.getString("dateOnly");
-        List<DateTime?> dates = datesOnly.map((dateString) {
-          try {
-            return DateTime.parse(dateString);
-          } catch (e) {
-            return null;
-          }
-        }).toList();
+//         pref.setString("dateOnly", datesOnly.toString());
+//         pref.getString("dateOnly");
+//         List<DateTime?> dates = datesOnly.map((dateString) {
+//           try {
+//             return DateTime.parse(dateString);
+//           } catch (e) {
+//             return null;
+//           }
+//         }).toList();
 
-        // Check if any dates were successfully parsed
-        for (DateTime? date in dates) {
-          if (date != null) {
-            String dayName = DateFormat('EEEE').format(date);
-            dayNames.add(dayName);
-          }
-        }
+//         // Check if any dates were successfully parsed
+//         for (DateTime? date in dates) {
+//           if (date != null) {
+//             String dayName = DateFormat('EEEE').format(date);
+//             dayNames.add(dayName);
+//           }
+//         }
 
-        return datesOnly;
-      } else {
-        return [];
-      }
-    } else {
-      return [];
-    }
-  }
+//         return datesOnly;
+//       } else {
+//         return [];
+//       }
+//     } else {
+//       return [];
+//     }
+//   }
 
-  List<String> daysOnly = [];
-  Future<List<String>> fetchAvailableDays() async {
-    List<DateTime?> dates = datesOnly.map((dateString) {
-      try {
-        return DateTime.parse(dateString);
-      } catch (e) {
-        return null;
-      }
-    }).toList();
+  // List<String> daysOnly = [];
+  // Future<List<String>> fetchAvailableDays() async {
+  //   List<DateTime?> dates = datesOnly.map((dateString) {
+  //     try {
+  //       return DateTime.parse(dateString);
+  //     } catch (e) {
+  //       return null;
+  //     }
+  //   }).toList();
 
-    // Check if any dates were successfully parsed
+  //   // Check if any dates were successfully parsed
 
-    for (DateTime? date in dates) {
-      if (date != null) {
-        String dayName = DateFormat('EEEE').format(date);
-        dayNames.add(dayName);
-      }
-    }
+  //   for (DateTime? date in dates) {
+  //     if (date != null) {
+  //       String dayName = DateFormat('EEEE').format(date);
+  //       dayNames.add(dayName);
+  //     }
+  //   }
 
-    return dayNames;
-  }
+  //   return dayNames;
+  // }
 
   Future<String> getAvailabilityCalendar(String availabilityCalendar) async {
     availabilityCalendarid = availabilityCalendar;
@@ -492,18 +592,18 @@ class RescheduleAppState extends State<RescheduleApp> {
     generateUpcomingDates(DateTime.now());
     _pageController = PageController(initialPage: 0);
     fetchApiResponseFromSharedPrefs();
-    fetchAvailableDates().then((dates) {
-      setState(() {
-        datesOnly = dates;
-      });
-    });
-    fetchAvailableDays().then((days) {
-      setState(() {
-        dayNames = days;
-      });
-    });
+    // fetchAvailableDates().then((dates) {
+    //   setState(() {
+    //     datesOnly = dates;
+    //   });
+    // });
+    // fetchAvailableDays().then((days) {
+    //   setState(() {
+    //     dayNames = days;
+    //   });
+    // });
     fetchDateList(DateTime.now());
-    fetchAvailabilityCalendar();
+    fetchAvailabilityCalendar(DateTime.now());
   }
 
   @override
@@ -909,15 +1009,23 @@ class RescheduleAppState extends State<RescheduleApp> {
                                                 // print("ACI" +
                                                 //     availabiltyCandarId[index]
                                                 //         .toString());
-                                                fetchAvailabilityCalendar();
+                                                DateTime ACI = DateTime.parse(
+                                                    upcomingDateList[index]
+                                                        .toString());
+                                                print("ACI DATE" +
+                                                    ACI.toString());
+                                                // fetchDateList(ACI);
+                                                fetchAvailabilityCalendar(date);
                                                 getAvailabilityCalendar(
                                                     availabiltyCandarId[index]);
                                                 if (selectedDates.length == 1) {
                                                   selectedDates[0] =
-                                                      datesOnly[index];
+                                                      upcomingDateList[index]
+                                                          .toString();
                                                 } else {
-                                                  selectedDates
-                                                      .add(datesOnly[index]);
+                                                  selectedDates.add(
+                                                      upcomingDateList[index]
+                                                          .toString());
                                                 }
 
                                                 SharedPreferences pref =
@@ -930,6 +1038,7 @@ class RescheduleAppState extends State<RescheduleApp> {
                                                     .getString(
                                                         "selectedDateReschedule")
                                                     .toString();
+                                                  
 
                                                 setState(() {
                                                   // Reset the color of the last selected button
@@ -953,7 +1062,10 @@ class RescheduleAppState extends State<RescheduleApp> {
 
                                                 // Print the selected date
                                                 print(
-                                                    'Selected Date: ${datesOnly[index]}');
+                                                    'Selected Date: ${upcomingDateList[index]}');
+                                                    print(
+                                                    'Selected Date: ${availabilityCalendarid[index]}');
+
                                               },
                                               child: selectedIndices
                                                       .contains(index)
@@ -1051,7 +1163,8 @@ class RescheduleAppState extends State<RescheduleApp> {
                                     actions: <Widget>[
                                       Divider(),
                                       Row(
-                                        mainAxisAlignment: MainAxisAlignment.end,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.end,
                                         children: [
                                           TextButton(
                                             onPressed: () async {
@@ -1060,24 +1173,25 @@ class RescheduleAppState extends State<RescheduleApp> {
                                             },
                                             child: Text(
                                               'cancelButton'.tr,
-                                              style:
-                                                  TextStyle(color: secondaryColor),
+                                              style: TextStyle(
+                                                  color: secondaryColor),
                                             ),
                                           ),
-                                          SizedBox(width: 30,),
+                                          SizedBox(
+                                            width: 30,
+                                          ),
                                           TextButton(
-                                        onPressed: () async {
-                                          confirmAppointment(context);
-                                        },
-                                        child: Text(
-                                          'confirm'.tr,
-                                          style:
-                                              TextStyle(color: secondaryColor),
-                                        ),
-                                      ),
+                                            onPressed: () async {
+                                              confirmAppointment(context);
+                                            },
+                                            child: Text(
+                                              'confirm'.tr,
+                                              style: TextStyle(
+                                                  color: secondaryColor),
+                                            ),
+                                          ),
                                         ],
                                       ),
-                                      
                                     ],
                                   );
                                 },

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:QBB/constants.dart';
 import 'package:QBB/screens/api/check_qid.dart';
 import 'package:QBB/screens/api/register_api.dart';
@@ -7,13 +9,16 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
 
 class RegisterUser extends StatefulWidget {
+  final bool? isSelf;
   final String? behalfFname;
   final String? behalfLname;
   final String registrationMode;
   const RegisterUser(
       {super.key,
+      this.isSelf,
       this.behalfFname,
       this.behalfLname,
       required this.registrationMode});
@@ -23,6 +28,7 @@ class RegisterUser extends StatefulWidget {
 }
 
 class RegisterUserState extends State<RegisterUser> {
+  bool? isSelf;
   String? behalfLname;
   String? behalfFname;
   bool isLoading = false;
@@ -32,6 +38,9 @@ class RegisterUserState extends State<RegisterUser> {
   late Future<bool> _qidExistence;
   TextEditingController nationalityController = TextEditingController();
   final TextEditingController _firstNameController = TextEditingController();
+  final TextEditingController otherSource = TextEditingController();
+  final TextEditingController otherCampaign = TextEditingController();
+
   final TextEditingController _middleNameController = TextEditingController();
   final TextEditingController _dateTimeController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
@@ -43,34 +52,40 @@ class RegisterUserState extends State<RegisterUser> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   String? qidLastTwoDigits;
   // Define source items with integer values
-  final List<Map<String, dynamic>> sourceItems = [
-    {'display': 'family'.tr, 'value': 1, "IscampaignEnabled": "True"},
-    {'display': 'friends'.tr, 'value': 2, "IscampaignEnabled": "False"},
-    {'display': 'newspaper'.tr, 'value': 3, "IscampaignEnabled": "True"},
-    {'display': 'qatarFoundation'.tr, 'value': 4, "IscampaignEnabled": "True"},
-    {'display': 'socialMedia'.tr, 'value': 5, "IscampaignEnabled": "True"},
-    {'display': 'website'.tr, 'value': 6, "IscampaignEnabled": "True"},
-    {'display': 'Fahad Test', 'value': 7, "IscampaignEnabled": "True"},
-    {'display': 'Covid 90', 'value': 8, "IscampaignEnabled": "True"},
-    {'display': 'Rafiq', 'value': 9, "IscampaignEnabled": "True"},
-    {'display': 'Just Testing', 'value': 10, "IscampaignEnabled": "True"},
-    {'display': 'UAT QA', 'value': 11, "IscampaignEnabled": "False"},
-    {'display': 'other'.tr, 'value': 12, "IscampaignEnabled": "False"},
-  ];
+  // final List<Map<String, dynamic>> sourceItems = [
+  //   {'display': 'family'.tr, 'value': 1, "IscampaignEnabled": "True"},
+  //   {'display': 'friends'.tr, 'value': 2, "IscampaignEnabled": "False"},
+  //   {'display': 'newspaper'.tr, 'value': 3, "IscampaignEnabled": "True"},
+  //   {'display': 'qatarFoundation'.tr, 'value': 4, "IscampaignEnabled": "True"},
+  //   {'display': 'socialMedia'.tr, 'value': 5, "IscampaignEnabled": "True"},
+  //   {'display': 'website'.tr, 'value': 6, "IscampaignEnabled": "True"},
+  //   {'display': 'Fahad Test', 'value': 7, "IscampaignEnabled": "True"},
+  //   {'display': 'Covid 90', 'value': 8, "IscampaignEnabled": "True"},
+  //   {'display': 'Rafiq', 'value': 9, "IscampaignEnabled": "True"},
+  //   {'display': 'Just Testing', 'value': 10, "IscampaignEnabled": "True"},
+  //   {'display': 'UAT QA', 'value': 11, "IscampaignEnabled": "False"},
+  //   {'display': 'other'.tr, 'value': 12, "IscampaignEnabled": "False"},
+  // ];
 
   // Define  items with integer values
-  final List<Map<String, dynamic>> campaignItems = [
-    {'display': 'toBeConfirmed'.tr, 'value': 1},
-    {'display': 'Test', 'value': 2},
-    {'display': 'Test Fahad Campaign', 'value': 3},
-    {'display': 'Test campaign', 'value': 4},
-    {'display': 'Ahana Campaign', 'value': 5},
-    {'display': 'Covid', 'value': 6},
-    {'display': 'New Year', 'value': 7},
-    {'display': 'Qatar National Day', 'value': 8},
-    {'display': 'Just Test', 'value': 9},
-    {'display': 'other'.tr, 'value': 10},
+  // final List<Map<String, dynamic>> campaignItems = [
+  //   {'display': 'toBeConfirmed'.tr, 'value': 1},
+  //   {'display': 'Test', 'value': 2},
+  //   {'display': 'Test Fahad Campaign', 'value': 3},
+  //   {'display': 'Test campaign', 'value': 4},
+  //   {'display': 'Ahana Campaign', 'value': 5},
+  //   {'display': 'Covid', 'value': 6},
+  //   {'display': 'New Year', 'value': 7},
+  //   {'display': 'Qatar National Day', 'value': 8},
+  //   {'display': 'Just Test', 'value': 9},
+  //   {'display': 'other'.tr, 'value': 10},
+  // ];
+  List<Map<String, dynamic>> sourceItems = [];
+  List<Map<String, dynamic>> sourceItemOther = [
+    {'Id': 100, 'Name': 'Other', 'IscampaignEnabled': 'False'}
   ];
+  List<Map<String, dynamic>> campaignItems = [];
+  List<Map<String, dynamic>> campaignItemsOther = [];
   String? _qidError;
   int? maritalId; // Added maritalId to store the mapped value
   var gender;
@@ -86,15 +101,123 @@ class RegisterUserState extends State<RegisterUser> {
   String? _selectedLivingPeriod;
   int? updatedNationalityId;
   String errorText = '';
+
+  Future<List<Map<String, dynamic>>> fetchSource() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    var lang = 'langChange'.tr;
+    String qid = pref.getString("userQID").toString();
+
+    try {
+      // Get the token from shared preferences
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String token = prefs.getString('token') ??
+          ''; // Replace 'auth_token' with your actual key
+
+      // Check if the token is available
+      if (token.isEmpty) {
+        return [];
+      }
+
+      // Construct the request URL
+      String apiUrl =
+          'https://participantportal-test.qatarbiobank.org.qa/QbbAPIS/api/QBBStudySourceAPI?id=1&language=$lang';
+
+      // Make the GET request with the token in the headers
+      var response = await http.get(
+        Uri.parse(apiUrl),
+        headers: {
+          'Authorization': 'Bearer ${token.replaceAll('"', '')}',
+        },
+      );
+
+      print(response.body);
+
+      // Check if the request was successful (status code 200)
+      if (response.statusCode == 200) {
+        // Parse and handle the response body
+        var responseBody = json.decode(response.body);
+        setState(() {
+          sourceItems = List<Map<String, dynamic>>.from(responseBody);
+          sourceItems.addAll(sourceItemOther);
+        });
+
+        print(sourceItems);
+        return sourceItems;
+      } else {
+        // Handle errors
+
+        return []; // Return an empty list in case of an error
+      }
+    } catch (e, stackTrace) {
+      return []; // Return an empty list in case of an exception
+    }
+  }
+
+  Future<List<Map<String, dynamic>>> fetchCampaignList(id) async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    var lang = 'langChange'.tr;
+    String qid = pref.getString("userQID").toString();
+    campaignItemsOther = [
+      {'Id': 101, 'StudySourceId': id, 'Name': 'Other'}
+    ];
+    try {
+      // Get the token from shared preferences
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String token = prefs.getString('token') ??
+          ''; // Replace 'auth_token' with your actual key
+
+      // Check if the token is available
+      if (token.isEmpty) {
+        return [];
+      }
+
+      // Construct the request URL
+      String apiUrl =
+          'https://participantportal-test.qatarbiobank.org.qa/QbbAPIS/api/QBBCampaignAPI?id=$id&language=$lang';
+
+      // Make the GET request with the token in the headers
+      var response = await http.get(
+        Uri.parse(apiUrl),
+        headers: {
+          'Authorization': 'Bearer ${token.replaceAll('"', '')}',
+        },
+      );
+
+      print(response.body);
+
+      // Check if the request was successful (status code 200)
+      if (response.statusCode == 200) {
+        // Parse and handle the response body
+        var responseBody = json.decode(response.body);
+        setState(() {
+          campaignItems = List<Map<String, dynamic>>.from(responseBody);
+          campaignItems.addAll(campaignItemsOther);
+        });
+
+        print(campaignItems);
+        return campaignItems;
+      } else {
+        // Handle errors
+
+        return []; // Return an empty list in case of an error
+      }
+    } catch (e, stackTrace) {
+      return []; // Return an empty list in case of an exception
+    }
+  }
+
+  int id = 43;
   @override
   void initState() {
     super.initState();
     // Call a function to retrieve the token from shared preferences
     _retrieveToken();
     _qidController.addListener(_validateInput);
+    fetchSource();
+    fetchCampaignList(id);
   }
 
-    void _validateInput() {
+  void _validateInput() {
     setState(() {
       if (_qidController.text.isEmpty) {
         errorText = '';
@@ -147,10 +270,7 @@ class RegisterUserState extends State<RegisterUser> {
             child: Text(
               'register'.tr,
               style: const TextStyle(
-                color: appbar,
-                fontFamily: 'Impact',
-                fontSize: 16
-              ),
+                  color: appbar, fontFamily: 'Impact', fontSize: 16),
             ),
           ),
         ),
@@ -449,16 +569,18 @@ class RegisterUserState extends State<RegisterUser> {
                             onChanged: (value) {
                               setState(() {
                                 // Handle the selected value as needed
-                                int? intValue = sourceItems.firstWhere((item) =>
-                                    item['display'] == value)['value'];
+                                int? intValue = sourceItems.firstWhere(
+                                    (item) => item['Name'] == value)['Id'];
+
                                 // Pass intValue to the API or use it as needed
                                 _sourceController = intValue;
+                                fetchCampaignList(intValue);
                               });
                             },
                             items: sourceItems.map((item) {
                               return DropdownMenuItem<String>(
-                                value: item['display'],
-                                child: Text(item['display']),
+                                value: item['Name'],
+                                child: Text(item['Name']),
                               );
                             }).toList(),
                             labelText: 'newspaper'.tr + '*',
@@ -466,7 +588,20 @@ class RegisterUserState extends State<RegisterUser> {
                         ],
                       ),
                       const SizedBox(height: 20.0),
-
+                      if (_shouldShowOtherSource())
+                        _buildRoundedBorderTextField(
+                          labelText: 'otherPleaseSpecify'.tr + '*',
+                          labelTextColor:
+                              const Color.fromARGB(255, 173, 173, 173),
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return 'otherPleaseSpecify'.tr;
+                            }
+                            return null;
+                          },
+                          controller:
+                              otherSource, // Add this line to associate the controller
+                        ),
                       // Dropdown 2
                       if (_shouldShowCampaignDropdown())
                         Column(
@@ -487,21 +622,35 @@ class RegisterUserState extends State<RegisterUser> {
                                 setState(() {
                                   // Handle the selected value as needed
                                   int? intValue = campaignItems.firstWhere(
-                                      (item) =>
-                                          item['display'] == value)['value'];
+                                      (item) => item['Name'] == value)['Id'];
                                   // Pass intValue to the API or use it as needed
                                   _campaignController = intValue;
                                 });
                               },
                               items: campaignItems.map((item) {
                                 return DropdownMenuItem<String>(
-                                  value: item['display'],
-                                  child: Text(item['display']),
+                                  value: item['Name'],
+                                  child: Text(item['Name']),
                                 );
                               }).toList(),
                               labelText: 'selectCampaigns'.tr,
                             ),
                           ],
+                        ),
+                      const SizedBox(height: 20.0),
+                      if (_shouldShowOtherCampaign())
+                        _buildRoundedBorderTextField(
+                          labelText: 'otherPleaseSpecify'.tr + '*',
+                          labelTextColor:
+                              const Color.fromARGB(255, 173, 173, 173),
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return 'otherPleaseSpecify'.tr;
+                            }
+                            return null;
+                          },
+                          controller:
+                              otherCampaign, // Add this line to associate the controller
                         ),
 
                       const SizedBox(height: 20.0),
@@ -524,6 +673,7 @@ class RegisterUserState extends State<RegisterUser> {
                                 lastName: _lastNameController.text,
                                 healthCardNo: _healthCardController.text,
                                 nationalityId: updatedNationalityId,
+                                
                                 recoveryMobile: _mobileNumberController.text,
                                 dob: selectedDate != null
                                     ? dateFormat.format(selectedDate!)
@@ -534,7 +684,7 @@ class RegisterUserState extends State<RegisterUser> {
                                 livingPeriodId: _selectedLivingPeriod,
                                 registrationSourceID: _sourceController,
                                 campain: _campaignController,
-                                isSelfRegistred: registrationMode,
+                                isSelfRegistred: widget.isSelf.toString(),
                                 referralPersonFirstName: widget.behalfFname,
                                 referralPersonLastName: widget.behalfLname);
 
@@ -591,8 +741,19 @@ class RegisterUserState extends State<RegisterUser> {
   bool _shouldShowCampaignDropdown() {
     // Check if the selected value from the source dropdown has IscampaignEnabled set to True
     return sourceItems.any((item) =>
-        item['value'] == _sourceController &&
-        item['IscampaignEnabled'] == 'True');
+        item['Id'] == _sourceController && item['IscampaignEnabled'] == 'True');
+  }
+
+  bool _shouldShowOtherSource() {
+    // Check if the selected value from the source dropdown has IscampaignEnabled set to True
+    return sourceItems.any(
+        (item) => item['Id'] == _sourceController && item['Name'] == 'Other');
+  }
+
+  bool _shouldShowOtherCampaign() {
+    // Check if the selected value from the source dropdown has IscampaignEnabled set to True
+    return campaignItems.any(
+        (item) => item['Id'] == _campaignController && item['Name'] == 'Other');
   }
 
   Widget _buildRoundedBorderTextField({

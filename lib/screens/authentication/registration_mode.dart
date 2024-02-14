@@ -134,7 +134,7 @@ class _RegistrationModeState extends State<RegistrationMode> {
   TextEditingController behalfEmailController = TextEditingController();
   bool isButtonEnabled = false;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
+  bool isSelf = true;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -185,7 +185,7 @@ class _RegistrationModeState extends State<RegistrationMode> {
                     width: 20.0,
                   ),
                   Expanded(
-                      child: _buildRadioListTile('onBehalf'.tr, 'On Behalf')),
+                      child: _buildRadioListTileBehalf('onBehalf'.tr, 'On Behalf')),
                 ],
               ),
               Visibility(
@@ -225,6 +225,7 @@ class _RegistrationModeState extends State<RegistrationMode> {
                       context,
                       MaterialPageRoute(
                         builder: (context) => RegisterUser(
+                          isSelf : isSelf,
                           registrationMode: registrationMode,
                           behalfFname: behalfNameController.text,
                           behalfLname: behalfEmailController.text,
@@ -269,6 +270,21 @@ class _RegistrationModeState extends State<RegistrationMode> {
       onChanged: (newValue) {
         setState(() {
           registrationMode = newValue!;
+        });
+      },
+      activeColor: primaryColor,
+    );
+  }
+
+  Widget _buildRadioListTileBehalf(String title, String value) {
+    return RadioListTile<String>(
+      title: Text(title),
+      value: value,
+      groupValue: registrationMode,
+      onChanged: (newValue) {
+        setState(() {
+          registrationMode = newValue!;
+          isSelf = false;
         });
       },
       activeColor: primaryColor,
