@@ -107,11 +107,8 @@ class AccessUserState extends State<AccessUser> {
             padding: EdgeInsets.only(right: 40.0),
             child: Text(
               'accessSetUp'.tr,
-              style: TextStyle(
-                color: appbar,
-                fontFamily: 'Impact',
-                fontSize: 16
-              ),
+              style:
+                  TextStyle(color: appbar, fontFamily: 'Impact', fontSize: 16),
             ),
           ),
         ),
@@ -144,9 +141,13 @@ class AccessUserState extends State<AccessUser> {
                   children: [
                     ElevatedButton(
                         onPressed: () async {
-                          // Call the API function
-                          await setPasswordAccessSetupNotCompleted(
-                              QID, 'langChange'.tr, context);
+                          try {
+                            // Call the API function
+                            await setPasswordAccessSetupNotCompleted(
+                                QID, 'langChange'.tr, context);
+                          } catch (e) {
+                            print("$e");
+                          }
                         },
                         style: ButtonStyle(
                             backgroundColor: MaterialStateProperty.all<Color>(

@@ -4,8 +4,10 @@ class LoaderWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      width: 80, // Adjust width as needed
+      height: 80,
       color:
-          Colors.white.withOpacity(0), // Set a transparent white background
+          Colors.grey.withOpacity(0), // Set a transparent white background
 
       child: Center(
         child: Image.asset(

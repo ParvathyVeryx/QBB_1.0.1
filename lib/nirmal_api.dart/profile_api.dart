@@ -65,49 +65,82 @@ import '../screens/pages/loader.dart';
 //   }
 // }
 
+// class Dialogs {
+//   static Future<void> showLoadingDialog(
+//     BuildContext context,
+//     GlobalKey key,
+//     Widget? child,
+//   ) async {
+//     return showDialog<void>(
+
+//       context: context,
+//       barrierDismissible: false,
+//       builder: (BuildContext context) {
+//         // return WillPopScope(
+//         //   onWillPop: () async => false,
+//         //   child: SimpleDialog(
+//         //     key: key,
+//         //     backgroundColor: Colors.transparent,
+//         //     children: <Widget>[
+//         //       Center(
+//         //         child: child,
+//         //       ),
+//         //     ],
+//         //   ),
+//         // );
+//                 return WillPopScope(
+//           onWillPop: () async => false,
+//           child: AlertDialog(
+//             key: key,
+//             contentPadding: EdgeInsets.zero, // Set content padding to zero
+//             backgroundColor: Colors.grey,
+//             content: Container(
+//               width: MediaQuery.of(context).size.width,
+//               height: MediaQuery.of(context).size.height,
+//               child: Center(
+//                 child: child,
+//               ),
+//             ),
+//           ),
+//         );
+//       },
+//     );
+
+//   }
+// }
+
 class Dialogs {
   static Future<void> showLoadingDialog(
-    BuildContext context,
-    GlobalKey key,
-    Widget? child,
-  ) async {
-    return showDialog<void>(
-
+      BuildContext context, GlobalKey key, Widget? child) async {
+    showDialog(
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
-        // return WillPopScope(
-        //   onWillPop: () async => false,
-        //   child: SimpleDialog(
-        //     key: key,
-        //     backgroundColor: Colors.transparent,
-        //     children: <Widget>[
-        //       Center(
-        //         child: child,
-        //       ),
-        //     ],
-        //   ),
-        // );
-                return WillPopScope(
+        return WillPopScope(
           onWillPop: () async => false,
-          child: AlertDialog(
+          child: Material(
+            type: MaterialType.transparency,
             key: key,
-            contentPadding: EdgeInsets.zero, // Set content padding to zero
-            backgroundColor: Colors.transparent,
-            content: Container(
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height,
-              child: Center(
-                child: child,
+            child: Center(
+              child: Container(
+                color: Colors.transparent,
+                padding: EdgeInsets.all(16.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    
+                    if (child != null) child,
+                  ],
+                ),
               ),
             ),
           ),
         );
       },
     );
-
   }
 }
+
 
 Future<void> callUserProfileAPI(
     BuildContext context, String email, int maritalId) async {

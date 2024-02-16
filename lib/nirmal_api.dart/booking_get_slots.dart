@@ -648,24 +648,29 @@ Future<void> getResultsSlot(BuildContext context, String studyId,
 
 class Dialogs {
   static Future<void> showLoadingDialog(
-    BuildContext context,
-    GlobalKey key,
-    Widget? child,
-  ) async {
-    return showDialog<void>(
+      BuildContext context, GlobalKey key, Widget? child) async {
+    showDialog(
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
         return WillPopScope(
           onWillPop: () async => false,
-          child: SimpleDialog(
+          child: Material(
+            type: MaterialType.transparency,
             key: key,
-            backgroundColor: Colors.transparent,
-            children: <Widget>[
-              Center(
-                child: child,
+            child: Center(
+              child: Container(
+                color: Colors.transparent,
+                padding: EdgeInsets.all(16.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    
+                    if (child != null) child,
+                  ],
+                ),
               ),
-            ],
+            ),
           ),
         );
       },

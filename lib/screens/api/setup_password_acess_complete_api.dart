@@ -16,6 +16,7 @@ Future<void> setPasswordAccessSetupNotCompleted(
 ) async {
   final GlobalKey<State> _keyLoader = GlobalKey<State>();
   LoaderWidget _loader = LoaderWidget();
+  BuildContext newContext = context;
   try {
     Dialogs.showLoadingDialog(context, _keyLoader, _loader);
     // Retrieve token from shared preferences
@@ -38,30 +39,32 @@ Future<void> setPasswordAccessSetupNotCompleted(
     );
 
     if (response.statusCode == 200) {
-       Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
+      Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
       await showDialog(
         context: context, // Use the context of the current screen
         builder: (BuildContext context) {
-          return ErrorPopup(errorMessage: json.decode(response.body)["Message"]);
+          return ErrorPopup(
+              errorMessage: json.decode(response.body)["Message"]);
         },
       );
       // Handle the response data if needed
     } else {
-       Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
+      Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
       await showDialog(
         context: context, // Use the context of the current screen
         builder: (BuildContext context) {
-          return ErrorPopup(errorMessage: json.decode(response.body)["Message"]);
+          return ErrorPopup(
+              errorMessage: json.decode(response.body)["Message"]);
         },
       );
     }
   } catch (error) {
     Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
     await showDialog(
-        context: context, // Use the context of the current screen
-        builder: (BuildContext context) {
-          return ErrorPopup(errorMessage: '$error');
-        },
-      );
+      context: context, // Use the context of the current screen
+      builder: (BuildContext context) {
+        return ErrorPopup(errorMessage: '$error');
+      },
+    );
   }
 }
