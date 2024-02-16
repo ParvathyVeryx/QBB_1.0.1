@@ -1,6 +1,7 @@
 import 'package:QBB/constants.dart';
 import 'package:QBB/nirmal_api.dart/marital_status_api.dart';
 import 'package:QBB/nirmal_api.dart/profile_api.dart';
+import 'package:QBB/screens/pages/erorr_popup.dart';
 import 'package:QBB/screens/pages/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -8,9 +9,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class EditUser extends StatefulWidget {
   final Future<String> emailFuture;
-  // final Future<String> maritalstatus;
+  final Future<String> maritalstatus;
 
-  const EditUser({required this.emailFuture, Key? key}) : super(key: key);
+  const EditUser(
+      {required this.emailFuture, required this.maritalstatus, Key? key})
+      : super(key: key);
 
   @override
   EditUserState createState() => EditUserState();
@@ -29,23 +32,27 @@ class EditUserState extends State<EditUser> {
   String? maritalStatusId;
   bool isLoading = false;
   int? maritalId;
+  int? newMaritalid;
 
   final TextEditingController _emailController = TextEditingController();
-  String _genderController = '';
+  String? _genderController;
   late Future<String> maritalStatusFuture;
-
+  String? originalEmail;
+  String? originalMaritalStatus;
   @override
   void initState() {
     super.initState();
     // _emailController.text = widget.email; // Removed this line
     widget.emailFuture.then((email) {
       _emailController.text = email;
+      originalEmail = email;
     });
 
-    // widget.maritalstatus.then((gender) {
-    //   _genderController = gender.toString();
-    //   print(maritalStatus);
-    // });
+    widget.maritalstatus.then((gender) {
+      _genderController = gender.toString();
+      originalMaritalStatus = gender.toString();
+      print(maritalStatus);
+    });
     maritalStatusFuture = getUserGenderr();
     getUserGender();
   }
@@ -54,6 +61,16 @@ class EditUserState extends State<EditUser> {
     SharedPreferences pref = await SharedPreferences.getInstance();
     maritalStatus = pref.getString("userMStatus").toString();
     print(maritalStatus.toString() + "Marital Status");
+    if (_genderController == "Single") {
+      newMaritalid = 2;
+    } else if (_genderController == "Married") {
+      newMaritalid = 1;
+    } else if (_genderController == "Divorced") {
+      newMaritalid = 3;
+    } else if (_genderController == "Widowed") {
+      newMaritalid = 4;
+    }
+    maritalId = newMaritalid;
   }
 
   Future<String> getUserGenderr() async {
@@ -127,7 +144,7 @@ class EditUserState extends State<EditUser> {
                         height: 20.0,
                       ),
                       _buildDropdownFormField(
-                        value: null,
+                        value: _genderController,
                         onChanged: (value) {
                           setState(() {
                             maritalStatus = value!;
@@ -144,14 +161,30 @@ class EditUserState extends State<EditUser> {
                               case 'Widowed':
                                 maritalId = 4;
                                 break;
+                              case 'الأرامل':
+                                maritalId = 4;
+                                break;
+                              case 'اعزب':
+                                maritalId = 2;
+                                break;
+                              case 'متزوج':
+                                maritalId = 1;
+                                break;
+                              case 'مطلقة':
+                                maritalId = 3;
+                                break;
                               default:
-                                maritalId = 0;
+                                maritalId = newMaritalid;
                                 break;
                             }
                           });
                         },
-                        items: ['Single', 'Married', 'Divorced', 'Widowed']
-                            .map((String value) {
+                        items: [
+                          'Single'.tr,
+                          'married'.tr,
+                          'divorced'.tr,
+                          'widowed'.tr
+                        ].map((String value) {
                           return DropdownMenuItem<String>(
                             value: value.tr,
                             child: Text(value.tr),
@@ -163,23 +196,46 @@ class EditUserState extends State<EditUser> {
                       ElevatedButton(
                         onPressed: () {
                           // if (isButtonEnabled) {
-                          if (_formKey.currentState!.validate()) {
+                          if (_genderController == "Single".tr) {
+                            newMaritalid = 2;
+                          } else if (_genderController == "married".tr) {
+                            newMaritalid = 1;
+                          } else if (_genderController == "divorced".tr) {
+                            newMaritalid = 3;
+                          } else if (_genderController == "widowed".tr) {
+                            newMaritalid = 4;
+                          }
+                          print(newMaritalid);
+                          print(maritalId);
+                          print(_emailController.text);
+                          print(originalEmail);
+                          if (_formKey.currentState!.validate() &&
+                                  _emailController.text != originalEmail ||
+                              _genderController != originalMaritalStatus) {
                             setState(() {
                               isLoading = true;
                             });
+                            print("if is working");
                             String userEmail = _emailController.text;
                             // int userMaritalId =
                             //     int.parse(maritalId);
                             callUserProfileAPI(context, userEmail, maritalId!);
                             // } else {}
                           } else {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text('No changes to save.'),
-                                duration: Duration(seconds: 2),
-                              ),
-                            );
+                            // Check if changes are made
+                            if (_emailController.text == originalEmail &&
+                                _genderController == originalMaritalStatus) {
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return ErrorPopup(
+                                      errorMessage: "No changes to update");
+                                },
+                              ); // Show popup when no changes made
+                            }
                           }
+
+                          // }
                         },
                         style: ButtonStyle(
                             backgroundColor:

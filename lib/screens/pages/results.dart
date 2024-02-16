@@ -180,7 +180,7 @@ class ResultsState extends State<Results> {
                 bottomNavigationBar: BottomNavigationBar(
                     selectedItemColor: textcolor,
                     unselectedItemColor: textcolor,
-                    backgroundColor: primaryColor,
+                    backgroundColor: Color(0xFF2368ac),
                     currentIndex: currentIndex,
                     unselectedFontSize: 7,
                     selectedFontSize: 7,
@@ -245,7 +245,7 @@ class ResultsState extends State<Results> {
                             fit: BoxFit.cover,
                           ),
                         ),
-                        label: 'appointment'.tr + '\n',
+                         label: 'appointments'.tr.toUpperCase() + '\n',
                       ),
                       BottomNavigationBarItem(
                           icon: Padding(
@@ -284,7 +284,7 @@ class ResultsState extends State<Results> {
                           ),
                           label: 'profile'.tr.toUpperCase() + '\n'),
                     ]),
-                body: LoaderWidget());
+                body: Center(child: LoaderWidget()));
           } else {
             completedAppointments = snapshot.data!;
           }
@@ -352,7 +352,7 @@ class ResultsState extends State<Results> {
                 bottomNavigationBar: BottomNavigationBar(
                     selectedItemColor: textcolor,
                     unselectedItemColor: textcolor,
-                    backgroundColor: primaryColor,
+                    backgroundColor: Color(0xFF2368ac),
                     currentIndex: currentIndex,
                     unselectedFontSize: 7,
                     selectedFontSize: 7,
@@ -417,7 +417,7 @@ class ResultsState extends State<Results> {
                             fit: BoxFit.cover,
                           ),
                         ),
-                        label: 'appointment'.tr + '\n',
+                        label: 'appointments'.tr.toUpperCase() + '\n',
                       ),
                       BottomNavigationBarItem(
                           icon: Padding(
@@ -522,7 +522,7 @@ class ResultsState extends State<Results> {
             bottomNavigationBar: BottomNavigationBar(
                 selectedItemColor: textcolor,
                 unselectedItemColor: textcolor,
-                backgroundColor: primaryColor,
+                backgroundColor: Color(0xFF2368ac),
                 currentIndex: currentIndex,
                 unselectedFontSize: 7,
                 selectedFontSize: 7,
@@ -586,7 +586,7 @@ class ResultsState extends State<Results> {
                         fit: BoxFit.cover,
                       ),
                     ),
-                    label: 'appointment'.tr + '\n',
+                   label: 'appointments'.tr.toUpperCase() + '\n',
                   ),
                   BottomNavigationBarItem(
                       icon: Padding(

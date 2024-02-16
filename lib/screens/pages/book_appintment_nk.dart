@@ -187,10 +187,9 @@ class BookAppointmentsState extends State<BookAppointments> {
                   Text(
                     'pageATitle'.tr,
                     style: const TextStyle(
-                      color: Colors.white,
-                      fontFamily: 'Impact',
-                      fontSize: 16
-                    ),
+                        color: Colors.white,
+                        fontFamily: 'Impact',
+                        fontSize: 16),
                   ),
                   IconButton(
                     onPressed: () {
@@ -211,106 +210,105 @@ class BookAppointmentsState extends State<BookAppointments> {
             ),
             drawer: const SideMenu(),
             bottomNavigationBar: BottomNavigationBar(
-              selectedItemColor: textcolor,
-              unselectedItemColor: textcolor,
-              backgroundColor: primaryColor,
-              currentIndex: currentIndex,
-              unselectedFontSize: 7,
-              selectedFontSize: 7,
-              type: BottomNavigationBarType.fixed,
-              onTap: (index) {
-                setState(() {
-                  currentIndex = index;
-                });
-                if (index == 0) {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const HomeScreen()),
-                  );
-                }
-                if (index == 1) {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const Appointments()),
-                  );
-                }
-                if (index == 3) {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const Results()),
-                  );
-                }
-                if (index == 4) {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const Profile()),
-                  );
-                }
-              },
-              items: [
-                BottomNavigationBarItem(
-                  icon: Padding(
-                    padding: const EdgeInsets.only(bottom: 5.0),
-                    child: Image.asset(
-                      "assets/images/home.png",
-                      width: 20.0,
-                      height: 20.0,
-                      fit: BoxFit.cover,
+              // useLegacyColorScheme: false,
+              // fixedColor: appbar,
+                selectedItemColor: textcolor,
+                unselectedItemColor: textcolor,
+                backgroundColor: Color(0xFF2368ac),
+                currentIndex: currentIndex,
+                unselectedFontSize: 7,
+                selectedFontSize: 7,
+                type: BottomNavigationBarType.fixed,
+                onTap: (index) {
+                  setState(() {
+                    currentIndex = index;
+                  });
+                  if (index == 0) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const HomeScreen()),
+                    );
+                  }
+                  if (index == 1) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const Appointments()),
+                    );
+                  }
+                  if (index == 3) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const Results()),
+                    );
+                  }
+                  if (index == 4) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const Profile()),
+                    );
+                  }
+                },
+                items: [
+                  BottomNavigationBarItem(
+                    icon: Padding(
+                      padding: const EdgeInsets.only(bottom: 5.0, top: 5.0),
+                      child: Image.asset(
+                        "assets/images/home.png",
+                        width: 20.0,
+                        height: 20.0,
+                        fit: BoxFit.cover,
+                      ),
                     ),
+                    label: 'home'.tr + '\n',
                   ),
-                  label: 'HOME',
-                ),
-                BottomNavigationBarItem(
-                  icon: Padding(
-                    padding: const EdgeInsets.only(bottom: 5.0),
-                    child: Image.asset(
-                      "assets/images/event.png",
-                      width: 20.0,
-                      height: 20.0,
-                      fit: BoxFit.cover,
+                  BottomNavigationBarItem(
+                    icon: Padding(
+                      padding: const EdgeInsets.only(bottom: 5.0, top: 5.0),
+                      child: Image.asset(
+                        "assets/images/event.png",
+                        width: 20.0,
+                        height: 20.0,
+                        fit: BoxFit.cover,
+                      ),
                     ),
+                    label: 'appointments'.tr.toUpperCase() + '\n',
                   ),
-                  label: 'APPOINTMENT',
-                ),
-                BottomNavigationBarItem(
-                  icon: Padding(
-                    padding: const EdgeInsets.only(bottom: 5.0),
-                    child: Image.asset(
-                      "assets/images/event.png",
-                      width: 20.0,
-                      height: 20.0,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                  label: 'BOOK AN APPOINTMENT',
-                ),
-                BottomNavigationBarItem(
-                  icon: Padding(
-                    padding: const EdgeInsets.only(bottom: 5.0),
-                    child: Image.asset(
-                      "assets/images/experiment-results.png",
-                      width: 20.0,
-                      height: 20.0,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                  label: 'RESULTS/STATUS',
-                ),
-                BottomNavigationBarItem(
-                  icon: Padding(
-                    padding: const EdgeInsets.only(bottom: 5.0),
-                    child: Image.asset(
-                      "assets/images/user.png",
-                      width: 20.0,
-                      height: 20.0,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                  label: 'MY PROFILE',
-                ),
-              ],
-            ),
+                  BottomNavigationBarItem(
+                      icon: Padding(
+                        padding: const EdgeInsets.only(bottom: 5.0, top: 5.0),
+                        child: Image.asset(
+                          "assets/images/date.png",
+                          width: 20.0,
+                          height: 20.0,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                      label: 'bookAn'.tr + '\n' + 'appointment'.tr),
+                  BottomNavigationBarItem(
+                      icon: Padding(
+                        padding: const EdgeInsets.only(bottom: 5.0, top: 5.0),
+                        child: Image.asset(
+                          "assets/images/experiment-results.png",
+                          width: 20.0,
+                          height: 20.0,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                      label: 'results'.tr + '/' + '\n' + 'status'.tr),
+                  BottomNavigationBarItem(
+                      icon: Padding(
+                        padding: const EdgeInsets.only(bottom: 5.0, top: 5.0),
+                        child: Image.asset(
+                          "assets/images/user.png",
+                          width: 20.0,
+                          height: 20.0,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                      label: 'profile'.tr.toUpperCase() + '\n'),
+                ]),
             body: TabBarView(
               children: [
                 Column(
@@ -343,9 +341,12 @@ class BookAppointmentsState extends State<BookAppointments> {
                                 : DropdownButton<String>(
                                     value: selectedValue,
                                     items: [
-                                      const DropdownMenuItem<String>(
+                                      DropdownMenuItem<String>(
                                         value: 'Select studies',
-                                        child: const Text('Select studies'),
+                                        child: Text(
+                                          'selectStudies'.tr,
+                                          style: TextStyle(color: Colors.black),
+                                        ),
                                       ),
                                       ...studyNames.map(
                                         (studyName) => DropdownMenuItem<String>(
@@ -367,8 +368,8 @@ class BookAppointmentsState extends State<BookAppointments> {
                                       });
                                     },
                                     style: const TextStyle(
-                                      color: Colors.purple,
-                                      fontSize: 16.0,
+                                      color: Colors.black,
+                                      fontSize: 12.0,
                                     ),
                                     icon: const Icon(Icons.arrow_drop_down),
                                     isExpanded: true,
@@ -409,7 +410,12 @@ class BookAppointmentsState extends State<BookAppointments> {
                                   .toList() // Convert to set to remove duplicates
                                   .map((visitTypeName) => DropdownMenuItem(
                                         value: visitTypeName,
-                                        child: Text(visitTypeName),
+                                        child: Text(
+                                          visitTypeName,
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 12),
+                                        ),
                                       ))
                                   .toList(),
                               onChanged: (value) {

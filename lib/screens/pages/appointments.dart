@@ -137,7 +137,7 @@ class AppointmentsState extends State<Appointments> {
           bottomNavigationBar: BottomNavigationBar(
               selectedItemColor: textcolor,
               unselectedItemColor: textcolor,
-              backgroundColor: primaryColor,
+              backgroundColor: Color(0xFF2368ac),
               currentIndex: currentIndex,
               unselectedFontSize: 7,
               selectedFontSize: 7,
@@ -198,7 +198,7 @@ class AppointmentsState extends State<Appointments> {
                       fit: BoxFit.cover,
                     ),
                   ),
-                  label: 'appointment'.tr + '\n',
+                  label: 'appointments'.tr.toUpperCase() + '\n',
                 ),
                 BottomNavigationBarItem(
                     icon: Padding(

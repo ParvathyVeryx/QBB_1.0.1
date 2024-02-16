@@ -61,7 +61,7 @@ class StudiesState extends State<Studies> {
         bottomNavigationBar: BottomNavigationBar(
             selectedItemColor: textcolor,
             unselectedItemColor: textcolor,
-            backgroundColor: primaryColor,
+            backgroundColor: Color(0xFF2368ac),
             // currentIndex: currentIndex,
             unselectedFontSize: 7,
             selectedFontSize: 7,
@@ -131,7 +131,7 @@ class StudiesState extends State<Studies> {
                     fit: BoxFit.cover,
                   ),
                 ),
-                label: 'appointment'.tr + '\n',
+                label: 'appointments'.tr.toUpperCase() + '\n',
               ),
               BottomNavigationBarItem(
                   icon: Padding(
@@ -212,7 +212,7 @@ class StudiesState extends State<Studies> {
             if (snapshot.connectionState == ConnectionState.waiting) {
               // return Center(child: CircularProgressIndicator());
               isLoading = true;
-              return LoaderWidget();
+              return Center(child: LoaderWidget());
             } else if (snapshot.hasError) {
               return Center(child: Text('Error: ${snapshot.error}'));
             } else if (!snapshot.hasData || snapshot.data!.isEmpty) {

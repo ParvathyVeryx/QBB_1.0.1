@@ -132,7 +132,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                 bottomNavigationBar: BottomNavigationBar(
                     selectedItemColor: textcolor,
                     unselectedItemColor: textcolor,
-                    backgroundColor: primaryColor,
+                    backgroundColor: Color(0xFF2368ac),
                     unselectedFontSize: 7,
                     selectedFontSize: 7,
                     type: BottomNavigationBarType.fixed,
@@ -199,7 +199,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                             fit: BoxFit.cover,
                           ),
                         ),
-                        label: 'appointment'.tr + '\n',
+                        label: 'appointments'.tr.toUpperCase() + '\n',
                       ),
                       BottomNavigationBarItem(
                           icon: Padding(
@@ -290,7 +290,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                 bottomNavigationBar: BottomNavigationBar(
                     selectedItemColor: textcolor,
                     unselectedItemColor: textcolor,
-                    backgroundColor: primaryColor,
+                    backgroundColor: Color(0xFF2368ac),
                     unselectedFontSize: 7,
                     selectedFontSize: 7,
                     type: BottomNavigationBarType.fixed,
@@ -357,7 +357,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                             fit: BoxFit.cover,
                           ),
                         ),
-                        label: 'appointment'.tr + '\n',
+                        label: 'appointments'.tr.toUpperCase() + '\n',
                       ),
                       BottomNavigationBarItem(
                           icon: Padding(
@@ -446,7 +446,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
             bottomNavigationBar: BottomNavigationBar(
                 selectedItemColor: textcolor,
                 unselectedItemColor: textcolor,
-                backgroundColor: primaryColor,
+                backgroundColor: Color(0xFF2368ac),
                 unselectedFontSize: 7,
                 selectedFontSize: 7,
                 type: BottomNavigationBarType.fixed,
@@ -512,7 +512,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                         fit: BoxFit.cover,
                       ),
                     ),
-                    label: 'appointment'.tr + '\n',
+                    label: 'appointments'.tr.toUpperCase() + '\n',
                   ),
                   BottomNavigationBarItem(
                       icon: Padding(

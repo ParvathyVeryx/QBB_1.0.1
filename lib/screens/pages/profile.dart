@@ -127,7 +127,7 @@ class ProfileState extends State<Profile> {
 
   String _buildDateOnly(Map<String, dynamic> jsonMap) {
     DateTime dateTime = DateTime.parse(jsonMap['Dob'].toString());
-    return "${dateTime.year}-${dateTime.month.toString().padLeft(2, '0')}-${dateTime.day.toString().padLeft(2, '0')}";
+    return "${dateTime.day.toString().padLeft(2, '0')}-${dateTime.month.toString().padLeft(2, '0')}-${dateTime.year}";
   }
 
   void profilePic() async {
@@ -207,40 +207,41 @@ class ProfileState extends State<Profile> {
         print('Image Upload Complete');
       } else {
         // Show an error message or handle the case where the image size exceeds 70KB
-            // ignore: use_build_context_synchronously
-            showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            backgroundColor: Colors.white,
-            shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.only(
-                bottomLeft:
-                    Radius.circular(50.0), // Adjust the radius as needed
-              ),
-            ),
-            content: Padding(
-              padding: const EdgeInsets.only(top: 12.0),
-              child: Text(
-                "editImgError".tr,
-                style: const TextStyle(color: Color.fromARGB(255, 74, 74, 74)),
-              ),
-            ),
-            actions: <Widget>[
-              // Divider(),
-              TextButton(
-                onPressed: () async {
-                  Navigator.of(context).pop();
-                },
-                child: Text(
-                  'ok'.tr,
-                  style: TextStyle(color: secondaryColor),
+        // ignore: use_build_context_synchronously
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              backgroundColor: Colors.white,
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.only(
+                  bottomLeft:
+                      Radius.circular(50.0), // Adjust the radius as needed
                 ),
               ),
-            ],
-          );
-        },
-      );
+              content: Padding(
+                padding: const EdgeInsets.only(top: 12.0),
+                child: Text(
+                  "editImgError".tr,
+                  style:
+                      const TextStyle(color: Color.fromARGB(255, 74, 74, 74)),
+                ),
+              ),
+              actions: <Widget>[
+                // Divider(),
+                TextButton(
+                  onPressed: () async {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text(
+                    'ok'.tr,
+                    style: TextStyle(color: secondaryColor),
+                  ),
+                ),
+              ],
+            );
+          },
+        );
 
         print('Image size exceeds 70KB. Please choose a smaller image.');
       }
@@ -267,10 +268,7 @@ class ProfileState extends State<Profile> {
             Text(
               'profile'.tr,
               style: const TextStyle(
-                color: Colors.white,
-                fontFamily: 'Impact',
-                fontSize: 16
-              ),
+                  color: Colors.white, fontFamily: 'Impact', fontSize: 16),
             ),
             IconButton(
               onPressed: () {
@@ -285,13 +283,13 @@ class ProfileState extends State<Profile> {
             )
           ],
         ),
-        backgroundColor: Colors.deepPurple,
+        backgroundColor: appbar,
       ),
       drawer: const SideMenu(),
       bottomNavigationBar: BottomNavigationBar(
         selectedItemColor: textcolor,
         unselectedItemColor: textcolor,
-        backgroundColor: primaryColor,
+        backgroundColor: Color(0xFF2368ac),
         currentIndex: currentIndex,
         unselectedFontSize: 7,
         selectedFontSize: 7,
@@ -348,7 +346,7 @@ class ProfileState extends State<Profile> {
                 fit: BoxFit.cover,
               ),
             ),
-            label: 'appointment'.tr + '\n',
+            label: 'appointments'.tr.toUpperCase() + '\n',
           ),
           BottomNavigationBarItem(
             icon: Padding(
@@ -389,16 +387,16 @@ class ProfileState extends State<Profile> {
         ],
       ),
       body: _isLoading
-          ? LoaderWidget()
+          ? Center(child: LoaderWidget())
           : SingleChildScrollView(
               child: Container(
                 width: MediaQuery.of(context).size.width,
                 decoration: BoxDecoration(
                   gradient: const LinearGradient(
-                    colors: [Colors.deepPurple, Colors.white],
+                    colors: [appbar, Colors.white],
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
-                    stops: [0.150, 0.150],
+                    stops: [0.100, 0.100],
                   ),
                   borderRadius: BorderRadius.circular(0),
                 ),
@@ -407,11 +405,18 @@ class ProfileState extends State<Profile> {
                   children: [
                     Stack(
                       children: [
+                        SizedBox(
+                          height: 50,
+                        ),
                         CircleAvatar(
                           radius: 50,
-                          backgroundImage: profilePicture.isNotEmpty
-                              ? _getImageProvider(profilePicture)
-                              : const AssetImage('assets/images/user.png'),
+                          backgroundColor: primaryColor,
+                          child: CircleAvatar(
+                            radius: 47,
+                            backgroundImage: profilePicture.isNotEmpty
+                                ? _getImageProvider(profilePicture)
+                                : const AssetImage('assets/images/user.png'),
+                          ),
                         ),
                         Positioned(
                           bottom: 0,
@@ -480,7 +485,7 @@ class ProfileState extends State<Profile> {
                     ProfileInfoRow(
                       label: 'gender'.tr,
                       value: _userProfileFuture
-                          .then((userProfileData) => userProfileData.gender),
+                          .then((userProfileData) => userProfileData.gender.toLowerCase()),
                     ),
                     const SizedBox(height: 10),
                     const PinkDivider(),
@@ -544,10 +549,11 @@ class ProfileState extends State<Profile> {
                                   emailFuture: _userProfileFuture.then(
                                     (userProfileData) => userProfileData.email,
                                   ),
-                                  // maritalstatus: _userProfileFuture.then(
-                                  //   (userProfileData) =>
-                                  //       userProfileData.maritalStatus.toString(),
-                                  // ),
+                                  maritalstatus: _userProfileFuture.then(
+                                    (userProfileData) => userProfileData
+                                        .maritalStatus
+                                        .toString(),
+                                  ),
                                 ),
                               ),
                             );

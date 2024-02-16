@@ -99,8 +99,10 @@ class RegisterUserState extends State<RegisterUser> {
   int? _sourceController;
   int? _campaignController;
   String? _selectedLivingPeriod;
+  String? nullValue;
   int? updatedNationalityId;
   String errorText = '';
+  String? campaignList;
 
   Future<List<Map<String, dynamic>>> fetchSource() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
@@ -462,16 +464,16 @@ class RegisterUserState extends State<RegisterUser> {
                         height: 20.0,
                       ),
                       _buildDropdownFormField(
-                        value: null,
+                        value: maritalStatus,
                         onChanged: (value) {
                           setState(() {
                             maritalStatus = value!;
                             switch (maritalStatus) {
                               case 'Single':
-                                maritalId = 1;
+                                maritalId = 2;
                                 break;
                               case 'Married':
-                                maritalId = 2;
+                                maritalId = 1;
                                 break;
                               case 'Divorced':
                                 maritalId = 3;
@@ -565,7 +567,7 @@ class RegisterUserState extends State<RegisterUser> {
                           ),
                           const SizedBox(height: 10.0),
                           _buildDropdownFormField(
-                            value: null,
+                            value: campaignList,
                             onChanged: (value) {
                               setState(() {
                                 // Handle the selected value as needed
@@ -581,6 +583,7 @@ class RegisterUserState extends State<RegisterUser> {
                               return DropdownMenuItem<String>(
                                 value: item['Name'],
                                 child: Text(item['Name']),
+                                
                               );
                             }).toList(),
                             labelText: 'newspaper'.tr + '*',
@@ -611,13 +614,13 @@ class RegisterUserState extends State<RegisterUser> {
                               child: Text(
                                 'campaigns'.tr,
                                 style: const TextStyle(
-                                    fontSize: 16,
+                                    fontSize: 12,
                                     fontWeight: FontWeight.normal),
                               ),
                             ),
                             const SizedBox(height: 10.0),
                             _buildDropdownFormField(
-                              value: null,
+                              value: campaignList,
                               onChanged: (value) {
                                 setState(() {
                                   // Handle the selected value as needed
@@ -653,81 +656,138 @@ class RegisterUserState extends State<RegisterUser> {
                               otherCampaign, // Add this line to associate the controller
                         ),
 
-                      const SizedBox(height: 20.0),
+                      
 
                       const SizedBox(height: 20.0),
-                      ElevatedButton(
-                        onPressed: () async {
-                          if (token != null &&
-                              _formKey.currentState!.validate()) {
-                            setState(() {
-                              isLoading =
-                                  true; // Set loading to true when button is pressed
-                            });
-                            // Create an instance of Register and populate its fields
-                            Register reg = Register(
-                                // qid: int.tryParse(_qidController.text),
-                                qid: _qidController.text,
-                                firstName: _firstNameController.text,
-                                middleName: _middleNameController.text,
-                                lastName: _lastNameController.text,
-                                healthCardNo: _healthCardController.text,
-                                nationalityId: updatedNationalityId,
-                                
-                                recoveryMobile: _mobileNumberController.text,
-                                dob: selectedDate != null
-                                    ? dateFormat.format(selectedDate!)
-                                    : null,
-                                gender: genderId,
-                                maritalId: maritalId,
-                                recoverEmail: _emailController.text,
-                                livingPeriodId: _selectedLivingPeriod,
-                                registrationSourceID: _sourceController,
-                                campain: _campaignController,
-                                isSelfRegistred: widget.isSelf.toString(),
-                                referralPersonFirstName: widget.behalfFname,
-                                referralPersonLastName: widget.behalfLname);
-
-                            // Call the API with the populated Register instance
-                            await RegisterApi.signup(
-                              reg,
-                              context,
-                              token,
-                              onApiComplete: () {
-                                setState(() {
-                                  isLoading =
-                                      false; // Set loading to false when API call is complete
-                                });
-                              },
-                            );
-
-                            // Add debug statements for tracking
-
-                            // Add more debug statements as needed
-                          }
-                        },
-                        style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all<Color>(
-                                primaryColor), // Set background color
-                            shape: MaterialStateProperty.all<
-                                RoundedRectangleBorder>(
-                              const RoundedRectangleBorder(
-                                borderRadius: BorderRadius.only(
-                                  bottomLeft: Radius.circular(
-                                      20.0), // Rounded border at bottom-left
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          ElevatedButton(
+                            onPressed: () async {
+                              _qidController.clear();
+                              _firstNameController.clear();
+                              _lastNameController.clear();
+                              _middleNameController.clear();
+                              _emailController.clear();
+                              _dateTimeController.clear();
+                              otherCampaign.clear();
+                              otherSource.clear();
+                              _healthCardController.clear();
+                              nationalityController.clear();
+                              _mobileNumberController.clear();
+                              setState(() {
+                                maritalStatus = nullValue;
+                                _selectedLivingPeriod = nullValue;
+                                gender = nullValue;
+                                campaignList = nullValue;
+                              });
+                            },
+                            style: ButtonStyle(
+                                backgroundColor:
+                                    MaterialStateProperty.all<Color>(
+                                        textcolor), // Set background color
+                                shape: MaterialStateProperty.all<
+                                    RoundedRectangleBorder>(
+                                  const RoundedRectangleBorder(
+                                    side: BorderSide(
+                                      color:
+                                          secondaryColor, // Replace with your desired border color
+                                      width:
+                                          1.0, // Replace with your desired border width
+                                    ),
+                                    borderRadius: BorderRadius.only(
+                                      bottomLeft: Radius.circular(
+                                          20.0), // Rounded border at bottom-left
+                                    ),
+                                  ),
+                                )),
+                            child: Padding(
+                              padding: const EdgeInsets.fromLTRB(
+                                  30.0, 0, 30.0, 0),
+                              child: Text(
+                                'clear'.tr,
+                                style: const TextStyle(
+                                  color: secondaryColor,
                                 ),
                               ),
-                            )),
-                        child: Padding(
-                          padding:
-                              const EdgeInsets.fromLTRB(10.0, 15.0, 10.0, 15.0),
-                          child: Text(
-                            'tutorialContinueButton'.tr,
-                            style: const TextStyle(
-                              color: textcolor,
                             ),
                           ),
-                        ),
+                          const SizedBox(width: 20,),
+                          ElevatedButton(
+                            onPressed: () async {
+                              if (token != null &&
+                                  _formKey.currentState!.validate()) {
+                                setState(() {
+                                  isLoading =
+                                      true; // Set loading to true when button is pressed
+                                });
+                                // Create an instance of Register and populate its fields
+                                Register reg = Register(
+                                    // qid: int.tryParse(_qidController.text),
+                                    qid: _qidController.text,
+                                    firstName: _firstNameController.text,
+                                    middleName: _middleNameController.text,
+                                    lastName: _lastNameController.text,
+                                    healthCardNo: _healthCardController.text,
+                                    nationalityId: updatedNationalityId,
+                                    recoveryMobile:
+                                        _mobileNumberController.text,
+                                    dob: selectedDate != null
+                                        ? dateFormat.format(selectedDate!)
+                                        : null,
+                                    gender: genderId,
+                                    maritalId: maritalId,
+                                    recoverEmail: _emailController.text,
+                                    livingPeriodId: _selectedLivingPeriod,
+                                    registrationSourceID: _sourceController,
+                                    campain: _campaignController,
+                                    isSelfRegistred: widget.isSelf.toString(),
+                                    referralPersonFirstName: widget.behalfFname,
+                                    referralPersonLastName: widget.behalfLname);
+
+                                // Call the API with the populated Register instance
+                                await RegisterApi.signup(
+                                  reg,
+                                  context,
+                                  token,
+                                  onApiComplete: () {
+                                    setState(() {
+                                      isLoading =
+                                          false; // Set loading to false when API call is complete
+                                    });
+                                  },
+                                );
+
+                                // Add debug statements for tracking
+
+                                // Add more debug statements as needed
+                              }
+                            },
+                            style: ButtonStyle(
+                                backgroundColor:
+                                    MaterialStateProperty.all<Color>(
+                                        primaryColor), // Set background color
+                                shape: MaterialStateProperty.all<
+                                    RoundedRectangleBorder>(
+                                  const RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.only(
+                                      bottomLeft: Radius.circular(
+                                          20.0), // Rounded border at bottom-left
+                                    ),
+                                  ),
+                                )),
+                            child: Padding(
+                              padding: const EdgeInsets.fromLTRB(
+                                  30.0, 0, 30.0, 0),
+                              child: Text(
+                                'tutorialContinueButton'.tr,
+                                style: const TextStyle(
+                                  color: textcolor,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                       //copy
                     ],

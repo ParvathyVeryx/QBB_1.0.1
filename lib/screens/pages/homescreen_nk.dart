@@ -32,7 +32,7 @@ class _HomeScreenState extends State<HomeScreen> {
           // First Section (Widget)
           const Expanded(
             flex: 2, // Adjust the flex value to give more width
-            child: SideMenu(),
+            child: SideMenuHome(),
           ),
 
           // Second Section (Image)
