@@ -1,8 +1,10 @@
 import 'dart:convert';
 import 'package:QBB/constants.dart';
+import 'package:QBB/customNavBar.dart';
 import 'package:QBB/screens/pages/results.dart';
 import 'package:QBB/sidebar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
@@ -91,6 +93,8 @@ class _NotificationScreenState extends State<NotificationScreen> {
           if (!snapshot.hasData) {
             return Scaffold(
                 appBar: AppBar(
+                  systemOverlayStyle: SystemUiOverlayStyle(
+    statusBarColor: appbar,),
                   title: Row(
                     // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -109,15 +113,17 @@ class _NotificationScreenState extends State<NotificationScreen> {
 
                       Row(
                         children: [
-                          Center(
-                            child: Text(
-                              'notifications'.tr,
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                color: Colors.white,
-                                // fontWeight: FontWeight.w900 ,
-                                fontFamily: 'Impact',
-                                fontSize: 16
+                          Padding(
+                            padding: const EdgeInsets.only(left: 60),
+                            child: Center(
+                              child: Text(
+                                'notifications'.tr,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    // fontWeight: FontWeight.w900 ,
+                                    fontFamily: 'Impact',
+                                    fontSize: 16),
                               ),
                             ),
                           ),
@@ -129,116 +135,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                   iconTheme: const IconThemeData(color: textcolor),
                 ),
                 drawer: const SideMenu(),
-                bottomNavigationBar: BottomNavigationBar(
-                    selectedItemColor: textcolor,
-                    unselectedItemColor: textcolor,
-                    backgroundColor: Color(0xFF2368ac),
-                    unselectedFontSize: 7,
-                    selectedFontSize: 7,
-                    type: BottomNavigationBarType.fixed,
-                    onTap: (index) {
-                      if (index == 0) {
-                        // Handle tap for the "HOME" item
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => HomeScreen()),
-                        );
-                      }
-                      if (index == 2) {
-                        // Handle tap for the "HOME" item
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => BookAppointments()),
-                        );
-                      }
-                      if (index == 1) {
-                        // Handle tap for the "HOME" item
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => Appointments()),
-                        );
-                      }
-
-                      if (index == 3) {
-                        // Handle tap for the "HOME" item
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => Results()),
-                        );
-                      }
-                      if (index == 4) {
-                        // Handle tap for the "HOME" item
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => Profile()),
-                        );
-                      }
-                    },
-                    items: [
-                      BottomNavigationBarItem(
-                        icon: Padding(
-                          padding: const EdgeInsets.only(bottom: 5.0, top: 5.0),
-                          child: Image.asset(
-                            "assets/images/home.png",
-                            width: 20.0,
-                            height: 20.0,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                        label: 'home'.tr + '\n',
-                      ),
-                      BottomNavigationBarItem(
-                        icon: Padding(
-                          padding: const EdgeInsets.only(bottom: 5.0, top: 5.0),
-                          child: Image.asset(
-                            "assets/images/event.png",
-                            width: 20.0,
-                            height: 20.0,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                        label: 'appointments'.tr.toUpperCase() + '\n',
-                      ),
-                      BottomNavigationBarItem(
-                          icon: Padding(
-                            padding:
-                                const EdgeInsets.only(bottom: 5.0, top: 5.0),
-                            child: Image.asset(
-                              "assets/images/date.png",
-                              width: 20.0,
-                              height: 20.0,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                          label: 'bookAn'.tr + '\n' + 'appointment'.tr),
-                      BottomNavigationBarItem(
-                          icon: Padding(
-                            padding:
-                                const EdgeInsets.only(bottom: 5.0, top: 5.0),
-                            child: Image.asset(
-                              "assets/images/experiment-results.png",
-                              width: 20.0,
-                              height: 20.0,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                          label: 'results'.tr + '/' + '\n' + 'status'.tr),
-                      BottomNavigationBarItem(
-                          icon: Padding(
-                            padding:
-                                const EdgeInsets.only(bottom: 5.0, top: 5.0),
-                            child: Image.asset(
-                              "assets/images/user.png",
-                              width: 20.0,
-                              height: 20.0,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                          label: 'profile'.tr.toUpperCase() + '\n'),
-                    ]),
-                body: LoaderWidget());
+                bottomNavigationBar: CustomTabDefault(),                body: Center(child: LoaderWidget()));
           } else {
             allresults = snapshot.data!;
           }
@@ -249,6 +146,8 @@ class _NotificationScreenState extends State<NotificationScreen> {
             //     child: const Center(child: Text("No new notifications")));
             return Scaffold(
                 appBar: AppBar(
+                  systemOverlayStyle: SystemUiOverlayStyle(
+    statusBarColor: appbar,),
                   title: Row(
                     // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -267,15 +166,17 @@ class _NotificationScreenState extends State<NotificationScreen> {
 
                       Row(
                         children: [
-                          Center(
-                            child: Text(
-                              'notifications'.tr,
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                color: Colors.white,
-                                // fontWeight: FontWeight.w900 ,
-                                fontFamily: 'Impact',
-                                fontSize: 16
+                          Padding(
+                            padding: const EdgeInsets.only(left: 60),
+                            child: Center(
+                              child: Text(
+                                'notifications'.tr,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    // fontWeight: FontWeight.w900 ,
+                                    fontFamily: 'Impact',
+                                    fontSize: 16),
                               ),
                             ),
                           ),
@@ -287,116 +188,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                   iconTheme: const IconThemeData(color: textcolor),
                 ),
                 drawer: const SideMenu(),
-                bottomNavigationBar: BottomNavigationBar(
-                    selectedItemColor: textcolor,
-                    unselectedItemColor: textcolor,
-                    backgroundColor: Color(0xFF2368ac),
-                    unselectedFontSize: 7,
-                    selectedFontSize: 7,
-                    type: BottomNavigationBarType.fixed,
-                    onTap: (index) {
-                      if (index == 0) {
-                        // Handle tap for the "HOME" item
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => HomeScreen()),
-                        );
-                      }
-                      if (index == 2) {
-                        // Handle tap for the "HOME" item
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => BookAppointments()),
-                        );
-                      }
-                      if (index == 1) {
-                        // Handle tap for the "HOME" item
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => Appointments()),
-                        );
-                      }
-
-                      if (index == 3) {
-                        // Handle tap for the "HOME" item
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => Results()),
-                        );
-                      }
-                      if (index == 4) {
-                        // Handle tap for the "HOME" item
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => Profile()),
-                        );
-                      }
-                    },
-                    items: [
-                      BottomNavigationBarItem(
-                        icon: Padding(
-                          padding: const EdgeInsets.only(bottom: 5.0, top: 5.0),
-                          child: Image.asset(
-                            "assets/images/home.png",
-                            width: 20.0,
-                            height: 20.0,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                        label: 'home'.tr + '\n',
-                      ),
-                      BottomNavigationBarItem(
-                        icon: Padding(
-                          padding: const EdgeInsets.only(bottom: 5.0, top: 5.0),
-                          child: Image.asset(
-                            "assets/images/event.png",
-                            width: 20.0,
-                            height: 20.0,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                        label: 'appointments'.tr.toUpperCase() + '\n',
-                      ),
-                      BottomNavigationBarItem(
-                          icon: Padding(
-                            padding:
-                                const EdgeInsets.only(bottom: 5.0, top: 5.0),
-                            child: Image.asset(
-                              "assets/images/date.png",
-                              width: 20.0,
-                              height: 20.0,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                          label: 'bookAn'.tr + '\n' + 'appointment'.tr),
-                      BottomNavigationBarItem(
-                          icon: Padding(
-                            padding:
-                                const EdgeInsets.only(bottom: 5.0, top: 5.0),
-                            child: Image.asset(
-                              "assets/images/experiment-results.png",
-                              width: 20.0,
-                              height: 20.0,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                          label: 'results'.tr + '/' + '\n' + 'status'.tr),
-                      BottomNavigationBarItem(
-                          icon: Padding(
-                            padding:
-                                const EdgeInsets.only(bottom: 5.0, top: 5.0),
-                            child: Image.asset(
-                              "assets/images/user.png",
-                              width: 20.0,
-                              height: 20.0,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                          label: 'profile'.tr.toUpperCase() + '\n'),
-                    ]),
-                body: SingleChildScrollView(
+                bottomNavigationBar: CustomTabDefault(),                body: SingleChildScrollView(
                     child: Container(
                   height: MediaQuery.of(context).size.height * 0.95,
                   child: Center(child: Text("No Notification")),
@@ -405,6 +197,8 @@ class _NotificationScreenState extends State<NotificationScreen> {
 
           return Scaffold(
             appBar: AppBar(
+              systemOverlayStyle: SystemUiOverlayStyle(
+    statusBarColor: appbar,),
               title: Row(
                 // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -423,15 +217,17 @@ class _NotificationScreenState extends State<NotificationScreen> {
 
                   Row(
                     children: [
-                      Center(
-                        child: Text(
-                          'notifications'.tr,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: Colors.white,
-                            // fontWeight: FontWeight.w900 ,
-                            fontFamily: 'Impact',
-                            fontSize: 16
+                      Padding(
+                        padding: const EdgeInsets.only(left: 60),
+                        child: Center(
+                          child: Text(
+                            'notifications'.tr,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                color: Colors.white,
+                                // fontWeight: FontWeight.w900 ,
+                                fontFamily: 'Impact',
+                                fontSize: 16),
                           ),
                         ),
                       ),
@@ -443,112 +239,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
               iconTheme: const IconThemeData(color: textcolor),
             ),
             drawer: const SideMenu(),
-            bottomNavigationBar: BottomNavigationBar(
-                selectedItemColor: textcolor,
-                unselectedItemColor: textcolor,
-                backgroundColor: Color(0xFF2368ac),
-                unselectedFontSize: 7,
-                selectedFontSize: 7,
-                type: BottomNavigationBarType.fixed,
-                onTap: (index) {
-                  if (index == 0) {
-                    // Handle tap for the "HOME" item
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => HomeScreen()),
-                    );
-                  }
-                  if (index == 2) {
-                    // Handle tap for the "HOME" item
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => BookAppointments()),
-                    );
-                  }
-                  if (index == 1) {
-                    // Handle tap for the "HOME" item
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => Appointments()),
-                    );
-                  }
-
-                  if (index == 3) {
-                    // Handle tap for the "HOME" item
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => Results()),
-                    );
-                  }
-                  if (index == 4) {
-                    // Handle tap for the "HOME" item
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => Profile()),
-                    );
-                  }
-                },
-                items: [
-                  BottomNavigationBarItem(
-                    icon: Padding(
-                      padding: const EdgeInsets.only(bottom: 5.0, top: 5.0),
-                      child: Image.asset(
-                        "assets/images/home.png",
-                        width: 20.0,
-                        height: 20.0,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                    label: 'home'.tr + '\n',
-                  ),
-                  BottomNavigationBarItem(
-                    icon: Padding(
-                      padding: const EdgeInsets.only(bottom: 5.0, top: 5.0),
-                      child: Image.asset(
-                        "assets/images/event.png",
-                        width: 20.0,
-                        height: 20.0,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                    label: 'appointments'.tr.toUpperCase() + '\n',
-                  ),
-                  BottomNavigationBarItem(
-                      icon: Padding(
-                        padding: const EdgeInsets.only(bottom: 5.0, top: 5.0),
-                        child: Image.asset(
-                          "assets/images/date.png",
-                          width: 20.0,
-                          height: 20.0,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                      label: 'bookAn'.tr + '\n' + 'appointment'.tr),
-                  BottomNavigationBarItem(
-                      icon: Padding(
-                        padding: const EdgeInsets.only(bottom: 5.0, top: 5.0),
-                        child: Image.asset(
-                          "assets/images/experiment-results.png",
-                          width: 20.0,
-                          height: 20.0,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                      label: 'results'.tr + '/' + '\n' + 'status'.tr),
-                  BottomNavigationBarItem(
-                      icon: Padding(
-                        padding: const EdgeInsets.only(bottom: 5.0, top: 5.0),
-                        child: Image.asset(
-                          "assets/images/user.png",
-                          width: 20.0,
-                          height: 20.0,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                      label: 'profile'.tr.toUpperCase() + '\n'),
-                ]),
-            body: SingleChildScrollView(
+            bottomNavigationBar: CustomTabDefault(),            body: SingleChildScrollView(
               child: Padding(
                 padding: const EdgeInsets.all(10.0),
                 child: Column(

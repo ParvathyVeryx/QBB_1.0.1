@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:QBB/bottom_nav.dart';
 import 'package:QBB/constants.dart';
+import 'package:QBB/customNavBar.dart';
 import 'package:QBB/nirmal_api.dart/Booking_get_slots.dart';
 import 'package:QBB/screens/api/userid.dart';
 import 'package:QBB/screens/pages/appointments.dart';
@@ -13,6 +14,7 @@ import 'package:QBB/screens/pages/profile.dart';
 import 'package:QBB/screens/pages/results.dart';
 import 'package:QBB/sidebar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -180,16 +182,36 @@ class BookAppointmentsState extends State<BookAppointments> {
           canPop: true,
           child: Scaffold(
             appBar: AppBar(
+              systemOverlayStyle: SystemUiOverlayStyle(
+                statusBarColor: appbar,
+              ),
               iconTheme: const IconThemeData(color: textcolor),
               title: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    'pageATitle'.tr,
-                    style: const TextStyle(
-                        color: Colors.white,
-                        fontFamily: 'Impact',
-                        fontSize: 16),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 10.0),
+                    child: Image.asset(
+                      "assets/images/icon.png",
+                      width: 40.0,
+                      height: 40.0,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(left: 0),
+                        child: Text(
+                          'pageATitle'.tr,
+                          style: const TextStyle(
+                              color: Colors.white,
+                              fontFamily: 'Impact',
+                              fontSize: 16),
+                        ),
+                      ),
+                    ],
                   ),
                   IconButton(
                     onPressed: () {
@@ -209,322 +231,235 @@ class BookAppointmentsState extends State<BookAppointments> {
               backgroundColor: appbar,
             ),
             drawer: const SideMenu(),
-            bottomNavigationBar: BottomNavigationBar(
-              // useLegacyColorScheme: false,
-              // fixedColor: appbar,
-                selectedItemColor: textcolor,
-                unselectedItemColor: textcolor,
-                backgroundColor: Color(0xFF2368ac),
-                currentIndex: currentIndex,
-                unselectedFontSize: 7,
-                selectedFontSize: 7,
-                type: BottomNavigationBarType.fixed,
-                onTap: (index) {
-                  setState(() {
-                    currentIndex = index;
-                  });
-                  if (index == 0) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const HomeScreen()),
-                    );
-                  }
-                  if (index == 1) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const Appointments()),
-                    );
-                  }
-                  if (index == 3) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const Results()),
-                    );
-                  }
-                  if (index == 4) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const Profile()),
-                    );
-                  }
-                },
-                items: [
-                  BottomNavigationBarItem(
-                    icon: Padding(
-                      padding: const EdgeInsets.only(bottom: 5.0, top: 5.0),
-                      child: Image.asset(
-                        "assets/images/home.png",
-                        width: 20.0,
-                        height: 20.0,
-                        fit: BoxFit.cover,
+            bottomNavigationBar: CustomTab(tabId: 2),
+            body: Container(
+              height: MediaQuery.of(context).size.height,
+                    decoration: const BoxDecoration(
+                      image: DecorationImage(
+                        image: AssetImage('assets/images/bg.png'),
+                        alignment: Alignment
+                            .bottomCenter, // Align the image to the bottom center
+                        fit: BoxFit
+                            .contain, // Adjust to your needs (e.g., BoxFit.fill, BoxFit.fitHeight)
                       ),
                     ),
-                    label: 'home'.tr + '\n',
-                  ),
-                  BottomNavigationBarItem(
-                    icon: Padding(
-                      padding: const EdgeInsets.only(bottom: 5.0, top: 5.0),
-                      child: Image.asset(
-                        "assets/images/event.png",
-                        width: 20.0,
-                        height: 20.0,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                    label: 'appointments'.tr.toUpperCase() + '\n',
-                  ),
-                  BottomNavigationBarItem(
-                      icon: Padding(
-                        padding: const EdgeInsets.only(bottom: 5.0, top: 5.0),
-                        child: Image.asset(
-                          "assets/images/date.png",
-                          width: 20.0,
-                          height: 20.0,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                      label: 'bookAn'.tr + '\n' + 'appointment'.tr),
-                  BottomNavigationBarItem(
-                      icon: Padding(
-                        padding: const EdgeInsets.only(bottom: 5.0, top: 5.0),
-                        child: Image.asset(
-                          "assets/images/experiment-results.png",
-                          width: 20.0,
-                          height: 20.0,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                      label: 'results'.tr + '/' + '\n' + 'status'.tr),
-                  BottomNavigationBarItem(
-                      icon: Padding(
-                        padding: const EdgeInsets.only(bottom: 5.0, top: 5.0),
-                        child: Image.asset(
-                          "assets/images/user.png",
-                          width: 20.0,
-                          height: 20.0,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                      label: 'profile'.tr.toUpperCase() + '\n'),
-                ]),
-            body: TabBarView(
-              children: [
-                Column(
-                  children: [
-                    Align(
-                      alignment: Alignment.topCenter,
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: 16.0),
-                        child: Container(
-                          width: 300.0,
-                          decoration: BoxDecoration(
-                            borderRadius: const BorderRadius.only(
-                              bottomLeft: Radius.circular(20.0),
-                            ),
-                            color: Colors.white,
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey.withOpacity(0.5),
-                                spreadRadius: 2,
-                                blurRadius: 5,
-                                offset: const Offset(0, 3),
+              child: TabBarView(
+                children: [
+                  Column(
+                    children: [
+                      Align(
+                        alignment: Alignment.topCenter,
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 16.0),
+                          child: Container(
+                            width: 300.0,
+                            decoration: BoxDecoration(
+                              borderRadius: const BorderRadius.only(
+                                bottomLeft: Radius.circular(20.0),
                               ),
-                            ],
-                          ),
-                          child: Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 16.0),
-                            child: studyNames.isEmpty
-                                ? Center(child: LoaderWidget())
-                                : DropdownButton<String>(
-                                    value: selectedValue,
-                                    items: [
-                                      DropdownMenuItem<String>(
-                                        value: 'Select studies',
-                                        child: Text(
-                                          'selectStudies'.tr,
-                                          style: TextStyle(color: Colors.black),
+                              color: Colors.white,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.5),
+                                  spreadRadius: 2,
+                                  blurRadius: 5,
+                                  offset: const Offset(0, 3),
+                                ),
+                              ],
+                            ),
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 16.0),
+                              child: studyNames.isEmpty
+                                  ? Center(child: LoaderWidget())
+                                  : DropdownButton<String>(
+                                      value: selectedValue,
+                                      items: [
+                                        DropdownMenuItem<String>(
+                                          value: 'Select studies',
+                                          child: Text(
+                                            'selectStudies'.tr,
+                                            style: TextStyle(color: Colors.black),
+                                          ),
                                         ),
-                                      ),
-                                      ...studyNames.map(
-                                        (studyName) => DropdownMenuItem<String>(
-                                          value: studyName,
-                                          child: Text(studyName),
+                                        ...studyNames.map(
+                                          (studyName) => DropdownMenuItem<String>(
+                                            value: studyName,
+                                            child: Text(studyName),
+                                          ),
                                         ),
+                                      ],
+                                      onChanged: (value) {
+                                        setState(() {
+                                          selectedValue = value!;
+                                          showSecondDropdown =
+                                              value != 'Select studies';
+                                          int selectedStudyIndex =
+                                              studyNames.indexOf(value);
+                                          selectedStudyId =
+                                              studyIds[selectedStudyIndex];
+                                          fetchVisitTypes(selectedStudyId!);
+                                        });
+                                      },
+                                      style: const TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 12.0,
                                       ),
-                                    ],
-                                    onChanged: (value) {
-                                      setState(() {
-                                        selectedValue = value!;
-                                        showSecondDropdown =
-                                            value != 'Select studies';
-                                        int selectedStudyIndex =
-                                            studyNames.indexOf(value);
-                                        selectedStudyId =
-                                            studyIds[selectedStudyIndex];
-                                        fetchVisitTypes(selectedStudyId!);
-                                      });
-                                    },
-                                    style: const TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 12.0,
+                                      icon: const Icon(Icons.arrow_drop_down),
+                                      isExpanded: true,
+                                      underline: const SizedBox(),
                                     ),
-                                    icon: const Icon(Icons.arrow_drop_down),
-                                    isExpanded: true,
-                                    underline: const SizedBox(),
-                                  ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    Visibility(
-                      visible: showSecondDropdown,
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: 16.0),
-                        child: Container(
-                          width: 300.0,
-                          decoration: BoxDecoration(
-                            borderRadius: const BorderRadius.only(
-                              bottomLeft: Radius.circular(20.0),
-                            ),
-                            color: Colors.white,
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey.withOpacity(0.5),
-                                spreadRadius: 2,
-                                blurRadius: 5,
-                                offset: const Offset(0, 3),
-                              ),
-                            ],
-                          ),
-                          child: Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 16.0),
-                            child: DropdownButton<String>(
-                              value:
-                                  secondSelectedValue ?? visitTypeNames.first,
-                              items: ['Select visit type', ...visitTypeNames]
-                                  .toSet()
-                                  .toList() // Convert to set to remove duplicates
-                                  .map((visitTypeName) => DropdownMenuItem(
-                                        value: visitTypeName,
-                                        child: Text(
-                                          visitTypeName,
-                                          style: TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 12),
-                                        ),
-                                      ))
-                                  .toList(),
-                              onChanged: (value) {
-                                setState(() {
-                                  secondSelectedValue = value!;
-                                });
-
-                                if (value != 'Select visit type') {
-                                  int selectedVisitTypeIndex =
-                                      visitTypeNames.indexOf(value!);
-                                  int selectedVisitTypeId =
-                                      visitTypeIds[selectedVisitTypeIndex];
-                                  selectedVisitTypeIdForBooking =
-                                      selectedVisitTypeId;
-                                }
-                              },
-                              style: const TextStyle(
-                                color: Colors.purple,
-                                fontSize: 16.0,
-                              ),
-                              icon: const Icon(Icons.arrow_drop_down),
-                              isExpanded: true,
-                              underline: const SizedBox(),
                             ),
                           ),
                         ),
                       ),
-                    ),
-                    const SizedBox(height: 30),
-                    Center(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          SizedBox(
-                            width: 150,
-                            child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                shape: const RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.only(
-                                    bottomLeft: Radius.circular(20.0),
-                                  ),
-                                ),
-                                backgroundColor: Colors.white,
-                                side:
-                                    const BorderSide(color: Colors.deepPurple),
-                                elevation: 0,
+                      Visibility(
+                        visible: showSecondDropdown,
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 16.0),
+                          child: Container(
+                            width: 300.0,
+                            decoration: BoxDecoration(
+                              borderRadius: const BorderRadius.only(
+                                bottomLeft: Radius.circular(20.0),
                               ),
-                              onPressed: () {
-                                // Handle button press
-                              },
-                              child: Text(
-                                'cancelButton'.tr,
-                                style:
-                                    const TextStyle(color: Colors.deepPurple),
+                              color: Colors.white,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.5),
+                                  spreadRadius: 2,
+                                  blurRadius: 5,
+                                  offset: const Offset(0, 3),
+                                ),
+                              ],
+                            ),
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 16.0),
+                              child: DropdownButton<String>(
+                                value:
+                                    secondSelectedValue ?? visitTypeNames.first,
+                                items: ['Select visit type', ...visitTypeNames]
+                                    .toSet()
+                                    .toList() // Convert to set to remove duplicates
+                                    .map((visitTypeName) => DropdownMenuItem(
+                                          value: visitTypeName,
+                                          child: Text(
+                                            visitTypeName,
+                                            style: TextStyle(
+                                                color: Colors.black,
+                                                fontSize: 12),
+                                          ),
+                                        ))
+                                    .toList(),
+                                onChanged: (value) {
+                                  setState(() {
+                                    secondSelectedValue = value!;
+                                  });
+              
+                                  if (value != 'Select visit type') {
+                                    int selectedVisitTypeIndex =
+                                        visitTypeNames.indexOf(value!);
+                                    int selectedVisitTypeId =
+                                        visitTypeIds[selectedVisitTypeIndex];
+                                    selectedVisitTypeIdForBooking =
+                                        selectedVisitTypeId;
+                                  }
+                                },
+                                style: const TextStyle(
+                                  color: Colors.purple,
+                                  fontSize: 16.0,
+                                ),
+                                icon: const Icon(Icons.arrow_drop_down),
+                                isExpanded: true,
+                                underline: const SizedBox(),
                               ),
                             ),
                           ),
-                          const SizedBox(width: 16.0),
-                          SizedBox(
-                            width: 150,
-                            child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                shape: const RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.only(
-                                    bottomLeft: Radius.circular(20.0),
+                        ),
+                      ),
+                      const SizedBox(height: 30),
+                      Center(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SizedBox(
+                              width: 150,
+                              child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  shape: const RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.only(
+                                      bottomLeft: Radius.circular(20.0),
+                                    ),
                                   ),
+                                  backgroundColor: Colors.white,
+                                  side:
+                                      const BorderSide(color: Colors.deepPurple),
+                                  elevation: 0,
                                 ),
-                                backgroundColor: primaryColor,
-                                // side: const BorderSide(color: Colors.black),
-                                elevation: 0,
-                              ),
-                              onPressed: () async {
-                                SharedPreferences pref =
-                                    await SharedPreferences.getInstance();
-                                pref.setString("selectedStudyId",
-                                    selectedStudyId.toString());
-                                pref.setString("selectedVisitTypeID",
-                                    selectedVisitTypeIdForBooking.toString());
-                                pref.setString("selectedvalue",
-                                    secondSelectedValue.toString());
-                                if (selectedValue != 'selectStudies'.tr &&
-                                    secondSelectedValue !=
-                                        'Select visit type') {
-                                  await bookAppointmentApiCall(
-                                    context,
-                                    selectedStudyId.toString(),
-                                    selectedVisitTypeIdForBooking.toString(),
-                                    secondSelectedValue,
-                                  );
-                                }
-                              },
-                              child: Text(
-                                'tutorialContinueButton'.tr,
-                                style: const TextStyle(color: Colors.white),
+                                onPressed: () {
+                                  // Handle button press
+                                },
+                                child: Text(
+                                  'cancelButton'.tr,
+                                  style:
+                                      const TextStyle(color: Colors.deepPurple),
+                                ),
                               ),
                             ),
-                          ),
-                        ],
+                            const SizedBox(width: 16.0),
+                            SizedBox(
+                              width: 150,
+                              child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  shape: const RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.only(
+                                      bottomLeft: Radius.circular(20.0),
+                                    ),
+                                  ),
+                                  backgroundColor: primaryColor,
+                                  // side: const BorderSide(color: Colors.black),
+                                  elevation: 0,
+                                ),
+                                onPressed: () async {
+                                  SharedPreferences pref =
+                                      await SharedPreferences.getInstance();
+                                  pref.setString("selectedStudyId",
+                                      selectedStudyId.toString());
+                                  pref.setString("selectedVisitTypeID",
+                                      selectedVisitTypeIdForBooking.toString());
+                                  pref.setString("selectedvalue",
+                                      secondSelectedValue.toString());
+                                  if (selectedValue != 'selectStudies'.tr &&
+                                      secondSelectedValue !=
+                                          'Select visit type') {
+                                    await bookAppointmentApiCall(
+                                      context,
+                                      selectedStudyId.toString(),
+                                      selectedVisitTypeIdForBooking.toString(),
+                                      secondSelectedValue,
+                                    );
+                                  }
+                                },
+                                child: Text(
+                                  'tutorialContinueButton'.tr,
+                                  style: const TextStyle(color: Colors.white),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                    // Loading indicator
-                    if (isLoading)
-                      Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: LoaderWidget(),
-                      ),
-                  ],
-                ),
-              ],
+                      // Loading indicator
+                      if (isLoading)
+                        Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: LoaderWidget(),
+                        ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         ),

@@ -1,5 +1,7 @@
+import 'package:QBB/constants.dart';
 import 'package:QBB/sidebar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../../nirmal_api.dart/studies_api.dart';
 // import 'package:flutter_gen/gen_I10n/app-localizations.dart';
@@ -22,9 +24,10 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   title: const Text('Home Screen'),
-      // ),
+      //           appBar: AppBar(
+      //       systemOverlayStyle: SystemUiOverlayStyle(
+      //   statusBarColor: appbar,
+      // ),),
       body: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -43,8 +46,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 gradient: LinearGradient(
                   begin: Alignment.bottomCenter,
                   end: Alignment.topCenter,
-                  stops: [0.75, 1.0],
-                  colors: [Colors.deepPurple, Colors.purple],
+                  stops: [0.30, 1.0],
+                  colors: [ Color(0xFF283876), Color(0xFF029dd3)],
                 ),
               ),
               child: Image.asset(

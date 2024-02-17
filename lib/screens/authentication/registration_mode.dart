@@ -119,6 +119,7 @@
 import 'package:QBB/constants.dart';
 import 'package:QBB/screens/authentication/register.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 class RegistrationMode extends StatefulWidget {
@@ -139,6 +140,9 @@ class _RegistrationModeState extends State<RegistrationMode> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        systemOverlayStyle: SystemUiOverlayStyle(
+          statusBarColor: appbar,
+        ),
         leading: IconButton(
           icon: const Icon(
             Icons.arrow_back,
@@ -160,102 +164,115 @@ class _RegistrationModeState extends State<RegistrationMode> {
         ),
         backgroundColor: textcolor,
       ),
-      body: Padding(
-        padding: EdgeInsets.all(8.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            children: [
-              const SizedBox(height: 10.0),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  "registrationMode".tr,
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-                ),
-              ),
-              const SizedBox(
-                height: 10.0,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Expanded(child: _buildRadioListTile('self'.tr, 'Self')),
-                  const SizedBox(
-                    width: 20.0,
+      body: Container(
+        height: MediaQuery.of(context).size.height,
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/images/bg.png'),
+            alignment:
+                Alignment.bottomCenter, // Align the image to the bottom center
+            fit: BoxFit
+                .contain, // Adjust to your needs (e.g., BoxFit.fill, BoxFit.fitHeight)
+          ),
+        ),
+        child: Padding(
+          padding: EdgeInsets.all(8.0),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              children: [
+                const SizedBox(height: 10.0),
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    "registrationMode".tr,
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
                   ),
-                  Expanded(
-                      child: _buildRadioListTileBehalf('onBehalf'.tr, 'On Behalf')),
-                ],
-              ),
-              Visibility(
-                visible: registrationMode == 'On Behalf',
-                child: Column(
+                ),
+                const SizedBox(
+                  height: 10.0,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    _buildTextField(
-                      controller: behalfNameController,
-                      labelText: 'nameOnBehalf'.tr,
+                    Expanded(child: _buildRadioListTile('self'.tr, 'Self')),
+                    const SizedBox(
+                      width: 20.0,
                     ),
-                    _buildTextField(
-                      controller: behalfEmailController,
-                      labelText: 'lastnameOnBehalf'.tr,
-                      keyboardType: TextInputType.emailAddress,
-                    ),
-                    SizedBox(
-                      height: 10.0,
-                    ),
-                    Text(
-                      "nameOfThePersonWhoIsActingOnBehalfOfParticipant".tr,
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.black,
-                      ),
-                      textAlign: TextAlign.left,
-                    )
+                    Expanded(
+                        child: _buildRadioListTileBehalf(
+                            'onBehalf'.tr, 'On Behalf')),
                   ],
                 ),
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  if (_formKey.currentState!.validate()) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => RegisterUser(
-                          isSelf : isSelf,
-                          registrationMode: registrationMode,
-                          behalfFname: behalfNameController.text,
-                          behalfLname: behalfEmailController.text,
+                Visibility(
+                  visible: registrationMode == 'On Behalf',
+                  child: Column(
+                    children: [
+                      _buildTextField(
+                        controller: behalfNameController,
+                        labelText: 'nameOnBehalf'.tr,
+                      ),
+                      _buildTextField(
+                        controller: behalfEmailController,
+                        labelText: 'lastnameOnBehalf'.tr,
+                        keyboardType: TextInputType.emailAddress,
+                      ),
+                      SizedBox(
+                        height: 10.0,
+                      ),
+                      Text(
+                        "nameOfThePersonWhoIsActingOnBehalfOfParticipant".tr,
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.black,
+                        ),
+                        textAlign: TextAlign.left,
+                      )
+                    ],
+                  ),
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    if (_formKey.currentState!.validate()) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => RegisterUser(
+                            isSelf: isSelf,
+                            registrationMode: registrationMode,
+                            behalfFname: behalfNameController.text,
+                            behalfLname: behalfEmailController.text,
+                          ),
+                        ),
+                      );
+                    }
+                  }, // Link to the function
+                  style: ButtonStyle(
+                    backgroundColor:
+                        MaterialStateProperty.all<Color>(primaryColor),
+                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.only(
+                          bottomLeft: Radius.circular(20.0),
                         ),
                       ),
-                    );
-                  }
-                }, // Link to the function
-                style: ButtonStyle(
-                  backgroundColor:
-                      MaterialStateProperty.all<Color>(primaryColor),
-                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                    const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.only(
-                        bottomLeft: Radius.circular(20.0),
+                    ),
+                  ),
+                  child: Padding(
+                    padding: EdgeInsets.fromLTRB(10.0, 15.0, 10.0, 15.0),
+                    child: Text(
+                      'tutorialContinueButton'.tr,
+                      style: TextStyle(
+                        color: textcolor,
                       ),
                     ),
                   ),
-                ),
-                child: Padding(
-                  padding: EdgeInsets.fromLTRB(10.0, 15.0, 10.0, 15.0),
-                  child: Text(
-                    'tutorialContinueButton'.tr,
-                    style: TextStyle(
-                      color: textcolor,
-                    ),
-                  ),
-                ),
-              )
-            ],
+                )
+              ],
+            ),
           ),
         ),
       ),

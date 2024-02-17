@@ -6,6 +6,7 @@ import 'package:QBB/screens/authentication/forgotPwd.dart';
 import 'package:QBB/screens/authentication/loginorReg.dart';
 import 'package:QBB/screens/pages/terms_and_conditions.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -36,8 +37,6 @@ class WelcomeState extends State<Welcome> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.remove("langSelected");
   }
-
-
 
   String password = ''; // Store the entered password
   String confirmPassword = ''; // Store the entered confirm password
@@ -82,6 +81,9 @@ class WelcomeState extends State<Welcome> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        systemOverlayStyle: SystemUiOverlayStyle(
+          statusBarColor: appbar,
+        ),
         title: Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [

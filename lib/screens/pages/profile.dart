@@ -4,10 +4,12 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:QBB/constants.dart';
+import 'package:QBB/customNavBar.dart';
 import 'package:QBB/nirmal_api.dart/marital_status_api.dart';
 import 'package:QBB/screens/pages/loader.dart';
 import 'package:QBB/screens/pages/results.dart';
 import 'package:QBB/sidebar.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:QBB/nirmal_api.dart/user_profile_photo_api.dart';
@@ -252,6 +254,8 @@ class ProfileState extends State<Profile> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        systemOverlayStyle: SystemUiOverlayStyle(
+    statusBarColor: appbar,),
         iconTheme: const IconThemeData(color: textcolor),
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -286,106 +290,7 @@ class ProfileState extends State<Profile> {
         backgroundColor: appbar,
       ),
       drawer: const SideMenu(),
-      bottomNavigationBar: BottomNavigationBar(
-        selectedItemColor: textcolor,
-        unselectedItemColor: textcolor,
-        backgroundColor: Color(0xFF2368ac),
-        currentIndex: currentIndex,
-        unselectedFontSize: 7,
-        selectedFontSize: 7,
-        type: BottomNavigationBarType.fixed,
-        onTap: (index) {
-          setState(() {
-            currentIndex = index;
-          });
-          if (index == 0) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const HomeScreen()),
-            );
-          }
-          if (index == 1) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const Appointments()),
-            );
-          }
-          if (index == 2) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const BookAppointments()),
-            );
-          }
-          if (index == 3) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => Results()),
-            );
-          }
-        },
-        items: [
-          BottomNavigationBarItem(
-            icon: Padding(
-              padding: const EdgeInsets.only(bottom: 5.0, top: 5.0),
-              child: Image.asset(
-                "assets/images/home.png",
-                width: 20.0,
-                height: 20.0,
-                fit: BoxFit.cover,
-              ),
-            ),
-            label: 'home'.tr + '\n',
-          ),
-          BottomNavigationBarItem(
-            icon: Padding(
-              padding: const EdgeInsets.only(bottom: 5.0, top: 5.0),
-              child: Image.asset(
-                "assets/images/event.png",
-                width: 20.0,
-                height: 20.0,
-                fit: BoxFit.cover,
-              ),
-            ),
-            label: 'appointments'.tr.toUpperCase() + '\n',
-          ),
-          BottomNavigationBarItem(
-            icon: Padding(
-              padding: const EdgeInsets.only(bottom: 5.0, top: 5.0),
-              child: Image.asset(
-                "assets/images/date.png",
-                width: 20.0,
-                height: 20.0,
-                fit: BoxFit.cover,
-              ),
-            ),
-            label: 'bookAn'.tr + '\n' + 'appointment'.tr,
-          ),
-          BottomNavigationBarItem(
-            icon: Padding(
-              padding: const EdgeInsets.only(bottom: 5.0, top: 5.0),
-              child: Image.asset(
-                "assets/images/experiment-results.png",
-                width: 20.0,
-                height: 20.0,
-                fit: BoxFit.cover,
-              ),
-            ),
-            label: 'results'.tr + '/' + '\n' + 'status'.tr,
-          ),
-          BottomNavigationBarItem(
-            icon: Padding(
-              padding: const EdgeInsets.only(bottom: 5.0, top: 5.0),
-              child: Image.asset(
-                "assets/images/user.png",
-                width: 20.0,
-                height: 20.0,
-                fit: BoxFit.cover,
-              ),
-            ),
-            label: 'profile'.tr.toUpperCase() + '\n',
-          ),
-        ],
-      ),
+      bottomNavigationBar: CustomTab(tabId: 4,),
       body: _isLoading
           ? Center(child: LoaderWidget())
           : SingleChildScrollView(
@@ -557,6 +462,7 @@ class ProfileState extends State<Profile> {
                                 ),
                               ),
                             );
+                           
                           },
                           style: ButtonStyle(
                             shape: MaterialStateProperty.all<

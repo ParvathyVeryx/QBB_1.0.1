@@ -21,11 +21,17 @@ class loginOrRegState extends State<loginOrReg> {
     // ignore: deprecated_member_use
     return WillPopScope(
       onWillPop: () async {
-        Navigator.push(context, MaterialPageRoute(builder: (context) => const LoginPage()),);
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const LoginPage()),
+        );
         return true;
       },
       child: Scaffold(
           appBar: AppBar(
+            systemOverlayStyle: SystemUiOverlayStyle(
+              statusBarColor: appbar,
+            ),
             leading: IconButton(
               icon: const Icon(
                 Icons.arrow_back,
@@ -40,10 +46,10 @@ class loginOrRegState extends State<loginOrReg> {
             title: Text(
               'create/activateAcc'.tr,
               style: const TextStyle(
-                color: Colors.white,
-                fontFamily: 'Impact',
-                fontSize: 16 // Set the text color to white
-              ),
+                  color: Colors.white,
+                  fontFamily: 'Impact',
+                  fontSize: 16 // Set the text color to white
+                  ),
             ),
             backgroundColor: appbar,
           ),

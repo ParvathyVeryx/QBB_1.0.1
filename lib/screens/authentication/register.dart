@@ -6,6 +6,7 @@ import 'package:QBB/screens/api/register_api.dart';
 import 'package:QBB/screens/pages/erorr_popup.dart';
 import 'package:QBB/screens/pages/loader.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -257,6 +258,9 @@ class RegisterUserState extends State<RegisterUser> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        systemOverlayStyle: SystemUiOverlayStyle(
+          statusBarColor: appbar,
+        ),
         leading: IconButton(
           icon: const Icon(
             Icons.arrow_back,
@@ -583,7 +587,6 @@ class RegisterUserState extends State<RegisterUser> {
                               return DropdownMenuItem<String>(
                                 value: item['Name'],
                                 child: Text(item['Name']),
-                                
                               );
                             }).toList(),
                             labelText: 'newspaper'.tr + '*',
@@ -656,8 +659,6 @@ class RegisterUserState extends State<RegisterUser> {
                               otherCampaign, // Add this line to associate the controller
                         ),
 
-                      
-
                       const SizedBox(height: 20.0),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -702,8 +703,8 @@ class RegisterUserState extends State<RegisterUser> {
                                   ),
                                 )),
                             child: Padding(
-                              padding: const EdgeInsets.fromLTRB(
-                                  30.0, 0, 30.0, 0),
+                              padding:
+                                  const EdgeInsets.fromLTRB(30.0, 0, 30.0, 0),
                               child: Text(
                                 'clear'.tr,
                                 style: const TextStyle(
@@ -712,7 +713,9 @@ class RegisterUserState extends State<RegisterUser> {
                               ),
                             ),
                           ),
-                          const SizedBox(width: 20,),
+                          const SizedBox(
+                            width: 20,
+                          ),
                           ElevatedButton(
                             onPressed: () async {
                               if (token != null &&
@@ -777,8 +780,8 @@ class RegisterUserState extends State<RegisterUser> {
                                   ),
                                 )),
                             child: Padding(
-                              padding: const EdgeInsets.fromLTRB(
-                                  30.0, 0, 30.0, 0),
+                              padding:
+                                  const EdgeInsets.fromLTRB(30.0, 0, 30.0, 0),
                               child: Text(
                                 'tutorialContinueButton'.tr,
                                 style: const TextStyle(

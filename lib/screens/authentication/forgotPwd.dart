@@ -39,6 +39,9 @@ class ForgotPasswordState extends State<ForgotPassword> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        systemOverlayStyle: SystemUiOverlayStyle(
+          statusBarColor: appbar,
+        ),
         leading: IconButton(
           icon: const Icon(
             Icons.arrow_back,
@@ -63,61 +66,135 @@ class ForgotPasswordState extends State<ForgotPassword> {
         backgroundColor: textcolor,
       ),
       body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                _buildRoundedBorderTextField(
-                  labelText: 'qid'.tr,
-                  labelTextColor: const Color.fromARGB(255, 173, 173, 173),
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return 'Please enter your QID';
-                    }
-                    return null;
-                  },
-                  controller:
-                      _controller, // Assign the controller to the text field
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    ElevatedButton(
-                        onPressed: () async {
-                          // print('button pressed');
-                          // print("qid: ${_controller.text}");
-                          // // Validate the form before making the API call
+        child: Container(
+          height: MediaQuery.of(context).size.height,
+          decoration: const BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage('assets/images/bg.png'),
+              alignment: Alignment
+                  .bottomCenter, // Align the image to the bottom center
+              fit: BoxFit
+                  .contain, // Adjust to your needs (e.g., BoxFit.fill, BoxFit.fitHeight)
+            ),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  _buildRoundedBorderTextField(
+                    labelText: 'qid'.tr,
+                    labelTextColor: const Color.fromARGB(255, 173, 173, 173),
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'Please enter your QID';
+                      }
+                      return null;
+                    },
+                    controller:
+                        _controller, // Assign the controller to the text field
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      ElevatedButton(
+                          onPressed: () async {
+                            // print('button pressed');
+                            // print("qid: ${_controller.text}");
+                            // // Validate the form before making the API call
 
-                          // // Access the QID from the form field
-                          // String qid = _controller.text;
-                          // print('QID: $qid');
-                          // // Call the update password API
-                          // await callUpdatePasswordAPI(qid, context);
-                          // print('button pressed');
-                          try {
-                            print('Button pressed');
-                            print("QID: ${_controller.text}");
+                            // // Access the QID from the form field
+                            // String qid = _controller.text;
+                            // print('QID: $qid');
+                            // // Call the update password API
+                            // await callUpdatePasswordAPI(qid, context);
+                            // print('button pressed');
+                            try {
+                              print('Button pressed');
+                              print("QID: ${_controller.text}");
 
-                            // Validate the form before making the API call
+                              // Validate the form before making the API call
 
-                            // Access the QID from the form field
-                            String qid = _controller.text;
-                            print('QID: $qid');
+                              // Access the QID from the form field
+                              String qid = _controller.text;
+                              print('QID: $qid');
 
-                            // Call the update password API
-                            await callUpdatePasswordAPI(qid, context);
+                              // Call the update password API
+                              await callUpdatePasswordAPI(qid, context);
 
-                            // Additional code to execute after a successful API call
-                            print('Button pressed');
-                          } catch (e) {
-                            // Handle errors
-                            print('Error during button press: $e');
+                              // Additional code to execute after a successful API call
+                              print('Button pressed');
+                            } catch (e) {
+                              // Handle errors
+                              print('Error during button press: $e');
+                            }
+                          },
+                          style: ButtonStyle(
+                              backgroundColor: MaterialStateProperty.all<Color>(
+                                  primaryColor), // Set background color
+                              shape: MaterialStateProperty.all<
+                                  RoundedRectangleBorder>(
+                                const RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.only(
+                                    bottomLeft: Radius.circular(
+                                        10.0), // Rounded border at bottom-left
+                                  ),
+                                ),
+                              )),
+                          child: Padding(
+                            padding:
+                                const EdgeInsets.fromLTRB(5.0, 5.0, 5.0, 5.0),
+                            child: Text(
+                              'getOTP'.tr,
+                              style: const TextStyle(
+                                  color: textcolor, fontSize: 11),
+                            ),
+                          )),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 5.0,
+                  ),
+                  _buildRoundedBorderOTPField(
+                    labelText: 'enterOTP'.tr,
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'pleaseEnterOtp'.tr;
+                      }
+                      return null;
+                    },
+                    keyboardType: TextInputType.phone,
+                    labelTextColor: const Color.fromARGB(255, 173, 173, 173),
+                  ),
+                  const SizedBox(height: 20.0),
+                  _buildPasswordField(),
+                  const SizedBox(height: 05.0),
+                  _buildConfirmPasswordField(),
+                  const SizedBox(height: 20.0),
+                  ElevatedButton(
+                    onPressed: isButtonEnabled
+                        ? () {
+                            if (_formKey.currentState!.validate()) {
+                              // Process the form data
+                              print('Submitting Form Data:');
+                              print('QID: $QID');
+                              print('OTP: $otp');
+                              print('Password: $password');
+
+                              // Call the API function with the required parameters
+                              UpdatePasswordAPI(
+                                QID,
+                                otp,
+                                password,
+                                context,
+                              );
+                            }
                           }
-                        },
-                        style: ButtonStyle(
+                        : null,
+                    style: isButtonEnabled
+                        ? ButtonStyle(
                             backgroundColor: MaterialStateProperty.all<Color>(
                                 primaryColor), // Set background color
                             shape: MaterialStateProperty.all<
@@ -125,100 +202,39 @@ class ForgotPasswordState extends State<ForgotPassword> {
                               const RoundedRectangleBorder(
                                 borderRadius: BorderRadius.only(
                                   bottomLeft: Radius.circular(
-                                      10.0), // Rounded border at bottom-left
+                                      12.0), // Rounded border at bottom-left
                                 ),
                               ),
-                            )),
-                        child: Padding(
-                          padding:
-                              const EdgeInsets.fromLTRB(5.0, 5.0, 5.0, 5.0),
-                          child: Text(
-                            'getOTP'.tr,
-                            style:
-                                const TextStyle(color: textcolor, fontSize: 11),
-                          ),
-                        )),
-                  ],
-                ),
-                const SizedBox(
-                  height: 5.0,
-                ),
-                _buildRoundedBorderOTPField(
-                  labelText: 'enterOTP'.tr,
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return 'pleaseEnterOtp'.tr;
-                    }
-                    return null;
-                  },
-                  keyboardType: TextInputType.phone,
-                  labelTextColor: const Color.fromARGB(255, 173, 173, 173),
-                ),
-                const SizedBox(height: 20.0),
-                _buildPasswordField(),
-                const SizedBox(height: 05.0),
-                _buildConfirmPasswordField(),
-                const SizedBox(height: 20.0),
-                ElevatedButton(
-                  onPressed: isButtonEnabled
-                      ? () {
-                          if (_formKey.currentState!.validate()) {
-                            // Process the form data
-                            print('Submitting Form Data:');
-                            print('QID: $QID');
-                            print('OTP: $otp');
-                            print('Password: $password');
-
-                            // Call the API function with the required parameters
-                            UpdatePasswordAPI(
-                              QID,
-                              otp,
-                              password,
-                              context,
-                            );
-                          }
-                        }
-                      : null,
-                  style: isButtonEnabled
-                      ? ButtonStyle(
-                          backgroundColor: MaterialStateProperty.all<Color>(
-                              primaryColor), // Set background color
-                          shape:
-                              MaterialStateProperty.all<RoundedRectangleBorder>(
-                            const RoundedRectangleBorder(
-                              borderRadius: BorderRadius.only(
-                                bottomLeft: Radius.circular(
-                                    12.0), // Rounded border at bottom-left
-                              ),
-                            ),
-                          ))
-                      : ButtonStyle(
-                          // Set background color
-                          backgroundColor: MaterialStateProperty.all<Color>(
-                              primaryColor
-                                  .withOpacity(0.6)), // Set background color
-                          // Set overlay color when disabled
-                          shape:
-                              MaterialStateProperty.all<RoundedRectangleBorder>(
-                            const RoundedRectangleBorder(
-                              borderRadius: BorderRadius.only(
-                                bottomLeft: Radius.circular(
-                                    12.0), // Rounded border at bottom-left
+                            ))
+                        : ButtonStyle(
+                            // Set background color
+                            backgroundColor: MaterialStateProperty.all<Color>(
+                                primaryColor
+                                    .withOpacity(0.6)), // Set background color
+                            // Set overlay color when disabled
+                            shape: MaterialStateProperty.all<
+                                RoundedRectangleBorder>(
+                              const RoundedRectangleBorder(
+                                borderRadius: BorderRadius.only(
+                                  bottomLeft: Radius.circular(
+                                      12.0), // Rounded border at bottom-left
+                                ),
                               ),
                             ),
                           ),
+                    child: Padding(
+                      padding:
+                          const EdgeInsets.fromLTRB(10.0, 15.0, 10.0, 15.0),
+                      child: Text(
+                        'submit'.tr,
+                        style: const TextStyle(
+                          color: textcolor,
                         ),
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(10.0, 15.0, 10.0, 15.0),
-                    child: Text(
-                      'submit'.tr,
-                      style: const TextStyle(
-                        color: textcolor,
                       ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),

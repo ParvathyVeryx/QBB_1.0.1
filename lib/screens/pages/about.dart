@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
+import '../../customNavBar.dart';
+
 class AboutUs extends StatefulWidget {
   @override
   AboutUsState createState() => AboutUsState();
@@ -20,6 +22,8 @@ class AboutUsState extends State<AboutUs> {
       child: Scaffold(
           drawer: const SideMenu(),
           appBar: AppBar(
+            systemOverlayStyle: SystemUiOverlayStyle(
+    statusBarColor: appbar,),
             iconTheme: const IconThemeData(color: textcolor),
             title: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,

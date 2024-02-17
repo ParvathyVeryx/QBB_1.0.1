@@ -3,6 +3,7 @@ import 'package:QBB/screens/api/access_setup_api.dart';
 import 'package:QBB/screens/api/getacess_otp.dart';
 import 'package:QBB/screens/api/setup_password_acess_complete_api.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 import '../../nirmal_api.dart/forget_password_getotp.dart';
@@ -93,6 +94,9 @@ class AccessUserState extends State<AccessUser> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        systemOverlayStyle: SystemUiOverlayStyle(
+          statusBarColor: appbar,
+        ),
         leading: IconButton(
           icon: const Icon(
             Icons.arrow_back,
@@ -115,41 +119,120 @@ class AccessUserState extends State<AccessUser> {
         backgroundColor: textcolor,
       ),
       body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                _buildRoundedBorderTextField(
-                  labelText: 'qid'.tr,
-                  labelTextColor: const Color.fromARGB(255, 173, 173, 173),
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return 'pleaseEnterYourQID'.tr;
-                    }
-                    return null;
-                  },
-                  controller: qidController,
-                ),
-                const SizedBox(
-                  height: 5.0,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    ElevatedButton(
-                        onPressed: () async {
-                          try {
-                            // Call the API function
-                            await setPasswordAccessSetupNotCompleted(
-                                QID, 'langChange'.tr, context);
-                          } catch (e) {
-                            print("$e");
-                          }
-                        },
-                        style: ButtonStyle(
+        child: Container(
+          height: MediaQuery.of(context).size.height,
+          decoration: const BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage('assets/images/bg.png'),
+              alignment: Alignment
+                  .bottomCenter, // Align the image to the bottom center
+              fit: BoxFit
+                  .contain, // Adjust to your needs (e.g., BoxFit.fill, BoxFit.fitHeight)
+            ),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  _buildRoundedBorderTextField(
+                    labelText: 'qid'.tr,
+                    labelTextColor: const Color.fromARGB(255, 173, 173, 173),
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'pleaseEnterYourQID'.tr;
+                      }
+                      return null;
+                    },
+                    controller: qidController,
+                  ),
+                  const SizedBox(
+                    height: 5.0,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      ElevatedButton(
+                          onPressed: () async {
+                            try {
+                              // Call the API function
+                              await setPasswordAccessSetupNotCompleted(
+                                  QID, 'langChange'.tr, context);
+                            } catch (e) {
+                              print("$e");
+                            }
+                          },
+                          style: ButtonStyle(
+                              backgroundColor: MaterialStateProperty.all<Color>(
+                                  primaryColor), // Set background color
+                              shape: MaterialStateProperty.all<
+                                  RoundedRectangleBorder>(
+                                const RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.only(
+                                    bottomLeft: Radius.circular(
+                                        12.0), // Rounded border at bottom-left
+                                  ),
+                                ),
+                              )),
+                          child: Padding(
+                            padding: EdgeInsets.fromLTRB(5.0, 5.0, 5.0, 5.0),
+                            child: Text(
+                              'getOTP'.tr,
+                              style: TextStyle(color: textcolor, fontSize: 11),
+                            ),
+                          )),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 5.0,
+                  ),
+                  _buildRoundedBorderOTPField(
+                    labelText: 'enterOTP'.tr,
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'pleaseEnterOtp'.tr;
+                      }
+                      return null;
+                    },
+                    keyboardType: TextInputType.phone,
+                    labelTextColor: const Color.fromARGB(255, 173, 173, 173),
+                    controller: otpController,
+                  ),
+                  const SizedBox(height: 20.0),
+                  _buildPasswordField(controller: passwordController),
+                  const SizedBox(height: 20.0),
+                  _buildConfirmPasswordField(
+                      controller: confirmPasswordController),
+                  const SizedBox(height: 20.0),
+                  ElevatedButton(
+                    onPressed: isButtonEnabled ? _checkAndSubmitForm : null,
+                    // onPressed: isButtonEnabled
+                    //     ? () async {
+                    //         if (_formKey.currentState!.validate()) {
+                    //           // Process the form data
+                    //           // Submit the form or perform necessary actions
+                    //           print('QID: $qidController.text');
+                    //           print('OTP: $otp');
+                    //           print('Password: $password');
+                    //           print('Confirm Password: $confirmPassword');
+                    //           await accessSetupOTP(
+                    //               otp: otp, // Replace with your OTP variable
+                    //               userPassword:
+                    //                   password, // Replace with your UserPassword variable
+                    //               userId: '1',
+                    //               // Replace with your Userid variable
+                    //               language: 'en',
+                    //               qid: QID,
+                    //               context: context
+                    //               // Replace with your language variable
+                    //               );
+                    //         }
+                    //       }
+                    //     : null,
+                    style: isButtonEnabled
+                        ? ButtonStyle(
                             backgroundColor: MaterialStateProperty.all<Color>(
                                 primaryColor), // Set background color
                             shape: MaterialStateProperty.all<
@@ -160,102 +243,35 @@ class AccessUserState extends State<AccessUser> {
                                       12.0), // Rounded border at bottom-left
                                 ),
                               ),
-                            )),
-                        child: Padding(
-                          padding: EdgeInsets.fromLTRB(5.0, 5.0, 5.0, 5.0),
-                          child: Text(
-                            'getOTP'.tr,
-                            style: TextStyle(color: textcolor, fontSize: 11),
-                          ),
-                        )),
-                  ],
-                ),
-                const SizedBox(
-                  height: 5.0,
-                ),
-                _buildRoundedBorderOTPField(
-                  labelText: 'enterOTP'.tr,
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return 'pleaseEnterOtp'.tr;
-                    }
-                    return null;
-                  },
-                  keyboardType: TextInputType.phone,
-                  labelTextColor: const Color.fromARGB(255, 173, 173, 173),
-                  controller: otpController,
-                ),
-                const SizedBox(height: 20.0),
-                _buildPasswordField(controller: passwordController),
-                const SizedBox(height: 20.0),
-                _buildConfirmPasswordField(
-                    controller: confirmPasswordController),
-                const SizedBox(height: 20.0),
-                ElevatedButton(
-                  onPressed: isButtonEnabled ? _checkAndSubmitForm : null,
-                  // onPressed: isButtonEnabled
-                  //     ? () async {
-                  //         if (_formKey.currentState!.validate()) {
-                  //           // Process the form data
-                  //           // Submit the form or perform necessary actions
-                  //           print('QID: $qidController.text');
-                  //           print('OTP: $otp');
-                  //           print('Password: $password');
-                  //           print('Confirm Password: $confirmPassword');
-                  //           await accessSetupOTP(
-                  //               otp: otp, // Replace with your OTP variable
-                  //               userPassword:
-                  //                   password, // Replace with your UserPassword variable
-                  //               userId: '1',
-                  //               // Replace with your Userid variable
-                  //               language: 'en',
-                  //               qid: QID,
-                  //               context: context
-                  //               // Replace with your language variable
-                  //               );
-                  //         }
-                  //       }
-                  //     : null,
-                  style: isButtonEnabled
-                      ? ButtonStyle(
-                          backgroundColor: MaterialStateProperty.all<Color>(
-                              primaryColor), // Set background color
-                          shape:
-                              MaterialStateProperty.all<RoundedRectangleBorder>(
-                            const RoundedRectangleBorder(
-                              borderRadius: BorderRadius.only(
-                                bottomLeft: Radius.circular(
-                                    12.0), // Rounded border at bottom-left
-                              ),
-                            ),
-                          ))
-                      : ButtonStyle(
-                          // Set background color
-                          backgroundColor: MaterialStateProperty.all<Color>(
-                              primaryColor
-                                  .withOpacity(0.6)), // Set background color
-                          // Set overlay color when disabled
-                          shape:
-                              MaterialStateProperty.all<RoundedRectangleBorder>(
-                            const RoundedRectangleBorder(
-                              borderRadius: BorderRadius.only(
-                                bottomLeft: Radius.circular(
-                                    12.0), // Rounded border at bottom-left
+                            ))
+                        : ButtonStyle(
+                            // Set background color
+                            backgroundColor: MaterialStateProperty.all<Color>(
+                                primaryColor
+                                    .withOpacity(0.6)), // Set background color
+                            // Set overlay color when disabled
+                            shape: MaterialStateProperty.all<
+                                RoundedRectangleBorder>(
+                              const RoundedRectangleBorder(
+                                borderRadius: BorderRadius.only(
+                                  bottomLeft: Radius.circular(
+                                      12.0), // Rounded border at bottom-left
+                                ),
                               ),
                             ),
                           ),
+                    child: Padding(
+                      padding: EdgeInsets.fromLTRB(10.0, 15.0, 10.0, 15.0),
+                      child: Text(
+                        'submit'.tr,
+                        style: TextStyle(
+                          color: textcolor,
                         ),
-                  child: Padding(
-                    padding: EdgeInsets.fromLTRB(10.0, 15.0, 10.0, 15.0),
-                    child: Text(
-                      'submit'.tr,
-                      style: TextStyle(
-                        color: textcolor,
                       ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),

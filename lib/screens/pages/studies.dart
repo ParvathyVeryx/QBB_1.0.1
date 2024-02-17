@@ -1,3 +1,4 @@
+import 'package:QBB/customNavBar.dart';
 import 'package:QBB/providers/studymodel.dart';
 import 'package:QBB/screens/pages/loader.dart';
 import 'package:flutter/material.dart';
@@ -6,6 +7,7 @@ import 'package:QBB/nirmal_api.dart/studies_api.dart';
 import 'package:QBB/screens/pages/book_appintment_nk.dart';
 import 'package:QBB/screens/pages/notification.dart';
 import 'package:QBB/sidebar.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 import '../../localestring.dart';
@@ -58,116 +60,11 @@ class StudiesState extends State<Studies> {
       },
       child: Scaffold(
         drawer: const SideMenu(),
-        bottomNavigationBar: BottomNavigationBar(
-            selectedItemColor: textcolor,
-            unselectedItemColor: textcolor,
-            backgroundColor: Color(0xFF2368ac),
-            // currentIndex: currentIndex,
-            unselectedFontSize: 7,
-            selectedFontSize: 7,
-            type: BottomNavigationBarType.fixed,
-            onTap: (index) {
-              // setState(() {
-              //   currentIndex = index;
-              // });
-              if (index == 0) {
-                // Handle tap for the "HOME" item
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const HomeScreen()),
-                );
-              }
-              if (index == 1) {
-                // Handle tap for the "HOME" item
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const Appointments()),
-                );
-              }
-              if (index == 2) {
-                // Handle tap for the "HOME" item
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const BookAppointments()),
-                );
-              }
-              if (index == 3) {
-                // Handle tap for the "HOME" item
-                BottomAppBarTheme(color: secondaryColor);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const Results()),
-                );
-              }
-              if (index == 4) {
-                // Handle tap for the "HOME" item
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const Profile()),
-                );
-              }
-            },
-            items: [
-              BottomNavigationBarItem(
-                icon: Padding(
-                  padding: const EdgeInsets.only(bottom: 5.0, top: 5.0),
-                  child: Image.asset(
-                    "assets/images/home.png",
-                    width: 20.0,
-                    height: 20.0,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-                label: 'home'.tr + '\n',
-              ),
-              BottomNavigationBarItem(
-                icon: Padding(
-                  padding: const EdgeInsets.only(bottom: 5.0, top: 5.0),
-                  child: Image.asset(
-                    "assets/images/event.png",
-                    width: 20.0,
-                    height: 20.0,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-                label: 'appointments'.tr.toUpperCase() + '\n',
-              ),
-              BottomNavigationBarItem(
-                  icon: Padding(
-                    padding: const EdgeInsets.only(bottom: 5.0, top: 5.0),
-                    child: Image.asset(
-                      "assets/images/date.png",
-                      width: 20.0,
-                      height: 20.0,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                  label: 'bookAn'.tr + '\n' + 'appointment'.tr),
-              BottomNavigationBarItem(
-                  icon: Padding(
-                    padding: const EdgeInsets.only(bottom: 5.0, top: 5.0),
-                    child: Image.asset(
-                      "assets/images/experiment-results.png",
-                      width: 20.0,
-                      height: 20.0,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                  label: 'results'.tr + '/' + '\n' + 'status'.tr),
-              BottomNavigationBarItem(
-                  icon: Padding(
-                    padding: const EdgeInsets.only(bottom: 5.0, top: 5.0),
-                    child: Image.asset(
-                      "assets/images/user.png",
-                      width: 20.0,
-                      height: 20.0,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                  label: 'profile'.tr.toUpperCase() + '\n'),
-            ]),
+        bottomNavigationBar: CustomTabDefault(),
         appBar: AppBar(
+          systemOverlayStyle: SystemUiOverlayStyle(
+            statusBarColor: appbar,
+          ),
           iconTheme: const IconThemeData(color: textcolor),
           title: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -187,7 +84,6 @@ class StudiesState extends State<Studies> {
                   fontSize: 16,
                   color: Colors.white,
                   fontFamily: 'Impact',
-                  
                 ),
               ),
               IconButton(
@@ -219,7 +115,7 @@ class StudiesState extends State<Studies> {
               return Center(child: Text('No data available'));
             } else {
               List<Study> studies = snapshot.data!;
-        
+
               return SingleChildScrollView(
                 child: Padding(
                   padding: const EdgeInsets.all(10.0),
@@ -235,9 +131,8 @@ class StudiesState extends State<Studies> {
                             ),
                             boxShadow: [
                               BoxShadow(
-                                color:
-                                    const Color.fromARGB(255, 188, 188, 188)
-                                        .withOpacity(0.5),
+                                color: const Color.fromARGB(255, 188, 188, 188)
+                                    .withOpacity(0.5),
                                 spreadRadius: 5,
                                 blurRadius: 7,
                                 offset: const Offset(0, 3),
@@ -253,8 +148,7 @@ class StudiesState extends State<Studies> {
                                 Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Column(
                                       mainAxisAlignment:
@@ -270,7 +164,10 @@ class StudiesState extends State<Studies> {
                                             fontSize: 11,
                                           ),
                                         ),
-                                        Text(study.studyCode, style: TextStyle(fontSize: 11),),
+                                        Text(
+                                          study.studyCode,
+                                          style: TextStyle(fontSize: 11),
+                                        ),
                                       ],
                                     ),
                                     Padding(
@@ -290,7 +187,10 @@ class StudiesState extends State<Studies> {
                                               fontSize: 11,
                                             ),
                                           ),
-                                          Text(study.studyName, style: TextStyle(fontSize: 11),),
+                                          Text(
+                                            study.studyName,
+                                            style: TextStyle(fontSize: 11),
+                                          ),
                                           // Text()
                                         ],
                                       ),
@@ -310,12 +210,11 @@ class StudiesState extends State<Studies> {
                                     // Fetch the "Id" from the study JSON
                                     int? studyId = study
                                         .Id; // Replace "id" with the actual getter in your Study class
-        
+
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) =>
-                                            BookAppointments(
+                                        builder: (context) => BookAppointments(
                                           studyName: study
                                               .studyName, // Pass the study name as an argument
                                           studyId: studyId,
@@ -342,9 +241,7 @@ class StudiesState extends State<Studies> {
                                     child: Text(
                                       'bookAnAppointment'.tr,
                                       style: const TextStyle(
-                                        color: textcolor,
-                                        fontSize: 11
-                                      ),
+                                          color: textcolor, fontSize: 11),
                                     ),
                                   ),
                                 ),

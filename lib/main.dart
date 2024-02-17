@@ -1,10 +1,12 @@
 import 'dart:convert';
+import 'package:QBB/constants.dart';
 import 'package:QBB/localestring.dart';
 import 'package:QBB/localization/localization.dart';
 import 'package:QBB/nirmal/login_screen.dart';
 import 'package:QBB/providers/studymodel.dart';
 import 'package:QBB/providers/token_provider.dart';
 import 'package:QBB/screens/splash.dart';
+import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
@@ -17,6 +19,9 @@ import 'package:get/get.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+    statusBarColor: appbar,
+  ));
   // await GetStorage.init();
   runApp(
     MultiProvider(

@@ -4,6 +4,7 @@ import 'package:QBB/nirmal_api.dart/profile_api.dart';
 import 'package:QBB/screens/pages/erorr_popup.dart';
 import 'package:QBB/screens/pages/profile.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -44,13 +45,18 @@ class EditUserState extends State<EditUser> {
     super.initState();
     // _emailController.text = widget.email; // Removed this line
     widget.emailFuture.then((email) {
-      _emailController.text = email;
-      originalEmail = email;
+      setState(() {
+        _emailController.text = email;
+        originalEmail = email;
+      });
     });
 
     widget.maritalstatus.then((gender) {
-      _genderController = gender.toString();
-      originalMaritalStatus = gender.toString();
+      setState(() {
+        _genderController = gender.toString();
+        originalMaritalStatus = gender.toString();
+      });
+
       print(maritalStatus);
     });
     maritalStatusFuture = getUserGenderr();
@@ -62,13 +68,21 @@ class EditUserState extends State<EditUser> {
     maritalStatus = pref.getString("userMStatus").toString();
     print(maritalStatus.toString() + "Marital Status");
     if (_genderController == "Single") {
-      newMaritalid = 2;
+      setState(() {
+        newMaritalid = 2;
+      });
     } else if (_genderController == "Married") {
-      newMaritalid = 1;
+      setState(() {
+        newMaritalid = 1;
+      });
     } else if (_genderController == "Divorced") {
-      newMaritalid = 3;
+      setState(() {
+        newMaritalid = 3;
+      });
     } else if (_genderController == "Widowed") {
-      newMaritalid = 4;
+      setState(() {
+        newMaritalid = 4;
+      });
     }
     maritalId = newMaritalid;
   }
@@ -82,6 +96,9 @@ class EditUserState extends State<EditUser> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        systemOverlayStyle: SystemUiOverlayStyle(
+          statusBarColor: appbar,
+        ),
         leading: IconButton(
           icon: const Icon(
             Icons.arrow_back,
@@ -106,125 +123,134 @@ class EditUserState extends State<EditUser> {
         ),
         backgroundColor: textcolor,
       ),
-      body: FutureBuilder<String>(
-        future: maritalStatusFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return CircularProgressIndicator();
-          } else if (snapshot.hasError) {
-            return Text('Error: ${snapshot.error}');
-          } else {
-            maritalStatus = snapshot.data!;
-            return SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: Form(
-                  key: _formKey,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      _buildRoundedBorderTextField(
-                          labelText: '${'emailAddress'.tr}*',
-                          labelTextColor:
-                              const Color.fromARGB(255, 173, 173, 173),
-                          validator: (value) {
-                            if (value!.isEmpty) {
-                              return 'pleaseEnterAValidEmailId'.tr;
-                            } // Email validation regular expression
-                            RegExp emailRegex = RegExp(
-                                r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$');
+      body: Container(
+        height: MediaQuery.of(context).size.height,
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/images/bg.png'),
+            alignment:
+                Alignment.bottomCenter, // Align the image to the bottom center
+            fit: BoxFit
+                .contain, // Adjust to your needs (e.g., BoxFit.fill, BoxFit.fitHeight)
+          ),
+        ),
+        child: FutureBuilder<String>(
+          future: maritalStatusFuture,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return CircularProgressIndicator();
+            } else if (snapshot.hasError) {
+              return Text('Error: ${snapshot.error}');
+            } else {
+              maritalStatus = snapshot.data!;
+              return SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        _buildRoundedBorderTextField(
+                            labelText: '${'emailAddress'.tr}*',
+                            labelTextColor:
+                                const Color.fromARGB(255, 173, 173, 173),
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return 'pleaseEnterAValidEmailId'.tr;
+                              } // Email validation regular expression
+                              RegExp emailRegex = RegExp(
+                                  r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$');
 
-                            if (!emailRegex.hasMatch(value)) {
-                              return 'pleaseEnterAValidEmailId'.tr;
-                            }
-                            return null;
-                          },
-                          controller: _emailController),
-                      const SizedBox(
-                        height: 20.0,
-                      ),
-                      _buildDropdownFormField(
-                        value: _genderController,
-                        onChanged: (value) {
-                          setState(() {
-                            maritalStatus = value!;
-                            switch (maritalStatus) {
-                              case 'Single':
-                                maritalId = 2;
-                                break;
-                              case 'Married':
-                                maritalId = 1;
-                                break;
-                              case 'Divorced':
-                                maritalId = 3;
-                                break;
-                              case 'Widowed':
-                                maritalId = 4;
-                                break;
-                              case 'الأرامل':
-                                maritalId = 4;
-                                break;
-                              case 'اعزب':
-                                maritalId = 2;
-                                break;
-                              case 'متزوج':
-                                maritalId = 1;
-                                break;
-                              case 'مطلقة':
-                                maritalId = 3;
-                                break;
-                              default:
-                                maritalId = newMaritalid;
-                                break;
-                            }
-                          });
-                        },
-                        items: [
-                          'Single'.tr,
-                          'married'.tr,
-                          'divorced'.tr,
-                          'widowed'.tr
-                        ].map((String value) {
-                          return DropdownMenuItem<String>(
-                            value: value.tr,
-                            child: Text(value.tr),
-                          );
-                        }).toList(),
-                        labelText: '${'maritalStatus'.tr}*',
-                      ),
-                      const SizedBox(height: 20.0),
-                      ElevatedButton(
-                        onPressed: () {
-                          // if (isButtonEnabled) {
-                          if (_genderController == "Single".tr) {
-                            newMaritalid = 2;
-                          } else if (_genderController == "married".tr) {
-                            newMaritalid = 1;
-                          } else if (_genderController == "divorced".tr) {
-                            newMaritalid = 3;
-                          } else if (_genderController == "widowed".tr) {
-                            newMaritalid = 4;
-                          }
-                          print(newMaritalid);
-                          print(maritalId);
-                          print(_emailController.text);
-                          print(originalEmail);
-                          if (_formKey.currentState!.validate() &&
-                                  _emailController.text != originalEmail ||
-                              _genderController != originalMaritalStatus) {
+                              if (!emailRegex.hasMatch(value)) {
+                                return 'pleaseEnterAValidEmailId'.tr;
+                              }
+                              return null;
+                            },
+                            controller: _emailController),
+                        const SizedBox(
+                          height: 20.0,
+                        ),
+                        _buildDropdownFormField(
+                          value: _genderController,
+                          onChanged: (value) {
                             setState(() {
-                              isLoading = true;
+                              maritalStatus = value!;
+                              switch (maritalStatus) {
+                                case 'Single':
+                                  maritalId = 2;
+                                  break;
+                                case 'Married':
+                                  maritalId = 1;
+                                  break;
+                                case 'Divorced':
+                                  maritalId = 3;
+                                  break;
+                                case 'Widowed':
+                                  maritalId = 4;
+                                  break;
+                                case 'الأرامل':
+                                  maritalId = 4;
+                                  break;
+                                case 'اعزب':
+                                  maritalId = 2;
+                                  break;
+                                case 'متزوج':
+                                  maritalId = 1;
+                                  break;
+                                case 'مطلقة':
+                                  maritalId = 3;
+                                  break;
+                                default:
+                                  maritalId = newMaritalid;
+                                  break;
+                              }
                             });
-                            print("if is working");
-                            String userEmail = _emailController.text;
-                            // int userMaritalId =
-                            //     int.parse(maritalId);
-                            callUserProfileAPI(context, userEmail, maritalId!);
-                            // } else {}
-                          } else {
-                            // Check if changes are made
-                            if (_emailController.text == originalEmail &&
-                                _genderController == originalMaritalStatus) {
+                          },
+                          items: [
+                            'Single'.tr,
+                            'married'.tr,
+                            'divorced'.tr,
+                            'widowed'.tr
+                          ].map((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value.tr,
+                              child: Text(value.tr),
+                            );
+                          }).toList(),
+                          labelText: '${'maritalStatus'.tr}*',
+                        ),
+                        const SizedBox(height: 20.0),
+                        ElevatedButton(
+                          onPressed: () {
+                            // if (isButtonEnabled) {
+                            // if (_genderController == "Single".tr) {
+                            //   newMaritalid = 2;
+                            // } else if (_genderController == "married".tr) {
+                            //   newMaritalid = 1;
+                            // } else if (_genderController == "divorced".tr) {
+                            //   newMaritalid = 3;
+                            // } else if (_genderController == "widowed".tr) {
+                            //   newMaritalid = 4;
+                            // }
+                            print(newMaritalid);
+                            print(maritalId);
+                            print(_emailController.text);
+                            print(originalEmail);
+                            if (_emailController.text != originalEmail ||
+                                newMaritalid != maritalId) {
+                              setState(() {
+                                isLoading = true;
+                              });
+                              print("if is working");
+                              String userEmail = _emailController.text;
+                              // int userMaritalId =
+                              //     int.parse(maritalId);
+                              callUserProfileAPI(
+                                  context, userEmail, maritalId!);
+                              // } else {}
+                            } else if (_emailController.text == originalEmail &&
+                                newMaritalid == maritalId) {
                               showDialog(
                                 context: context,
                                 builder: (BuildContext context) {
@@ -233,39 +259,40 @@ class EditUserState extends State<EditUser> {
                                 },
                               ); // Show popup when no changes made
                             }
-                          }
 
-                          // }
-                        },
-                        style: ButtonStyle(
-                            backgroundColor:
-                                MaterialStateProperty.all<Color>(primaryColor),
-                            shape: MaterialStateProperty.all<
-                                RoundedRectangleBorder>(
-                              const RoundedRectangleBorder(
-                                borderRadius: BorderRadius.only(
-                                  bottomLeft: Radius.circular(20.0),
+                            // }
+                          },
+                          style: ButtonStyle(
+                              backgroundColor: MaterialStateProperty.all<Color>(
+                                  primaryColor),
+                              shape: MaterialStateProperty.all<
+                                  RoundedRectangleBorder>(
+                                const RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.only(
+                                    bottomLeft: Radius.circular(20.0),
+                                  ),
                                 ),
+                              )),
+                          child: Padding(
+                            padding:
+                                EdgeInsets.fromLTRB(10.0, 15.0, 10.0, 15.0),
+                            child: Text(
+                              'save'.tr,
+                              style: TextStyle(
+                                color: textcolor,
                               ),
-                            )),
-                        child: Padding(
-                          padding: EdgeInsets.fromLTRB(10.0, 15.0, 10.0, 15.0),
-                          child: Text(
-                            'save'.tr,
-                            style: TextStyle(
-                              color: textcolor,
                             ),
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            );
-            // Your main widget tree
-          }
-        },
+              );
+              // Your main widget tree
+            }
+          },
+        ),
       ),
     );
   }
