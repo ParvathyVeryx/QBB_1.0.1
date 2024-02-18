@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:QBB/constants.dart';
 import 'package:QBB/screens/api/userid.dart';
 import 'package:QBB/screens/pages/book_appointment_date_slot.dart';
 import 'package:QBB/screens/pages/book_results_appointment.dart';
@@ -85,10 +86,31 @@ Future<void> bookAppointmentApiCall(
     print("Print Response");
     if (response.statusCode == 200) {
       Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
+      final Map<String, dynamic> jsonResponse = json.decode(response.body);
+
+      print("Results Reschedule");
+      print("DateList" + json.encode(jsonResponse['datelist']).toString());
+      print("next available Dates" +
+          json.encode(jsonResponse['nextAvilableDateList']).toString());
+      String baml = json.encode(jsonResponse['BookAppoinmentModelList']);
+      List<dynamic> bamlList = jsonDecode(baml);
+
+      List<dynamic> availabiltyCandarId = bamlList
+          .map((item) => item['AvailabilityCalenderId'].toString())
+          .toList();
+      print("Avalability Calendar ID Results" + availabiltyCandarId.toString());
+
+      String? jsonString = pref.getString("availableDates");
+      String dateList = json.encode(jsonResponse['datelist']);
+      String nextAvailableDates =
+          json.encode(jsonResponse['nextAvilableDateList']);
+      List<dynamic> decodedDate = jsonDecode(dateList);
+      List<dynamic> decodedAvailableDates = jsonDecode(nextAvailableDates);
+      print("List");
+      print(decodedDate);
       // Successful API call
 
       // Parse the JSON response
-      final Map<String, dynamic> jsonResponse = json.decode(response.body);
       BookAppScreenState myWidget = BookAppScreenState();
       String result =
           await myWidget.getAvailabilityCalendar("yourAvailabilityCalendar");
@@ -98,8 +120,6 @@ Future<void> bookAppointmentApiCall(
       // Save the API response in shared preferences
       pref.setString('apiResponse', json.encode(jsonResponse));
       pref.setString("availableDates", json.encode(jsonResponse['datelist']));
-
-      String? jsonString = pref.getString("availableDates");
 
 // Check if the jsonString is not null
       if (jsonString != null) {
@@ -119,7 +139,10 @@ Future<void> bookAppointmentApiCall(
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => BookAppScreen(),
+          builder: (context) => BookAppScreen(
+              dateList: decodedDate,
+              nextAvailableDates: decodedAvailableDates,
+              ACI: availabiltyCandarId),
         ),
       );
     } else {
@@ -204,40 +227,87 @@ Future<void> GetRescheduleAppointment(
     if (response.statusCode == 200) {
       // Successful API call
       Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
-      // Parse the JSON response
       final Map<String, dynamic> jsonResponse = json.decode(response.body);
-      // BookAppScreenState myWidget = BookAppScreenState();
-      // String result =
-      //     await myWidget.getAvailabilityCalendar("yourAvailabilityCalendar");
+
+      print("Results Reschedule");
+      print("DateList" + json.encode(jsonResponse['datelist']).toString());
+      print("next available Dates" +
+          json.encode(jsonResponse['nextAvilableDateList']).toString());
+      String baml = json.encode(jsonResponse['BookAppoinmentModelList']);
+      List<dynamic> bamlList = jsonDecode(baml);
+
+      List<dynamic> availabiltyCandarId = bamlList
+          .map((item) => item['AvailabilityCalenderId'].toString())
+          .toList();
+      print("Avalability Calendar ID Results" + availabiltyCandarId.toString());
+
+      String? jsonString = pref.getString("availableDates");
+      String dateList = json.encode(jsonResponse['datelist']);
+      String nextAvailableDates =
+          json.encode(jsonResponse['nextAvilableDateList']);
+      List<dynamic> decodedDate = jsonDecode(dateList);
+      List<dynamic> decodedAvailableDates = jsonDecode(nextAvailableDates);
+      print("List");
+      print(decodedDate);
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            backgroundColor: Colors.white,
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.only(
+                bottomLeft:
+                    Radius.circular(50.0), // Adjust the radius as needed
+              ),
+            ),
+            content: Padding(
+              padding: const EdgeInsets.only(top: 12.0),
+              child: Text(
+                'rescheduleAppoint'.tr,
+                style: const TextStyle(color: Color.fromARGB(255, 74, 74, 74)),
+              ),
+            ),
+            actions: <Widget>[
+              Divider(),
+              TextButton(
+                onPressed: () async {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                        builder: (context) => RescheduleApp(
+                            appDate: appDateFuture,
+                            dateList: decodedDate,
+                            nextAvailableDates: decodedAvailableDates,
+                            ACI: availabiltyCandarId)),
+                  );
+                },
+                child: Text(
+                  'ok'.tr,
+                  style: TextStyle(color: secondaryColor),
+                ),
+              ),
+            ],
+          );
+        },
+      );
+      // Parse the JSON response
       pref.setString("availabilityCalendarId",
           jsonResponse["AvailabilityCalenderId"].toString());
 
-      // Save the API response in shared preferences
       pref.setString('apiResponseReschedule', json.encode(jsonResponse));
       pref.setString("availableDates", json.encode(jsonResponse['datelist']));
 
-      String? jsonString = pref.getString("availableDates");
-
-// Check if the jsonString is not null
       if (jsonString != null) {
-        // Use json.decode to parse the jsonString
         dynamic decodedData = json.decode(jsonString);
 
-        // Check if the decodedData is a List
         if (decodedData is List) {
-          // Now you can use the data as a List
           List<String> availableDates = List<String>.from(decodedData);
-
-          // Use the 'availableDates' list as needed
         }
       }
 
-      // Now, navigate to the AppointmentBookingPage
-
-      Navigator.of(context).push(
-        MaterialPageRoute(
-            builder: (context) => RescheduleApp(appDate: appDateFuture)),
-      );
+      // Navigator.of(context).push(
+      //   MaterialPageRoute(
+      //       builder: (context) => RescheduleApp(appDate: appDateFuture)),
+      // );
     } else {
       // Handle errors
       Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
@@ -273,7 +343,6 @@ Future<void> GetResultRescheduleAppointment(
   String? qid = await getQIDFromSharedPreferences();
   Future<String> appDateFuture = Future.value(appointmentDate);
   SharedPreferences pref = await SharedPreferences.getInstance();
-  String appID = pref.getString("resultsAppID").toString();
 
   int? personGradeId = await getPersonGradeIdFromSharedPreferences();
 
@@ -319,13 +388,82 @@ Future<void> GetResultRescheduleAppointment(
       },
     );
 
-    print("Reschedule Result");
-
     if (response.statusCode == 200) {
+      print("200");
       // Successful API call
       Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
-      // Parse the JSON response
       final Map<String, dynamic> jsonResponse = json.decode(response.body);
+
+      print("Results Reschedule");
+      print("DateList" + json.encode(jsonResponse['datelist']).toString());
+      print("next available Dates" +
+          json.encode(jsonResponse['nextAvilableDateList']).toString());
+      String baml = json.encode(jsonResponse['BookAppoinmentModelList']);
+      List<dynamic> bamlList = jsonDecode(baml);
+
+      List<dynamic> availabiltyCandarId = bamlList
+          .map((item) => item['AvailabilityCalenderId'].toString())
+          .toList();
+      print("Avalability Calendar ID Results" + availabiltyCandarId.toString());
+
+      String? jsonString = pref.getString("availableDates");
+      String dateList = json.encode(jsonResponse['datelist']);
+      String nextAvailableDates =
+          json.encode(jsonResponse['nextAvilableDateList']);
+      List<dynamic> decodedDate = jsonDecode(dateList);
+      List<dynamic> decodedAvailableDates = jsonDecode(nextAvailableDates);
+      print("List");
+      print(decodedDate);
+      // showDialog(
+      //   context: context,
+      //   builder: (BuildContext context) {
+      //     return AlertDialog(
+      //       backgroundColor: Colors.white,
+      //       shape: const RoundedRectangleBorder(
+      //         borderRadius: BorderRadius.only(
+      //           bottomLeft:
+      //               Radius.circular(50.0), // Adjust the radius as needed
+      //         ),
+      //       ),
+      //       content: Padding(
+      //         padding: const EdgeInsets.only(top: 12.0),
+      //         child: Text(
+      //           'rescheduleAppoint'.tr,
+      //           style: const TextStyle(color: Color.fromARGB(255, 74, 74, 74)),
+      //         ),
+      //       ),
+      //       actions: <Widget>[
+      //         Divider(),
+      //         TextButton(
+      //           onPressed: () async {
+      //             Navigator.of(context).pushReplacement(
+      //               MaterialPageRoute(
+      //                   builder: (context) => RescheduleResult(
+      //                       appDate: appDateFuture,
+      //                       dateList: decodedDate,
+      //                       nextAvailableDates: decodedAvailableDates,
+      //                       ACI: availabiltyCandarId)),
+      //             );
+      //           },
+      //           child: Text(
+      //             'ok'.tr,
+      //             style: TextStyle(color: secondaryColor),
+      //           ),
+      //         ),
+      //       ],
+      //     );
+      //   },
+      // );
+      Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(
+                        builder: (context) => RescheduleResult(
+                            appDate: appDateFuture,
+                            dateList: decodedDate,
+                            nextAvailableDates: decodedAvailableDates,
+                            ACI: availabiltyCandarId)),
+                  );
+
+      // Parse the JSON response
       // BookAppScreenState myWidget = BookAppScreenState();
       // String result =
       //     await myWidget.getAvailabilityCalendar("yourAvailabilityCalendar");
@@ -335,8 +473,6 @@ Future<void> GetResultRescheduleAppointment(
       // Save the API response in shared preferences
       pref.setString('apiResponseReschedule', json.encode(jsonResponse));
       pref.setString("availableDates", json.encode(jsonResponse['datelist']));
-
-      String? jsonString = pref.getString("availableDates");
 
 // Check if the jsonString is not null
       if (jsonString != null) {
@@ -354,11 +490,12 @@ Future<void> GetResultRescheduleAppointment(
 
       // Now, navigate to the AppointmentBookingPage
 
-      Navigator.of(context).push(
-        MaterialPageRoute(
-            builder: (context) => RescheduleResult(appDate: appDateFuture)),
-      );
+      // Navigator.of(context).push(
+      //   MaterialPageRoute(
+      //       builder: (context) => RescheduleResult(appDate: appDateFuture)),
+      // );
     } else {
+      print("else");
       // Handle errors
       Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
       await showDialog(
@@ -371,6 +508,7 @@ Future<void> GetResultRescheduleAppointment(
     }
   } catch (error) {
     Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
+    print("$error");
     // Handle network errors
     await showDialog(
       context: context,
@@ -381,89 +519,114 @@ Future<void> GetResultRescheduleAppointment(
   }
 }
 
-Future<void> bookAppointmentToGetResults(
-  BuildContext context,
-  String Qid,
-  String AppointmentTypeId,
-  String AppoinmentId,
-  String studyId,
-  String visitTypeId,
-  String availabilityCalendar,
-) async {
-  final GlobalKey<State> _keyLoader = GlobalKey<State>();
-  LoaderWidget _loader = LoaderWidget();
-  int? personGradeId = await getPersonGradeIdFromSharedPreferences();
+// Future<void> bookAppointmentToGetResults(
+//   BuildContext context,
+//   String Qid,
+//   String AppointmentTypeId,
+//   String AppoinmentId,
+//   String studyId,
+//   String visitTypeId,
+//   String availabilityCalendar,
+// ) async {
+//   final GlobalKey<State> _keyLoader = GlobalKey<State>();
+//   LoaderWidget _loader = LoaderWidget();
+//   int? personGradeId = await getPersonGradeIdFromSharedPreferences();
 
-  try {
-    Dialogs.showLoadingDialog(context, _keyLoader, _loader);
-    Map<String, dynamic> requestBody = {
-      'QID': Qid,
-      "AppointmentTypeId": AppointmentTypeId,
-      "AppoinmentId": AppoinmentId,
-      'StudyId': studyId,
-      'AvailabilityCalenderId': visitTypeId,
-      'AvailabilityCalenderId': visitTypeId,
-      'AvailabilityCalenderId': availabilityCalendar,
-      "ShiftCode": 'shft',
-      'PersonGradeId': '$personGradeId',
-      'language': 'langChange'.tr,
-    };
+//   try {
+//     Dialogs.showLoadingDialog(context, _keyLoader, _loader);
+//     Map<String, dynamic> requestBody = {
+//       'QID': Qid,
+//       "AppointmentTypeId": AppointmentTypeId,
+//       "AppoinmentId": AppoinmentId,
+//       'StudyId': studyId,
+//       'AvailabilityCalenderId': visitTypeId,
+//       'AvailabilityCalenderId': visitTypeId,
+//       'AvailabilityCalenderId': availabilityCalendar,
+//       "ShiftCode": 'shft',
+//       'PersonGradeId': '$personGradeId',
+//       'language': 'langChange'.tr,
+//     };
 
-    String apiUrl =
-        "https://participantportal-test.qatarbiobank.org.qa/QbbAPIS/api/BookResultAppointmentAPI?QID=${requestBody['QID']}&StudyId=${requestBody['StudyId']}&ShiftCode=${requestBody['ShiftCode']}&VisitTypeId=${requestBody['AvailabilityCalenderId']}&PersonGradeId=${requestBody['PersonGradeId']}&AvailabilityCalenderId=${requestBody['AvailabilityCalenderId']}&AppoinmentId=${requestBody['AppoinmentId']}&language=en&AppointmentTypeId=${requestBody['AppointmentTypeId']}";
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getString('token');
-    final Uri uri = Uri.parse('$apiUrl');
+//     String apiUrl =
+//         "https://participantportal-test.qatarbiobank.org.qa/QbbAPIS/api/BookResultAppointmentAPI?QID=${requestBody['QID']}&StudyId=${requestBody['StudyId']}&ShiftCode=${requestBody['ShiftCode']}&VisitTypeId=${requestBody['AvailabilityCalenderId']}&PersonGradeId=${requestBody['PersonGradeId']}&AvailabilityCalenderId=${requestBody['AvailabilityCalenderId']}&AppoinmentId=${requestBody['AppoinmentId']}&language=en&AppointmentTypeId=${requestBody['AppointmentTypeId']}";
+//     SharedPreferences pref = await SharedPreferences.getInstance();
+//     String? token = pref.getString('token');
+//     final Uri uri = Uri.parse('$apiUrl');
 
-    final response = await http.post(
-      uri,
-      headers: {
-        'Authorization': 'Bearer ${token?.replaceAll('"', '')}',
-        'Accept': 'application/json'
-      },
-      body: requestBody,
-    );
+//     final response = await http.post(
+//       uri,
+//       headers: {
+//         'Authorization': 'Bearer ${token?.replaceAll('"', '')}',
+//         'Accept': 'application/json'
+//       },
+//       body: requestBody,
+//     );
 
-    if (response.statusCode == 200) {
-      Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
-      // Successful API call
+//     if (response.statusCode == 200) {
+//       Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
+//       // Successful API call
 
-      // Parse the JSON response
-      final Map<String, dynamic> jsonResponse = json.decode(response.body);
-      // Save the API response in shared preferences
+//       // Parse the JSON response
+//       final Map<String, dynamic> jsonResponse = json.decode(response.body);
 
-// Check if the jsonString is not null
+//       print("Results Reschedule");
+//       print("DateList" + json.encode(jsonResponse['datelist']).toString());
+//       print("next available Dates" +
+//           json.encode(jsonResponse['nextAvilableDateList']).toString());
+//       String baml = json.encode(jsonResponse['BookAppoinmentModelList']);
+//       List<dynamic> bamlList = jsonDecode(baml);
 
-      // Now, navigate to the AppointmentBookingPage
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const AppointmentBookingPage(),
-        ),
-      );
-    } else {
-      Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
-      // Handle errors
+//       List<dynamic> availabiltyCandarId = bamlList
+//           .map((item) => item['AvailabilityCalenderId'].toString())
+//           .toList();
+//       print("Avalability Calendar ID Results" + availabiltyCandarId.toString());
 
-      await showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return ErrorPopup(
-              errorMessage: json.decode(response.body)["Message"]);
-        },
-      );
-    }
-  } catch (error) {
-    Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
-    // Handle network errors
-    await showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return ErrorPopup(errorMessage: 'Network Error');
-      },
-    );
-  }
-}
+//       String? jsonString = pref.getString("availableDates");
+//       String dateList = json.encode(jsonResponse['datelist']);
+//       String nextAvailableDates =
+//           json.encode(jsonResponse['nextAvilableDateList']);
+//       List<dynamic> decodedDate = jsonDecode(dateList);
+//       List<dynamic> decodedAvailableDates = jsonDecode(nextAvailableDates);
+//       print("List");
+//       print(decodedDate);
+//       // Save the API response in shared preferences
+
+// // Check if the jsonString is not null
+
+//       // Now, navigate to the AppointmentBookingPage
+//       Navigator.pushReplacement(
+//         context,
+//         MaterialPageRoute(
+//           builder: (context) => const BookResults(
+//             dateList: decodedDate,
+//             nextAvailableDates: decodedAvailableDates,
+//             ACI: availabiltyCandarId,
+//           ),
+//         ),
+//       );
+//     } else {
+//       Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
+//       // Handle errors
+
+//       await showDialog(
+//         context: context,
+//         builder: (BuildContext context) {
+//           return ErrorPopup(
+//               errorMessage: json.decode(response.body)["Message"]);
+//         },
+//       );
+//     }
+//   } catch (error) {
+//     Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
+//     // Handle network errors
+//     await showDialog(
+//       context: context,
+//       builder: (BuildContext context) {
+//         return ErrorPopup(errorMessage: 'Network Error');
+//       },
+//     );
+//   }
+// }
 
 Future<void> getResultAppointmentApiCall(
   BuildContext context,
@@ -583,12 +746,35 @@ Future<void> getResultsSlot(BuildContext context, String studyId,
         'Content-Type': 'application/json',
       },
     );
+    print("Book results");
+    print(uri);
 
     if (response.statusCode == 200) {
       // Successful API call
       Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
-      // Parse the JSON response
       final Map<String, dynamic> jsonResponse = json.decode(response.body);
+
+      print("Results Reschedule");
+      print("DateList" + json.encode(jsonResponse['datelist']).toString());
+      print("next available Dates" +
+          json.encode(jsonResponse['nextAvilableDateList']).toString());
+      String baml = json.encode(jsonResponse['BookAppoinmentModelList']);
+      List<dynamic> bamlList = jsonDecode(baml);
+
+      List<dynamic> availabiltyCandarId = bamlList
+          .map((item) => item['AvailabilityCalenderId'].toString())
+          .toList();
+      print("Avalability Calendar ID Results" + availabiltyCandarId.toString());
+
+      String? jsonString = pref.getString("availableDates");
+      String dateList = json.encode(jsonResponse['datelist']);
+      String nextAvailableDates =
+          json.encode(jsonResponse['nextAvilableDateList']);
+      List<dynamic> decodedDate = jsonDecode(dateList);
+      List<dynamic> decodedAvailableDates = jsonDecode(nextAvailableDates);
+      print("List Results");
+      print(decodedDate);
+      // Parse the JSON response
       BookAppScreenState myWidget = BookAppScreenState();
       String result =
           await myWidget.getAvailabilityCalendar("yourAvailabilityCalendar");
@@ -599,29 +785,18 @@ Future<void> getResultsSlot(BuildContext context, String studyId,
       pref.setString('apiResponseResults', json.encode(jsonResponse));
       pref.setString("availableDates", json.encode(jsonResponse['datelist']));
 
-      String? jsonString = pref.getString("availableDates");
-
-// Check if the jsonString is not null
-      if (jsonString != null) {
-        // Use json.decode to parse the jsonString
-        dynamic decodedData = json.decode(jsonString);
-
-        // Check if the decodedData is a List
-        if (decodedData is List) {
-          // Now you can use the data as a List
-          List<String> availableDates = List<String>.from(decodedData);
-
-          // Use the 'availableDates' list as needed
-        }
-      }
-
       // Now, navigate to the AppointmentBookingPage
-      Navigator.push(
+      Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => BookResults(),
+          builder: (context) => BookResults(
+            dateList: decodedDate,
+            nextAvailableDates: decodedAvailableDates,
+            ACI: availabiltyCandarId,
+          ),
         ),
       );
+      print(response.body);
     } else {
       Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
       // Handle errors
@@ -665,7 +840,6 @@ class Dialogs {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    
                     if (child != null) child,
                   ],
                 ),

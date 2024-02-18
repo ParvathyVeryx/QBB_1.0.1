@@ -3,10 +3,8 @@ import 'dart:convert';
 import 'dart:ffi';
 
 import 'package:QBB/providers/studymodel.dart';
-import 'package:QBB/screens/pages/loader.dart';
 import 'package:flutter/material.dart';
 import 'package:QBB/constants.dart';
-import 'package:flutter/rendering.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -15,9 +13,18 @@ import '../../nirmal_api.dart/profile_api.dart';
 import '../api/userid.dart';
 import 'appointments.dart';
 import 'erorr_popup.dart';
+import 'loader.dart';
 
 class BookResults extends StatefulWidget {
-  const BookResults({Key? key}) : super(key: key);
+  final List<dynamic> dateList;
+  final List<dynamic> nextAvailableDates;
+  final List<dynamic> ACI;
+  const BookResults(
+      {required this.dateList,
+      required this.nextAvailableDates,
+      required this.ACI,
+      Key? key})
+      : super(key: key);
 
   @override
   BookResultsState createState() => BookResultsState();
@@ -41,9 +48,11 @@ class BookResultsState extends State<BookResults> {
   int lastSelectedIndex = -1; // Initialize to an invalid index
   List<DateTime> selectedSlot = [];
   String availabilityCalendarid = '';
+  String appointmentDate = '';
+
   Future<void> fetchApiResponseFromSharedPrefs() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
-    String? apiResponseJson = pref.getString('apiResponse');
+    String? apiResponseJson = pref.getString('apiResponseReschedule');
 
     if (apiResponseJson != null) {
       Map<String, dynamic> jsonResponse = json.decode(apiResponseJson);
@@ -58,6 +67,40 @@ class BookResultsState extends State<BookResults> {
     }
   }
 
+  // Future<void> _selectDate(BuildContext context) async {
+  //   DateTime? picked = await showDatePicker(
+  //     context: context,
+  //     initialDate: upcomingDates.isNotEmpty ? upcomingDates[0] : DateTime.now(),
+  //     firstDate: DateTime(2000),
+  //     lastDate: DateTime(2101),
+  //   );
+
+  //   if (picked == null) {
+  //     picked = DateTime.now();
+  //     setState(() {
+  //       generateUpcomingDates(picked!);
+  //       generateUpcomingDatesandDays(picked!);
+  //       // timeList.removeWhere((time) {
+  //       //   DateTime parsedDate = DateTime.parse(time);
+  //       //   return parsedDate.isBefore(picked);
+  //       // });
+  //     });
+  //   }
+
+  //   if (picked != null &&
+  //       (upcomingDates.isEmpty || picked != upcomingDates[0])) {
+  //     setState(() {
+  //       generateUpcomingDates(picked!);
+  //       generateUpcomingDatesandDays(picked!);
+  //       // timeList.removeWhere((time) {
+  //       //   DateTime parsedDate = DateTime.parse(time);
+  //       //   return parsedDate.isBefore(picked);
+  //       // });
+  //     });
+
+  //     // Fetch data after selecting a date
+  //   }
+  // }
   bool ispicked = false;
   Future<void> _selectDate(BuildContext context) async {
     DateTime? picked = await showDatePicker(
@@ -82,27 +125,14 @@ class BookResultsState extends State<BookResults> {
   }
 
   List<DateTime> upcomingDateList = [];
-
-  // List<DateTime> generateDates() {
-  //   DateTime currentDate = DateTime.now();
-
-  //   for (int i = 0; i < 5; i++) {
-  //     DateTime nextDate = currentDate.add(Duration(days: i));
-
-  //     // Only add dates within the same month
-  //     if (nextDate.month == currentDate.month) {
-  //       upcomingDateList.add(nextDate);
-  //     }
-  //   }
-
-  //   return upcomingDateList;
-  // }
-
+  List<DateTime> originalDateList = [];
+  List<DateTime> nextAvailableDate = [];
+  List<DateTime> allDates = [];
   List<dynamic> availabiltyCandarId = [];
 
   Future<void> fetchAvailabilityCalendar() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
-    String? apiResponseJson = pref.getString('apiResponseResults');
+    String? apiResponseJson = pref.getString('apiResponseReschedule');
 
     if (apiResponseJson != null) {
       Map<String, dynamic> jsonResponse = json.decode(apiResponseJson);
@@ -114,7 +144,7 @@ class BookResultsState extends State<BookResults> {
         availabiltyCandarId = jsonResponse['BookAppoinmentModelList']
             .map((item) => item['AvailabilityCalenderId'].toString())
             .toList();
-        print("AAAAAACI Results" + availabiltyCandarId.toString());
+        print("AAAAAACI" + availabiltyCandarId.toString());
       } else {
         print("BookAppoinmentModelList is null or empty");
       }
@@ -128,59 +158,150 @@ class BookResultsState extends State<BookResults> {
 
   bool isNextWeek = false;
 
+  // Future<void> fetchDateList(DateTime selectedDate) async {
+  //   SharedPreferences pref = await SharedPreferences.getInstance();
+  //   String? apiResponseJson = pref.getString('apiResponseReschedule');
+
+  //   if (apiResponseJson != null) {
+  //     Map<String, dynamic> jsonResponse = json.decode(apiResponseJson);
+  //     print("Availability Calendar");
+  //     DateTime tempDate = selectedDate;
+  //     print(jsonResponse);
+  //     List<dynamic> dynamicList = jsonResponse['datelist'];
+  //     print("Dates" + dynamicList.toString());
+  //     List<String> dateStrings = List<String>.from(dynamicList);
+  //     List<DateTime> dateTimes = dateStrings.map((dateString) {
+  //       return DateTime.parse(dateString);
+  //     }).toList();
+  //     DateTime appointmentDateParse = DateTime.parse(appointmentDate);
+
+  //     print(ispicked);
+
+  //     print(ispicked);
+  //     if (ispicked == true) {
+  //       upcomingDateList = [];
+
+  //       for (int i = 0; i < 5; i++) {
+  //         // Check if the current date is within the same month as the selected date
+  //         if (tempDate.month == selectedDate.month) {
+  //           if (appointmentDateParse != tempDate) {
+  //             setState(() {
+  //               upcomingDateList.add(tempDate);
+  //             });
+  //             print(upcomingDateList);
+  //           }
+  //         }
+  //         tempDate = tempDate.add(const Duration(days: 1));
+  //       }
+  //     } else if (isNextWeek == true) {
+  //       upcomingDateList = [];
+  //       for (int i = 0; i < 5; i++) {
+  //         if (appointmentDateParse != tempDate) {
+  //           // Check if the current date is within the same month as the selected date
+  //           if (tempDate.month == selectedDate.month) {
+  //             setState(() {
+  //               upcomingDateList.add(tempDate);
+  //             });
+  //             print(upcomingDateList);
+  //           }
+  //         }
+  //         tempDate = tempDate.add(const Duration(days: 1));
+  //       }
+  //     } else {
+  //       setState(() {
+  //         upcomingDateList = dateStrings
+  //             .map((tempDate) => DateTime.parse(tempDate))
+  //             .where((date) => date != appointmentDateParse)
+  //             .toList();
+  //       });
+  //     }
+  //   }
+  // }
+  List<String> displayedACI = [];
+  bool isNextWeekArrow = false;
   Future<void> fetchDateList(DateTime selectedDate) async {
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    String? apiResponseJson = pref.getString('apiResponse');
-
-    if (apiResponseJson != null) {
-      Map<String, dynamic> jsonResponse = json.decode(apiResponseJson);
-      print("Availability Calendar");
-      DateTime tempDate = selectedDate;
-      print(jsonResponse);
-      List<dynamic> dynamicList = jsonResponse['datelist'];
-      List<String> dateStrings = List<String>.from(dynamicList);
-      List<DateTime> dateTimes = dateStrings.map((dateString) {
-        return DateTime.parse(dateString);
-      }).toList();
-
-      print(ispicked);
-      if (ispicked == true) {
-        upcomingDateList = [];
-        for (int i = 0; i < 5; i++) {
-          print("i");
-          // Check if the current date is within the same month as the selected date
-          if (tempDate.month == selectedDate.month) {
-            print("j");
-
-            setState(() {
-              upcomingDateList.add(tempDate);
-            });
-            print(upcomingDateList);
-          }
-          tempDate = tempDate.add(const Duration(days: 1));
+    List<DateTime> dateTimeList = widget.dateList
+        .map((dateString) => DateTime.parse(dateString))
+        .toList();
+    List<DateTime> nextdateTimeList = widget.nextAvailableDates
+        .map((dateString) => DateTime.parse(dateString))
+        .toList();
+    upcomingDates = nextdateTimeList;
+    originalDateList = dateTimeList;
+    List<String> listACI = widget.ACI.map((item) => item.toString()).toList();
+    availabiltyCandarId = listACI;
+    upcomingDateList = dateTimeList;
+    if (ispicked) {
+      upcomingDateList = [];
+      availabiltyCandarId = [];
+      displayedACI = [];
+      List<DateTime> mergedList = [...dateTimeList, ...nextdateTimeList];
+      int selectedIndex = mergedList.indexOf(selectedDate);
+      int endIndex = selectedIndex + 5;
+      setState(() {
+        if (endIndex > mergedList.length) {
+          endIndex = mergedList.length;
         }
-      } else if (isNextWeek == true) {
-        upcomingDateList = [];
-        for (int i = 0; i < 5; i++) {
-          print("i");
-          // Check if the current date is within the same month as the selected date
-          if (tempDate.month == selectedDate.month) {
-            print("j");
-
-            setState(() {
-              upcomingDateList.add(tempDate);
-            });
-            print(upcomingDateList);
-          }
-          tempDate = tempDate.add(const Duration(days: 1));
+        upcomingDateList = mergedList.sublist(selectedIndex, endIndex);
+        for (int i = selectedIndex; i < endIndex; i++) {
+          displayedACI.add(listACI[i]);
         }
-      } else {
-        setState(() {
-          upcomingDateList = dateStrings.map((dateString) {
-            return DateTime.parse(dateString);
-          }).toList();
-        });
-      }
+        availabiltyCandarId = displayedACI;
+      });
+
+      print("Merged Date List: $upcomingDateList");
+      print("Availability Calendar IDs: $availabiltyCandarId");
+    } else if (isNextWeek) {
+      print('Nextweekslot');
+      upcomingDateList = [];
+      availabiltyCandarId = [];
+      displayedACI = [];
+      List<DateTime> mergedList = [...dateTimeList, ...nextdateTimeList];
+      int selectedIndex = mergedList.indexOf(selectedDate);
+      int endIndex = selectedIndex + 5;
+      setState(() {
+        if (endIndex > mergedList.length) {
+          endIndex = mergedList.length;
+        }
+        upcomingDateList = mergedList.sublist(selectedIndex, endIndex);
+        for (int i = selectedIndex; i < endIndex; i++) {
+          displayedACI.add(listACI[i]);
+        }
+        availabiltyCandarId = displayedACI;
+      });
+
+      print("Merged next Date List: $upcomingDateList");
+      print("Availability Calendar IDs next: $availabiltyCandarId");
+    } else if (isNextWeekArrow) {
+      print('NextweekslotArrow');
+      upcomingDateList = [];
+      availabiltyCandarId = [];
+      displayedACI = [];
+      List<DateTime> mergedList = [...dateTimeList, ...nextdateTimeList];
+      int selectedIndex = mergedList.indexOf(selectedDate);
+      int endIndex = selectedIndex + 5;
+      setState(() {
+        if (endIndex > mergedList.length) {
+          endIndex = mergedList.length;
+        }
+        upcomingDateList = mergedList.sublist(selectedIndex, endIndex);
+        for (int i = selectedIndex; i < endIndex; i++) {
+          displayedACI.add(listACI[i]);
+        }
+        availabiltyCandarId = displayedACI;
+      });
+
+      print("Merged next arrow Date List: $upcomingDateList");
+      print("Availability Calendar IDs next arrow: $availabiltyCandarId");
+    } else {
+      setState(() {
+        upcomingDates = nextdateTimeList;
+        originalDateList = dateTimeList;
+        List<String> listACI =
+            widget.ACI.map((item) => item.toString()).toList();
+        availabiltyCandarId = listACI;
+        upcomingDateList = dateTimeList;
+      });
     }
   }
 
@@ -206,8 +327,8 @@ class BookResultsState extends State<BookResults> {
     // Now, upcomingDateList contains the upcoming dates within the same month
     print("Upcoming Dates: " + upcomingDateList.toString());
 
-    // _dateController.text =
-    //     '${selectedDate.day}/${selectedDate.month}/${selectedDate.year}';
+    _dateController.text =
+        '${selectedDate.day}/${selectedDate.month}/${selectedDate.year}';
   }
 
   void generateUpcomingDates(DateTime selectedDate) {
@@ -215,7 +336,7 @@ class BookResultsState extends State<BookResults> {
     DateTime tempDate = selectedDate;
 
     // Move to the next week's starting day (7 days from the selected date)
-    tempDate = tempDate.add(Duration(days: (7 - tempDate.weekday + 2) % 7));
+    tempDate = tempDate.add(Duration(days: (7 - tempDate.weekday + 1) % 7));
 
     DateTime currentDate = DateTime.now();
 
@@ -321,7 +442,15 @@ class BookResultsState extends State<BookResults> {
     return availabilityCalendarid;
   }
 
-  bool isLoadingLoader = false;
+  String appointmentId = '';
+
+  void getAppID(String appID) async {
+    // appointmentId = appID;
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    appointmentId = pref.getString("ResultsappoinmentID").toString();
+    print("Appointment ID" + appointmentId);
+    print(appID);
+  }
 
   Future<void> confirmAppointment(BuildContext context) async {
     final GlobalKey<State> _keyLoader = GlobalKey<State>();
@@ -459,6 +588,8 @@ class BookResultsState extends State<BookResults> {
   void initState() {
     // bookAppScreen = [];
     super.initState();
+
+    getAppID(appointmentId);
     timeList = [];
     generateUpcomingDates(DateTime.now());
     _pageController = PageController(initialPage: 0);
@@ -489,10 +620,13 @@ class BookResultsState extends State<BookResults> {
           title: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                'bookAnAppointment'.tr,
-                style: const TextStyle(
-                    color: appbar, fontFamily: 'Impact', fontSize: 16),
+              Padding(
+                padding: const EdgeInsets.only(left: 30.0),
+                child: Text(
+                  'bookAnAppointment'.tr,
+                  style: const TextStyle(
+                      color: appbar, fontFamily: 'Impact', fontSize: 16),
+                ),
               ),
             ],
           ),
@@ -537,10 +671,15 @@ class BookResultsState extends State<BookResults> {
                     children: [
                       IconButton(
                         onPressed: () {
-                          _pageController.previousPage(
-                            duration: const Duration(milliseconds: 300),
-                            curve: Curves.easeInOut,
-                          );
+                          //   _pageController.previousPage(
+                          //     duration: const Duration(milliseconds: 300),
+                          //     curve: Curves.easeInOut,
+                          //   );
+                          setState(() {
+                            isNextWeekArrow = true;
+                            upcomingDateList = originalDateList;
+                            fetchDateList(originalDateList[0]);
+                          });
                         },
                         icon: const Icon(Icons.arrow_back_ios_rounded),
                         color: primaryColor,
@@ -548,26 +687,28 @@ class BookResultsState extends State<BookResults> {
                       ),
                       Text(
                         "nextWeek".tr,
-                        style: const TextStyle(
+                        style: TextStyle(
                             color: primaryColor,
                             fontSize: 11,
                             fontWeight: FontWeight.bold),
                       ),
                       IconButton(
                         onPressed: () {
-                          _pageController.nextPage(
-                            duration: const Duration(milliseconds: 300),
-                            curve: Curves.easeInOut,
-                          );
+                          // _pageController.nextPage(
+                          //   duration: const Duration(milliseconds: 300),
+                          //   curve: Curves.easeInOut,
+                          // );
+                          setState(() {
+                            isNextWeekArrow = true;
+                            upcomingDateList = upcomingDates;
+                            fetchDateList(upcomingDateList[0]);
+                          });
                         },
                         icon: const Icon(Icons.arrow_forward_ios_rounded),
                         color: primaryColor,
                         iconSize: 11,
                       )
                     ],
-                  ),
-                  const SizedBox(
-                    height: 10,
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -598,6 +739,9 @@ class BookResultsState extends State<BookResults> {
                       )
                     ],
                   ),
+                  SizedBox(
+                    height: 10,
+                  ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -605,53 +749,65 @@ class BookResultsState extends State<BookResults> {
                         width: MediaQuery.of(context).size.width *
                             0.9, // or a fixed width
                         height: 40, // or any fixed height
-                        child: LayoutBuilder(
-                          builder: (context, constraints) {
-                            return PageView.builder(
-                              controller: _pageController,
-                              itemCount: upcomingDates.length,
-                              itemBuilder: (context, index) {
-                                return Center(
-                                  child: Container(
-                                    width:
-                                        MediaQuery.of(context).size.width * 0.9,
-                                    // width: constraints
-                                    //     .maxWidth, // or any desired width
-                                    // height: constraints
-                                    //     .maxHeight, // or any desired height
-                                    margin: const EdgeInsets.all(8),
-                                    child: Center(
-                                        child: ElevatedButton(
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: Colors
-                                            .white, // Background color of the button
-                                        side: BorderSide(
-                                            color:
-                                                Colors.black), // Border color
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(
-                                              0.0), // Set the border radius
+                        child: Scrollbar(
+                          thumbVisibility: true,
+                          child: SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: Padding(
+                                padding: const EdgeInsets.only(bottom: 8.0),
+                                child: Container(
+                                  height: 130,
+                                  width: 550,
+                                  child: ListView.builder(
+                                    scrollDirection: Axis.horizontal,
+                                    itemCount: upcomingDates.length,
+                                    itemBuilder: (context, index) {
+                                      return Center(
+                                        child: Center(
+                                          child: Row(
+                                            children: [
+                                              ElevatedButton(
+                                                style: ElevatedButton.styleFrom(
+                                                  backgroundColor: Colors.white,
+                                                  side: BorderSide(
+                                                    color: const Color.fromARGB(
+                                                        255, 201, 201, 201),
+                                                  ),
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            0.0),
+                                                  ),
+                                                  padding: EdgeInsets.fromLTRB(
+                                                      30, 0, 30, 0),
+                                                ),
+                                                onPressed: () {
+                                                  setState(() {
+                                                    isNextWeek = true;
+                                                    fetchDateList(
+                                                        upcomingDates[index]);
+                                                  });
+                                                },
+                                                child: Text(
+                                                  '${DateFormat('dd/MM/yyyy').format(upcomingDates[index])}',
+                                                  style: const TextStyle(
+                                                      fontSize: 12,
+                                                      color: Colors.black),
+                                                ),
+                                              ),
+                                              SizedBox(
+                                                width: 10,
+                                              )
+                                            ],
+                                          ),
                                         ),
-                                        padding: EdgeInsets.all(
-                                            4.0), // Set the content padding
-                                      ),
-                                      onPressed: () {
-                                        isNextWeek = true;
-                                        fetchDateList(upcomingDates[index]);
-                                      },
-                                      child: Text(
-                                        '${DateFormat('dd/MM/yyyy').format(upcomingDates[index])}',
-                                        style: const TextStyle(
-                                            fontSize: 11, color: Colors.black),
-                                      ),
-                                    )),
+                                      );
+                                    },
                                   ),
-                                );
-                              },
-                            );
-                          },
+                                ),
+                              )),
                         ),
-                      )
+                      ),
                     ],
                   ),
                   const SizedBox(
@@ -663,7 +819,7 @@ class BookResultsState extends State<BookResults> {
                       Center(
                         child: Text(
                           "swipeRightToViewMoreSlots".tr,
-                          style: const TextStyle(
+                          style: TextStyle(
                               color: primaryColor,
                               fontSize: 11,
                               fontWeight: FontWeight.w500),
@@ -671,19 +827,18 @@ class BookResultsState extends State<BookResults> {
                       )
                     ],
                   ),
-                  const SizedBox(
+                  SizedBox(
                     height: 30,
                   ),
                   Row(
                     children: [
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
                             'timeSlot'.tr,
                             style: const TextStyle(
-                              fontSize: 12.0,
+                              fontSize: 14.0,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
@@ -691,113 +846,12 @@ class BookResultsState extends State<BookResults> {
                           Text(
                             timeList.first,
                             style: const TextStyle(
-                              fontSize: 12.0,
+                              fontSize: 14.0,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
                         ],
                       ),
-                      // const SizedBox(width: 16.0),
-                      // pickedDate().toString() == "null"
-                      //     ?
-                      // Container(
-                      //   height: 200,
-                      //   width: MediaQuery.of(context).size.width * 0.75,
-                      //   child: LayoutBuilder(builder: (context, constraints) {
-                      //     return PageView.builder(
-                      //         controller: _pageController,
-                      //         itemCount: upcomingDateList.length,
-                      //         itemBuilder: (context, index) {
-                      //           return Column(
-                      //             children: [
-                      //               Text(
-                      //                 '${DateFormat('EEEE').format(upcomingDateList[index])},',
-                      //                 style: const TextStyle(fontSize: 14),
-                      //               ),
-                      //               Container(
-                      //                 // width: constraints
-                      //                 //     .maxWidth, // or any desired width
-                      //                 // height: constraints
-                      //                 //     .maxHeight, // or any desired height
-                      //                 margin: const EdgeInsets.all(8),
-                      //                 child: Center(
-                      //                   child: Text(
-                      //                     '${upcomingDateList[index].day}/${upcomingDateList[index].month}/${upcomingDateList[index].year}',
-                      //                     style: const TextStyle(fontSize: 14),
-                      //                   ),
-                      //                 ),
-                      //               ),
-                      //               const SizedBox(height: 8.0),
-                      //               ElevatedButton(
-                      //                 style: ElevatedButton.styleFrom(
-                      //                   shape: const RoundedRectangleBorder(
-                      //                     borderRadius: BorderRadius.only(
-                      //                       bottomLeft: Radius.circular(0.0),
-                      //                     ),
-                      //                   ),
-                      //                   backgroundColor:
-                      //                       selectedIndices.contains(index)
-                      //                           ? primaryColor
-                      //                           : Colors.white,
-                      //                   side: const BorderSide(
-                      //                       color: primaryColor),
-                      //                   elevation: 0,
-                      //                 ),
-                      //                 onPressed: () async {
-                      //                   if (selectedDates.length == 1) {
-                      //                     selectedDates[0] = datesOnly[index];
-                      //                   } else {
-                      //                     selectedDates.add(datesOnly[index]);
-                      //                   }
-
-                      //                   SharedPreferences pref =
-                      //                       await SharedPreferences
-                      //                           .getInstance();
-                      //                   pref.setString("selectedData",
-                      //                       selectedDates.toString());
-                      //                   String prefval = pref
-                      //                       .getString("selectedDate")
-                      //                       .toString();
-
-                      //                   setState(() {
-                      //                     // Reset the color of the last selected button
-                      //                     if (lastSelectedIndex != -1) {
-                      //                       selectedIndices
-                      //                           .remove(lastSelectedIndex);
-                      //                     }
-
-                      //                     // Update the color of the current button
-                      //                     if (selectedIndices.contains(index)) {
-                      //                       selectedIndices.remove(index);
-                      //                     } else {
-                      //                       selectedIndices.add(index);
-                      //                     }
-
-                      //                     // Update the last selected index
-                      //                     lastSelectedIndex = index;
-                      //                   });
-
-                      //                   // Print the selected date
-                      //                   print(
-                      //                       'Selected Date: ${datesOnly[index]}');
-                      //                 },
-                      //                 child: selectedIndices.contains(index)
-                      //                     ? Text(
-                      //                         'available'.tr,
-                      //                         style: const TextStyle(
-                      //                             color: textcolor),
-                      //                       )
-                      //                     : Text(
-                      //                         'available'.tr,
-                      //                         style: const TextStyle(
-                      //                             color: primaryColor),
-                      //                       ),
-                      //               )
-                      //             ],
-                      //           );
-                      //         });
-                      //   }),
-                      // ),
                       const SizedBox(
                         width: 30,
                       ),
@@ -898,10 +952,12 @@ class BookResultsState extends State<BookResults> {
                                                 SharedPreferences pref =
                                                     await SharedPreferences
                                                         .getInstance();
-                                                pref.setString("selectedData",
+                                                pref.setString(
+                                                    "selectedDateReschedule",
                                                     selectedDates.toString());
                                                 String prefval = pref
-                                                    .getString("selectedDate")
+                                                    .getString(
+                                                        "selectedDateReschedule")
                                                     .toString();
 
                                                 setState(() {
@@ -955,8 +1011,8 @@ class BookResultsState extends State<BookResults> {
                       ),
                     ],
                   ),
-                  const SizedBox(
-                    height: 30,
+                  SizedBox(
+                    height: 50,
                   ),
                   Center(
                     child: Row(
@@ -1024,7 +1080,8 @@ class BookResultsState extends State<BookResults> {
                                     actions: <Widget>[
                                       Divider(),
                                       Row(
-                                        mainAxisAlignment: MainAxisAlignment.end,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.end,
                                         children: [
                                           TextButton(
                                             onPressed: () async {
@@ -1033,33 +1090,34 @@ class BookResultsState extends State<BookResults> {
                                             },
                                             child: Text(
                                               'cancelButton'.tr,
-                                              style:
-                                                  TextStyle(color: secondaryColor),
+                                              style: TextStyle(
+                                                  color: secondaryColor),
                                             ),
                                           ),
-                                          SizedBox(width: 30,),
-                                      TextButton(
-                                        onPressed: () async {
-                                          confirmAppointment(context);
-                                        },
-                                        child: Text(
-                                          'confirm'.tr,
-                                          style:
-                                              TextStyle(color: secondaryColor),
-                                        ),
-                                      ),
+                                          SizedBox(
+                                            width: 30,
+                                          ),
+                                          TextButton(
+                                            onPressed: () async {
+                                              confirmAppointment(context);
+                                              Navigator.pop(context);
+                                            },
+                                            child: Text(
+                                              'confirm'.tr,
+                                              style: TextStyle(
+                                                  color: secondaryColor),
+                                            ),
+                                          ),
                                         ],
                                       ),
-                                      
                                     ],
                                   );
                                 },
                               );
-                              // confirmAppointment(context);
                             },
                             child: Text(
                               'confirm'.tr,
-                              style: const TextStyle(color: textcolor),
+                              style: TextStyle(color: textcolor),
                             ),
                           ),
                         ),

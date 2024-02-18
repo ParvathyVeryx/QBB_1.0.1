@@ -552,95 +552,104 @@ class ResultsState extends State<Results> {
                                       ),
                                       Row(
                                         mainAxisAlignment:
-                                            MainAxisAlignment.center,
+                                            MainAxisAlignment.spaceBetween,
                                         children: [
-                                          ElevatedButton(
-                                            onPressed: () async {
-                                              SharedPreferences pref =
-                                                  await SharedPreferences
-                                                      .getInstance();
-                                              pref.setString(
-                                                  "resultsStudyID",
-                                                  appointment["StudyId"]
-                                                      .toString());
-                                              pref.setString(
-                                                  "resultsVisitTypeID",
-                                                  appointment['VisitTypeId']
-                                                      .toString());
-                                              pref.setString(
-                                                  "resultsAppID",
-                                                  appointment['AppoinmentId']
-                                                      .toString());
-                                              pref.setString(
-                                                  "resultsAppointmentTypeID",
-                                                  appointment[
-                                                          "AppointmentTypeId"]
-                                                      .toString());
-                                              //   await bookAppointmentToGetResults(
-                                              //     context,
-                                              //     appointment["QID"]
-                                              //         .toString(),
-                                              //     appointment[
-                                              //             "AppointmentTypeId"]
-                                              //         .toString(),
-                                              //     appointment[
-                                              //             'AppoinmentId']
-                                              //         .toString(),
-                                              //     appointment["StudyId"]
-                                              //         .toString(),
-                                              //     appointment["VisitTypeId"]
-                                              //         .toString(),
-                                              //     appointment[
-                                              //             'AvailabilityCalenderId']
-                                              //         .toString(),
-                                              //   );
-                                              await getResultsSlot(
-                                                  context,
-                                                  appointment["StudyId"]
-                                                      .toString(),
-                                                  appointment['VisitTypeId']
-                                                      .toString(),
-                                                  appointment['VisittypeName']
-                                                      .toString(),
-                                                  appointment['AppoinmentId']
-                                                      .toString());
-                                              // await getResultAppointmentApiCall(
-                                              //     context,
-                                              //     appointment["StudyId"]
-                                              //         .toString(),
-                                              //     appointment["VisitTypeId"]
-                                              //         .toString(),
-                                              //     appointment["AppoinmentId"]
-                                              //         .toString());
-                                            },
-                                            style: ButtonStyle(
-                                                backgroundColor:
-                                                    MaterialStateProperty.all<
-                                                            Color>(
-                                                        primaryColor), // Set background color
-                                                shape:
-                                                    MaterialStateProperty.all<
-                                                        RoundedRectangleBorder>(
-                                                  const RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.only(
-                                                      bottomLeft: Radius.circular(
-                                                          12.0), // Rounded border at bottom-left
+                                          appointment["showResultBookingBtn"] ==
+                                                  true
+                                              ? ElevatedButton(
+                                                  onPressed: () async {
+                                                    SharedPreferences pref =
+                                                        await SharedPreferences
+                                                            .getInstance();
+                                                    pref.setString(
+                                                        "resultsStudyID",
+                                                        appointment["StudyId"]
+                                                            .toString());
+                                                    pref.setString(
+                                                        "resultsVisitTypeID",
+                                                        appointment[
+                                                                'VisitTypeId']
+                                                            .toString());
+                                                    pref.setString(
+                                                        "resultsAppID",
+                                                        appointment[
+                                                                'AppoinmentId']
+                                                            .toString());
+                                                    pref.setString(
+                                                        "resultsAppointmentTypeID",
+                                                        appointment[
+                                                                "AppointmentTypeId"]
+                                                            .toString());
+                                                    //   await bookAppointmentToGetResults(
+                                                    //     context,
+                                                    //     appointment["QID"]
+                                                    //         .toString(),
+                                                    //     appointment[
+                                                    //             "AppointmentTypeId"]
+                                                    //         .toString(),
+                                                    //     appointment[
+                                                    //             'AppoinmentId']
+                                                    //         .toString(),
+                                                    //     appointment["StudyId"]
+                                                    //         .toString(),
+                                                    //     appointment["VisitTypeId"]
+                                                    //         .toString(),
+                                                    //     appointment[
+                                                    //             'AvailabilityCalenderId']
+                                                    //         .toString(),
+                                                    //   );
+                                                    getResultsSlot(
+                                                        context,
+                                                        appointment["StudyId"]
+                                                            .toString(),
+                                                        appointment[
+                                                                'VisitTypeId']
+                                                            .toString(),
+                                                        appointment[
+                                                                'VisittypeName']
+                                                            .toString(),
+                                                        appointment[
+                                                                'AppoinmentId']
+                                                            .toString());
+                                                    // await getResultAppointmentApiCall(
+                                                    //     context,
+                                                    //     appointment["StudyId"]
+                                                    //         .toString(),
+                                                    //     appointment["VisitTypeId"]
+                                                    //         .toString(),
+                                                    //     appointment["AppoinmentId"]
+                                                    //         .toString());
+                                                  },
+                                                  style: ButtonStyle(
+                                                      backgroundColor:
+                                                          MaterialStateProperty.all<
+                                                                  Color>(
+                                                              primaryColor), // Set background color
+                                                      shape: MaterialStateProperty
+                                                          .all<
+                                                              RoundedRectangleBorder>(
+                                                        const RoundedRectangleBorder(
+                                                          borderRadius:
+                                                              BorderRadius.only(
+                                                            bottomLeft:
+                                                                Radius.circular(
+                                                                    12.0), // Rounded border at bottom-left
+                                                          ),
+                                                        ),
+                                                      )),
+                                                  child: Padding(
+                                                    padding: const EdgeInsets
+                                                        .fromLTRB(
+                                                        015, 0, 015, 0),
+                                                    child: Text(
+                                                      'collectResult'.tr,
+                                                      style: const TextStyle(
+                                                          color: textcolor,
+                                                          fontSize: 12),
                                                     ),
                                                   ),
-                                                )),
-                                            child: Padding(
-                                              padding:
-                                                  const EdgeInsets.fromLTRB(
-                                                      5.0, 5.0, 5.0, 5.0),
-                                              child: Text(
-                                                'collectResult'.tr,
-                                                style: const TextStyle(
-                                                    color: textcolor,
-                                                    fontSize: 12),
-                                              ),
-                                            ),
-                                          ),
+                                                )
+                                              : Container(),
                                           const SizedBox(
                                             width: 20,
                                           ),
@@ -708,7 +717,7 @@ class ResultsState extends State<Results> {
                                             child: Padding(
                                               padding:
                                                   const EdgeInsets.fromLTRB(
-                                                      5.0, 5.0, 5.0, 5.0),
+                                                      015, 0, 015, 0),
                                               child: Text(
                                                 'download'.tr,
                                                 style: const TextStyle(

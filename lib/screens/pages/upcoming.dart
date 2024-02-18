@@ -60,7 +60,7 @@ class UpcomingState extends State<Upcoming> {
           'Authorization': 'Bearer ${token.replaceAll('"', '')}',
         },
       );
-
+      print("Upcoming");
       print(response.body);
 
       // Check if the request was successful (status code 200)
@@ -737,219 +737,202 @@ class UpcomingState extends State<Upcoming> {
                                             //         );
                                             //       });
                                             // } else {
-                                            appointment["EndDate"] ==
-                                                    DateTime.now()
+                                            appointment["showCancelBtn"] ==
+                                                    false
                                                 ? //   showDialog(
                                                 showDialog(
                                                     context: context,
                                                     builder:
                                                         (BuildContext context) {
-                                                      return AlertDialog(
-                                                        title: Text(''),
-                                                        content: Text(appointment[
-                                                            'CancelExpiredMSG']),
-                                                        actions: [
-                                                          ElevatedButton(
-                                                            onPressed: () {
-                                                              Navigator.pop(
-                                                                  context); // Close the dialog
-                                                            },
-                                                            child: Text('OK'),
-                                                          ),
-                                                        ],
-                                                      );
+                                                      return ErrorPopup(
+                                                          errorMessage: appointment[
+                                                              'CancelExpiredMSG']);
                                                     })
-                                                : appointment["AppoinmentId"];
-                                            appointment["AppoinmenttypName"] ==
-                                                    "Result"
-                                                ? showDialog(
-                                                    context: context,
-                                                    builder: (context) {
-                                                      return AlertDialog(
-                                                        shape:
-                                                            CustomAlertDialogShape(
+                                                : appointment[
+                                                            "AppoinmenttypName"] ==
+                                                        "Result"
+                                                    ? showDialog(
+                                                        context: context,
+                                                        builder: (context) {
+                                                          return AlertDialog(
+                                                            shape: CustomAlertDialogShape(
                                                                 bottomLeftRadius:
                                                                     36.0),
-                                                        title: Column(
-                                                          children: [
-                                                            Center(
-                                                                child: Text("",
-                                                                    style: TextStyle(
-                                                                        fontSize:
-                                                                            15,
-                                                                        fontWeight:
-                                                                            FontWeight.w600))),
-                                                            SizedBox(
-                                                              height: 10,
-                                                            ),
-                                                            // Divider(),
-                                                          ],
-                                                        ),
-                                                        content:
-                                                            StatefulBuilder(
-                                                          builder: (BuildContext
-                                                                  context,
-                                                              StateSetter
-                                                                  setState) {
-                                                            return Column(
-                                                              mainAxisSize:
-                                                                  MainAxisSize
-                                                                      .min,
+                                                            title: Column(
                                                               children: [
-                                                                ...buildReasonRadioButtons(
-                                                                    setState)
-
-                                                                // ),
+                                                                Center(
+                                                                    child: Text(
+                                                                        "",
+                                                                        style: TextStyle(
+                                                                            fontSize:
+                                                                                15,
+                                                                            fontWeight:
+                                                                                FontWeight.w600))),
+                                                                SizedBox(
+                                                                  height: 10,
+                                                                ),
+                                                                // Divider(),
                                                               ],
-                                                            );
-                                                          },
-                                                        ),
-                                                        actions: [
-                                                          Column(
-                                                            children: [
-                                                              Row(
-                                                                mainAxisAlignment:
-                                                                    MainAxisAlignment
-                                                                        .end,
-                                                                children: [
-                                                                  TextButton(
-                                                                    onPressed:
-                                                                        () async {
-                                                                      // SharedPreferences prefs =
-                                                                      //     await SharedPreferences.getInstance();
-                                                                      // var selectedLanguagePref =
-                                                                      //     prefs.getString('langEn').toString();
-                                                                      // if (selectedLanguagePref == "false") {
-                                                                      //   selectedLanguage = 'Arabic';
-                                                                      // } else {
-                                                                      //   selectedLanguage = 'English';
-                                                                      // }
-                                                                      Navigator.of(
-                                                                              context)
-                                                                          .pop(); // Close the dialog
-                                                                    },
-                                                                    child: Text(
-                                                                        'cancelButton'
-                                                                            .tr),
-                                                                  ),
-                                                                  TextButton(
-                                                                    onPressed:
-                                                                        () {
-                                                                      String
-                                                                          appId =
-                                                                          appointment["AppoinmentId"]
-                                                                              .toString();
-
-                                                                      cancelResultAppointment(
-                                                                          appId);
-                                                                      Navigator.pop(
-                                                                          context);
-                                                                    },
-                                                                    child: Text(
-                                                                        'ok'.tr),
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ],
-                                                      );
-                                                    },
-                                                  )
-                                                : showDialog(
-                                                    context: context,
-                                                    builder: (context) {
-                                                      return AlertDialog(
-                                                        shape:
-                                                            CustomAlertDialogShape(
-                                                                bottomLeftRadius:
-                                                                    36.0),
-                                                        title: Column(
-                                                          children: [
-                                                            Center(
-                                                                child: Text("",
-                                                                    style: TextStyle(
-                                                                        fontSize:
-                                                                            15,
-                                                                        fontWeight:
-                                                                            FontWeight.w600))),
-                                                            SizedBox(
-                                                              height: 10,
                                                             ),
-                                                            // Divider(),
-                                                          ],
-                                                        ),
-                                                        content:
-                                                            StatefulBuilder(
-                                                          builder: (BuildContext
-                                                                  context,
-                                                              StateSetter
-                                                                  setState) {
-                                                            return Column(
-                                                              mainAxisSize:
-                                                                  MainAxisSize
-                                                                      .min,
-                                                              children: [
-                                                                ...buildReasonRadioButtons(
-                                                                    setState)
+                                                            content:
+                                                                StatefulBuilder(
+                                                              builder: (BuildContext
+                                                                      context,
+                                                                  StateSetter
+                                                                      setState) {
+                                                                return Column(
+                                                                  mainAxisSize:
+                                                                      MainAxisSize
+                                                                          .min,
+                                                                  children: [
+                                                                    ...buildReasonRadioButtons(
+                                                                        setState)
 
-                                                                // ),
-                                                              ],
-                                                            );
-                                                          },
-                                                        ),
-                                                        actions: [
-                                                          Column(
-                                                            children: [
-                                                              Row(
-                                                                mainAxisAlignment:
-                                                                    MainAxisAlignment
-                                                                        .end,
+                                                                    // ),
+                                                                  ],
+                                                                );
+                                                              },
+                                                            ),
+                                                            actions: [
+                                                              Column(
                                                                 children: [
-                                                                  TextButton(
-                                                                    onPressed:
-                                                                        () async {
-                                                                      // SharedPreferences prefs =
-                                                                      //     await SharedPreferences.getInstance();
-                                                                      // var selectedLanguagePref =
-                                                                      //     prefs.getString('langEn').toString();
-                                                                      // if (selectedLanguagePref == "false") {
-                                                                      //   selectedLanguage = 'Arabic';
-                                                                      // } else {
-                                                                      //   selectedLanguage = 'English';
-                                                                      // }
-                                                                      Navigator.of(
-                                                                              context)
-                                                                          .pop(); // Close the dialog
-                                                                    },
-                                                                    child: Text(
-                                                                        'cancelButton'
-                                                                            .tr),
-                                                                  ),
-                                                                  TextButton(
-                                                                    onPressed:
-                                                                        () {
-                                                                      String
-                                                                          appId =
-                                                                          appointment["AppoinmentId"]
-                                                                              .toString();
+                                                                  Row(
+                                                                    mainAxisAlignment:
+                                                                        MainAxisAlignment
+                                                                            .end,
+                                                                    children: [
+                                                                      TextButton(
+                                                                        onPressed:
+                                                                            () async {
+                                                                          // SharedPreferences prefs =
+                                                                          //     await SharedPreferences.getInstance();
+                                                                          // var selectedLanguagePref =
+                                                                          //     prefs.getString('langEn').toString();
+                                                                          // if (selectedLanguagePref == "false") {
+                                                                          //   selectedLanguage = 'Arabic';
+                                                                          // } else {
+                                                                          //   selectedLanguage = 'English';
+                                                                          // }
+                                                                          Navigator.of(context)
+                                                                              .pop(); // Close the dialog
+                                                                        },
+                                                                        child: Text(
+                                                                            'cancelButton'.tr),
+                                                                      ),
+                                                                      TextButton(
+                                                                        onPressed:
+                                                                            () {
+                                                                          String
+                                                                              appId =
+                                                                              appointment["AppoinmentId"].toString();
 
-                                                                      cancelAnAppointment(
-                                                                          appId);
+                                                                          cancelResultAppointment(
+                                                                              appId);
                                                                           Navigator.pop(
-                                                                          context);
-                                                                    },
-                                                                    child: Text(
-                                                                        'ok'.tr),
+                                                                              context);
+                                                                        },
+                                                                        child: Text(
+                                                                            'ok'.tr),
+                                                                      ),
+                                                                    ],
                                                                   ),
                                                                 ],
                                                               ),
                                                             ],
-                                                          ),
-                                                        ],
+                                                          );
+                                                        },
+                                                      )
+                                                    : showDialog(
+                                                        context: context,
+                                                        builder: (context) {
+                                                          return AlertDialog(
+                                                            shape: CustomAlertDialogShape(
+                                                                bottomLeftRadius:
+                                                                    36.0),
+                                                            title: Column(
+                                                              children: [
+                                                                Center(
+                                                                    child: Text(
+                                                                        "",
+                                                                        style: TextStyle(
+                                                                            fontSize:
+                                                                                15,
+                                                                            fontWeight:
+                                                                                FontWeight.w600))),
+                                                                SizedBox(
+                                                                  height: 10,
+                                                                ),
+                                                                // Divider(),
+                                                              ],
+                                                            ),
+                                                            content:
+                                                                StatefulBuilder(
+                                                              builder: (BuildContext
+                                                                      context,
+                                                                  StateSetter
+                                                                      setState) {
+                                                                return Column(
+                                                                  mainAxisSize:
+                                                                      MainAxisSize
+                                                                          .min,
+                                                                  children: [
+                                                                    ...buildReasonRadioButtons(
+                                                                        setState)
+
+                                                                    // ),
+                                                                  ],
+                                                                );
+                                                              },
+                                                            ),
+                                                            actions: [
+                                                              Column(
+                                                                children: [
+                                                                  Row(
+                                                                    mainAxisAlignment:
+                                                                        MainAxisAlignment
+                                                                            .end,
+                                                                    children: [
+                                                                      TextButton(
+                                                                        onPressed:
+                                                                            () async {
+                                                                          // SharedPreferences prefs =
+                                                                          //     await SharedPreferences.getInstance();
+                                                                          // var selectedLanguagePref =
+                                                                          //     prefs.getString('langEn').toString();
+                                                                          // if (selectedLanguagePref == "false") {
+                                                                          //   selectedLanguage = 'Arabic';
+                                                                          // } else {
+                                                                          //   selectedLanguage = 'English';
+                                                                          // }
+                                                                          Navigator.of(context)
+                                                                              .pop(); // Close the dialog
+                                                                        },
+                                                                        child: Text(
+                                                                            'cancelButton'.tr),
+                                                                      ),
+                                                                      TextButton(
+                                                                        onPressed:
+                                                                            () {
+                                                                          String
+                                                                              appId =
+                                                                              appointment["AppoinmentId"].toString();
+
+                                                                          cancelAnAppointment(
+                                                                              appId);
+                                                                          Navigator.pop(
+                                                                              context);
+                                                                        },
+                                                                        child: Text(
+                                                                            'ok'.tr),
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ],
+                                                          );
+                                                        },
                                                       );
-                                                    },
-                                                  );
                                             // }
                                           },
                                           child: Text(
@@ -1008,22 +991,93 @@ class UpcomingState extends State<Upcoming> {
                                             //     appTypeId,
                                             //     vTypeId,
                                             //     studyId);
-                                            appointment["AppoinmenttypName"] ==
-                                                    "Result"
-                                                ? GetResultRescheduleAppointment(
-                                                    context,
-                                                    studyId,
-                                                    vTypeId,
-                                                    Vtype,
-                                                    appId,
-                                                    appDate)
-                                                : GetRescheduleAppointment(
-                                                    context,
-                                                    studyId,
-                                                    vTypeId,
-                                                    Vtype,
-                                                    appId,
-                                                    appDate);
+                                            showDialog(
+                                              context: context,
+                                              builder: (BuildContext context) {
+                                                return AlertDialog(
+                                                  backgroundColor: Colors.white,
+                                                  shape:
+                                                      const RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.only(
+                                                      bottomLeft: Radius.circular(
+                                                          50.0), // Adjust the radius as needed
+                                                    ),
+                                                  ),
+                                                  content: Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            top: 12.0),
+                                                    child: Text(
+                                                      'rescheduleAppoint'.tr,
+                                                      style: const TextStyle(
+                                                          color: Color.fromARGB(
+                                                              255, 74, 74, 74)),
+                                                    ),
+                                                  ),
+                                                  actions: <Widget>[
+                                                    TextButton(
+                                                      onPressed: () async {
+                                                        appointment["showRescheduleBtn"] ==
+                                                                true
+                                                            ? appointment[
+                                                                        "AppoinmenttypName"] ==
+                                                                    "Result"
+                                                                ? GetResultRescheduleAppointment(
+                                                                    context,
+                                                                    studyId,
+                                                                    vTypeId,
+                                                                    Vtype,
+                                                                    appId,
+                                                                    appDate)
+                                                                : GetRescheduleAppointment(
+                                                                    context,
+                                                                    studyId,
+                                                                    vTypeId,
+                                                                    Vtype,
+                                                                    appId,
+                                                                    appDate)
+                                                            : showDialog(
+                                                                context:
+                                                                    context,
+                                                                builder:
+                                                                    (BuildContext
+                                                                        context) {
+                                                                  return ErrorPopup(
+                                                                      errorMessage:
+                                                                          appointment[
+                                                                              "ResultExpiredMSG"]);
+                                                                },
+                                                              );
+                                                        // Navigator.pop(context);
+                                                      },
+                                                      child: Text(
+                                                        'ok'.tr,
+                                                        style: TextStyle(
+                                                            color:
+                                                                secondaryColor),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                );
+                                              },
+                                            );
+                                            // appointment["AppoinmenttypName"] ==
+                                            //         "Result"
+                                            //     ? GetResultRescheduleAppointment(
+                                            //         context,
+                                            //         studyId,
+                                            //         vTypeId,
+                                            //         Vtype,
+                                            //         appId,
+                                            //         appDate)
+                                            //     : GetRescheduleAppointment(
+                                            //         context,
+                                            //         studyId,
+                                            //         vTypeId,
+                                            //         Vtype,
+                                            //         appId,
+                                            //         appDate);
                                           },
                                           child: Text(
                                             'reschedule'.tr,

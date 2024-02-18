@@ -17,7 +17,16 @@ import 'loader.dart';
 
 class RescheduleResult extends StatefulWidget {
   final Future<String> appDate;
-  const RescheduleResult({required this.appDate, Key? key}) : super(key: key);
+  final List<dynamic> dateList;
+  final List<dynamic> nextAvailableDates;
+  final List<dynamic> ACI;
+  const RescheduleResult(
+      {required this.appDate,
+      required this.dateList,
+      required this.nextAvailableDates,
+      required this.ACI,
+      Key? key})
+      : super(key: key);
 
   @override
   RescheduleResultState createState() => RescheduleResultState();
@@ -118,7 +127,11 @@ class RescheduleResultState extends State<RescheduleResult> {
   }
 
   List<DateTime> upcomingDateList = [];
+  List<DateTime> originalDateList = [];
+  List<DateTime> nextAvailableDate = [];
+  List<DateTime> allDates = [];
   List<dynamic> availabiltyCandarId = [];
+  List<dynamic> availabilityCID = [];
 
   Future<void> fetchAvailabilityCalendar() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
@@ -148,63 +161,150 @@ class RescheduleResultState extends State<RescheduleResult> {
 
   bool isNextWeek = false;
 
+  // Future<void> fetchDateList(DateTime selectedDate) async {
+  //   SharedPreferences pref = await SharedPreferences.getInstance();
+  //   String? apiResponseJson = pref.getString('apiResponseReschedule');
+
+  //   if (apiResponseJson != null) {
+  //     Map<String, dynamic> jsonResponse = json.decode(apiResponseJson);
+  //     print("Availability Calendar");
+  //     DateTime tempDate = selectedDate;
+  //     print(jsonResponse);
+  //     List<dynamic> dynamicList = jsonResponse['datelist'];
+  //     print("Dates" + dynamicList.toString());
+  //     List<String> dateStrings = List<String>.from(dynamicList);
+  //     List<DateTime> dateTimes = dateStrings.map((dateString) {
+  //       return DateTime.parse(dateString);
+  //     }).toList();
+  //     DateTime appointmentDateParse = DateTime.parse(appointmentDate);
+
+  //     print(ispicked);
+
+  //     print(ispicked);
+  //     if (ispicked == true) {
+  //       upcomingDateList = [];
+
+  //       for (int i = 0; i < 5; i++) {
+  //         // Check if the current date is within the same month as the selected date
+  //         if (tempDate.month == selectedDate.month) {
+  //           if (appointmentDateParse != tempDate) {
+  //             setState(() {
+  //               upcomingDateList.add(tempDate);
+  //             });
+  //             print(upcomingDateList);
+  //           }
+  //         }
+  //         tempDate = tempDate.add(const Duration(days: 1));
+  //       }
+  //     } else if (isNextWeek == true) {
+  //       upcomingDateList = [];
+  //       for (int i = 0; i < 5; i++) {
+  //         if (appointmentDateParse != tempDate) {
+  //           // Check if the current date is within the same month as the selected date
+  //           if (tempDate.month == selectedDate.month) {
+  //             setState(() {
+  //               upcomingDateList.add(tempDate);
+  //             });
+  //             print(upcomingDateList);
+  //           }
+  //         }
+  //         tempDate = tempDate.add(const Duration(days: 1));
+  //       }
+  //     } else {
+  //       setState(() {
+  //         upcomingDateList = dateStrings
+  //             .map((tempDate) => DateTime.parse(tempDate))
+  //             .where((date) => date != appointmentDateParse)
+  //             .toList();
+  //       });
+  //     }
+  //   }
+  // }
+  List<String> displayedACI = [];
+  bool isNextWeekArrow = false;
   Future<void> fetchDateList(DateTime selectedDate) async {
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    String? apiResponseJson = pref.getString('apiResponseReschedule');
-
-    if (apiResponseJson != null) {
-      Map<String, dynamic> jsonResponse = json.decode(apiResponseJson);
-      print("Availability Calendar");
-      DateTime tempDate = selectedDate;
-      print(jsonResponse);
-      List<dynamic> dynamicList = jsonResponse['datelist'];
-      print("Dates" + dynamicList.toString());
-      List<String> dateStrings = List<String>.from(dynamicList);
-      List<DateTime> dateTimes = dateStrings.map((dateString) {
-        return DateTime.parse(dateString);
-      }).toList();
-      DateTime appointmentDateParse = DateTime.parse(appointmentDate);
-
-      print(ispicked);
-
-      print(ispicked);
-      if (ispicked == true) {
-        upcomingDateList = [];
-
-        for (int i = 0; i < 5; i++) {
-          // Check if the current date is within the same month as the selected date
-          if (tempDate.month == selectedDate.month) {
-            if (appointmentDateParse != tempDate) {
-              setState(() {
-                upcomingDateList.add(tempDate);
-              });
-              print(upcomingDateList);
-            }
-          }
-          tempDate = tempDate.add(const Duration(days: 1));
+    List<DateTime> dateTimeList = widget.dateList
+        .map((dateString) => DateTime.parse(dateString))
+        .toList();
+    List<DateTime> nextdateTimeList = widget.nextAvailableDates
+        .map((dateString) => DateTime.parse(dateString))
+        .toList();
+    upcomingDates = nextdateTimeList;
+    originalDateList = dateTimeList;
+    List<String> listACI = widget.ACI.map((item) => item.toString()).toList();
+    availabiltyCandarId = listACI;
+    upcomingDateList = dateTimeList;
+    if (ispicked) {
+      upcomingDateList = [];
+      availabiltyCandarId = [];
+      displayedACI = [];
+      List<DateTime> mergedList = [...dateTimeList, ...nextdateTimeList];
+      int selectedIndex = mergedList.indexOf(selectedDate);
+      int endIndex = selectedIndex + 5;
+      setState(() {
+        if (endIndex > mergedList.length) {
+          endIndex = mergedList.length;
         }
-      } else if (isNextWeek == true) {
-        upcomingDateList = [];
-        for (int i = 0; i < 5; i++) {
-          if (appointmentDateParse != tempDate) {
-            // Check if the current date is within the same month as the selected date
-            if (tempDate.month == selectedDate.month) {
-              setState(() {
-                upcomingDateList.add(tempDate);
-              });
-              print(upcomingDateList);
-            }
-          }
-          tempDate = tempDate.add(const Duration(days: 1));
+        upcomingDateList = mergedList.sublist(selectedIndex, endIndex);
+        for (int i = selectedIndex; i < endIndex; i++) {
+          displayedACI.add(listACI[i]);
         }
-      } else {
-        setState(() {
-          upcomingDateList = dateStrings
-              .map((tempDate) => DateTime.parse(tempDate))
-              .where((date) => date != appointmentDateParse)
-              .toList();
-        });
-      }
+        availabiltyCandarId = displayedACI;
+      });
+
+      print("Merged Date List: $upcomingDateList");
+      print("Availability Calendar IDs: $availabiltyCandarId");
+    } else if (isNextWeek) {
+      print('Nextweekslot');
+      upcomingDateList = [];
+      availabiltyCandarId = [];
+      displayedACI = [];
+      List<DateTime> mergedList = [...dateTimeList, ...nextdateTimeList];
+      int selectedIndex = mergedList.indexOf(selectedDate);
+      int endIndex = selectedIndex + 5;
+      setState(() {
+        if (endIndex > mergedList.length) {
+          endIndex = mergedList.length;
+        }
+        upcomingDateList = mergedList.sublist(selectedIndex, endIndex);
+        for (int i = selectedIndex; i < endIndex; i++) {
+          displayedACI.add(listACI[i]);
+        }
+        availabiltyCandarId = displayedACI;
+      });
+
+      print("Merged next Date List: $upcomingDateList");
+      print("Availability Calendar IDs next: $availabiltyCandarId");
+    } else if (isNextWeekArrow) {
+      print('NextweekslotArrow');
+      upcomingDateList = [];
+      availabiltyCandarId = [];
+      displayedACI = [];
+      List<DateTime> mergedList = [...dateTimeList, ...nextdateTimeList];
+      int selectedIndex = mergedList.indexOf(selectedDate);
+      int endIndex = selectedIndex + 5;
+      setState(() {
+        if (endIndex > mergedList.length) {
+          endIndex = mergedList.length;
+        }
+        upcomingDateList = mergedList.sublist(selectedIndex, endIndex);
+        for (int i = selectedIndex; i < endIndex; i++) {
+          displayedACI.add(listACI[i]);
+        }
+        availabiltyCandarId = displayedACI;
+      });
+
+      print("Merged next arrow Date List: $upcomingDateList");
+      print("Availability Calendar IDs next arrow: $availabiltyCandarId");
+    } else {
+      setState(() {
+        upcomingDates = nextdateTimeList;
+        originalDateList = dateTimeList;
+        List<String> listACI =
+            widget.ACI.map((item) => item.toString()).toList();
+        availabiltyCandarId = listACI;
+        upcomingDateList = dateTimeList;
+      });
     }
   }
 
@@ -520,10 +620,13 @@ class RescheduleResultState extends State<RescheduleResult> {
           title: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                'bookAnAppointment'.tr,
-                style: const TextStyle(
-                    color: appbar, fontFamily: 'Impact', fontSize: 16),
+              Padding(
+                padding: const EdgeInsets.only(left: 40.0),
+                child: Text(
+                  'rescheduleAppointment'.tr,
+                  style: const TextStyle(
+                      color: appbar, fontFamily: 'Impact', fontSize: 16),
+                ),
               ),
             ],
           ),
@@ -568,17 +671,22 @@ class RescheduleResultState extends State<RescheduleResult> {
                     children: [
                       IconButton(
                         onPressed: () {
-                          _pageController.previousPage(
-                            duration: const Duration(milliseconds: 300),
-                            curve: Curves.easeInOut,
-                          );
+                          //   _pageController.previousPage(
+                          //     duration: const Duration(milliseconds: 300),
+                          //     curve: Curves.easeInOut,
+                          //   );
+                          setState(() {
+                            isNextWeekArrow = true;
+                            upcomingDateList = originalDateList;
+                            fetchDateList(originalDateList[0]);
+                          });
                         },
                         icon: const Icon(Icons.arrow_back_ios_rounded),
                         color: primaryColor,
                         iconSize: 11,
                       ),
-                      const Text(
-                        "Next Week",
+                      Text(
+                        "nextWeek".tr,
                         style: TextStyle(
                             color: primaryColor,
                             fontSize: 11,
@@ -586,10 +694,15 @@ class RescheduleResultState extends State<RescheduleResult> {
                       ),
                       IconButton(
                         onPressed: () {
-                          _pageController.nextPage(
-                            duration: const Duration(milliseconds: 300),
-                            curve: Curves.easeInOut,
-                          );
+                          // _pageController.nextPage(
+                          //   duration: const Duration(milliseconds: 300),
+                          //   curve: Curves.easeInOut,
+                          // );
+                          setState(() {
+                            isNextWeekArrow = true;
+                            upcomingDateList = upcomingDates;
+                            fetchDateList(upcomingDateList[0]);
+                          });
                         },
                         icon: const Icon(Icons.arrow_forward_ios_rounded),
                         color: primaryColor,
@@ -626,6 +739,9 @@ class RescheduleResultState extends State<RescheduleResult> {
                       )
                     ],
                   ),
+                  SizedBox(
+                    height: 10,
+                  ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -633,64 +749,77 @@ class RescheduleResultState extends State<RescheduleResult> {
                         width: MediaQuery.of(context).size.width *
                             0.9, // or a fixed width
                         height: 40, // or any fixed height
-                        child: LayoutBuilder(
-                          builder: (context, constraints) {
-                            return PageView.builder(
-                              controller: _pageController,
-                              itemCount: upcomingDates.length,
-                              itemBuilder: (context, index) {
-                                return Center(
-                                  child: Container(
-                                    width:
-                                        MediaQuery.of(context).size.width * 0.9,
-                                    // width: constraints
-                                    //     .maxWidth, // or any desired width
-                                    // height: constraints
-                                    //     .maxHeight, // or any desired height
-                                    margin: const EdgeInsets.all(8),
-                                    child: Center(
-                                        child: ElevatedButton(
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: Colors
-                                            .white, // Background color of the button
-                                        side: BorderSide(
-                                            color:
-                                                Colors.black), // Border color
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(
-                                              0.0), // Set the border radius
+                        child: Scrollbar(
+                          thumbVisibility: true,
+                          child: SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: Padding(
+                                padding: const EdgeInsets.only(bottom:8.0),
+                                child: Container(
+                                  height: 130,
+                                  width: 550,
+                                  child: ListView.builder(
+                                    scrollDirection: Axis.horizontal,
+                                    
+                                    itemCount: upcomingDates.length,
+                                    itemBuilder: (context, index) {
+                                      return Center(
+                                        child: Center(
+                                          child: Row(
+                                            children: [
+                                              ElevatedButton(
+                                                style: ElevatedButton.styleFrom(
+                                                  backgroundColor: Colors.white,
+                                                  side: BorderSide(
+                                                    color: const Color.fromARGB(
+                                                        255, 201, 201, 201),
+                                                  ),
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            0.0),
+                                                  ),
+                                                  padding: EdgeInsets.fromLTRB(
+                                                      30, 0, 30, 0),
+                                                ),
+                                                onPressed: () {
+                                                  setState(() {
+                                                    isNextWeek = true;
+                                                    fetchDateList(
+                                                        upcomingDates[index]);
+                                                  });
+                                                },
+                                                child: Text(
+                                                  '${DateFormat('dd/MM/yyyy').format(upcomingDates[index])}',
+                                                  style: const TextStyle(
+                                                      fontSize: 12,
+                                                      color: Colors.black),
+                                                ),
+                                              ),
+                                              SizedBox(
+                                                width: 10,
+                                              )
+                                            ],
+                                          ),
                                         ),
-                                        padding: EdgeInsets.all(
-                                            4.0), // Set the content padding
-                                      ),
-                                      onPressed: () {
-                                        isNextWeek = true;
-                                        fetchDateList(upcomingDates[index]);
-                                      },
-                                      child: Text(
-                                        '${DateFormat('dd/MM/yyyy').format(upcomingDates[index])}',
-                                        style: const TextStyle(
-                                            fontSize: 11, color: Colors.black),
-                                      ),
-                                    )),
+                                      );
+                                    },
                                   ),
-                                );
-                              },
-                            );
-                          },
+                                ),
+                              )),
                         ),
-                      )
+                      ),
                     ],
                   ),
                   const SizedBox(
                     height: 50,
                   ),
-                  const Row(
+                  Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Center(
                         child: Text(
-                          "Swipe right to see more slots",
+                          "swipeRightToViewMoreSlots".tr,
                           style: TextStyle(
                               color: primaryColor,
                               fontSize: 11,
@@ -724,107 +853,6 @@ class RescheduleResultState extends State<RescheduleResult> {
                           ),
                         ],
                       ),
-                      // const SizedBox(width: 16.0),
-                      // pickedDate().toString() == "null"
-                      //     ?
-                      // Container(
-                      //   height: 200,
-                      //   width: MediaQuery.of(context).size.width * 0.75,
-                      //   child: LayoutBuilder(builder: (context, constraints) {
-                      //     return PageView.builder(
-                      //         controller: _pageController,
-                      //         itemCount: upcomingDateList.length,
-                      //         itemBuilder: (context, index) {
-                      //           return Column(
-                      //             children: [
-                      //               Text(
-                      //                 '${DateFormat('EEEE').format(upcomingDateList[index])},',
-                      //                 style: const TextStyle(fontSize: 14),
-                      //               ),
-                      //               Container(
-                      //                 // width: constraints
-                      //                 //     .maxWidth, // or any desired width
-                      //                 // height: constraints
-                      //                 //     .maxHeight, // or any desired height
-                      //                 margin: const EdgeInsets.all(8),
-                      //                 child: Center(
-                      //                   child: Text(
-                      //                     '${upcomingDateList[index].day}/${upcomingDateList[index].month}/${upcomingDateList[index].year}',
-                      //                     style: const TextStyle(fontSize: 14),
-                      //                   ),
-                      //                 ),
-                      //               ),
-                      //               const SizedBox(height: 8.0),
-                      //               ElevatedButton(
-                      //                 style: ElevatedButton.styleFrom(
-                      //                   shape: const RoundedRectangleBorder(
-                      //                     borderRadius: BorderRadius.only(
-                      //                       bottomLeft: Radius.circular(0.0),
-                      //                     ),
-                      //                   ),
-                      //                   backgroundColor:
-                      //                       selectedIndices.contains(index)
-                      //                           ? primaryColor
-                      //                           : Colors.white,
-                      //                   side: const BorderSide(
-                      //                       color: primaryColor),
-                      //                   elevation: 0,
-                      //                 ),
-                      //                 onPressed: () async {
-                      //                   if (selectedDates.length == 1) {
-                      //                     selectedDates[0] = datesOnly[index];
-                      //                   } else {
-                      //                     selectedDates.add(datesOnly[index]);
-                      //                   }
-
-                      //                   SharedPreferences pref =
-                      //                       await SharedPreferences
-                      //                           .getInstance();
-                      //                   pref.setString("selectedData",
-                      //                       selectedDates.toString());
-                      //                   String prefval = pref
-                      //                       .getString("selectedDate")
-                      //                       .toString();
-
-                      //                   setState(() {
-                      //                     // Reset the color of the last selected button
-                      //                     if (lastSelectedIndex != -1) {
-                      //                       selectedIndices
-                      //                           .remove(lastSelectedIndex);
-                      //                     }
-
-                      //                     // Update the color of the current button
-                      //                     if (selectedIndices.contains(index)) {
-                      //                       selectedIndices.remove(index);
-                      //                     } else {
-                      //                       selectedIndices.add(index);
-                      //                     }
-
-                      //                     // Update the last selected index
-                      //                     lastSelectedIndex = index;
-                      //                   });
-
-                      //                   // Print the selected date
-                      //                   print(
-                      //                       'Selected Date: ${datesOnly[index]}');
-                      //                 },
-                      //                 child: selectedIndices.contains(index)
-                      //                     ? Text(
-                      //                         'available'.tr,
-                      //                         style: const TextStyle(
-                      //                             color: textcolor),
-                      //                       )
-                      //                     : Text(
-                      //                         'available'.tr,
-                      //                         style: const TextStyle(
-                      //                             color: primaryColor),
-                      //                       ),
-                      //               )
-                      //             ],
-                      //           );
-                      //         });
-                      //   }),
-                      // ),
                       const SizedBox(
                         width: 30,
                       ),
@@ -992,32 +1020,32 @@ class RescheduleResultState extends State<RescheduleResult> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         // SizedBox(width:50),
+                        // SizedBox(
+                        //   width: 150,
+                        //   child: ElevatedButton(
+                        //     style: ElevatedButton.styleFrom(
+                        //       shape: const RoundedRectangleBorder(
+                        //         borderRadius: BorderRadius.only(
+                        //           bottomLeft: Radius.circular(20.0),
+                        //         ),
+                        //       ),
+                        //       backgroundColor: Colors.white,
+                        //       side: const BorderSide(color: Colors.deepPurple),
+                        //       elevation: 0,
+                        //     ),
+                        //     onPressed: () {
+                        //       // Handle button press
+                        //       Navigator.pop(context);
+                        //     },
+                        //     child: Text(
+                        //       'cancelButton'.tr,
+                        //       style: const TextStyle(color: Colors.deepPurple),
+                        //     ),
+                        //   ),
+                        // ),
+                        // const SizedBox(width: 20),
                         SizedBox(
-                          width: 150,
-                          child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              shape: const RoundedRectangleBorder(
-                                borderRadius: BorderRadius.only(
-                                  bottomLeft: Radius.circular(20.0),
-                                ),
-                              ),
-                              backgroundColor: Colors.white,
-                              side: const BorderSide(color: Colors.deepPurple),
-                              elevation: 0,
-                            ),
-                            onPressed: () {
-                              // Handle button press
-                              Navigator.pop(context);
-                            },
-                            child: Text(
-                              'cancelButton'.tr,
-                              style: const TextStyle(color: Colors.deepPurple),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 20),
-                        SizedBox(
-                          width: 150,
+                          // width: 150,
                           child: ElevatedButton(
                             style: ElevatedButton.styleFrom(
                               shape: const RoundedRectangleBorder(
@@ -1073,6 +1101,7 @@ class RescheduleResultState extends State<RescheduleResult> {
                                           TextButton(
                                             onPressed: () async {
                                               confirmAppointment(context);
+                                              Navigator.pop(context);
                                             },
                                             child: Text(
                                               'confirm'.tr,
@@ -1088,7 +1117,7 @@ class RescheduleResultState extends State<RescheduleResult> {
                               );
                             },
                             child: Text(
-                              'reschedule'.tr,
+                              'rescheduleNow'.tr,
                               style: TextStyle(color: textcolor),
                             ),
                           ),
