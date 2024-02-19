@@ -991,77 +991,86 @@ class UpcomingState extends State<Upcoming> {
                                             //     appTypeId,
                                             //     vTypeId,
                                             //     studyId);
-                                            showDialog(
-                                              context: context,
-                                              builder: (BuildContext context) {
-                                                return AlertDialog(
-                                                  backgroundColor: Colors.white,
-                                                  shape:
-                                                      const RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.only(
-                                                      bottomLeft: Radius.circular(
-                                                          50.0), // Adjust the radius as needed
-                                                    ),
-                                                  ),
-                                                  content: Padding(
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                            top: 12.0),
-                                                    child: Text(
-                                                      'rescheduleAppoint'.tr,
-                                                      style: const TextStyle(
-                                                          color: Color.fromARGB(
-                                                              255, 74, 74, 74)),
-                                                    ),
-                                                  ),
-                                                  actions: <Widget>[
-                                                    TextButton(
-                                                      onPressed: () async {
-                                                        appointment["showRescheduleBtn"] ==
-                                                                true
-                                                            ? appointment[
-                                                                        "AppoinmenttypName"] ==
-                                                                    "Result"
-                                                                ? GetResultRescheduleAppointment(
-                                                                    context,
-                                                                    studyId,
-                                                                    vTypeId,
-                                                                    Vtype,
-                                                                    appId,
-                                                                    appDate)
-                                                                : GetRescheduleAppointment(
-                                                                    context,
-                                                                    studyId,
-                                                                    vTypeId,
-                                                                    Vtype,
-                                                                    appId,
-                                                                    appDate)
-                                                            : showDialog(
-                                                                context:
-                                                                    context,
-                                                                builder:
-                                                                    (BuildContext
-                                                                        context) {
-                                                                  return ErrorPopup(
-                                                                      errorMessage:
-                                                                          appointment[
-                                                                              "ResultExpiredMSG"]);
-                                                                },
-                                                              );
-                                                        // Navigator.pop(context);
-                                                      },
-                                                      child: Text(
-                                                        'ok'.tr,
-                                                        style: TextStyle(
-                                                            color:
-                                                                secondaryColor),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                );
-                                              },
-                                            );
+                                            appointment["showRescheduleBtn"] ==
+                                                    true
+                                                ? showDialog(
+                                                    context: context,
+                                                    builder:
+                                                        (BuildContext context) {
+                                                      return AlertDialog(
+                                                        backgroundColor:
+                                                            Colors.white,
+                                                        shape:
+                                                            const RoundedRectangleBorder(
+                                                          borderRadius:
+                                                              BorderRadius.only(
+                                                            bottomLeft:
+                                                                Radius.circular(
+                                                                    50.0), // Adjust the radius as needed
+                                                          ),
+                                                        ),
+                                                        content: Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .only(
+                                                                  top: 12.0),
+                                                          child: Text(
+                                                            'rescheduleAppoint'
+                                                                .tr,
+                                                            style: const TextStyle(
+                                                                color: Color
+                                                                    .fromARGB(
+                                                                        255,
+                                                                        74,
+                                                                        74,
+                                                                        74)),
+                                                          ),
+                                                        ),
+                                                        actions: <Widget>[
+                                                          TextButton(
+                                                            onPressed:
+                                                                () async {
+                                                              appointment["AppoinmenttypName"] ==
+                                                                      "Result"
+                                                                  ? GetResultRescheduleAppointment(
+                                                                      context,
+                                                                      studyId,
+                                                                      vTypeId,
+                                                                      Vtype,
+                                                                      appId,
+                                                                      appDate,
+                                                                      appTypeId)
+                                                                  : GetRescheduleAppointment(
+                                                                      context,
+                                                                      studyId,
+                                                                      vTypeId,
+                                                                      Vtype,
+                                                                      appId,
+                                                                      appDate,
+                                                                      appTypeId);
+
+                                                              // Navigator.pop(context);
+                                                            },
+                                                            child: Text(
+                                                              'ok'.tr,
+                                                              style: TextStyle(
+                                                                  color:
+                                                                      secondaryColor),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      );
+                                                    },
+                                                  )
+                                                : showDialog(
+                                                    context: context,
+                                                    builder:
+                                                        (BuildContext context) {
+                                                      return ErrorPopup(
+                                                          errorMessage: appointment[
+                                                              "ResultExpiredMSG"]);
+                                                    },
+                                                  );
                                             // appointment["AppoinmenttypName"] ==
                                             //         "Result"
                                             //     ? GetResultRescheduleAppointment(

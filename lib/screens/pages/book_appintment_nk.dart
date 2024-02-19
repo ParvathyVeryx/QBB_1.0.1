@@ -234,15 +234,15 @@ class BookAppointmentsState extends State<BookAppointments> {
             bottomNavigationBar: CustomTab(tabId: 2),
             body: Container(
               height: MediaQuery.of(context).size.height,
-                    decoration: const BoxDecoration(
-                      image: DecorationImage(
-                        image: AssetImage('assets/images/bg.png'),
-                        alignment: Alignment
-                            .bottomCenter, // Align the image to the bottom center
-                        fit: BoxFit
-                            .contain, // Adjust to your needs (e.g., BoxFit.fill, BoxFit.fitHeight)
-                      ),
-                    ),
+              decoration: const BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage('assets/images/bg.png'),
+                  alignment: Alignment
+                      .bottomCenter, // Align the image to the bottom center
+                  fit: BoxFit
+                      .contain, // Adjust to your needs (e.g., BoxFit.fill, BoxFit.fitHeight)
+                ),
+              ),
               child: TabBarView(
                 children: [
                   Column(
@@ -279,11 +279,13 @@ class BookAppointmentsState extends State<BookAppointments> {
                                           value: 'Select studies',
                                           child: Text(
                                             'selectStudies'.tr,
-                                            style: TextStyle(color: Colors.black),
+                                            style:
+                                                TextStyle(color: Colors.black),
                                           ),
                                         ),
                                         ...studyNames.map(
-                                          (studyName) => DropdownMenuItem<String>(
+                                          (studyName) =>
+                                              DropdownMenuItem<String>(
                                             value: studyName,
                                             child: Text(studyName),
                                           ),
@@ -298,6 +300,8 @@ class BookAppointmentsState extends State<BookAppointments> {
                                               studyNames.indexOf(value);
                                           selectedStudyId =
                                               studyIds[selectedStudyIndex];
+                                          secondSelectedValue =
+                                              "Select visit type";
                                           fetchVisitTypes(selectedStudyId!);
                                         });
                                       },
@@ -356,7 +360,7 @@ class BookAppointmentsState extends State<BookAppointments> {
                                   setState(() {
                                     secondSelectedValue = value!;
                                   });
-              
+
                                   if (value != 'Select visit type') {
                                     int selectedVisitTypeIndex =
                                         visitTypeNames.indexOf(value!);
@@ -393,8 +397,8 @@ class BookAppointmentsState extends State<BookAppointments> {
                                     ),
                                   ),
                                   backgroundColor: Colors.white,
-                                  side:
-                                      const BorderSide(color: Colors.deepPurple),
+                                  side: const BorderSide(
+                                      color: Colors.deepPurple),
                                   elevation: 0,
                                 ),
                                 onPressed: () {

@@ -142,7 +142,9 @@ Future<void> bookAppointmentApiCall(
           builder: (context) => BookAppScreen(
               dateList: decodedDate,
               nextAvailableDates: decodedAvailableDates,
-              ACI: availabiltyCandarId),
+              ACI: availabiltyCandarId,
+              studyId: studyId,
+              visitTypeId: visitTypeId),
         ),
       );
     } else {
@@ -174,7 +176,7 @@ Future<void> GetRescheduleAppointment(
     String visitTypeId,
     String visitTypeName,
     String appID,
-    String appointmentDate) async {
+    String appointmentDate, String appTypeID) async {
   final GlobalKey<State> _keyLoader = GlobalKey<State>();
   LoaderWidget _loader = LoaderWidget();
   String? qid = await getQIDFromSharedPreferences();
@@ -277,7 +279,7 @@ Future<void> GetRescheduleAppointment(
                             appDate: appDateFuture,
                             dateList: decodedDate,
                             nextAvailableDates: decodedAvailableDates,
-                            ACI: availabiltyCandarId)),
+                            ACI: availabiltyCandarId, studyId: studyId, appTypeID: appTypeID, visitTypeId: visitTypeId)),
                   );
                 },
                 child: Text(
@@ -337,7 +339,7 @@ Future<void> GetResultRescheduleAppointment(
     String visitTypeId,
     String visitTypeName,
     String appID,
-    String appointmentDate) async {
+    String appointmentDate, String appTypeID) async {
   final GlobalKey<State> _keyLoader = GlobalKey<State>();
   LoaderWidget _loader = LoaderWidget();
   String? qid = await getQIDFromSharedPreferences();
@@ -455,13 +457,16 @@ Future<void> GetResultRescheduleAppointment(
       //   },
       // );
       Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(
-                        builder: (context) => RescheduleResult(
-                            appDate: appDateFuture,
-                            dateList: decodedDate,
-                            nextAvailableDates: decodedAvailableDates,
-                            ACI: availabiltyCandarId)),
-                  );
+        MaterialPageRoute(
+            builder: (context) => RescheduleResult(
+                appDate: appDateFuture,
+                dateList: decodedDate,
+                nextAvailableDates: decodedAvailableDates,
+                ACI: availabiltyCandarId,
+                studyId: studyId,
+                appointmentTypeId: appTypeID,
+                visitTypeId: visitTypeId)),
+      );
 
       // Parse the JSON response
       // BookAppScreenState myWidget = BookAppScreenState();
@@ -705,8 +710,13 @@ Future<void> getResultAppointmentApiCall(
   }
 }
 
-Future<void> getResultsSlot(BuildContext context, String studyId,
-    String visitTypeId, String visitTypeName, String appointmentID) async {
+Future<void> getResultsSlot(
+    BuildContext context,
+    String studyId,
+    String visitTypeId,
+    String visitTypeName,
+    String appointmentID,
+    String appTypeID) async {
   final GlobalKey<State> _keyLoader = GlobalKey<State>();
   LoaderWidget _loader = LoaderWidget();
   String? qid = await getQIDFromSharedPreferences();
@@ -793,6 +803,9 @@ Future<void> getResultsSlot(BuildContext context, String studyId,
             dateList: decodedDate,
             nextAvailableDates: decodedAvailableDates,
             ACI: availabiltyCandarId,
+            studyId: studyId,
+            appTypeID: appTypeID,
+            visitTypeId: visitTypeId
           ),
         ),
       );

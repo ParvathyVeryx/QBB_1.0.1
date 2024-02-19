@@ -1174,10 +1174,14 @@ class BookAppScreen extends StatefulWidget {
   final List<dynamic> dateList;
   final List<dynamic> nextAvailableDates;
   final List<dynamic> ACI;
+  final String studyId;
+  final String visitTypeId;
   const BookAppScreen(
       {required this.dateList,
       required this.nextAvailableDates,
       required this.ACI,
+      required this.studyId,
+      required this.visitTypeId,
       Key? key})
       : super(key: key);
 
@@ -1654,9 +1658,9 @@ class BookAppScreenState extends State<BookAppScreen> {
     // print("Query PArameter" + queryParams.toString());
     Map<String, dynamic> queryParams = {
       "QID": '$qid',
-      "StudyId": studyId,
+      "StudyId": widget.studyId,
       "ShiftCode": "shft",
-      "VisitTypeId": visitTypeId,
+      "VisitTypeId": widget.visitTypeId,
       "PersonGradeId": "4",
       "AvailabilityCalenderId": availabilityCalendarid,
       "language": 'langChange'.tr,
@@ -1785,7 +1789,7 @@ class BookAppScreenState extends State<BookAppScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Padding(
-                padding: const EdgeInsets.only(left: 30.0),
+                padding: const EdgeInsets.only(left: 60.0),
                 child: Text(
                   'bookAnAppointment'.tr,
                   style: const TextStyle(
@@ -2264,7 +2268,7 @@ class BookAppScreenState extends State<BookAppScreen> {
                                           TextButton(
                                             onPressed: () async {
                                               confirmAppointment(context);
-                                              Navigator.pop(context);
+                                              // Navigator.pop(context);
                                             },
                                             child: Text(
                                               'confirm'.tr,

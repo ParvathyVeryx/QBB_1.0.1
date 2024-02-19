@@ -610,6 +610,9 @@ class ResultsState extends State<Results> {
                                                             .toString(),
                                                         appointment[
                                                                 'AppoinmentId']
+                                                            .toString(),
+                                                        appointment[
+                                                                "AppointmentTypeId"]
                                                             .toString());
                                                     // await getResultAppointmentApiCall(
                                                     //     context,

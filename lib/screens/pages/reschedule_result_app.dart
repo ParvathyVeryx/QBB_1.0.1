@@ -20,11 +20,17 @@ class RescheduleResult extends StatefulWidget {
   final List<dynamic> dateList;
   final List<dynamic> nextAvailableDates;
   final List<dynamic> ACI;
+  final String studyId;
+  final String appointmentTypeId;
+  final String visitTypeId;
   const RescheduleResult(
       {required this.appDate,
       required this.dateList,
       required this.nextAvailableDates,
       required this.ACI,
+      required this.studyId,
+      required this.appointmentTypeId,
+      required this.visitTypeId,
       Key? key})
       : super(key: key);
 
@@ -223,6 +229,8 @@ class RescheduleResultState extends State<RescheduleResult> {
   List<String> displayedACI = [];
   bool isNextWeekArrow = false;
   Future<void> fetchDateList(DateTime selectedDate) async {
+    final String dateString = await widget.appDate;
+    DateTime dateTime = DateTime.parse(dateString);
     List<DateTime> dateTimeList = widget.dateList
         .map((dateString) => DateTime.parse(dateString))
         .toList();
@@ -231,17 +239,21 @@ class RescheduleResultState extends State<RescheduleResult> {
         .toList();
     upcomingDates = nextdateTimeList;
     originalDateList = dateTimeList;
+    // originalDateList.remove(dateTime);
     List<String> listACI = widget.ACI.map((item) => item.toString()).toList();
     availabiltyCandarId = listACI;
     upcomingDateList = dateTimeList;
+    // upcomingDateList.remove(dateTime);
     if (ispicked) {
-      upcomingDateList = [];
-      availabiltyCandarId = [];
-      displayedACI = [];
-      List<DateTime> mergedList = [...dateTimeList, ...nextdateTimeList];
-      int selectedIndex = mergedList.indexOf(selectedDate);
-      int endIndex = selectedIndex + 5;
       setState(() {
+        upcomingDateList = [];
+        availabiltyCandarId = [];
+        displayedACI = [];
+        List<DateTime> mergedList = [...dateTimeList, ...nextdateTimeList];
+        // mergedList.remove(dateTime);
+        int selectedIndex = mergedList.indexOf(selectedDate);
+        int endIndex = selectedIndex + 5;
+
         if (endIndex > mergedList.length) {
           endIndex = mergedList.length;
         }
@@ -260,34 +272,43 @@ class RescheduleResultState extends State<RescheduleResult> {
       availabiltyCandarId = [];
       displayedACI = [];
       List<DateTime> mergedList = [...dateTimeList, ...nextdateTimeList];
+      // mergedList.remove(dateTime);
       int selectedIndex = mergedList.indexOf(selectedDate);
       int endIndex = selectedIndex + 5;
-      setState(() {
-        if (endIndex > mergedList.length) {
-          endIndex = mergedList.length;
-        }
-        upcomingDateList = mergedList.sublist(selectedIndex, endIndex);
-        for (int i = selectedIndex; i < endIndex; i++) {
-          displayedACI.add(listACI[i]);
-        }
-        availabiltyCandarId = displayedACI;
-      });
+      print("date2");
+      if (endIndex > mergedList.length) {
+        endIndex = mergedList.length;
+      }
+      print("date3");
+      print(mergedList);
+
+      upcomingDateList = mergedList.sublist(selectedIndex, endIndex);
+
+      for (int i = selectedIndex; i < endIndex; i++) {
+        print(selectedIndex);
+        print(i);
+        displayedACI.add(listACI[i]);
+        print("Add" + displayedACI.toString());
+      }
+      availabiltyCandarId = displayedACI;
 
       print("Merged next Date List: $upcomingDateList");
       print("Availability Calendar IDs next: $availabiltyCandarId");
     } else if (isNextWeekArrow) {
-      print('NextweekslotArrow');
-      upcomingDateList = [];
-      availabiltyCandarId = [];
-      displayedACI = [];
-      List<DateTime> mergedList = [...dateTimeList, ...nextdateTimeList];
-      int selectedIndex = mergedList.indexOf(selectedDate);
-      int endIndex = selectedIndex + 5;
       setState(() {
+        print('NextweekslotArrow');
+        upcomingDateList = [];
+        availabiltyCandarId = [];
+        displayedACI = [];
+        List<DateTime> mergedList = [...dateTimeList, ...nextdateTimeList];
+        int selectedIndex = mergedList.indexOf(selectedDate);
+        int endIndex = selectedIndex + 5;
+
         if (endIndex > mergedList.length) {
           endIndex = mergedList.length;
         }
         upcomingDateList = mergedList.sublist(selectedIndex, endIndex);
+        // upcomingDateList.remove(dateTime);
         for (int i = selectedIndex; i < endIndex; i++) {
           displayedACI.add(listACI[i]);
         }
@@ -487,13 +508,14 @@ class RescheduleResultState extends State<RescheduleResult> {
 
     Map<String, dynamic> queryParams = {
       "QID": '$qid',
-      "StudyId": studyId,
+      "StudyId": widget.studyId,
       "ShiftCode": 'shft',
-      "VisitTypeId": visitTypeId,
+      "VisitTypeId": widget.visitTypeId,
       "AvailabilityCalenderId": availabilityCalendarid,
       "AppoinmentId": appointmentId,
       "language": 'langChange'.tr,
       "AppointmentStatus": "5",
+      "AppointmentTypeId": widget.appointmentTypeId
     };
     print(queryParams);
 
@@ -754,13 +776,12 @@ class RescheduleResultState extends State<RescheduleResult> {
                           child: SingleChildScrollView(
                               scrollDirection: Axis.horizontal,
                               child: Padding(
-                                padding: const EdgeInsets.only(bottom:8.0),
+                                padding: const EdgeInsets.only(bottom: 8.0),
                                 child: Container(
                                   height: 130,
                                   width: 550,
                                   child: ListView.builder(
                                     scrollDirection: Axis.horizontal,
-                                    
                                     itemCount: upcomingDates.length,
                                     itemBuilder: (context, index) {
                                       return Center(
@@ -783,6 +804,8 @@ class RescheduleResultState extends State<RescheduleResult> {
                                                       30, 0, 30, 0),
                                                 ),
                                                 onPressed: () {
+                                                  print(upcomingDates[index]);
+                                                  print(index);
                                                   setState(() {
                                                     isNextWeek = true;
                                                     fetchDateList(
@@ -939,9 +962,10 @@ class RescheduleResultState extends State<RescheduleResult> {
                                                 // print("ACI" +
                                                 //     availabiltyCandarId[index]
                                                 //         .toString());
-                                                fetchAvailabilityCalendar();
+                                                // fetchAvailabilityCalendar();
                                                 getAvailabilityCalendar(
                                                     availabiltyCandarId[index]);
+                                                // fetchDateList(selectedDate);
                                                 if (selectedDates.length == 1) {
                                                   selectedDates[0] =
                                                       datesOnly[index];
@@ -1101,7 +1125,7 @@ class RescheduleResultState extends State<RescheduleResult> {
                                           TextButton(
                                             onPressed: () async {
                                               confirmAppointment(context);
-                                              Navigator.pop(context);
+                                              // Navigator.pop(context);
                                             },
                                             child: Text(
                                               'confirm'.tr,

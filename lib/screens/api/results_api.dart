@@ -8,6 +8,7 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../constants.dart';
 import '../../nirmal_api.dart/profile_api.dart';
 import '../pages/loader.dart';
 
@@ -20,6 +21,7 @@ Future<void> getresults(
   final GlobalKey<State> _keyLoader = GlobalKey<State>();
   LoaderWidget _loader = LoaderWidget();
   String? qid = await getQIDFromSharedPreferences();
+  final TextEditingController _textFieldController = TextEditingController();
 
   int? personGradeId = await getPersonGradeIdFromSharedPreferences();
 
@@ -59,7 +61,6 @@ Future<void> getresults(
 
       const String apiUrl =
           'https://participantportal-test.qatarbiobank.org.qa/QbbAPIS/api/GetOTPForResultDataAPI';
-      getOTPForDownload(context);
 
       // Now, navigate to the AppointmentBookingPage
       // Navigator.push(
@@ -68,6 +69,40 @@ Future<void> getresults(
       //     builder: (context) => const AppointmentBookingPage(),
       //   ),
       // );
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              backgroundColor: Colors.white,
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.only(
+                  bottomLeft:
+                      Radius.circular(50.0), // Adjust the radius as needed
+                ),
+              ),
+              content: Padding(
+                padding: const EdgeInsets.only(top: 12.0),
+                child: TextField(
+                  controller: _textFieldController,
+                  decoration: InputDecoration(hintText: 'pleaseEnterOTPToDownloadTheResult'.tr),
+                ),
+              ),
+              actions: <Widget>[
+                Divider(),
+                TextButton(
+                  onPressed: () async {
+                    String otp = _textFieldController.toString();
+                    await getOTPForDownload(context, appointmentId, otp);
+                    Navigator.pop(context); // Close the dialog
+                  },
+                  child: Text(
+                    'ok'.tr,
+                    style: TextStyle(color: secondaryColor),
+                  ),
+                ),
+              ],
+            );
+          });
     } else {
       Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
       // Handle errors
@@ -92,14 +127,11 @@ Future<void> getresults(
 }
 
 Future<void> getOTPForDownload(
-  BuildContext context,
-) async {
+    BuildContext context, String appointmentId, String otp) async {
   final GlobalKey<State> _keyLoader = GlobalKey<State>();
   LoaderWidget _loader = LoaderWidget();
   // String qid = '';
-  String otp = '';
-  String appointmentId = '';
-  String language = '';
+  String language = 'langChange'.tr;
   String? qid = await getQIDFromSharedPreferences();
 
   int? personGradeId = await getPersonGradeIdFromSharedPreferences();
@@ -133,7 +165,7 @@ Future<void> getOTPForDownload(
 
     if (response.statusCode == 200) {
       // Successful API call
-Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
+      Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
       // Parse the JSON response
       final Map<String, dynamic> jsonResponse = json.decode(response.body);
       // Save the API response in shared preferences
@@ -142,8 +174,8 @@ Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
           'https://participantportal-test.qatarbiobank.org.qa/QbbAPIS/api/GetOTPForResultDataAPI';
     } else {
       // Handle errors
-Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
-    await  showDialog(
+      Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
+      await showDialog(
         context: context,
         builder: (BuildContext context) {
           return ErrorPopup(
@@ -154,7 +186,7 @@ Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
   } catch (error) {
     Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
     // Handle network errors
-  await  showDialog(
+    await showDialog(
       context: context,
       builder: (BuildContext context) {
         return ErrorPopup(errorMessage: 'Network Error');

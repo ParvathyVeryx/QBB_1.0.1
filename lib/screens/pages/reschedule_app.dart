@@ -20,11 +20,17 @@ class RescheduleApp extends StatefulWidget {
   final List<dynamic> dateList;
   final List<dynamic> nextAvailableDates;
   final List<dynamic> ACI;
+  final String studyId;
+  final String appTypeID;
+  final String visitTypeId;
   const RescheduleApp(
       {required this.appDate,
       required this.dateList,
       required this.nextAvailableDates,
       required this.ACI,
+      required this.studyId,
+      required this.appTypeID,
+      required this.visitTypeId,
       Key? key})
       : super(key: key);
 
@@ -585,13 +591,14 @@ class RescheduleAppState extends State<RescheduleApp> {
 
     Map<String, dynamic> queryParams = {
       "QID": '$qid',
-      "StudyId": studyId,
+      "StudyId": widget.studyId,
       "ShiftCode": 'shft',
-      "VisitTypeId": visitTypeId,
+      "VisitTypeId": widget.visitTypeId,
       "AvailabilityCalenderId": availabilityCalendarid,
       "AppoinmentId": appointmentId,
       "language": 'langChange'.tr,
       "AppointmentStatus": "2",
+      "AppointmentTypeId" : widget.appTypeID
     };
     print(queryParams);
 
@@ -1206,7 +1213,7 @@ class RescheduleAppState extends State<RescheduleApp> {
                                           TextButton(
                                             onPressed: () async {
                                               confirmAppointment(context);
-                                              Navigator.pop(context);
+                                              // Navigator.pop(context);
                                             },
                                             child: Text(
                                               'confirm'.tr,
