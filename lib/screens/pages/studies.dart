@@ -1,5 +1,6 @@
 import 'package:QBB/customNavBar.dart';
 import 'package:QBB/providers/studymodel.dart';
+import 'package:QBB/screens/pages/boo_appointment_studies.dart';
 import 'package:QBB/screens/pages/loader.dart';
 import 'package:flutter/material.dart';
 import 'package:QBB/constants.dart';
@@ -9,12 +10,14 @@ import 'package:QBB/screens/pages/notification.dart';
 import 'package:QBB/sidebar.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../localestring.dart';
 import 'appointments.dart';
 import 'homescreen_nk.dart';
 import 'profile.dart';
 import 'results.dart';
+import 'studies_appiontment.dart';
 
 class Studies extends StatefulWidget {
   const Studies({Key? key}) : super(key: key);
@@ -206,21 +209,47 @@ class StudiesState extends State<Studies> {
                                 ),
                                 const SizedBox(height: 20.0),
                                 ElevatedButton(
-                                  onPressed: () {
+                                  onPressed: () async {
+                                    SharedPreferences pref =
+                                        await SharedPreferences.getInstance();
+                                    String gender =
+                                        pref.getString("userGender").toString();
+                                    String maritalId = pref
+                                        .getString("userMaritalStatus")
+                                        .toString();
+                                    print(gender + maritalId);
                                     // Fetch the "Id" from the study JSON
                                     int? studyId = study
                                         .Id; // Replace "id" with the actual getter in your Study class
-
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => BookAppointments(
-                                          studyName: study
-                                              .studyName, // Pass the study name as an argument
-                                          studyId: studyId,
+                                    if (gender.contains("emale") &&
+                                        maritalId != "Single") {
+                                      print("Female");
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              StuidesAppointment(
+                                            studyName: study
+                                                .studyName, // Pass the study name as an argument
+                                            studyId: studyId,
+                                          ),
                                         ),
-                                      ),
-                                    );
+                                      );
+                                    } else {
+                                      print("Male");
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              BookAppointmentStudies(
+                                            studyName: study
+                                                .studyName, // Pass the study name as an argument
+                                            studyId: studyId,
+                                            isPreg: false,
+                                          ),
+                                        ),
+                                      );
+                                    }
                                   },
                                   style: ButtonStyle(
                                     backgroundColor:

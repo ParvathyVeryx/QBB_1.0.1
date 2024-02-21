@@ -83,10 +83,11 @@ class RegisterUserState extends State<RegisterUser> {
   // ];
   List<Map<String, dynamic>> sourceItems = [];
   List<Map<String, dynamic>> sourceItemOther = [
-    {'Id': 100, 'Name': 'Other', 'IscampaignEnabled': 'False'}
+    {'Id': 1950, 'Name': 'other'.tr, 'IscampaignEnabled': 'False'}
   ];
   List<Map<String, dynamic>> campaignItems = [];
   List<Map<String, dynamic>> campaignItemsOther = [];
+  List<Map<String, dynamic>> years = [];
   String? _qidError;
   int? maritalId; // Added maritalId to store the mapped value
   var gender;
@@ -98,12 +99,14 @@ class RegisterUserState extends State<RegisterUser> {
   String? storedToken;
   bool _qidExists = false;
   int? _sourceController;
+  int? livingperiodId;
   int? _campaignController;
   String? _selectedLivingPeriod;
   String? nullValue;
   int? updatedNationalityId;
   String errorText = '';
   String? campaignList;
+  String? campainValue;
 
   Future<List<Map<String, dynamic>>> fetchSource() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
@@ -156,12 +159,62 @@ class RegisterUserState extends State<RegisterUser> {
     }
   }
 
+  Future<List<Map<String, dynamic>>> fetchYear() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    var lang = 'langChange'.tr;
+    // String qid = pref.getString("userQID").toString();
+
+    try {
+      // Get the token from shared preferences
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String token = prefs.getString('token') ??
+          ''; // Replace 'auth_token' with your actual key
+
+      // Check if the token is available
+      if (token.isEmpty) {
+        return [];
+      }
+
+      // Construct the request URL
+      String apiUrl =
+          'https://participantportal-test.qatarbiobank.org.qa/QbbAPIS/api/LivingPeriodAPI?id=1&language=$lang';
+
+      // Make the GET request with the token in the headers
+      var response = await http.get(
+        Uri.parse(apiUrl),
+        headers: {
+          'Authorization': 'Bearer ${token.replaceAll('"', '')}',
+        },
+      );
+
+      print(response.body);
+
+      // Check if the request was successful (status code 200)
+      if (response.statusCode == 200) {
+        // Parse and handle the response body
+        var responseBody = json.decode(response.body);
+        setState(() {
+          years = List<Map<String, dynamic>>.from(responseBody);
+        });
+
+        print("Years" + years.toString());
+        return years;
+      } else {
+        // Handle errors
+
+        return []; // Return an empty list in case of an error
+      }
+    } catch (e, stackTrace) {
+      return []; // Return an empty list in case of an exception
+    }
+  }
+
   Future<List<Map<String, dynamic>>> fetchCampaignList(id) async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     var lang = 'langChange'.tr;
     String qid = pref.getString("userQID").toString();
     campaignItemsOther = [
-      {'Id': 101, 'StudySourceId': id, 'Name': 'Other'}
+      {'Id': 101, 'StudySourceId': id, 'Name': 'other'.tr}
     ];
     try {
       // Get the token from shared preferences
@@ -216,10 +269,20 @@ class RegisterUserState extends State<RegisterUser> {
     // Call a function to retrieve the token from shared preferences
     _retrieveToken();
     _qidController.addListener(_validateInput);
+    // _firstNameController.addListener(_validateInput);
+    // _lastNameController.addListener(_validateInput);
+    // _middleNameController.addListener(_validateInput);
     fetchSource();
     fetchCampaignList(id);
+    fetchYear();
   }
 
+  bool isAlphabetic(String value) {
+    final RegExp alphabeticRegExp = RegExp(r'^[a-zA-Z]+$');
+    return alphabeticRegExp.hasMatch(value);
+  }
+
+  String errorTextName = '';
   void _validateInput() {
     setState(() {
       if (_qidController.text.isEmpty) {
@@ -230,6 +293,17 @@ class RegisterUserState extends State<RegisterUser> {
         errorText = '';
       }
     });
+    // setState(() {
+    //   if (!isAlphabetic(_firstNameController.text)) {
+    //     errorTextName = 'enterValidName'.tr;
+    //   }
+    //   if (!isAlphabetic(_lastNameController.text)) {
+    //     errorTextName = 'enterValidName'.tr;
+    //   }
+    //   if (!isAlphabetic(_middleNameController.text)) {
+    //     errorTextName = 'enterValidName'.tr;
+    //   }
+    // });
   }
 
   Future<void> _retrieveToken() async {
@@ -365,7 +439,9 @@ class RegisterUserState extends State<RegisterUser> {
                             const Color.fromARGB(255, 173, 173, 173),
                         validator: (value) {
                           if (value!.isEmpty) {
-                            return 'pleaseEnterFName'.tr;
+                            return 'theFirstNameCannotBeEmpty'.tr;
+                          } else if (value.length > 50) {
+                            return 'nameCanContainUpto50Characters'.tr;
                           }
                           return null;
                         },
@@ -379,6 +455,12 @@ class RegisterUserState extends State<RegisterUser> {
                         labelText: 'middleName'.tr,
                         labelTextColor:
                             const Color.fromARGB(255, 173, 173, 173),
+                        validator: (value) {
+                          if (value!.length > 50) {
+                            return 'nameCanContainUpto50Characters'.tr;
+                          }
+                          return null;
+                        },
                         controller:
                             _middleNameController, // Add this line to associate the controller
                       ),
@@ -389,7 +471,9 @@ class RegisterUserState extends State<RegisterUser> {
                           labelText: 'lastName'.tr + '*',
                           validator: (value) {
                             if (value!.isEmpty) {
-                              return 'pleaseEnterLName'.tr;
+                              return 'lastNameCannotBeEmpty'.tr;
+                            } else if (value.length > 50) {
+                              return 'nameCanContainUpto50Characters'.tr;
                             }
                             return null;
                           },
@@ -399,7 +483,7 @@ class RegisterUserState extends State<RegisterUser> {
                       const SizedBox(
                         height: 20.0,
                       ),
-                      _buildRoundedBorderTextFieldNoValidation(
+                      _buildRoundedBorderTextFieldNoValidationHCN(
                           labelText: 'healthCardNo'.tr,
                           labelTextColor:
                               const Color.fromARGB(255, 173, 173, 173),
@@ -407,7 +491,7 @@ class RegisterUserState extends State<RegisterUser> {
                       const SizedBox(
                         height: 20.0,
                       ),
-                      _buildRoundedBorderTextFieldNoValidation(
+                      _buildRoundedBorderTextFieldNoValidationHCN(
                         labelText: 'nationality'.tr,
                         labelTextColor:
                             const Color.fromARGB(255, 173, 173, 173),
@@ -444,10 +528,10 @@ class RegisterUserState extends State<RegisterUser> {
                             gender = value;
                             switch (value) {
                               case 'Male':
-                                genderId = "1";
+                                genderId = "Male";
                                 break;
                               case 'Female':
-                                genderId = "2";
+                                genderId = "Female";
                                 break;
                             }
                             print("Updated genderId: $genderId");
@@ -536,21 +620,25 @@ class RegisterUserState extends State<RegisterUser> {
                             value: _selectedLivingPeriod,
                             onChanged: (value) {
                               setState(() {
-                                // Handle the selected value as needed
                                 _selectedLivingPeriod = value;
+                                // Handle the selected value as needed
+                                int? intValue = years.firstWhere(
+                                    (item) => item['Name'] == value)['Id'];
+
+                                // Pass intValue to the API or use it as needed
+                                livingperiodId = intValue;
+                                // campaignList = sourceItems
+                                //     .firstWhere((item) => item['Name'] == value)["Name"];
+                                print("Source" + livingperiodId.toString());
+                                fetchYear();
                               });
                             },
-                            items: [
-                              for (int i = 1; i <= 14; i++)
-                                DropdownMenuItem<String>(
-                                  value: i.toString(),
-                                  child: Text('$i' + 'years'.tr),
-                                ),
-                              const DropdownMenuItem<String>(
-                                value: '15',
-                                child: Text('15+'),
-                              ),
-                            ],
+                            items: years.map((item) {
+                              return DropdownMenuItem<String>(
+                                value: item["Name"],
+                                child: Text(item['Name']),
+                              );
+                            }).toList(),
                             labelText: '${'duration'.tr}*',
                           ),
                         ],
@@ -571,21 +659,25 @@ class RegisterUserState extends State<RegisterUser> {
                           ),
                           const SizedBox(height: 10.0),
                           _buildDropdownFormField(
-                            value: campaignList,
+                            value: campainValue,
                             onChanged: (value) {
                               setState(() {
+                                campainValue = value;
                                 // Handle the selected value as needed
                                 int? intValue = sourceItems.firstWhere(
                                     (item) => item['Name'] == value)['Id'];
 
                                 // Pass intValue to the API or use it as needed
                                 _sourceController = intValue;
+                                // campaignList = sourceItems
+                                //     .firstWhere((item) => item['Name'] == value)["Name"];
+                                print("Source" + _sourceController.toString());
                                 fetchCampaignList(intValue);
                               });
                             },
                             items: sourceItems.map((item) {
                               return DropdownMenuItem<String>(
-                                value: item['Name'],
+                                value: item["Name"],
                                 child: Text(item['Name']),
                               );
                             }).toList(),
@@ -626,11 +718,14 @@ class RegisterUserState extends State<RegisterUser> {
                               value: campaignList,
                               onChanged: (value) {
                                 setState(() {
+                                  campaignList = value;
                                   // Handle the selected value as needed
                                   int? intValue = campaignItems.firstWhere(
                                       (item) => item['Name'] == value)['Id'];
                                   // Pass intValue to the API or use it as needed
                                   _campaignController = intValue;
+                                  print("Campaign value" +
+                                      _campaignController.toString());
                                 });
                               },
                               items: campaignItems.map((item) {
@@ -676,7 +771,9 @@ class RegisterUserState extends State<RegisterUser> {
                               _healthCardController.clear();
                               nationalityController.clear();
                               _mobileNumberController.clear();
+
                               setState(() {
+                                campainValue = nullValue;
                                 maritalStatus = nullValue;
                                 _selectedLivingPeriod = nullValue;
                                 gender = nullValue;
@@ -718,16 +815,20 @@ class RegisterUserState extends State<RegisterUser> {
                           ),
                           ElevatedButton(
                             onPressed: () async {
+                              SharedPreferences prefs =
+                                  await SharedPreferences.getInstance();
+                              String? token = prefs.getString('token');
                               if (token != null &&
                                   _formKey.currentState!.validate()) {
                                 setState(() {
                                   isLoading =
                                       true; // Set loading to true when button is pressed
                                 });
+                                int? QID = int.parse(_qidController.text);
                                 // Create an instance of Register and populate its fields
                                 Register reg = Register(
                                     // qid: int.tryParse(_qidController.text),
-                                    qid: _qidController.text,
+                                    qid: QID,
                                     firstName: _firstNameController.text,
                                     middleName: _middleNameController.text,
                                     lastName: _lastNameController.text,
@@ -741,10 +842,14 @@ class RegisterUserState extends State<RegisterUser> {
                                     gender: genderId,
                                     maritalId: maritalId,
                                     recoverEmail: _emailController.text,
-                                    livingPeriodId: _selectedLivingPeriod,
-                                    registrationSourceID: _sourceController,
-                                    campain: _campaignController,
+                                    livingPeriodId: livingperiodId.toString(),
+                                    registrationSourceID:
+                                        _sourceController.toString(),
+                                    campain:
+                                        _campaignController.toString() == "null" ? "" : _campaignController.toString(),
+                                    source: otherSource.toString() == "null" ? "" : otherSource.toString(),
                                     isSelfRegistred: widget.isSelf.toString(),
+                                    token: token,
                                     referralPersonFirstName: widget.behalfFname,
                                     referralPersonLastName: widget.behalfLname);
 
@@ -829,6 +934,7 @@ class RegisterUserState extends State<RegisterUser> {
     return TextFormField(
       controller: controller, // Set the controller
       decoration: InputDecoration(
+        errorText: errorTextName,
         contentPadding: const EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 5.0),
         labelText: labelText,
         errorStyle: const TextStyle(
@@ -869,7 +975,7 @@ class RegisterUserState extends State<RegisterUser> {
     );
   }
 
-  Widget _buildRoundedBorderTextFieldNoValidation({
+  Widget _buildRoundedBorderTextFieldNoValidationHCN({
     required String labelText,
     Color? labelTextColor, // Added labelTextColor parameter
     TextEditingController? controller, // Accept the controller parameter
@@ -877,6 +983,108 @@ class RegisterUserState extends State<RegisterUser> {
   }) {
     return TextFormField(
       controller: controller,
+      onChanged: onChanged,
+      decoration: InputDecoration(
+        contentPadding: const EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 5.0),
+        labelText: labelText,
+        errorStyle: const TextStyle(
+          // Add your style properties here
+          color: primaryColor,
+          fontWeight: FontWeight.w600,
+          fontSize: 14.0,
+        ),
+        labelStyle: TextStyle(
+            color: labelTextColor, fontSize: 12), // Set the label text color
+        enabledBorder: const OutlineInputBorder(
+          borderSide: BorderSide(color: Color.fromARGB(255, 173, 173, 173)),
+          borderRadius: BorderRadius.only(
+            bottomLeft: Radius.circular(20.0),
+          ),
+        ),
+        focusedBorder: const OutlineInputBorder(
+          borderSide: BorderSide(color: Color.fromARGB(255, 173, 173, 173)),
+          borderRadius: BorderRadius.only(
+            bottomLeft: Radius.circular(20.0),
+          ),
+        ),
+        errorBorder: const OutlineInputBorder(
+          borderSide: BorderSide(color: Color.fromARGB(255, 173, 173, 173)),
+          borderRadius: BorderRadius.only(
+            bottomLeft: Radius.circular(20.0),
+          ),
+        ),
+        focusedErrorBorder: const OutlineInputBorder(
+          borderSide: BorderSide(color: Color.fromARGB(255, 173, 173, 173)),
+          borderRadius: BorderRadius.only(
+            bottomLeft: Radius.circular(20.0),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildRoundedBorderTextFieldNoValidationNationality({
+    required String labelText,
+    Color? labelTextColor, // Added labelTextColor parameter
+    TextEditingController? controller, // Accept the controller parameter
+    void Function(String)? onChanged, // Accept the onChanged callback
+  }) {
+    return TextFormField(
+      enableInteractiveSelection: false,
+      onTap: () {
+        FocusScope.of(context).requestFocus(new FocusNode());
+      },
+      controller: controller,
+      onChanged: onChanged,
+      decoration: InputDecoration(
+        contentPadding: const EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 5.0),
+        labelText: labelText,
+        errorStyle: const TextStyle(
+          // Add your style properties here
+          color: primaryColor,
+          fontWeight: FontWeight.w600,
+          fontSize: 14.0,
+        ),
+        labelStyle: TextStyle(
+            color: labelTextColor, fontSize: 12), // Set the label text color
+        enabledBorder: const OutlineInputBorder(
+          borderSide: BorderSide(color: Color.fromARGB(255, 173, 173, 173)),
+          borderRadius: BorderRadius.only(
+            bottomLeft: Radius.circular(20.0),
+          ),
+        ),
+        focusedBorder: const OutlineInputBorder(
+          borderSide: BorderSide(color: Color.fromARGB(255, 173, 173, 173)),
+          borderRadius: BorderRadius.only(
+            bottomLeft: Radius.circular(20.0),
+          ),
+        ),
+        errorBorder: const OutlineInputBorder(
+          borderSide: BorderSide(color: Color.fromARGB(255, 173, 173, 173)),
+          borderRadius: BorderRadius.only(
+            bottomLeft: Radius.circular(20.0),
+          ),
+        ),
+        focusedErrorBorder: const OutlineInputBorder(
+          borderSide: BorderSide(color: Color.fromARGB(255, 173, 173, 173)),
+          borderRadius: BorderRadius.only(
+            bottomLeft: Radius.circular(20.0),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildRoundedBorderTextFieldNoValidation({
+    required String labelText,
+    required FormFieldValidator<String> validator,
+    Color? labelTextColor, // Added labelTextColor parameter
+    TextEditingController? controller, // Accept the controller parameter
+    void Function(String)? onChanged, // Accept the onChanged callback
+  }) {
+    return TextFormField(
+      controller: controller,
+      validator: validator,
       onChanged: onChanged,
       decoration: InputDecoration(
         contentPadding: const EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 5.0),

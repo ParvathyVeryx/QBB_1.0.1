@@ -701,42 +701,32 @@ class UpcomingState extends State<Upcoming> {
                                       SizedBox(
                                         width: 150,
                                         child: ElevatedButton(
-                                          style: ElevatedButton.styleFrom(
+                                          style: appointment["showCancelBtn"] ==
+                                                    false ? ElevatedButton.styleFrom(
                                             shape: const RoundedRectangleBorder(
                                               borderRadius: BorderRadius.only(
                                                 bottomLeft:
-                                                    Radius.circular(10.0),
+                                                    Radius.circular(20.0),
                                               ),
                                             ),
                                             backgroundColor: Colors.white,
-                                            side: const BorderSide(
-                                                color: Colors.deepPurple),
+                                            side:
+                                                const BorderSide(color: appbar),
+                                            elevation: 0,
+                                          ) : ElevatedButton.styleFrom(
+                                            shape: const RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.only(
+                                                bottomLeft:
+                                                    Radius.circular(20.0),
+                                              ),
+                                            ),
+                                            backgroundColor: Colors.white.withOpacity(0.5),
+                                            side:
+                                                const BorderSide(color: appbar),
                                             elevation: 0,
                                           ),
                                           onPressed: () async {
-                                            // if (appointment[
-                                            //         'CancelExpiredMSG'] !=
-                                            //     null) {
-                                            //   showDialog(
-                                            //       context: context,
-                                            //       builder:
-                                            //           (BuildContext context) {
-                                            //         return AlertDialog(
-                                            //           title: Text(''),
-                                            //           content: Text(appointment[
-                                            //               'CancelExpiredMSG']),
-                                            //           actions: [
-                                            //             ElevatedButton(
-                                            //               onPressed: () {
-                                            //                 Navigator.pop(
-                                            //                     context); // Close the dialog
-                                            //               },
-                                            //               child: Text('OK'),
-                                            //             ),
-                                            //           ],
-                                            //         );
-                                            //       });
-                                            // } else {
+                                            
                                             appointment["showCancelBtn"] ==
                                                     false
                                                 ? //   showDialog(
@@ -938,8 +928,7 @@ class UpcomingState extends State<Upcoming> {
                                           child: Text(
                                             'cancelButton'.tr,
                                             style: TextStyle(
-                                                color: Colors.deepPurple,
-                                                fontSize: 11),
+                                                color: appbar, fontSize: 11),
                                           ),
                                         ),
                                       ),
@@ -947,14 +936,28 @@ class UpcomingState extends State<Upcoming> {
                                       SizedBox(
                                         width: 150,
                                         child: ElevatedButton(
-                                          style: ElevatedButton.styleFrom(
+                                          
+                                          style: appointment["showRescheduleBtn"] ==
+                                                    true
+                                                ? ElevatedButton.styleFrom(
                                             shape: const RoundedRectangleBorder(
                                               borderRadius: BorderRadius.only(
                                                 bottomLeft:
-                                                    Radius.circular(10.0),
+                                                    Radius.circular(20.0),
                                               ),
                                             ),
                                             backgroundColor: primaryColor,
+                                            // side: const BorderSide(
+                                            //     color: Colors.black),
+                                            elevation: 0,
+                                          ) : ElevatedButton.styleFrom(
+                                            shape: const RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.only(
+                                                bottomLeft:
+                                                    Radius.circular(20.0),
+                                              ),
+                                            ),
+                                            backgroundColor: primaryColor.withOpacity(0.5),
                                             // side: const BorderSide(
                                             //     color: Colors.black),
                                             elevation: 0,

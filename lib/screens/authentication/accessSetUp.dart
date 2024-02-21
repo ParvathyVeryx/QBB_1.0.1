@@ -359,7 +359,7 @@ class AccessUserState extends State<AccessUser> {
     TextInputType? keyboardType, // Added labelTextColor parameter
   }) {
     return TextFormField(
-      keyboardType: TextInputType.number,
+      // keyboardType: TextInputType.number,
       controller: controller,
       decoration: InputDecoration(
         errorStyle: TextStyle(

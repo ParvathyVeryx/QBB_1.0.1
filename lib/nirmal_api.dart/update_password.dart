@@ -41,11 +41,19 @@ Future<Map<String, dynamic>> UpdatePasswordAPI(
       headers: headers,
       body: jsonEncode(requestBody),
     );
-
+    print(response.body);
+    print(requestBody);
     if (response.statusCode == 200) {
       Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
       // If the server returns a 200 OK response, parse the JSON response
       Map<String, dynamic> data = jsonDecode(response.body);
+      await showDialog(
+          context: context, // Use the context of the current screen
+          builder: (BuildContext context) {
+            return ErrorPopup(
+                errorMessage: json.decode(response.body)["Message"]);
+          });
+      print(data);
       return data;
     } else {
       Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
@@ -66,6 +74,6 @@ Future<Map<String, dynamic>> UpdatePasswordAPI(
         builder: (BuildContext context) {
           return ErrorPopup(errorMessage: '$e');
         });
-        return {'success': false, 'error': '$e'};
+    return {'success': false, 'error': '$e'};
   }
 }

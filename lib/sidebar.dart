@@ -164,7 +164,7 @@ class sideMenuclass extends State<SideMenu> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => const BookAppointments()),
+                        builder: (context) => const BookAppointments(isPreg: false,)),
                   );
                   // Handle onTap action
                   // For example, you can navigate to a different screen.
@@ -604,7 +604,7 @@ class SideMenuHomeclass extends State<SideMenuHome> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => const BookAppointments()),
+                        builder: (context) => const BookAppointments(isPreg: false,)),
                   );
                   // Handle onTap action
                   // For example, you can navigate to a different screen.

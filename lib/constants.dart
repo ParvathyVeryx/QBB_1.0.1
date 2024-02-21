@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 const primaryColor = Color(0xFFBD1E85);
 const secondaryColor = Color(0xFF273572);
 const textcolor = Color(0xFFffffff);
+const bgColor = Color(0xFFffffff);
 const appbar = Color(0xFF2368ac);
 const base_url =
     "https://participantportal-test.qatarbiobank.org.qa/QbbAPIS/api";

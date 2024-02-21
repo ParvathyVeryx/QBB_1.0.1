@@ -88,7 +88,7 @@ class RegisterApi {
 class Register {
   int? id;
   String? isQuickRegistration;
-  String? qid;
+  int? qid;
   int? userId;
   String? firstName;
   String? middleName;
@@ -96,7 +96,7 @@ class Register {
   String? gender;
   String? dob;
   String? livingPeriodId;
-  int? registrationSourceID;
+  String? registrationSourceID;
   String? isSelfRegistred;
   int? maritalId;
   String? healthCardNo;
@@ -114,9 +114,9 @@ class Register {
   String? recoverEmail;
   String? recoveryMobile;
   String? token;
-  int? source;
+  String? source;
   String? regError;
-  int? campain;
+  String? campain;
   int? createdBY;
   String? createdOn;
   int? updatedBY;

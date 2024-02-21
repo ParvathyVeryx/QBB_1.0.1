@@ -19,19 +19,20 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
-class BookAppointments extends StatefulWidget {
+class BookAppointmentStudies extends StatefulWidget {
   final String? studyName;
   final int? studyId;
   final bool? isPreg;
 
-  const BookAppointments({Key? key, this.studyName, this.studyId, this.isPreg})
+  const BookAppointmentStudies(
+      {Key? key, this.studyName, this.studyId, this.isPreg})
       : super(key: key);
 
   @override
-  BookAppointmentsState createState() => BookAppointmentsState();
+  BookAppointmentStudiesState createState() => BookAppointmentStudiesState();
 }
 
-class BookAppointmentsState extends State<BookAppointments> {
+class BookAppointmentStudiesState extends State<BookAppointmentStudies> {
   String selectedValue = 'selectStudies'.tr;
   String secondSelectedValue = 'Select visit type';
   bool showSecondDropdown = false;
@@ -47,7 +48,7 @@ class BookAppointmentsState extends State<BookAppointments> {
   final screens = [
     const HomeScreen(),
     const Appointments(),
-    const BookAppointments(),
+    const BookAppointmentStudies(),
     const Results(),
     const Profile(),
   ];
@@ -58,30 +59,28 @@ class BookAppointmentsState extends State<BookAppointments> {
     // Start fetching study names
     fetchStudyMasterAPI().then((_) {
       // Set the selectedValue based on the provided studyName
-      // if (widget.studyName != null && studyNames.contains(widget.studyName!)) {
-      //   int selectedStudyIndex = studyNames.indexOf(widget.studyName!);
-      //   if (selectedStudyIndex != -1) {
-      //     setState(() {
-      //       selectedValue = widget.studyName!;
-      //       selectedStudyId = widget.studyId;
-      //       showSecondDropdown = true;
-      //     });
-      //     fetchVisitTypes(selectedStudyId!);
-      //   }
-      // } else {
+      if (widget.studyName != null && studyNames.contains(widget.studyName!)) {
+        int selectedStudyIndex = studyNames.indexOf(widget.studyName!);
+        if (selectedStudyIndex != -1) {
+          setState(() {
+            selectedValue = widget.studyName!;
+            selectedStudyId = widget.studyId;
+            showSecondDropdown = true;
+          });
+          fetchVisitTypes(selectedStudyId!);
+        }
+      } else {
         // If studyName is not provided, select the first study in the list
-        // setState(() {
-        //   selectedValue =
-        //       studyNames.isNotEmpty ? studyNames.first : 'Select studies';
-        //   selectedStudyId = studyIds.isNotEmpty ? studyIds.first : null;
-        //   showSecondDropdown = studyNames.isNotEmpty;
-        // });
-        // if (studyIds.isNotEmpty) {
-        //   fetchVisitTypes(selectedStudyId!);
-        // }
-      // }
-      selectedStudyId = studyIds.isNotEmpty ? studyIds.first : null;
-      fetchVisitTypes(selectedStudyId!);
+        setState(() {
+          selectedValue =
+              studyNames.isNotEmpty ? studyNames.first : 'Select studies';
+          selectedStudyId = studyIds.isNotEmpty ? studyIds.first : null;
+          showSecondDropdown = studyNames.isNotEmpty;
+        });
+        if (studyIds.isNotEmpty) {
+          fetchVisitTypes(selectedStudyId!);
+        }
+      }
     });
   }
 

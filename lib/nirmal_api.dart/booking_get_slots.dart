@@ -176,7 +176,8 @@ Future<void> GetRescheduleAppointment(
     String visitTypeId,
     String visitTypeName,
     String appID,
-    String appointmentDate, String appTypeID) async {
+    String appointmentDate,
+    String appTypeID) async {
   final GlobalKey<State> _keyLoader = GlobalKey<State>();
   LoaderWidget _loader = LoaderWidget();
   String? qid = await getQIDFromSharedPreferences();
@@ -251,45 +252,17 @@ Future<void> GetRescheduleAppointment(
       List<dynamic> decodedAvailableDates = jsonDecode(nextAvailableDates);
       print("List");
       print(decodedDate);
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            backgroundColor: Colors.white,
-            shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.only(
-                bottomLeft:
-                    Radius.circular(50.0), // Adjust the radius as needed
-              ),
-            ),
-            content: Padding(
-              padding: const EdgeInsets.only(top: 12.0),
-              child: Text(
-                'rescheduleAppoint'.tr,
-                style: const TextStyle(color: Color.fromARGB(255, 74, 74, 74)),
-              ),
-            ),
-            actions: <Widget>[
-              Divider(),
-              TextButton(
-                onPressed: () async {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                        builder: (context) => RescheduleApp(
-                            appDate: appDateFuture,
-                            dateList: decodedDate,
-                            nextAvailableDates: decodedAvailableDates,
-                            ACI: availabiltyCandarId, studyId: studyId, appTypeID: appTypeID, visitTypeId: visitTypeId)),
-                  );
-                },
-                child: Text(
-                  'ok'.tr,
-                  style: TextStyle(color: secondaryColor),
-                ),
-              ),
-            ],
-          );
-        },
+
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+            builder: (context) => RescheduleApp(
+                appDate: appDateFuture,
+                dateList: decodedDate,
+                nextAvailableDates: decodedAvailableDates,
+                ACI: availabiltyCandarId,
+                studyId: studyId,
+                appTypeID: appTypeID,
+                visitTypeId: visitTypeId)),
       );
       // Parse the JSON response
       pref.setString("availabilityCalendarId",
@@ -339,7 +312,8 @@ Future<void> GetResultRescheduleAppointment(
     String visitTypeId,
     String visitTypeName,
     String appID,
-    String appointmentDate, String appTypeID) async {
+    String appointmentDate,
+    String appTypeID) async {
   final GlobalKey<State> _keyLoader = GlobalKey<State>();
   LoaderWidget _loader = LoaderWidget();
   String? qid = await getQIDFromSharedPreferences();
@@ -800,13 +774,12 @@ Future<void> getResultsSlot(
         context,
         MaterialPageRoute(
           builder: (context) => BookResults(
-            dateList: decodedDate,
-            nextAvailableDates: decodedAvailableDates,
-            ACI: availabiltyCandarId,
-            studyId: studyId,
-            appTypeID: appTypeID,
-            visitTypeId: visitTypeId
-          ),
+              dateList: decodedDate,
+              nextAvailableDates: decodedAvailableDates,
+              ACI: availabiltyCandarId,
+              studyId: studyId,
+              appTypeID: appTypeID,
+              visitTypeId: visitTypeId),
         ),
       );
       print(response.body);

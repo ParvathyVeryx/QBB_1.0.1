@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:QBB/constants.dart';
 import 'package:QBB/nirmal_api.dart/forget_password_getotp.dart';
 import 'package:QBB/nirmal_api.dart/update_password.dart';
+import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -182,12 +185,14 @@ class ForgotPasswordState extends State<ForgotPassword> {
                               print('QID: $QID');
                               print('OTP: $otp');
                               print('Password: $password');
+                              var bytes = utf8.encode(password);
+                              var sha512Digest = sha512.convert(bytes);
 
                               // Call the API function with the required parameters
                               UpdatePasswordAPI(
                                 QID,
                                 otp,
-                                password,
+                                sha512Digest.toString(),
                                 context,
                               );
                             }
@@ -353,7 +358,7 @@ class ForgotPasswordState extends State<ForgotPassword> {
     TextInputType? keyboardType, // Added labelTextColor parameter
   }) {
     return TextFormField(
-      keyboardType: TextInputType.number,
+      // keyboardType: TextInputType.number,
       decoration: InputDecoration(
         errorStyle: const TextStyle(
           // Add your style properties here

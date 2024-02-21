@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:QBB/screens/api/userid.dart';
 import 'package:QBB/screens/pages/book_appointment_date_slot.dart';
@@ -6,11 +7,13 @@ import 'package:QBB/screens/pages/erorr_popup.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import 'package:open_file/open_file.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../constants.dart';
 import '../../nirmal_api.dart/profile_api.dart';
 import '../pages/loader.dart';
+import 'package:path_provider/path_provider.dart';
 
 Future<void> getresults(
   BuildContext context,
@@ -84,7 +87,8 @@ Future<void> getresults(
                 padding: const EdgeInsets.only(top: 12.0),
                 child: TextField(
                   controller: _textFieldController,
-                  decoration: InputDecoration(hintText: 'pleaseEnterOTPToDownloadTheResult'.tr),
+                  decoration: InputDecoration(
+                      hintText: 'pleaseEnterOTPToDownloadTheResult'.tr),
                 ),
               ),
               actions: <Widget>[
@@ -172,6 +176,8 @@ Future<void> getOTPForDownload(
 
       const String apiUrl =
           'https://participantportal-test.qatarbiobank.org.qa/QbbAPIS/api/GetOTPForResultDataAPI';
+      String tempFilePath = await savePdfToTempFile(response.bodyBytes);
+      OpenFile.open(tempFilePath);
     } else {
       // Handle errors
       Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
@@ -193,4 +199,17 @@ Future<void> getOTPForDownload(
       },
     );
   }
+}
+
+Future<String> savePdfToTempFile(List<int> pdfBytes) async {
+  // Save the PDF to a temporary file
+  String tempFileName = 'downloaded_pdf.pdf';
+
+  Directory tempDir = await getTemporaryDirectory();
+  String tempFilePath = '${tempDir.path}/$tempFileName';
+
+  File tempFile = File(tempFilePath);
+  await tempFile.writeAsBytes(pdfBytes);
+
+  return tempFilePath;
 }

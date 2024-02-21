@@ -111,7 +111,8 @@ class _MyAppState extends State<MyApp> {
         ],
 
         theme: ThemeData(
-          // colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+          scaffoldBackgroundColor: bgColor,
+          // colorScheme: ColorScheme.fromSeed(seedColor: appbar),
           useMaterial3: true,
           fontFamily: 'Arial',
         ),

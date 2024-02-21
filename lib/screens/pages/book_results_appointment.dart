@@ -19,7 +19,7 @@ class BookResults extends StatefulWidget {
   final List<dynamic> dateList;
   final List<dynamic> nextAvailableDates;
   final List<dynamic> ACI;
-    final String studyId;
+  final String studyId;
   final String appTypeID;
   final String visitTypeId;
   const BookResults(
@@ -122,6 +122,8 @@ class BookResultsState extends State<BookResults> {
 
     setState(() {
       ispicked = true;
+      isNextWeekArrow = false;
+      isNextWeek = false;
 
       generateUpcomingDates(picked!);
       fetchDateList(picked);
@@ -225,7 +227,11 @@ class BookResultsState extends State<BookResults> {
   // }
   List<String> displayedACI = [];
   bool isNextWeekArrow = false;
-  Future<void> fetchDateList(DateTime selectedDate) async {
+  bool isACI = true;
+  bool onclickAgain = true;
+  bool isNextWeekArrowRight = false;
+  int i = 0;
+   Future<void> fetchDateList(DateTime selectedDate) async {
     List<DateTime> dateTimeList = widget.dateList
         .map((dateString) => DateTime.parse(dateString))
         .toList();
@@ -235,24 +241,41 @@ class BookResultsState extends State<BookResults> {
     upcomingDates = nextdateTimeList;
     originalDateList = dateTimeList;
     List<String> listACI = widget.ACI.map((item) => item.toString()).toList();
-    availabiltyCandarId = listACI;
+    // int i = listACI.length;
+    // displayedACI.add(listACI[i - 1]);
+
+    print("No loop 1");
+
     upcomingDateList = dateTimeList;
+    List<DateTime> mergedList = [...dateTimeList, ...nextdateTimeList];
+    if (mergedList.length > availabiltyCandarId.length) {
+      isACI = false;
+    }
+    availabiltyCandarId = listACI;
+    print(displayedACI);
+    print(availabiltyCandarId);
+    print(listACI);
+    print(isACI);
     if (ispicked) {
       upcomingDateList = [];
       availabiltyCandarId = [];
       displayedACI = [];
-      List<DateTime> mergedList = [...dateTimeList, ...nextdateTimeList];
+
       int selectedIndex = mergedList.indexOf(selectedDate);
       int endIndex = selectedIndex + 5;
       setState(() {
-        if (endIndex > mergedList.length) {
+        if (endIndex > mergedList.length || endIndex > mergedList.length) {
           endIndex = mergedList.length;
         }
         upcomingDateList = mergedList.sublist(selectedIndex, endIndex);
         for (int i = selectedIndex; i < endIndex; i++) {
-          displayedACI.add(listACI[i]);
+          isACI == false
+              ? displayedACI.add(listACI[i - 1])
+              : displayedACI.add(listACI[i]);
         }
         availabiltyCandarId = displayedACI;
+        print(mergedList.length);
+        print(availabiltyCandarId.length);
       });
 
       print("Merged Date List: $upcomingDateList");
@@ -270,10 +293,17 @@ class BookResultsState extends State<BookResults> {
           endIndex = mergedList.length;
         }
         upcomingDateList = mergedList.sublist(selectedIndex, endIndex);
+        print(upcomingDateList);
+        print(selectedDate);
+        // selectedIndex = upcomingDateList.indexOf(selectedDate);
+        print(selectedIndex);
         for (int i = selectedIndex; i < endIndex; i++) {
-          displayedACI.add(listACI[i]);
+          isACI == false
+              ? displayedACI.add(listACI[i - 1])
+              : displayedACI.add(listACI[i]);
         }
         availabiltyCandarId = displayedACI;
+        print(availabilityCalendarid);
       });
 
       print("Merged next Date List: $upcomingDateList");
@@ -290,27 +320,39 @@ class BookResultsState extends State<BookResults> {
         if (endIndex > mergedList.length) {
           endIndex = mergedList.length;
         }
+
         upcomingDateList = mergedList.sublist(selectedIndex, endIndex);
         for (int i = selectedIndex; i < endIndex; i++) {
-          displayedACI.add(listACI[i]);
+          isACI == false
+              ? displayedACI.add(listACI[i - 1])
+              : displayedACI.add(listACI[i]);
         }
         availabiltyCandarId = displayedACI;
       });
 
       print("Merged next arrow Date List: $upcomingDateList");
       print("Availability Calendar IDs next arrow: $availabiltyCandarId");
-    } else {
-      setState(() {
-        upcomingDates = nextdateTimeList;
-        originalDateList = dateTimeList;
-        List<String> listACI =
-            widget.ACI.map((item) => item.toString()).toList();
-        availabiltyCandarId = listACI;
-        upcomingDateList = dateTimeList;
-      });
     }
+    // else {
+    //   setState(() {
+    //     upcomingDates = nextdateTimeList;
+    //     originalDateList = dateTimeList;
+    //     List<String> listACI =
+    //         widget.ACI.map((item) => item.toString()).toList();
+    //     upcomingDateList = dateTimeList;
+    //     for (int i = 1; i < upcomingDateList.length; i++) {
+    //       isACI == false
+    //           ? displayedACI.add(listACI[i - 1])
+    //           : displayedACI.add(listACI[i]);
+    //     }
+    //     availabiltyCandarId = displayedACI;
+    //     print("No loop 2");
+    //     print(displayedACI);
+    //     print(availabiltyCandarId);
+    //     print(listACI);
+    //   });
+    // }
   }
-
   void generateUpcomingDatesandDays(DateTime selectedDate) {
     upcomingDateList = [];
     DateTime tempDate = DateTime.now(); // Start from today
@@ -449,6 +491,25 @@ class BookResultsState extends State<BookResults> {
   }
 
   String appointmentId = '';
+
+    bool isFirstList = true;
+
+  void isFirst() {
+    if (ispicked == false &&
+        isNextWeek == false &&
+        isNextWeekArrow == false &&
+        isACI == false) {
+      setState(() {
+        isFirstList = true;
+      });
+      print("2" + isFirstList.toString());
+    } else {
+      setState(() {
+        isFirstList = false;
+        print("1" + isFirstList.toString());
+      });
+    }
+  }
 
   void getAppID(String appID) async {
     // appointmentId = appID;
@@ -683,6 +744,8 @@ class BookResultsState extends State<BookResults> {
                           //   );
                           setState(() {
                             isNextWeekArrow = true;
+                            ispicked = false;
+                            isNextWeek = false;
                             upcomingDateList = originalDateList;
                             fetchDateList(originalDateList[0]);
                           });
@@ -706,6 +769,8 @@ class BookResultsState extends State<BookResults> {
                           // );
                           setState(() {
                             isNextWeekArrow = true;
+                            ispicked = false;
+                            isNextWeek = false;
                             upcomingDateList = upcomingDates;
                             fetchDateList(upcomingDateList[0]);
                           });
@@ -763,7 +828,7 @@ class BookResultsState extends State<BookResults> {
                                 padding: const EdgeInsets.only(bottom: 8.0),
                                 child: Container(
                                   height: 130,
-                                  width: 550,
+                                  width: 750,
                                   child: ListView.builder(
                                     scrollDirection: Axis.horizontal,
                                     itemCount: upcomingDates.length,
@@ -790,6 +855,8 @@ class BookResultsState extends State<BookResults> {
                                                 onPressed: () {
                                                   setState(() {
                                                     isNextWeek = true;
+                                                    ispicked = false;
+                                                    isNextWeekArrow = false;
                                                     fetchDateList(
                                                         upcomingDates[index]);
                                                   });
@@ -921,89 +988,110 @@ class BookResultsState extends State<BookResults> {
                                               ),
                                             ),
                                             const SizedBox(height: 8.0),
-                                            ElevatedButton(
-                                              style: ElevatedButton.styleFrom(
-                                                shape:
-                                                    const RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.only(
-                                                    bottomLeft:
-                                                        Radius.circular(0.0),
-                                                  ),
-                                                ),
-                                                backgroundColor: selectedIndices
-                                                        .contains(index)
-                                                    ? primaryColor
-                                                    : Colors.white,
-                                                side: const BorderSide(
-                                                    color: primaryColor),
-                                                elevation: 0,
-                                              ),
-                                              onPressed: () async {
-                                                // availabiltyCandarId[index];
-                                                // print("ACI" +
-                                                //     availabiltyCandarId[index]
-                                                //         .toString());
-                                                fetchAvailabilityCalendar();
-                                                getAvailabilityCalendar(
-                                                    availabiltyCandarId[index]);
-                                                if (selectedDates.length == 1) {
-                                                  selectedDates[0] =
-                                                      datesOnly[index];
-                                                } else {
-                                                  selectedDates
-                                                      .add(datesOnly[index]);
-                                                }
-
-                                                SharedPreferences pref =
-                                                    await SharedPreferences
-                                                        .getInstance();
-                                                pref.setString(
-                                                    "selectedDateReschedule",
-                                                    selectedDates.toString());
-                                                String prefval = pref
-                                                    .getString(
-                                                        "selectedDateReschedule")
-                                                    .toString();
-
-                                                setState(() {
-                                                  // Reset the color of the last selected button
-                                                  if (lastSelectedIndex != -1) {
-                                                    selectedIndices.remove(
-                                                        lastSelectedIndex);
-                                                  }
-
-                                                  // Update the color of the current button
-                                                  if (selectedIndices
-                                                      .contains(index)) {
-                                                    selectedIndices
-                                                        .remove(index);
-                                                  } else {
-                                                    selectedIndices.add(index);
-                                                  }
-
-                                                  // Update the last selected index
-                                                  lastSelectedIndex = index;
-                                                });
-
-                                                // Print the selected date
-                                                print(
-                                                    'Selected Date: ${datesOnly[index]}');
-                                              },
-                                              child: selectedIndices
-                                                      .contains(index)
-                                                  ? Text(
-                                                      'available'.tr,
-                                                      style: const TextStyle(
-                                                          color: textcolor),
-                                                    )
-                                                  : Text(
-                                                      'available'.tr,
-                                                      style: const TextStyle(
-                                                          color: primaryColor,
-                                                          fontSize: 11),
+                                            isACI == false &&
+                                                    upcomingDateList[index] ==
+                                                        originalDateList[0]
+                                                ? Container()
+                                                : ElevatedButton(
+                                                    style: ElevatedButton
+                                                        .styleFrom(
+                                                      shape:
+                                                          const RoundedRectangleBorder(
+                                                        borderRadius:
+                                                            BorderRadius.only(
+                                                          bottomLeft:
+                                                              Radius.circular(
+                                                                  0.0),
+                                                        ),
+                                                      ),
+                                                      backgroundColor:
+                                                          selectedIndices
+                                                                  .contains(
+                                                                      index)
+                                                              ? primaryColor
+                                                              : Colors.white,
+                                                      side: const BorderSide(
+                                                          color: primaryColor),
+                                                      elevation: 0,
                                                     ),
-                                            )
+                                                    onPressed: () async {
+                                                      // availabiltyCandarId[index];
+                                                      // print("ACI" +
+                                                      //     availabiltyCandarId[index]
+                                                      //         .toString());
+                                                      fetchAvailabilityCalendar();
+                                                      isFirstList == true
+                                                          ? getAvailabilityCalendar(
+                                                              availabiltyCandarId[
+                                                                  index - 1])
+                                                          : getAvailabilityCalendar(
+                                                              availabiltyCandarId[
+                                                                  index]);
+                                                      if (selectedDates
+                                                              .length ==
+                                                          1) {
+                                                        selectedDates[0] =
+                                                            datesOnly[index];
+                                                      } else {
+                                                        selectedDates.add(
+                                                            datesOnly[index]);
+                                                      }
+
+                                                      SharedPreferences pref =
+                                                          await SharedPreferences
+                                                              .getInstance();
+                                                      pref.setString(
+                                                          "selectedDateReschedule",
+                                                          selectedDates
+                                                              .toString());
+                                                      String prefval = pref
+                                                          .getString(
+                                                              "selectedDateReschedule")
+                                                          .toString();
+
+                                                      setState(() {
+                                                        // Reset the color of the last selected button
+                                                        if (lastSelectedIndex !=
+                                                            -1) {
+                                                          selectedIndices.remove(
+                                                              lastSelectedIndex);
+                                                        }
+
+                                                        // Update the color of the current button
+                                                        if (selectedIndices
+                                                            .contains(index)) {
+                                                          selectedIndices
+                                                              .remove(index);
+                                                        } else {
+                                                          selectedIndices
+                                                              .add(index);
+                                                        }
+
+                                                        // Update the last selected index
+                                                        lastSelectedIndex =
+                                                            index;
+                                                      });
+
+                                                      // Print the selected date
+                                                      print(
+                                                          'Selected Date: ${datesOnly[index]}');
+                                                    },
+                                                    child: selectedIndices
+                                                            .contains(index)
+                                                        ? Text(
+                                                            'available'.tr,
+                                                            style: const TextStyle(
+                                                                color:
+                                                                    textcolor),
+                                                          )
+                                                        : Text(
+                                                            'available'.tr,
+                                                            style: const TextStyle(
+                                                                color:
+                                                                    primaryColor,
+                                                                fontSize: 11),
+                                                          ),
+                                                  )
                                           ],
                                         ),
                                       );
@@ -1035,7 +1123,7 @@ class BookResultsState extends State<BookResults> {
                                 ),
                               ),
                               backgroundColor: Colors.white,
-                              side: const BorderSide(color: Colors.deepPurple),
+                              side: const BorderSide(color: appbar),
                               elevation: 0,
                             ),
                             onPressed: () {
@@ -1044,7 +1132,7 @@ class BookResultsState extends State<BookResults> {
                             },
                             child: Text(
                               'cancelButton'.tr,
-                              style: const TextStyle(color: Colors.deepPurple),
+                              style: const TextStyle(color: appbar),
                             ),
                           ),
                         ),

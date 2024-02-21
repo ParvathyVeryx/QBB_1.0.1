@@ -61,7 +61,8 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
       appBar: AppBar(
         title: Text(
           'pageATitle'.tr,
-          style: TextStyle(fontFamily: 'impact', color: Colors.white, fontSize: 16),
+          style: TextStyle(
+              fontFamily: 'impact', color: Colors.white, fontSize: 16),
         ),
         backgroundColor: Colors.blue,
         iconTheme: const IconThemeData(color: Colors.white),
@@ -115,7 +116,7 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
                           ),
                         ),
                         backgroundColor: Colors.white,
-                        side: const BorderSide(color: Colors.deepPurple),
+                        side: const BorderSide(color: appbar),
                         elevation: 0,
                       ),
                       onPressed: () {
@@ -124,7 +125,7 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
                       },
                       child: Text(
                         'cancel'.tr,
-                        style: TextStyle(color: Colors.deepPurple),
+                        style: TextStyle(color: appbar),
                       ),
                     ),
                   ),
@@ -265,7 +266,8 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
         showDialog(
             context: context, // Use the context of the current screen
             builder: (BuildContext context) {
-              return ErrorPopup(errorMessage: json.decode(response.body)["Message"]);
+              return ErrorPopup(
+                  errorMessage: json.decode(response.body)["Message"]);
             });
       }
     } catch (e) {}
