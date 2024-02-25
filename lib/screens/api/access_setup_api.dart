@@ -1,7 +1,9 @@
 import 'dart:convert';
 import 'package:QBB/constants.dart';
+import 'package:QBB/nirmal/login_screen.dart';
 import 'package:QBB/screens/pages/erorr_popup.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:crypto/crypto.dart' as crypto;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -39,6 +41,8 @@ Future<void> accessSetupOTP({
       'language': language,
     };
 
+    print(requestBody);
+
     final url = Uri.parse(
         '$base_url/AcessSetupOTP?QID=${requestBody['QID']}&OTP=${requestBody['OTP']}&UserPassword=${requestBody['UserPassword']}&Userid=${requestBody['Userid']}&language=${requestBody['language']}');
     print("Acccesstoken");
@@ -51,16 +55,50 @@ Future<void> accessSetupOTP({
       },
       body: jsonEncode(requestBody),
     );
-
+    print("Access Setup response code" + response.statusCode.toString());
+    print(response.body);
     if (response.statusCode == 200) {
       Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
       await showDialog(
         context: context,
         builder: (BuildContext context) {
-          return ErrorPopup(
-              errorMessage: json.decode(response.body)["Message"]);
+          return AlertDialog(
+            backgroundColor: Colors.white,
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.only(
+                bottomLeft:
+                    Radius.circular(50.0), // Adjust the radius as needed
+              ),
+            ),
+            content: Padding(
+              padding: const EdgeInsets.only(top: 12.0),
+              child: Text(
+                json.decode(response.body)["Message"],
+                style: const TextStyle(color: Color.fromARGB(255, 74, 74, 74)),
+              ),
+            ),
+            actions: <Widget>[
+              Divider(),
+              TextButton(
+                onPressed: () async {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => LoginPage()),
+                  );
+                },
+                child: Text(
+                  'ok'.tr,
+                  style: TextStyle(color: secondaryColor),
+                ),
+              ),
+            ],
+          );
         },
       );
+      // Navigator.push(
+      //   context,
+      //   MaterialPageRoute(builder: (context) => LoginPage()),
+      // );
       // Handle successful response
     } else {
       Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();

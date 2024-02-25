@@ -215,7 +215,7 @@ class EditUserState extends State<EditUser> {
                           ].map((String value) {
                             return DropdownMenuItem<String>(
                               value: value.tr,
-                              child: Text(value.tr),
+                              child: Text(value.tr, style: TextStyle(fontSize: 12, fontWeight: FontWeight.w400),),
                             );
                           }).toList(),
                           labelText: '${'maritalStatus'.tr}*',
@@ -370,6 +370,7 @@ Widget _buildRoundedBorderTextField({
     decoration: InputDecoration(
       contentPadding: const EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 5.0),
       labelText: labelText,
+      
       errorStyle: const TextStyle(
         // Add your style properties here
         color: primaryColor,
@@ -377,7 +378,7 @@ Widget _buildRoundedBorderTextField({
         fontSize: 14.0,
       ),
       labelStyle: TextStyle(
-          color: labelTextColor, fontSize: 12), // Set the label text color
+          color: labelTextColor, fontSize: 12, fontWeight: FontWeight.w400), // Set the label text color
       enabledBorder: const OutlineInputBorder(
         borderSide: BorderSide(color: Color.fromARGB(255, 173, 173, 173)),
         borderRadius: BorderRadius.only(

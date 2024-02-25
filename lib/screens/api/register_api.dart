@@ -237,7 +237,7 @@ class Register {
       // 'UserTypeId': userTypeId,
       'UserTypeId': 1,
       'RecoverEmail': recoverEmail,
-      'RecoveryMobile': '+974$recoveryMobile',
+      'RecoveryMobile': recoveryMobile,
       // 'Token': token,
       'Token': "",
       'Source': source,

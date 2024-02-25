@@ -55,10 +55,10 @@ class BookResultsState extends State<BookResults> {
   List<DateTime> selectedSlot = [];
   String availabilityCalendarid = '';
   String appointmentDate = '';
-
+  String tList = '';
   Future<void> fetchApiResponseFromSharedPrefs() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
-    String? apiResponseJson = pref.getString('apiResponseReschedule');
+    String? apiResponseJson = pref.getString('apiResponseResults');
 
     if (apiResponseJson != null) {
       Map<String, dynamic> jsonResponse = json.decode(apiResponseJson);
@@ -66,7 +66,7 @@ class BookResultsState extends State<BookResults> {
       print(jsonResponse);
 
       setState(() {
-        timeList = List<String>.from(jsonResponse['timelist']);
+        tList = jsonResponse['timelist'][0];
         // nextAvailableDates =
         //     List<String>.from(jsonResponse['nextAvilableDateList']);
       });
@@ -140,7 +140,7 @@ class BookResultsState extends State<BookResults> {
 
   Future<void> fetchAvailabilityCalendar() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
-    String? apiResponseJson = pref.getString('apiResponseReschedule');
+    String? apiResponseJson = pref.getString('apiResponseResults');
 
     if (apiResponseJson != null) {
       Map<String, dynamic> jsonResponse = json.decode(apiResponseJson);
@@ -168,7 +168,7 @@ class BookResultsState extends State<BookResults> {
 
   // Future<void> fetchDateList(DateTime selectedDate) async {
   //   SharedPreferences pref = await SharedPreferences.getInstance();
-  //   String? apiResponseJson = pref.getString('apiResponseReschedule');
+  //   String? apiResponseJson = pref.getString('apiResponseResults');
 
   //   if (apiResponseJson != null) {
   //     Map<String, dynamic> jsonResponse = json.decode(apiResponseJson);
@@ -231,7 +231,7 @@ class BookResultsState extends State<BookResults> {
   bool onclickAgain = true;
   bool isNextWeekArrowRight = false;
   int i = 0;
-   Future<void> fetchDateList(DateTime selectedDate) async {
+  Future<void> fetchDateList(DateTime selectedDate) async {
     List<DateTime> dateTimeList = widget.dateList
         .map((dateString) => DateTime.parse(dateString))
         .toList();
@@ -269,7 +269,7 @@ class BookResultsState extends State<BookResults> {
         }
         upcomingDateList = mergedList.sublist(selectedIndex, endIndex);
         for (int i = selectedIndex; i < endIndex; i++) {
-          isACI == false
+          isACI == false && selectedIndex != 0
               ? displayedACI.add(listACI[i - 1])
               : displayedACI.add(listACI[i]);
         }
@@ -315,7 +315,7 @@ class BookResultsState extends State<BookResults> {
       displayedACI = [];
       List<DateTime> mergedList = [...dateTimeList, ...nextdateTimeList];
       int selectedIndex = mergedList.indexOf(selectedDate);
-      int endIndex = selectedIndex + 5;
+      int endIndex = mergedList.length;
       setState(() {
         if (endIndex > mergedList.length) {
           endIndex = mergedList.length;
@@ -353,6 +353,7 @@ class BookResultsState extends State<BookResults> {
     //   });
     // }
   }
+
   void generateUpcomingDatesandDays(DateTime selectedDate) {
     upcomingDateList = [];
     DateTime tempDate = DateTime.now(); // Start from today
@@ -492,7 +493,7 @@ class BookResultsState extends State<BookResults> {
 
   String appointmentId = '';
 
-    bool isFirstList = true;
+  bool isFirstList = true;
 
   void isFirst() {
     if (ispicked == false &&
@@ -820,66 +821,64 @@ class BookResultsState extends State<BookResults> {
                         width: MediaQuery.of(context).size.width *
                             0.9, // or a fixed width
                         height: 40, // or any fixed height
-                        child: Scrollbar(
-                          thumbVisibility: true,
-                          child: SingleChildScrollView(
-                              scrollDirection: Axis.horizontal,
-                              child: Padding(
-                                padding: const EdgeInsets.only(bottom: 8.0),
-                                child: Container(
-                                  height: 130,
-                                  width: 750,
-                                  child: ListView.builder(
-                                    scrollDirection: Axis.horizontal,
-                                    itemCount: upcomingDates.length,
-                                    itemBuilder: (context, index) {
-                                      return Center(
-                                        child: Center(
-                                          child: Row(
-                                            children: [
-                                              ElevatedButton(
-                                                style: ElevatedButton.styleFrom(
-                                                  backgroundColor: Colors.white,
-                                                  side: BorderSide(
-                                                    color: const Color.fromARGB(
-                                                        255, 201, 201, 201),
-                                                  ),
-                                                  shape: RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            0.0),
-                                                  ),
-                                                  padding: EdgeInsets.fromLTRB(
-                                                      30, 0, 30, 0),
+                        child: SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Padding(
+                              padding: const EdgeInsets.only(bottom: 8.0),
+                              child: Container(
+                                height: 130,
+                                width: 135.0 * upcomingDates.length.toDouble(),
+                                child: ListView.builder(
+                                  controller: ScrollController(),
+                                  scrollDirection: Axis.horizontal,
+                                  itemCount: upcomingDates.length,
+                                  itemBuilder: (context, index) {
+                                    return Center(
+                                      child: Center(
+                                        child: Row(
+                                          children: [
+                                            ElevatedButton(
+                                              style: ElevatedButton.styleFrom(
+                                                backgroundColor: Colors.white,
+                                                side: BorderSide(
+                                                  color: const Color.fromARGB(
+                                                      255, 201, 201, 201),
                                                 ),
-                                                onPressed: () {
-                                                  setState(() {
-                                                    isNextWeek = true;
-                                                    ispicked = false;
-                                                    isNextWeekArrow = false;
-                                                    fetchDateList(
-                                                        upcomingDates[index]);
-                                                  });
-                                                },
-                                                child: Text(
-                                                  '${DateFormat('dd/MM/yyyy').format(upcomingDates[index])}',
-                                                  style: const TextStyle(
-                                                      fontSize: 12,
-                                                      color: Colors.black),
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          0.0),
                                                 ),
+                                                padding: EdgeInsets.fromLTRB(
+                                                    30, 0, 30, 0),
                                               ),
-                                              SizedBox(
-                                                width: 10,
-                                              )
-                                            ],
-                                          ),
+                                              onPressed: () {
+                                                setState(() {
+                                                  isNextWeek = true;
+                                                  ispicked = false;
+                                                  isNextWeekArrow = false;
+                                                  fetchDateList(
+                                                      upcomingDates[index]);
+                                                });
+                                              },
+                                              child: Text(
+                                                '${DateFormat('dd/MM/yyyy').format(upcomingDates[index])}',
+                                                style: const TextStyle(
+                                                    fontSize: 12,
+                                                    color: Colors.black),
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              width: 10,
+                                            )
+                                          ],
                                         ),
-                                      );
-                                    },
-                                  ),
+                                      ),
+                                    );
+                                  },
                                 ),
-                              )),
-                        ),
+                              ),
+                            )),
                       ),
                     ],
                   ),
@@ -917,7 +916,7 @@ class BookResultsState extends State<BookResults> {
                           ),
                           const SizedBox(height: 20.0),
                           Text(
-                            timeList.first,
+                            tList,
                             style: const TextStyle(
                               fontSize: 14.0,
                               fontWeight: FontWeight.bold,
@@ -937,7 +936,10 @@ class BookResultsState extends State<BookResults> {
                               SingleChildScrollView(
                                 scrollDirection: Axis.horizontal,
                                 child: Container(
-                                  width: 1100,
+                                  width: 107.0 *
+                                      upcomingDateList.length.toDouble() *
+                                      2 // Use available width as the width
+                                  ,
                                   height: 120,
                                   child: ListView(
                                     scrollDirection: Axis.horizontal,
@@ -1015,12 +1017,62 @@ class BookResultsState extends State<BookResults> {
                                                       elevation: 0,
                                                     ),
                                                     onPressed: () async {
+                                                      String? uD = DateFormat(
+                                                              'dd/MM/yyyy')
+                                                          .format(
+                                                              upcomingDateList[
+                                                                  0]);
+                                                      String? od = DateFormat(
+                                                              'dd/MM/yyyy')
+                                                          .format(
+                                                              originalDateList[
+                                                                  0]);
+                                                      print(isACI);
+                                                      print(
+                                                          upcomingDates.length);
+                                                      print(availabiltyCandarId
+                                                          .length);
+                                                      print(uD.toString());
+                                                      print(od.toString());
+                                                      String check = '';
+                                                      uD == od
+                                                          ? check = "Ok"
+                                                          : check = "Not Ok";
+
+                                                      print(DateFormat(
+                                                              'dd/MM/yyyy')
+                                                          .format(
+                                                              upcomingDateList[
+                                                                  0]));
+                                                      print(DateFormat(
+                                                              'dd/MM/yyyy')
+                                                          .format(
+                                                              originalDateList[
+                                                                  0]));
+                                                      print(
+                                                          "...................");
+                                                      print(".........." +
+                                                          index.toString());
+                                                      // print(availabiltyCandarId[
+                                                      //     0]);
+                                                      print(DateFormat(
+                                                              'dd/MM/yyyy')
+                                                          .format(
+                                                              DateTime.now())
+                                                          .runtimeType);
                                                       // availabiltyCandarId[index];
                                                       // print("ACI" +
                                                       //     availabiltyCandarId[index]
                                                       //         .toString());
-                                                      fetchAvailabilityCalendar();
-                                                      isFirstList == true
+
+                                                      // fetchDateList(upcomingDateList[index]);
+                                                      // fetchAvailabilityCalendar(
+                                                      //     date);
+                                                      isFirst();
+                                                      isACI == false &&
+                                                                  isFirstList ==
+                                                                      true ||
+                                                              check == "Ok"
                                                           ? getAvailabilityCalendar(
                                                               availabiltyCandarId[
                                                                   index - 1])
@@ -1031,10 +1083,14 @@ class BookResultsState extends State<BookResults> {
                                                               .length ==
                                                           1) {
                                                         selectedDates[0] =
-                                                            datesOnly[index];
+                                                            upcomingDateList[
+                                                                    index]
+                                                                .toString();
                                                       } else {
                                                         selectedDates.add(
-                                                            datesOnly[index]);
+                                                            upcomingDateList[
+                                                                    index]
+                                                                .toString());
                                                       }
 
                                                       SharedPreferences pref =
@@ -1074,7 +1130,9 @@ class BookResultsState extends State<BookResults> {
 
                                                       // Print the selected date
                                                       print(
-                                                          'Selected Date: ${datesOnly[index]}');
+                                                          'Selected Date: ${upcomingDateList[index]}');
+                                                      // print(
+                                                      //     'Selected Date: ${availabiltyCandarId[index]}');
                                                     },
                                                     child: selectedIndices
                                                             .contains(index)

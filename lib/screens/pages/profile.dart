@@ -139,6 +139,7 @@ class ProfileState extends State<Profile> {
       setState(() {
         profilePicture = jsonMap['Photo'] ?? '';
       });
+      print("Profile Pic 1 "+ profilePicture);
     } catch (e) {
       // Handle the error appropriately
     }
@@ -255,7 +256,8 @@ class ProfileState extends State<Profile> {
     return Scaffold(
       appBar: AppBar(
         systemOverlayStyle: SystemUiOverlayStyle(
-    statusBarColor: appbar,),
+          statusBarColor: appbar,
+        ),
         iconTheme: const IconThemeData(color: textcolor),
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -290,7 +292,9 @@ class ProfileState extends State<Profile> {
         backgroundColor: appbar,
       ),
       drawer: const SideMenu(),
-      bottomNavigationBar: CustomTab(tabId: 4,),
+      bottomNavigationBar: CustomTab(
+        tabId: 4,
+      ),
       body: _isLoading
           ? Center(child: LoaderWidget())
           : SingleChildScrollView(
@@ -318,7 +322,7 @@ class ProfileState extends State<Profile> {
                           backgroundColor: primaryColor,
                           child: CircleAvatar(
                             radius: 47,
-                            backgroundImage: profilePicture.isNotEmpty
+                            backgroundImage: profilePicture != "string"
                                 ? _getImageProvider(profilePicture)
                                 : const AssetImage('assets/images/user.png'),
                           ),
@@ -389,8 +393,8 @@ class ProfileState extends State<Profile> {
                     const SizedBox(height: 10),
                     ProfileInfoRow(
                       label: 'gender'.tr,
-                      value: _userProfileFuture
-                          .then((userProfileData) => userProfileData.gender.toLowerCase()),
+                      value: _userProfileFuture.then((userProfileData) =>
+                          userProfileData.gender.toLowerCase()),
                     ),
                     const SizedBox(height: 10),
                     const PinkDivider(),
@@ -462,7 +466,6 @@ class ProfileState extends State<Profile> {
                                 ),
                               ),
                             );
-                           
                           },
                           style: ButtonStyle(
                             shape: MaterialStateProperty.all<
@@ -588,6 +591,7 @@ class ProfileInfoRow extends StatelessWidget {
 }
 
 ImageProvider _getImageProvider(String profilePicture) {
+  print("Profile Picture" + profilePicture);
   if (profilePicture.startsWith('data:image/png')) {
     List<String> parts = profilePicture.split(',');
     if (parts.length == 2) {

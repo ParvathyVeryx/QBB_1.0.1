@@ -39,15 +39,12 @@ Future<MaritalStatus> fetchMaritalStatus(int maritalStatusId) async {
   //   setLang = "ar";
   // }
   try {
-    String token =
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6Im1vYmFkbWluQGdtYWlsLmNvbSIsIm5iZiI6MTcwMzE3ODA1MywiZXhwIjoxNzAzNzgyODUzLCJpYXQiOjE3MDMxNzgwNTMsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTAxOTEiLCJhdWQiOiJodHRwOi8vbG9jYWxob3N0OjUwMTkxIn0.WYN0dROXwe3ys9yA2Ngd62p7Fr2h6JV4nSyHPcnF4tk'; // Replace with your actual access token
-
     String apiUrl =
         'https://participantportal-test.qatarbiobank.org.qa/QbbAPIS/api/MaritalStatusAPI?GenderId=1&language=$lang';
 
     var response = await http.get(
       Uri.parse(apiUrl),
-      headers: {'Authorization': 'Bearer $token'},
+      headers: {'Authorization': 'Bearer'},
     );
 
     if (response.statusCode == 200) {

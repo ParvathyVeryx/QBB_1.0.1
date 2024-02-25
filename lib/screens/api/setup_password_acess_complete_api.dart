@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../nirmal/login_screen.dart';
 import '../../nirmal_api.dart/profile_api.dart';
 import '../pages/loader.dart';
 
@@ -27,7 +28,7 @@ Future<void> setPasswordAccessSetupNotCompleted(
       // Handle the case where the token is not available in shared preferences
       return;
     }
-
+    // String? QID = jsonEncode(qid);
     final String url =
         '$base_url/SetPasswordAccessSetupNotCompleted?QID=$qid&language=$language';
 
@@ -37,6 +38,9 @@ Future<void> setPasswordAccessSetupNotCompleted(
         'Authorization': 'Bearer ${token.replaceAll('"', '')}',
       },
     );
+    print(url);
+    print(response.statusCode);
+    print("respose code Access Setup");
 
     if (response.statusCode == 200) {
       Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
@@ -47,7 +51,8 @@ Future<void> setPasswordAccessSetupNotCompleted(
               errorMessage: json.decode(response.body)["Message"]);
         },
       );
-      // Handle the response data if needed
+      print(response.statusCode);
+      print("respose code Access Setup 200");
     } else {
       Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
       await showDialog(

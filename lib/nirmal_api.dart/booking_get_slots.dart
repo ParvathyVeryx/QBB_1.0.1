@@ -450,7 +450,7 @@ Future<void> GetResultRescheduleAppointment(
           jsonResponse["AvailabilityCalenderId"].toString());
 
       // Save the API response in shared preferences
-      pref.setString('apiResponseReschedule', json.encode(jsonResponse));
+      pref.setString('apiResponseRescheduleResults', json.encode(jsonResponse));
       pref.setString("availableDates", json.encode(jsonResponse['datelist']));
 
 // Check if the jsonString is not null

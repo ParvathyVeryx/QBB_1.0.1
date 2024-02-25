@@ -5,6 +5,7 @@ import 'package:QBB/screens/api/userid.dart';
 import 'package:QBB/screens/pages/book_appointment_date_slot.dart';
 import 'package:QBB/screens/pages/erorr_popup.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:open_file/open_file.dart';
@@ -62,8 +63,8 @@ Future<void> getresults(
       final Map<String, dynamic> jsonResponse = json.decode(response.body);
       // Save the API response in shared preferences
 
-      const String apiUrl =
-          'https://participantportal-test.qatarbiobank.org.qa/QbbAPIS/api/GetOTPForResultDataAPI';
+      // const String apiUrl =
+      //     'https://participantportal-test.qatarbiobank.org.qa/QbbAPIS/api/GetOTPForResultDataAPI';
 
       // Now, navigate to the AppointmentBookingPage
       // Navigator.push(
@@ -72,6 +73,7 @@ Future<void> getresults(
       //     builder: (context) => const AppointmentBookingPage(),
       //   ),
       // );
+      print(response.body);
       showDialog(
           context: context,
           builder: (BuildContext context) {
@@ -88,14 +90,51 @@ Future<void> getresults(
                 child: TextField(
                   controller: _textFieldController,
                   decoration: InputDecoration(
-                      hintText: 'pleaseEnterOTPToDownloadTheResult'.tr),
+                    errorStyle: TextStyle(
+                      // Add your style properties here
+                      color: primaryColor,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 11.0,
+                    ),
+                    contentPadding:
+                        const EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 5.0),
+                    hintText: 'pleaseEnterOtp'.tr,
+                    enabledBorder: const OutlineInputBorder(
+                      borderSide:
+                          BorderSide(color: Color.fromARGB(255, 173, 173, 173)),
+                      borderRadius: BorderRadius.only(
+                        bottomLeft: Radius.circular(20.0),
+                      ),
+                    ),
+                    focusedBorder: const OutlineInputBorder(
+                      borderSide:
+                          BorderSide(color: Color.fromARGB(255, 173, 173, 173)),
+                      borderRadius: BorderRadius.only(
+                        bottomLeft: Radius.circular(20.0),
+                      ),
+                    ),
+                    errorBorder: const OutlineInputBorder(
+                      borderSide:
+                          BorderSide(color: Color.fromARGB(255, 173, 173, 173)),
+                      borderRadius: BorderRadius.only(
+                        bottomLeft: Radius.circular(20.0),
+                      ),
+                    ),
+                    focusedErrorBorder: const OutlineInputBorder(
+                      borderSide:
+                          BorderSide(color: Color.fromARGB(255, 173, 173, 173)),
+                      borderRadius: BorderRadius.only(
+                        bottomLeft: Radius.circular(20.0),
+                      ),
+                    ),
+                  ),
                 ),
               ),
               actions: <Widget>[
                 Divider(),
                 TextButton(
                   onPressed: () async {
-                    String otp = _textFieldController.toString();
+                    String otp = _textFieldController.text.toString();
                     await getOTPForDownload(context, appointmentId, otp);
                     Navigator.pop(context); // Close the dialog
                   },
@@ -159,6 +198,7 @@ Future<void> getOTPForDownload(
   // String? token = pref.getString('token');
   try {
     Dialogs.showLoadingDialog(context, _keyLoader, _loader);
+    print(uri);
     final response = await http.get(
       uri,
       headers: {
@@ -166,21 +206,38 @@ Future<void> getOTPForDownload(
         'Content-Type': 'application/json',
       },
     );
+    // const String apiUrl =
+    //       'https://participantportal-test.qatarbiobank.org.qa/QbbAPIS/api/GetOTPForResultDataAPI';
 
     if (response.statusCode == 200) {
       // Successful API call
       Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
+      print("Download Results");
       // Parse the JSON response
       final Map<String, dynamic> jsonResponse = json.decode(response.body);
+      print(response.body.toString());
       // Save the API response in shared preferences
+      String base64DataURL = jsonResponse['Base64DataURL'];
+      String filename = jsonResponse['filename'];
+      print(base64DataURL);
+      print(filename);
 
-      const String apiUrl =
-          'https://participantportal-test.qatarbiobank.org.qa/QbbAPIS/api/GetOTPForResultDataAPI';
-      String tempFilePath = await savePdfToTempFile(response.bodyBytes);
-      OpenFile.open(tempFilePath);
+      await downloadAndOpenPDF(base64DataURL, filename);
+
+// Use pdfViewer as needed, such as navigating to a new screen
+
+      // await showDialog(
+      //   context: context,
+      //   builder: (BuildContext context) {
+      //     return ErrorPopup(
+      //         errorMessage: json.decode(response.body)["Message"]);
+      //   },
+      // );
     } else {
       // Handle errors
       Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
+      print("Download Results no otp");
+      print(response.statusCode);
       await showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -191,6 +248,7 @@ Future<void> getOTPForDownload(
     }
   } catch (error) {
     Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
+    print("Download Results Error");
     // Handle network errors
     await showDialog(
       context: context,
@@ -198,6 +256,50 @@ Future<void> getOTPForDownload(
         return ErrorPopup(errorMessage: 'Network Error');
       },
     );
+  }
+}
+
+Future<void> downloadAndOpenPDF(String base64Data, String filename) async {
+  try {
+    Directory appDocDir = await getApplicationDocumentsDirectory();
+    String path = appDocDir.path;
+
+    List<int> bytes = base64.decode(base64Data);
+
+    String filePath = '$path/$filename';
+
+    await File(filePath).writeAsBytes(bytes);
+
+    // Open the downloaded PDF file
+    await OpenFile.open(filePath, type: 'application/pdf');
+  } catch (error) {
+    print('Download failed: $error');
+  }
+}
+
+Future<void> download(String fileName, String base64Data) async {
+  try {
+    String path = (await getExternalStorageDirectory())!.path;
+
+    // Decode the Base64 data
+    List<int> bytes = base64.decode(base64Data);
+
+    final file = File('$path/$fileName');
+
+    await file.writeAsBytes(bytes);
+
+    // Open the downloaded file
+    await _openFile(file);
+  } catch (error) {
+    print('Download failed: $error');
+  }
+}
+
+Future<void> _openFile(File file) async {
+  try {
+    await OpenFile.open(file.path);
+  } catch (error) {
+    print('Error opening file: $error');
   }
 }
 
@@ -212,4 +314,80 @@ Future<String> savePdfToTempFile(List<int> pdfBytes) async {
   await tempFile.writeAsBytes(pdfBytes);
 
   return tempFilePath;
+}
+
+class Downloader {
+  Future<void> download(String fileName, String filePath) async {
+    try {
+      String path = '';
+
+      if (Platform.isIOS) {
+        path = (await getApplicationDocumentsDirectory()).path;
+      } else {
+        path = (await getExternalStorageDirectory())!.path;
+      }
+
+      String url = Uri.encodeFull(filePath);
+      http.Response response = await http.get(Uri.parse(url));
+
+      File file = File('$path/$fileName');
+      await file.writeAsBytes(response.bodyBytes);
+
+      print('Download completed: ${file.path}');
+
+      // Open the downloaded file
+      await OpenFile.open(file.path, type: 'application/pdf');
+    } catch (error) {
+      print('Download failed: $error');
+    }
+  }
+}
+
+class PdfViewer extends StatefulWidget {
+  final String base64Data;
+  final String filename;
+
+  PdfViewer({required this.base64Data, required this.filename});
+
+  @override
+  _PdfViewerState createState() => _PdfViewerState();
+}
+
+class _PdfViewerState extends State<PdfViewer> {
+  late String _filePath;
+
+  @override
+  void initState() {
+    super.initState();
+    _downloadAndDisplayPdf();
+  }
+
+  Future<void> _downloadAndDisplayPdf() async {
+    try {
+      Directory appDocDir = await getApplicationDocumentsDirectory();
+      String path = appDocDir.path;
+
+      List<int> bytes = base64.decode(widget.base64Data);
+
+      String filePath = '$path/${widget.filename}.pdf';
+
+      await File(filePath).writeAsBytes(bytes);
+
+      setState(() {
+        _filePath = filePath;
+      });
+    } catch (error) {
+      print('PDF Download failed: $error');
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        body: PDFView(
+      filePath: _filePath,
+      enableSwipe: true,
+      swipeHorizontal: false,
+    ));
+  }
 }

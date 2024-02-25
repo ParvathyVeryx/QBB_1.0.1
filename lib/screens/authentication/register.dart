@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:QBB/constants.dart';
+import 'package:QBB/nirmal_api.dart/marital_status_api.dart';
 import 'package:QBB/screens/api/check_qid.dart';
 import 'package:QBB/screens/api/register_api.dart';
 import 'package:QBB/screens/pages/erorr_popup.dart';
@@ -82,6 +83,7 @@ class RegisterUserState extends State<RegisterUser> {
   //   {'display': 'other'.tr, 'value': 10},
   // ];
   List<Map<String, dynamic>> sourceItems = [];
+  List<Map<String, dynamic>> maritalIds = [];
   List<Map<String, dynamic>> sourceItemOther = [
     {'Id': 1950, 'Name': 'other'.tr, 'IscampaignEnabled': 'False'}
   ];
@@ -107,6 +109,63 @@ class RegisterUserState extends State<RegisterUser> {
   String errorText = '';
   String? campaignList;
   String? campainValue;
+
+  Future<List<Map<String, dynamic>>> fetchMaritalStatusID(
+      String maritalStatusID) async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    var lang = 'langChange'.tr;
+    String qid = pref.getString("userQID").toString();
+
+    try {
+      // Get the token from shared preferences
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String token = prefs.getString('token') ??
+          ''; // Replace 'auth_token' with your actual key
+
+      // Check if the token is available
+      if (token.isEmpty) {
+        return [];
+      }
+      int gId;
+      if (maritalStatusID == "Male") {
+        gId = 1;
+      } else {
+        gId = 2;
+      }
+
+      // Construct the request URL
+      String apiUrl =
+          'https://participantportal-test.qatarbiobank.org.qa/QbbAPIS/api/MaritalStatusAPI?GenderId=$gId&language=$lang';
+
+      // Make the GET request with the token in the headers
+      var response = await http.get(
+        Uri.parse(apiUrl),
+        headers: {
+          'Authorization': 'Bearer ${token.replaceAll('"', '')}',
+        },
+      );
+
+      print(response.body);
+
+      // Check if the request was successful (status code 200)
+      if (response.statusCode == 200) {
+        // Parse and handle the response body
+        var responseBody = json.decode(response.body);
+        setState(() {
+          maritalIds = List<Map<String, dynamic>>.from(responseBody);
+        });
+
+        print(maritalIds);
+        return maritalIds;
+      } else {
+        // Handle errors
+
+        return []; // Return an empty list in case of an error
+      }
+    } catch (e, stackTrace) {
+      return []; // Return an empty list in case of an exception
+    }
+  }
 
   Future<List<Map<String, dynamic>>> fetchSource() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
@@ -491,7 +550,7 @@ class RegisterUserState extends State<RegisterUser> {
                       const SizedBox(
                         height: 20.0,
                       ),
-                      _buildRoundedBorderTextFieldNoValidationHCN(
+                      _buildRoundedBorderTextFieldNoValidationNationality(
                         labelText: 'nationality'.tr,
                         labelTextColor:
                             const Color.fromARGB(255, 173, 173, 173),
@@ -534,6 +593,7 @@ class RegisterUserState extends State<RegisterUser> {
                                 genderId = "Female";
                                 break;
                             }
+                            fetchMaritalStatusID(genderId!);
                             print("Updated genderId: $genderId");
                           });
                         },
@@ -543,7 +603,11 @@ class RegisterUserState extends State<RegisterUser> {
                         ].map((String value) {
                           return DropdownMenuItem<String>(
                             value: value.tr,
-                            child: Text(value.tr),
+                            child: Text(
+                              value.tr,
+                              style: TextStyle(
+                                  fontSize: 12, fontWeight: FontWeight.w400),
+                            ),
                           );
                         }).toList(),
                         labelText: 'gender'.tr + '*',
@@ -551,35 +615,68 @@ class RegisterUserState extends State<RegisterUser> {
                       const SizedBox(
                         height: 20.0,
                       ),
+                      // _buildDropdownFormField(
+                      //   value: maritalStatus,
+                      //   onChanged: (value) {
+                      //     setState(() {
+                      //       maritalStatus = value!;
+                      //       switch (maritalStatus) {
+                      //         case 'Single':
+                      //           maritalId = 2;
+                      //           break;
+                      //         case 'Married':
+                      //           maritalId = 1;
+                      //           break;
+                      //         case 'Divorced':
+                      //           maritalId = 3;
+                      //           break;
+                      //         case 'Widowed':
+                      //           maritalId = 4;
+                      //           break;
+                      //         default:
+                      //           maritalId = null;
+                      //           break;
+                      //       }
+                      //     });
+                      //   },
+                      //   items: ['forsfemale', 'married', 'divorced', 'widowed']
+                      //       .map((String value) {
+                      //     return DropdownMenuItem<String>(
+                      //       value: value.tr,
+                      //       child: Text(
+                      //         value.tr,
+                      //         style: TextStyle(
+                      //             fontSize: 12, fontWeight: FontWeight.w400),
+                      //       ),
+                      //     );
+                      //   }).toList(),
+                      //   labelText: '${'maritalStatus'.tr}*',
+                      // ),
                       _buildDropdownFormField(
                         value: maritalStatus,
                         onChanged: (value) {
                           setState(() {
-                            maritalStatus = value!;
-                            switch (maritalStatus) {
-                              case 'Single':
-                                maritalId = 2;
-                                break;
-                              case 'Married':
-                                maritalId = 1;
-                                break;
-                              case 'Divorced':
-                                maritalId = 3;
-                                break;
-                              case 'Widowed':
-                                maritalId = 4;
-                                break;
-                              default:
-                                maritalId = null;
-                                break;
-                            }
+                            maritalStatus = value;
+                            // Handle the selected value as needed
+                            int? intValue = maritalIds.firstWhere(
+                                (item) => item['Name'] == value)['Id'];
+
+                            // Pass intValue to the API or use it as needed
+                            maritalId = intValue;
+                            // campaignList = sourceItems
+                            //     .firstWhere((item) => item['Name'] == value)["Name"];
+                            print("maritalId" + maritalIds.toString());
+                            fetchYear();
                           });
                         },
-                        items: ['forsfemale', 'married', 'divorced', 'widowed']
-                            .map((String value) {
+                        items: maritalIds.map((item) {
                           return DropdownMenuItem<String>(
-                            value: value.tr,
-                            child: Text(value.tr),
+                            value: item["Name"],
+                            child: Text(
+                              item['Name'],
+                              style: TextStyle(
+                                  fontSize: 12, fontWeight: FontWeight.w400),
+                            ),
                           );
                         }).toList(),
                         labelText: '${'maritalStatus'.tr}*',
@@ -636,7 +733,12 @@ class RegisterUserState extends State<RegisterUser> {
                             items: years.map((item) {
                               return DropdownMenuItem<String>(
                                 value: item["Name"],
-                                child: Text(item['Name']),
+                                child: Text(
+                                  item['Name'],
+                                  style: TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w400),
+                                ),
                               );
                             }).toList(),
                             labelText: '${'duration'.tr}*',
@@ -678,7 +780,12 @@ class RegisterUserState extends State<RegisterUser> {
                             items: sourceItems.map((item) {
                               return DropdownMenuItem<String>(
                                 value: item["Name"],
-                                child: Text(item['Name']),
+                                child: Text(
+                                  item['Name'],
+                                  style: TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w400),
+                                ),
                               );
                             }).toList(),
                             labelText: 'newspaper'.tr + '*',
@@ -825,6 +932,8 @@ class RegisterUserState extends State<RegisterUser> {
                                       true; // Set loading to true when button is pressed
                                 });
                                 int? QID = int.parse(_qidController.text);
+                                int nationalityID = int.parse(_qidController.text.substring(3, 6));
+                                // int QID = _qidController.text;
                                 // Create an instance of Register and populate its fields
                                 Register reg = Register(
                                     // qid: int.tryParse(_qidController.text),
@@ -846,8 +955,13 @@ class RegisterUserState extends State<RegisterUser> {
                                     registrationSourceID:
                                         _sourceController.toString(),
                                     campain:
-                                        _campaignController.toString() == "null" ? "" : _campaignController.toString(),
-                                    source: otherSource.toString() == "null" ? "" : otherSource.toString(),
+                                        _campaignController.toString() == "null"
+                                            ? ""
+                                            : _campaignController.toString(),
+                                    source:
+                                        _sourceController.toString() == "1950"
+                                            ? otherSource.text
+                                            : "",
                                     isSelfRegistred: widget.isSelf.toString(),
                                     token: token,
                                     referralPersonFirstName: widget.behalfFname,
@@ -904,6 +1018,22 @@ class RegisterUserState extends State<RegisterUser> {
               ),
             ),
     );
+  }
+
+  int extractDigits(int qid) {
+    String qidAsString = qid.toString();
+
+    // Check if the QID has at least 6 digits
+    if (qidAsString.length >= 6) {
+      // Extract digits 4, 5, and 6
+      String extractedDigitsAsString = qidAsString.substring(3, 6);
+      int extractedDigits = int.parse(extractedDigitsAsString);
+      print(extractedDigits);
+      return extractedDigits;
+    } else {
+      // Handle the case where QID has less than 6 digits
+      throw Exception("QID must have at least 6 digits");
+    }
   }
 
   bool _shouldShowCampaignDropdown() {

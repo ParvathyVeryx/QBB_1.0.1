@@ -81,7 +81,7 @@ class BookAppointmentsState extends State<BookAppointments> {
         // }
       // }
       selectedStudyId = studyIds.isNotEmpty ? studyIds.first : null;
-      fetchVisitTypes(selectedStudyId!);
+      // fetchVisitTypes(selectedStudyId!);
     });
   }
 
