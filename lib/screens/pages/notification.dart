@@ -54,11 +54,18 @@ class _NotificationScreenState extends State<NotificationScreen> {
           'Authorization': 'Bearer ${token.replaceAll('"', '')}',
         },
       );
+      print(response.body);
+
       //     response.body.toString());
       if (response.statusCode == 200) {
         // Parse and handle the response body
         var responseBody = json.decode(response.body);
         notifications = List<Map<String, dynamic>>.from(responseBody);
+        String dt = notifications[0]["Datetime"].toString();
+        DateTime dT = DateTime.parse(dt);
+
+        print(DateFormat('dd/MM/yyyy').format(dT));
+        print(dT);
         return notifications;
       } else {
         // Handle errors
@@ -94,9 +101,10 @@ class _NotificationScreenState extends State<NotificationScreen> {
             return Scaffold(
                 appBar: AppBar(
                   systemOverlayStyle: SystemUiOverlayStyle(
-    statusBarColor: appbar,),
+                    statusBarColor: appbar,
+                  ),
                   title: Row(
-                    // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Padding(
                         padding: const EdgeInsets.only(bottom: 10.0),
@@ -114,7 +122,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                       Row(
                         children: [
                           Padding(
-                            padding: const EdgeInsets.only(left: 60),
+                            padding: const EdgeInsets.only(left: 0),
                             child: Center(
                               child: Text(
                                 'notifications'.tr,
@@ -129,13 +137,27 @@ class _NotificationScreenState extends State<NotificationScreen> {
                           ),
                         ],
                       ),
+                      IconButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => NotificationScreen(),
+                            ),
+                          );
+                        },
+                        icon: const Icon(Icons.notifications_none_outlined),
+                        iconSize: 30.0,
+                        color: Colors.white,
+                      )
                     ],
                   ),
                   backgroundColor: appbar,
                   iconTheme: const IconThemeData(color: textcolor),
                 ),
                 drawer: const SideMenu(),
-                bottomNavigationBar: CustomTabDefault(),                body: Center(child: LoaderWidget()));
+                bottomNavigationBar: CustomTabDefault(),
+                body: Center(child: LoaderWidget()));
           } else {
             allresults = snapshot.data!;
           }
@@ -147,9 +169,10 @@ class _NotificationScreenState extends State<NotificationScreen> {
             return Scaffold(
                 appBar: AppBar(
                   systemOverlayStyle: SystemUiOverlayStyle(
-    statusBarColor: appbar,),
+                    statusBarColor: appbar,
+                  ),
                   title: Row(
-                    // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Padding(
                         padding: const EdgeInsets.only(bottom: 10.0),
@@ -167,7 +190,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                       Row(
                         children: [
                           Padding(
-                            padding: const EdgeInsets.only(left: 60),
+                            padding: const EdgeInsets.only(left: 0),
                             child: Center(
                               child: Text(
                                 'notifications'.tr,
@@ -182,13 +205,27 @@ class _NotificationScreenState extends State<NotificationScreen> {
                           ),
                         ],
                       ),
+                      IconButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => NotificationScreen(),
+                            ),
+                          );
+                        },
+                        icon: const Icon(Icons.notifications_none_outlined),
+                        iconSize: 30.0,
+                        color: Colors.white,
+                      )
                     ],
                   ),
                   backgroundColor: appbar,
                   iconTheme: const IconThemeData(color: textcolor),
                 ),
                 drawer: const SideMenu(),
-                bottomNavigationBar: CustomTabDefault(),                body: SingleChildScrollView(
+                bottomNavigationBar: CustomTabDefault(),
+                body: SingleChildScrollView(
                     child: Container(
                   height: MediaQuery.of(context).size.height * 0.95,
                   child: Center(child: Text("No Notification")),
@@ -198,9 +235,10 @@ class _NotificationScreenState extends State<NotificationScreen> {
           return Scaffold(
             appBar: AppBar(
               systemOverlayStyle: SystemUiOverlayStyle(
-    statusBarColor: appbar,),
+                statusBarColor: appbar,
+              ),
               title: Row(
-                // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Padding(
                     padding: const EdgeInsets.only(bottom: 10.0),
@@ -218,7 +256,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                   Row(
                     children: [
                       Padding(
-                        padding: const EdgeInsets.only(left: 60),
+                        padding: const EdgeInsets.only(left: 0),
                         child: Center(
                           child: Text(
                             'notifications'.tr,
@@ -233,13 +271,27 @@ class _NotificationScreenState extends State<NotificationScreen> {
                       ),
                     ],
                   ),
+                  IconButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => NotificationScreen(),
+                        ),
+                      );
+                    },
+                    icon: const Icon(Icons.notifications_none_outlined),
+                    iconSize: 30.0,
+                    color: Colors.white,
+                  )
                 ],
               ),
               backgroundColor: appbar,
               iconTheme: const IconThemeData(color: textcolor),
             ),
             drawer: const SideMenu(),
-            bottomNavigationBar: CustomTabDefault(),            body: SingleChildScrollView(
+            bottomNavigationBar: CustomTabDefault(),
+            body: SingleChildScrollView(
               child: Padding(
                 padding: const EdgeInsets.all(10.0),
                 child: Column(
@@ -280,13 +332,13 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                         color: primaryColor,
                                         borderRadius: const BorderRadius.only(
                                           topLeft: Radius.circular(10.0),
-                                          bottomRight: Radius.circular(10.0),
+                                          bottomRight: Radius.circular(12.0),
                                         ),
                                       ),
                                       // color: primaryColor,
                                       child: Padding(
                                         padding:
-                                            EdgeInsets.fromLTRB(18, 3.0, 18, 3),
+                                            EdgeInsets.fromLTRB(18, 6.0, 18, 6),
                                         child: Text(
                                           appointment['Subject'].toString(),
                                           style: TextStyle(
@@ -329,6 +381,66 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                     // ),
                                   ],
                                 ),
+
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    SizedBox(
+                                      height: 20,
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 10.0),
+                                      child: Container(
+                                        color: appbar,
+                                        child: Padding(
+                                          padding: const EdgeInsets.fromLTRB(
+                                              12, 3.0, 12, 3),
+                                          child: Text(
+                                            DateFormat('dd').format(
+                                                DateTime.parse(
+                                                    appointment["Datetime"]
+                                                        .toString())),
+                                            style: const TextStyle(
+                                              color: Color.fromARGB(
+                                                  255, 255, 255, 255),
+                                              fontSize: 13,
+                                              backgroundColor: appbar,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                          top: 10.0, left: 3.0),
+                                      child: Text(
+                                        DateFormat('MMM, yyyy,').format(
+                                            DateTime.parse(
+                                                appointment["Datetime"]
+                                                    .toString())),
+                                        style: const TextStyle(
+                                          color: Color.fromARGB(255, 0, 0, 0),
+                                          fontSize: 12,
+                                        ),
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                          top: 10.0, left: 3.0),
+                                      child: Text(
+                                        DateFormat('h:mm a').format(
+                                            DateTime.parse(
+                                                appointment["Datetime"]
+                                                    .toString())),
+                                        style: const TextStyle(
+                                          color: Color.fromARGB(255, 0, 0, 0),
+                                          fontSize: 12,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -338,7 +450,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                     ),
                                     Flexible(
                                         child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
+                                      padding: const EdgeInsets.all(18.0),
                                       child: HtmlWidget(
                                         appointment['Message'],
                                         textStyle: TextStyle(fontSize: 13),

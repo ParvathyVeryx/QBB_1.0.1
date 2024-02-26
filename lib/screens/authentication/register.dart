@@ -110,6 +110,8 @@ class RegisterUserState extends State<RegisterUser> {
   String? campaignList;
   String? campainValue;
 
+  bool _hideColumn = false;
+
   Future<List<Map<String, dynamic>>> fetchMaritalStatusID(
       String maritalStatusID) async {
     SharedPreferences pref = await SharedPreferences.getInstance();
@@ -328,9 +330,10 @@ class RegisterUserState extends State<RegisterUser> {
     // Call a function to retrieve the token from shared preferences
     _retrieveToken();
     _qidController.addListener(_validateInput);
-    // _firstNameController.addListener(_validateInput);
-    // _lastNameController.addListener(_validateInput);
-    // _middleNameController.addListener(_validateInput);
+    _firstNameController.addListener(_validateFname);
+    _lastNameController.addListener(_validateLname);
+    _middleNameController.addListener(_validateMname);
+    _mobileNumberController.addListener(_validateMobileNumber);
     fetchSource();
     fetchCampaignList(id);
     fetchYear();
@@ -341,7 +344,7 @@ class RegisterUserState extends State<RegisterUser> {
     return alphabeticRegExp.hasMatch(value);
   }
 
-  String errorTextName = '';
+  String errorTextFName = '';
   void _validateInput() {
     setState(() {
       if (_qidController.text.isEmpty) {
@@ -365,12 +368,77 @@ class RegisterUserState extends State<RegisterUser> {
     // });
   }
 
+  void _validateFname() {
+    setState(() {
+      String inputText = _firstNameController.text;
+      if (containsNumbers(inputText)) {
+        // Input contains numbers, show an error
+        errorTextFName = 'enterValidName'.tr;
+      } else {
+        // Input is valid (does not contain numbers), clear the error
+        errorTextFName = '';
+      }
+    });
+  }
+
+  String errorTextLname = '';
+  void _validateLname() {
+    setState(() {
+      String inputText = _firstNameController.text;
+      if (containsNumbers(inputText)) {
+        // Input contains numbers, show an error
+        errorTextLname = 'enterValidName'.tr;
+      } else {
+        // Input is valid (does not contain numbers), clear the error
+        errorTextLname = '';
+      }
+    });
+  }
+
+  String errorTextMname = '';
+  void _validateMname() {
+    setState(() {
+      String inputText = _firstNameController.text;
+      if (containsNumbers(inputText)) {
+        // Input contains numbers, show an error
+        errorTextMname = 'enterValidName'.tr;
+      } else {
+        // Input is valid (does not contain numbers), clear the error
+        errorTextMname = '';
+      }
+    });
+  }
+
+  bool containsNumbers(String input) {
+    // Regular expression to check if the input contains numbers
+    final RegExp regex = RegExp(r'\d');
+    return regex.hasMatch(input);
+  }
+
   Future<void> _retrieveToken() async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       token = prefs.getString('token').toString();
       // Rest of the code...
     } catch (e) {}
+  }
+
+  String errorTextMobileNumber = '';
+  void _validateMobileNumber() {
+    setState(() {
+      String inputText = _mobileNumberController.text;
+      final RegExp regex = RegExp(r'^[0-9]+$');
+      if (inputText == "") {
+        errorTextMobileNumber = '';
+      }
+      if (!regex.hasMatch(inputText)) {
+        errorTextMobileNumber =
+            'invalidNumberPleaseEnterTheCorrectContactNumber'.tr;
+      } else {
+        // Input is valid (contains exactly 8 digits), clear the error
+        errorTextMobileNumber = '';
+      }
+    });
   }
 
   Future<void> _selectDate(BuildContext context) async {
@@ -443,6 +511,14 @@ class RegisterUserState extends State<RegisterUser> {
                           if (value.length == 11) {
                             // Extract the last two digits of the entered QID
                             qidLastTwoDigits = value.substring(1, 3);
+                            String qidDigits456 = value.substring(3, 6);
+
+                            // Check if digits 4, 5, and 6 are equal to 634
+                            bool hideColumn = qidDigits456 == '634';
+
+                            setState(() {
+                              _hideColumn = hideColumn;
+                            });
 
                             // Use FutureBuilder to handle asynchronous API call
                             await FutureBuilder<bool>(
@@ -492,7 +568,7 @@ class RegisterUserState extends State<RegisterUser> {
                       const SizedBox(
                         height: 20.0,
                       ),
-                      _buildRoundedBorderTextField(
+                      _buildRoundedBorderTextFieldFname(
                         labelText: 'firstName'.tr + '*',
                         labelTextColor:
                             const Color.fromARGB(255, 173, 173, 173),
@@ -507,9 +583,9 @@ class RegisterUserState extends State<RegisterUser> {
                         controller:
                             _firstNameController, // Add this line to associate the controller
                       ),
-                      const SizedBox(
-                        height: 20.0,
-                      ),
+                      // const SizedBox(
+                      //   height: 20.0,
+                      // ),
                       _buildRoundedBorderTextFieldNoValidation(
                         labelText: 'middleName'.tr,
                         labelTextColor:
@@ -523,10 +599,10 @@ class RegisterUserState extends State<RegisterUser> {
                         controller:
                             _middleNameController, // Add this line to associate the controller
                       ),
-                      const SizedBox(
-                        height: 20.0,
-                      ),
-                      _buildRoundedBorderTextField(
+                      // const SizedBox(
+                      //   height: 20.0,
+                      // ),
+                      _buildRoundedBorderTextFieldLName(
                           labelText: 'lastName'.tr + '*',
                           validator: (value) {
                             if (value!.isEmpty) {
@@ -539,9 +615,9 @@ class RegisterUserState extends State<RegisterUser> {
                           labelTextColor:
                               const Color.fromARGB(255, 173, 173, 173),
                           controller: _lastNameController),
-                      const SizedBox(
-                        height: 20.0,
-                      ),
+                      // const SizedBox(
+                      //   height: 20.0,
+                      // ),
                       _buildRoundedBorderTextFieldNoValidationHCN(
                           labelText: 'healthCardNo'.tr,
                           labelTextColor:
@@ -572,9 +648,9 @@ class RegisterUserState extends State<RegisterUser> {
                           labelTextColor:
                               const Color.fromARGB(255, 173, 173, 173),
                           controller: _mobileNumberController),
-                      const SizedBox(
-                        height: 20.0,
-                      ),
+                      // const SizedBox(
+                      //   height: 20.0,
+                      // ),
                       _buildDateTimeField(),
                       const SizedBox(
                         height: 20.0,
@@ -684,7 +760,7 @@ class RegisterUserState extends State<RegisterUser> {
                       const SizedBox(
                         height: 20.0,
                       ),
-                      _buildRoundedBorderTextField(
+                      _buildRoundedBorderTextFieldEmail(
                           labelText: '${'emailAddress'.tr}*',
                           labelTextColor:
                               const Color.fromARGB(255, 173, 173, 173),
@@ -704,7 +780,7 @@ class RegisterUserState extends State<RegisterUser> {
                       const SizedBox(
                         height: 20.0,
                       ),
-                      Column(
+                      _hideColumn == true ? Container() : Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
                           Text(
@@ -847,7 +923,7 @@ class RegisterUserState extends State<RegisterUser> {
                         ),
                       const SizedBox(height: 20.0),
                       if (_shouldShowOtherCampaign())
-                        _buildRoundedBorderTextField(
+                        _buildRoundedBorderTextFieldMobile(
                           labelText: 'otherPleaseSpecify'.tr + '*',
                           labelTextColor:
                               const Color.fromARGB(255, 173, 173, 173),
@@ -932,7 +1008,8 @@ class RegisterUserState extends State<RegisterUser> {
                                       true; // Set loading to true when button is pressed
                                 });
                                 int? QID = int.parse(_qidController.text);
-                                int nationalityID = int.parse(_qidController.text.substring(3, 6));
+                                int nationalityID = int.parse(
+                                    _qidController.text.substring(3, 6));
                                 // int QID = _qidController.text;
                                 // Create an instance of Register and populate its fields
                                 Register reg = Register(
@@ -1062,9 +1139,165 @@ class RegisterUserState extends State<RegisterUser> {
     TextEditingController? controller,
   }) {
     return TextFormField(
+      maxLength: 8,
+      keyboardType: TextInputType.number,
       controller: controller, // Set the controller
       decoration: InputDecoration(
-        errorText: errorTextName,
+        errorText: errorTextMobileNumber,
+        errorMaxLines: 2,
+        contentPadding: const EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 5.0),
+        labelText: labelText,
+        errorStyle: const TextStyle(
+          // Add your style properties here
+          color: primaryColor,
+          fontWeight: FontWeight.w600,
+          fontSize: 14.0,
+        ),
+        labelStyle: TextStyle(
+            color: labelTextColor, fontSize: 12), // Set the label text color
+        enabledBorder: const OutlineInputBorder(
+          borderSide: BorderSide(color: Color.fromARGB(255, 173, 173, 173)),
+          borderRadius: BorderRadius.only(
+            bottomLeft: Radius.circular(20.0),
+          ),
+        ),
+        focusedBorder: const OutlineInputBorder(
+          borderSide: BorderSide(color: Color.fromARGB(255, 173, 173, 173)),
+          borderRadius: BorderRadius.only(
+            bottomLeft: Radius.circular(20.0),
+          ),
+        ),
+        errorBorder: const OutlineInputBorder(
+          borderSide: BorderSide(color: Color.fromARGB(255, 173, 173, 173)),
+          borderRadius: BorderRadius.only(
+            bottomLeft: Radius.circular(20.0),
+          ),
+        ),
+        focusedErrorBorder: const OutlineInputBorder(
+          borderSide: BorderSide(color: Color.fromARGB(255, 173, 173, 173)),
+          borderRadius: BorderRadius.only(
+            bottomLeft: Radius.circular(20.0),
+          ),
+        ),
+      ),
+
+      validator: validator,
+    );
+  }
+
+  Widget _buildRoundedBorderTextFieldFname({
+    required String labelText,
+    required FormFieldValidator<String> validator,
+    Color? labelTextColor,
+    TextInputType? keyboardType, // Added labelTextColor parameter
+    TextEditingController? controller,
+  }) {
+    return TextFormField(
+      controller: controller, // Set the controller
+      decoration: InputDecoration(
+        errorText: errorTextFName,
+        contentPadding: const EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 5.0),
+        labelText: labelText,
+        errorStyle: const TextStyle(
+          // Add your style properties here
+          color: primaryColor,
+          fontWeight: FontWeight.w600,
+          fontSize: 14.0,
+        ),
+        labelStyle: TextStyle(
+            color: labelTextColor, fontSize: 12), // Set the label text color
+        enabledBorder: const OutlineInputBorder(
+          borderSide: BorderSide(color: Color.fromARGB(255, 173, 173, 173)),
+          borderRadius: BorderRadius.only(
+            bottomLeft: Radius.circular(20.0),
+          ),
+        ),
+        focusedBorder: const OutlineInputBorder(
+          borderSide: BorderSide(color: Color.fromARGB(255, 173, 173, 173)),
+          borderRadius: BorderRadius.only(
+            bottomLeft: Radius.circular(20.0),
+          ),
+        ),
+        errorBorder: const OutlineInputBorder(
+          borderSide: BorderSide(color: Color.fromARGB(255, 173, 173, 173)),
+          borderRadius: BorderRadius.only(
+            bottomLeft: Radius.circular(20.0),
+          ),
+        ),
+        focusedErrorBorder: const OutlineInputBorder(
+          borderSide: BorderSide(color: Color.fromARGB(255, 173, 173, 173)),
+          borderRadius: BorderRadius.only(
+            bottomLeft: Radius.circular(20.0),
+          ),
+        ),
+      ),
+
+      validator: validator,
+    );
+  }
+
+  Widget _buildRoundedBorderTextFieldLName({
+    required String labelText,
+    required FormFieldValidator<String> validator,
+    Color? labelTextColor,
+    TextInputType? keyboardType, // Added labelTextColor parameter
+    TextEditingController? controller,
+  }) {
+    return TextFormField(
+      controller: controller, // Set the controller
+      decoration: InputDecoration(
+        errorText: errorTextLname,
+        contentPadding: const EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 5.0),
+        labelText: labelText,
+        errorStyle: const TextStyle(
+          // Add your style properties here
+          color: primaryColor,
+          fontWeight: FontWeight.w600,
+          fontSize: 14.0,
+        ),
+        labelStyle: TextStyle(
+            color: labelTextColor, fontSize: 12), // Set the label text color
+        enabledBorder: const OutlineInputBorder(
+          borderSide: BorderSide(color: Color.fromARGB(255, 173, 173, 173)),
+          borderRadius: BorderRadius.only(
+            bottomLeft: Radius.circular(20.0),
+          ),
+        ),
+        focusedBorder: const OutlineInputBorder(
+          borderSide: BorderSide(color: Color.fromARGB(255, 173, 173, 173)),
+          borderRadius: BorderRadius.only(
+            bottomLeft: Radius.circular(20.0),
+          ),
+        ),
+        errorBorder: const OutlineInputBorder(
+          borderSide: BorderSide(color: Color.fromARGB(255, 173, 173, 173)),
+          borderRadius: BorderRadius.only(
+            bottomLeft: Radius.circular(20.0),
+          ),
+        ),
+        focusedErrorBorder: const OutlineInputBorder(
+          borderSide: BorderSide(color: Color.fromARGB(255, 173, 173, 173)),
+          borderRadius: BorderRadius.only(
+            bottomLeft: Radius.circular(20.0),
+          ),
+        ),
+      ),
+
+      validator: validator,
+    );
+  }
+
+  Widget _buildRoundedBorderTextFieldEmail({
+    required String labelText,
+    required FormFieldValidator<String> validator,
+    Color? labelTextColor,
+    TextInputType? keyboardType, // Added labelTextColor parameter
+    TextEditingController? controller,
+  }) {
+    return TextFormField(
+      controller: controller, // Set the controller
+      decoration: InputDecoration(
+        // errorText: errorTextFName,
         contentPadding: const EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 5.0),
         labelText: labelText,
         errorStyle: const TextStyle(
@@ -1217,6 +1450,7 @@ class RegisterUserState extends State<RegisterUser> {
       validator: validator,
       onChanged: onChanged,
       decoration: InputDecoration(
+        errorText: errorTextMname,
         contentPadding: const EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 5.0),
         labelText: labelText,
         errorStyle: const TextStyle(
@@ -1252,6 +1486,57 @@ class RegisterUserState extends State<RegisterUser> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildRoundedBorderTextFieldMobile({
+    required String labelText,
+    required FormFieldValidator<String> validator,
+    Color? labelTextColor,
+    TextInputType? keyboardType, // Added labelTextColor parameter
+    TextEditingController? controller,
+  }) {
+    return TextFormField(
+      controller: controller, // Set the controller
+      decoration: InputDecoration(
+        // errorText: errorTextFName,
+        contentPadding: const EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 5.0),
+        labelText: labelText,
+        errorStyle: const TextStyle(
+          // Add your style properties here
+          color: primaryColor,
+          fontWeight: FontWeight.w600,
+          fontSize: 14.0,
+        ),
+        labelStyle: TextStyle(
+            color: labelTextColor, fontSize: 12), // Set the label text color
+        enabledBorder: const OutlineInputBorder(
+          borderSide: BorderSide(color: Color.fromARGB(255, 173, 173, 173)),
+          borderRadius: BorderRadius.only(
+            bottomLeft: Radius.circular(20.0),
+          ),
+        ),
+        focusedBorder: const OutlineInputBorder(
+          borderSide: BorderSide(color: Color.fromARGB(255, 173, 173, 173)),
+          borderRadius: BorderRadius.only(
+            bottomLeft: Radius.circular(20.0),
+          ),
+        ),
+        errorBorder: const OutlineInputBorder(
+          borderSide: BorderSide(color: Color.fromARGB(255, 173, 173, 173)),
+          borderRadius: BorderRadius.only(
+            bottomLeft: Radius.circular(20.0),
+          ),
+        ),
+        focusedErrorBorder: const OutlineInputBorder(
+          borderSide: BorderSide(color: Color.fromARGB(255, 173, 173, 173)),
+          borderRadius: BorderRadius.only(
+            bottomLeft: Radius.circular(20.0),
+          ),
+        ),
+      ),
+
+      validator: validator,
     );
   }
 

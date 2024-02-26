@@ -19,59 +19,110 @@ class loginOrRegState extends State<loginOrReg> {
   Widget build(BuildContext context) {
     // TODO: implement build
     // ignore: deprecated_member_use
-    return WillPopScope(
-      onWillPop: () async {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const LoginPage()),
-        );
-        return true;
-      },
-      child: Scaffold(
-          appBar: AppBar(
-            systemOverlayStyle: SystemUiOverlayStyle(
-              statusBarColor: appbar,
-            ),
-            leading: IconButton(
-              icon: const Icon(
-                Icons.arrow_back,
-                color: textcolor,
-              ),
-              onPressed: () {
-                // Define the action you want to perform when the back button is pressed.
-                // Typically, this would be Navigator.of(context).pop() to navigate back.
-                Navigator.of(context).pop();
-              },
-            ),
-            title: Text(
-              'create/activateAcc'.tr,
-              style: const TextStyle(
-                  color: Colors.white,
-                  fontFamily: 'Impact',
-                  fontSize: 16 // Set the text color to white
-                  ),
-            ),
-            backgroundColor: appbar,
+    return Scaffold(
+        appBar: AppBar(
+          systemOverlayStyle: SystemUiOverlayStyle(
+            statusBarColor: appbar,
           ),
-          body: SingleChildScrollView(
-            child: Container(
-              height: MediaQuery.of(context).size.height * 0.85,
-              child: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    ClickableContainer(
-                      onTap: () {
-                        // Define the action you want to perform when the container is clicked.
-                        const RegistrationMode();
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const AccessUser()),
-                        );
-                      },
+          leading: IconButton(
+            icon: const Icon(
+              Icons.arrow_back,
+              color: textcolor,
+            ),
+            onPressed: () {
+              // Define the action you want to perform when the back button is pressed.
+              // Typically, this would be Navigator.of(context).pop() to navigate back.
+              Navigator.of(context).pop();
+            },
+          ),
+          title: Text(
+            'create/activateAcc'.tr,
+            style: const TextStyle(
+                color: Colors.white,
+                fontFamily: 'Impact',
+                fontSize: 16 // Set the text color to white
+                ),
+          ),
+          backgroundColor: appbar,
+        ),
+        body: SingleChildScrollView(
+          child: Container(
+            height: MediaQuery.of(context).size.height * 0.85,
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ClickableContainer(
+                    onTap: () {
+                      // Define the action you want to perform when the container is clicked.
+                      const RegistrationMode();
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const AccessUser()),
+                      );
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(
+                                  30.0, 10.0, 10.0, 10.0),
+                              child: Image.asset(
+                                "assets/images/active-acc.png",
+                                width: 40.0,
+                                height: 40.0,
+                                fit: BoxFit
+                                    .cover, // Adjust to your needs (e.g., BoxFit.contain, BoxFit.fill)
+                              ),
+                            ),
+                          ],
+                        ),
+    
+                        // Add some spacing between the image and text
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  'activateAccount'.tr,
+                                  style: const TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                Text(
+                                  'activateAccMsg'.tr,
+                                  style: const TextStyle(fontSize: 11),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 50.0,
+                  ),
+                  ClickableContainer(
+                    onTap: () {
+                      // Define the action you want to perform when the container is clicked.
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const RegistrationMode()),
+                      );
+                    },
+                    child: Center(
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Column(
@@ -81,7 +132,7 @@ class loginOrRegState extends State<loginOrReg> {
                                 padding: const EdgeInsets.fromLTRB(
                                     30.0, 10.0, 10.0, 10.0),
                                 child: Image.asset(
-                                  "assets/images/active-acc.png",
+                                  "assets/images/add.png",
                                   width: 40.0,
                                   height: 40.0,
                                   fit: BoxFit
@@ -90,7 +141,7 @@ class loginOrRegState extends State<loginOrReg> {
                               ),
                             ],
                           ),
-
+    
                           // Add some spacing between the image and text
                           Expanded(
                             child: Padding(
@@ -100,13 +151,13 @@ class loginOrRegState extends State<loginOrReg> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Text(
-                                    'activateAccount'.tr,
+                                    'register'.tr,
                                     style: const TextStyle(
                                         fontSize: 12,
                                         fontWeight: FontWeight.bold),
                                   ),
                                   Text(
-                                    'activateAccMsg'.tr,
+                                    'ifYouWantToParticipate'.tr,
                                     style: const TextStyle(fontSize: 11),
                                   ),
                                 ],
@@ -116,97 +167,37 @@ class loginOrRegState extends State<loginOrReg> {
                         ],
                       ),
                     ),
-                    const SizedBox(
-                      height: 50.0,
-                    ),
-                    ClickableContainer(
-                      onTap: () {
-                        // Define the action you want to perform when the container is clicked.
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const RegistrationMode()),
-                        );
-                      },
-                      child: Center(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.fromLTRB(
-                                      30.0, 10.0, 10.0, 10.0),
-                                  child: Image.asset(
-                                    "assets/images/add.png",
-                                    width: 40.0,
-                                    height: 40.0,
-                                    fit: BoxFit
-                                        .cover, // Adjust to your needs (e.g., BoxFit.contain, BoxFit.fill)
-                                  ),
-                                ),
-                              ],
-                            ),
-
-                            // Add some spacing between the image and text
-                            Expanded(
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      'register'.tr,
-                                      style: const TextStyle(
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    Text(
-                                      'ifYouWantToParticipate'.tr,
-                                      style: const TextStyle(fontSize: 11),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 15.0,
-                    ),
-                    // Text(
-                    //   'byRegisteringOrActivatingAccountYouAgreeToOurTermsAndConditions'.tr,
-                    //   style: const TextStyle(
-                    //       color: Color.fromARGB(255, 107, 107, 107)),
-                    // ),
-                    // TextButton(
-                    //   onPressed: () {
-                    //     // const RegistrationMode();  showDialog(
-                    //     showDialog(
-                    //       context: context,
-                    //       builder: (BuildContext context) {
-                    //         return TermsAndConditionsDialog();
-                    //       },
-                    //     );
-                    //   },
-                    //   child: Text(
-                    //     'termsConditions'.tr,
-                    //     style: const TextStyle(
-                    //         color: primaryColor,
-                    //         decoration: TextDecoration.underline),
-                    //   ),
-                    // )
-                  ],
-                ),
+                  ),
+                  const SizedBox(
+                    height: 15.0,
+                  ),
+                  // Text(
+                  //   'byRegisteringOrActivatingAccountYouAgreeToOurTermsAndConditions'.tr,
+                  //   style: const TextStyle(
+                  //       color: Color.fromARGB(255, 107, 107, 107)),
+                  // ),
+                  // TextButton(
+                  //   onPressed: () {
+                  //     // const RegistrationMode();  showDialog(
+                  //     showDialog(
+                  //       context: context,
+                  //       builder: (BuildContext context) {
+                  //         return TermsAndConditionsDialog();
+                  //       },
+                  //     );
+                  //   },
+                  //   child: Text(
+                  //     'termsConditions'.tr,
+                  //     style: const TextStyle(
+                  //         color: primaryColor,
+                  //         decoration: TextDecoration.underline),
+                  //   ),
+                  // )
+                ],
               ),
             ),
-          )),
-    );
+          ),
+        ));
   }
 }
 

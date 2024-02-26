@@ -56,6 +56,8 @@ class BookResultsState extends State<BookResults> {
   String availabilityCalendarid = '';
   String appointmentDate = '';
   String tList = '';
+
+  String checkAvailabilityCalendar = '';
   Future<void> fetchApiResponseFromSharedPrefs() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     String? apiResponseJson = pref.getString('apiResponseResults');
@@ -1017,6 +1019,10 @@ class BookResultsState extends State<BookResults> {
                                                       elevation: 0,
                                                     ),
                                                     onPressed: () async {
+                                                      checkAvailabilityCalendar =
+                                                          availabiltyCandarId[
+                                                                  index]
+                                                              .toString();
                                                       String? uD = DateFormat(
                                                               'dd/MM/yyyy')
                                                           .format(
@@ -1209,63 +1215,71 @@ class BookResultsState extends State<BookResults> {
                               elevation: 0,
                             ),
                             onPressed: () {
-                              showDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return AlertDialog(
-                                    backgroundColor: Colors.white,
-                                    shape: const RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.only(
-                                        bottomLeft: Radius.circular(
-                                            50.0), // Adjust the radius as needed
-                                      ),
-                                    ),
-                                    content: Padding(
-                                      padding: const EdgeInsets.only(top: 12.0),
-                                      child: Text(
-                                        "areYouSure".tr,
-                                        style: const TextStyle(
-                                            color: Color.fromARGB(
-                                                255, 74, 74, 74)),
-                                      ),
-                                    ),
-                                    actions: <Widget>[
-                                      Divider(),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.end,
-                                        children: [
-                                          TextButton(
-                                            onPressed: () async {
-                                              Navigator.of(context)
-                                                  .pop(); // Close the dialog
-                                            },
-                                            child: Text(
-                                              'cancelButton'.tr,
-                                              style: TextStyle(
-                                                  color: secondaryColor),
+                              checkAvailabilityCalendar == ""
+                                  ? showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return ErrorPopup(
+                                            errorMessage: "selectSlot".tr);
+                                      })
+                                  : showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return AlertDialog(
+                                          backgroundColor: Colors.white,
+                                          shape: const RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.only(
+                                              bottomLeft: Radius.circular(
+                                                  50.0), // Adjust the radius as needed
                                             ),
                                           ),
-                                          SizedBox(
-                                            width: 30,
-                                          ),
-                                          TextButton(
-                                            onPressed: () async {
-                                              confirmAppointment(context);
-                                              // Navigator.pop(context);
-                                            },
+                                          content: Padding(
+                                            padding: const EdgeInsets.only(
+                                                top: 12.0),
                                             child: Text(
-                                              'confirm'.tr,
-                                              style: TextStyle(
-                                                  color: secondaryColor),
+                                              "areYouSure".tr,
+                                              style: const TextStyle(
+                                                  color: Color.fromARGB(
+                                                      255, 74, 74, 74)),
                                             ),
                                           ),
-                                        ],
-                                      ),
-                                    ],
-                                  );
-                                },
-                              );
+                                          actions: <Widget>[
+                                            Divider(),
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.end,
+                                              children: [
+                                                TextButton(
+                                                  onPressed: () async {
+                                                    Navigator.of(context)
+                                                        .pop(); // Close the dialog
+                                                  },
+                                                  child: Text(
+                                                    'cancelButton'.tr,
+                                                    style: TextStyle(
+                                                        color: secondaryColor),
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  width: 30,
+                                                ),
+                                                TextButton(
+                                                  onPressed: () async {
+                                                    confirmAppointment(context);
+                                                    // Navigator.pop(context);
+                                                  },
+                                                  child: Text(
+                                                    'confirm'.tr,
+                                                    style: TextStyle(
+                                                        color: secondaryColor),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    );
                             },
                             child: Text(
                               'confirm'.tr,

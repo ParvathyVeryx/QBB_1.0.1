@@ -1210,6 +1210,7 @@ class BookAppScreenState extends State<BookAppScreen> {
   String availabilityCalendarid = '';
   String appointmentDate = '';
   String tList = '';
+  String checkAvailabilityCalendar = '';
 
   Future<void> fetchApiResponseFromSharedPrefs() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
@@ -1320,6 +1321,7 @@ class BookAppScreenState extends State<BookAppScreen> {
   }
 
   bool isNextWeek = false;
+  double containerWidth = 1100;
 
   // Future<void> fetchDateList(DateTime selectedDate) async {
   //   SharedPreferences pref = await SharedPreferences.getInstance();
@@ -1431,6 +1433,8 @@ class BookAppScreenState extends State<BookAppScreen> {
         availabiltyCandarId = displayedACI;
         print(mergedList.length);
         print(availabiltyCandarId.length);
+        containerWidth = upcomingDateList.length.toDouble() * 150.0 * 2;
+        print(containerWidth);
       });
 
       print("Merged Date List: $upcomingDateList");
@@ -1459,6 +1463,8 @@ class BookAppScreenState extends State<BookAppScreen> {
         }
         availabiltyCandarId = displayedACI;
         print(availabilityCalendarid);
+        containerWidth = upcomingDateList.length.toDouble() * 150.0 * 2;
+        print(containerWidth);
       });
 
       print("Merged next Date List: $upcomingDateList");
@@ -1484,6 +1490,8 @@ class BookAppScreenState extends State<BookAppScreen> {
               : displayedACI.add(listACI[i]);
         }
         availabiltyCandarId = displayedACI;
+        containerWidth = upcomingDateList.length.toDouble() * 150.0 * 2;
+        print(containerWidth);
       });
 
       print("Merged next arrow Date List: $upcomingDateList");
@@ -2106,10 +2114,7 @@ class BookAppScreenState extends State<BookAppScreen> {
                                 child: LayoutBuilder(
                                   builder: (context, constraints) {
                                     return Container(
-                                      width: 107.0 *
-                                          upcomingDateList.length.toDouble() *
-                                          2 // Use available width as the width
-                                      , // Default width when isNextWeekArrowRight is false
+                                      width: containerWidth,
                                       height: 120,
                                       child: ListView(
                                         scrollDirection: Axis.horizontal,
@@ -2236,6 +2241,10 @@ class BookAppScreenState extends State<BookAppScreen> {
                                                               .format(DateTime
                                                                   .now())
                                                               .runtimeType);
+                                                          checkAvailabilityCalendar =
+                                                              availabiltyCandarId[
+                                                                      index]
+                                                                  .toString();
                                                           // availabiltyCandarId[index];
                                                           // print("ACI" +
                                                           //     availabiltyCandarId[index]
@@ -2398,63 +2407,71 @@ class BookAppScreenState extends State<BookAppScreen> {
                               elevation: 0,
                             ),
                             onPressed: () {
-                              showDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return AlertDialog(
-                                    backgroundColor: Colors.white,
-                                    shape: const RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.only(
-                                        bottomLeft: Radius.circular(
-                                            50.0), // Adjust the radius as needed
-                                      ),
-                                    ),
-                                    content: Padding(
-                                      padding: const EdgeInsets.only(top: 12.0),
-                                      child: Text(
-                                        "areYouSure".tr,
-                                        style: const TextStyle(
-                                            color: Color.fromARGB(
-                                                255, 74, 74, 74)),
-                                      ),
-                                    ),
-                                    actions: <Widget>[
-                                      Divider(),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.end,
-                                        children: [
-                                          TextButton(
-                                            onPressed: () async {
-                                              Navigator.of(context)
-                                                  .pop(); // Close the dialog
-                                            },
-                                            child: Text(
-                                              'cancelButton'.tr,
-                                              style: TextStyle(
-                                                  color: secondaryColor),
+                              checkAvailabilityCalendar == ""
+                                  ? showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return ErrorPopup(
+                                            errorMessage: "selectSlot".tr);
+                                      })
+                                  : showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return AlertDialog(
+                                          backgroundColor: Colors.white,
+                                          shape: const RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.only(
+                                              bottomLeft: Radius.circular(
+                                                  50.0), // Adjust the radius as needed
                                             ),
                                           ),
-                                          SizedBox(
-                                            width: 30,
-                                          ),
-                                          TextButton(
-                                            onPressed: () async {
-                                              confirmAppointment(context);
-                                              // Navigator.pop(context);
-                                            },
+                                          content: Padding(
+                                            padding: const EdgeInsets.only(
+                                                top: 12.0),
                                             child: Text(
-                                              'confirm'.tr,
-                                              style: TextStyle(
-                                                  color: secondaryColor),
+                                              "areYouSure".tr,
+                                              style: const TextStyle(
+                                                  color: Color.fromARGB(
+                                                      255, 74, 74, 74)),
                                             ),
                                           ),
-                                        ],
-                                      ),
-                                    ],
-                                  );
-                                },
-                              );
+                                          actions: <Widget>[
+                                            Divider(),
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.end,
+                                              children: [
+                                                TextButton(
+                                                  onPressed: () async {
+                                                    Navigator.of(context)
+                                                        .pop(); // Close the dialog
+                                                  },
+                                                  child: Text(
+                                                    'cancelButton'.tr,
+                                                    style: TextStyle(
+                                                        color: secondaryColor),
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  width: 30,
+                                                ),
+                                                TextButton(
+                                                  onPressed: () async {
+                                                    confirmAppointment(context);
+                                                    // Navigator.pop(context);
+                                                  },
+                                                  child: Text(
+                                                    'confirm'.tr,
+                                                    style: TextStyle(
+                                                        color: secondaryColor),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    );
                             },
                             child: Text(
                               'confirm'.tr,
