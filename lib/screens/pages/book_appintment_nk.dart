@@ -44,6 +44,7 @@ class BookAppointmentsState extends State<BookAppointments> {
   int? selectedStudyId;
   bool isLoading = false; // Added flag for loading indicator
   int currentIndex = 2;
+  bool? showDot;
   final screens = [
     const HomeScreen(),
     const Appointments(),
@@ -54,35 +55,38 @@ class BookAppointmentsState extends State<BookAppointments> {
 
   @override
   void initState() {
+    showDotNotification();
     super.initState();
+    showDotNotification();
+    fetchStudyMasterAPI();
     // Start fetching study names
-    fetchStudyMasterAPI().then((_) {
-      // Set the selectedValue based on the provided studyName
-      // if (widget.studyName != null && studyNames.contains(widget.studyName!)) {
-      //   int selectedStudyIndex = studyNames.indexOf(widget.studyName!);
-      //   if (selectedStudyIndex != -1) {
-      //     setState(() {
-      //       selectedValue = widget.studyName!;
-      //       selectedStudyId = widget.studyId;
-      //       showSecondDropdown = true;
-      //     });
-      //     fetchVisitTypes(selectedStudyId!);
-      //   }
-      // } else {
-        // If studyName is not provided, select the first study in the list
-        // setState(() {
-        //   selectedValue =
-        //       studyNames.isNotEmpty ? studyNames.first : 'Select studies';
-        //   selectedStudyId = studyIds.isNotEmpty ? studyIds.first : null;
-        //   showSecondDropdown = studyNames.isNotEmpty;
-        // });
-        // if (studyIds.isNotEmpty) {
-        //   fetchVisitTypes(selectedStudyId!);
-        // }
-      // }
-      selectedStudyId = studyIds.isNotEmpty ? studyIds.first : null;
-      // fetchVisitTypes(selectedStudyId!);
-    });
+    // fetchStudyMasterAPI().then((_) {
+    // Set the selectedValue based on the provided studyName
+    // if (widget.studyName != null && studyNames.contains(widget.studyName!)) {
+    //   int selectedStudyIndex = studyNames.indexOf(widget.studyName!);
+    //   if (selectedStudyIndex != -1) {
+    //     setState(() {
+    //       selectedValue = widget.studyName!;
+    //       selectedStudyId = widget.studyId;
+    //       showSecondDropdown = true;
+    //     });
+    //     fetchVisitTypes(selectedStudyId!);
+    //   }
+    // } else {
+    // If studyName is not provided, select the first study in the list
+    // setState(() {
+    //   selectedValue =
+    //       studyNames.isNotEmpty ? studyNames.first : 'Select studies';
+    //   selectedStudyId = studyIds.isNotEmpty ? studyIds.first : null;
+    //   showSecondDropdown = studyNames.isNotEmpty;
+    // });
+    // if (studyIds.isNotEmpty) {
+    //   fetchVisitTypes(selectedStudyId!);
+    // }
+    // }
+    //   selectedStudyId = studyIds.isNotEmpty ? studyIds.first : null;
+    //   // fetchVisitTypes(selectedStudyId!);
+    // });
   }
 
   Future<void> fetchStudyMasterAPI() async {
@@ -175,6 +179,15 @@ class BookAppointmentsState extends State<BookAppointments> {
     }
   }
 
+  Future<void> showDotNotification() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    String sD = pref.getString("showDot").toString();
+    print("Notification DOt" + sD);
+    setState(() {
+      sD == "null" ? showDot = true : showDot = false;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return PopScope(
@@ -217,7 +230,16 @@ class BookAppointmentsState extends State<BookAppointments> {
                     ],
                   ),
                   IconButton(
-                    onPressed: () {
+                    onPressed: () async {
+                      SharedPreferences pref =
+                          await SharedPreferences.getInstance();
+
+                      setState(() {
+                        showDot = false;
+                        pref.setString("showDot", "false");
+                      });
+
+                      // Perform actions on the first click, such as navigating or showing a notification.
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -225,10 +247,30 @@ class BookAppointmentsState extends State<BookAppointments> {
                         ),
                       );
                     },
-                    icon: const Icon(Icons.notifications_none_outlined),
+                    icon: Stack(
+                      children: [
+                        Icon(Icons.notifications_none_outlined),
+                        if (showDot == true)
+                          Positioned(
+                            top: 0,
+                            right: 0,
+                            bottom: 3,
+                            child: Container(
+                              padding: EdgeInsets.all(6),
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: primaryColor,
+                              ),
+                              child: Text(
+                                '', // You can customize this text or use an empty container for just a dot.
+                              ),
+                            ),
+                          ),
+                      ],
+                    ),
                     iconSize: 30.0,
                     color: Colors.white,
-                  )
+                  ),
                 ],
               ),
               backgroundColor: appbar,

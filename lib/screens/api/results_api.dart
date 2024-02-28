@@ -5,16 +5,163 @@ import 'package:QBB/screens/api/userid.dart';
 import 'package:QBB/screens/pages/book_appointment_date_slot.dart';
 import 'package:QBB/screens/pages/erorr_popup.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_file_downloader/flutter_file_downloader.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:open_file/open_file.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../constants.dart';
 import '../../nirmal_api.dart/profile_api.dart';
 import '../pages/loader.dart';
 import 'package:path_provider/path_provider.dart';
+
+import 'dart:io';
+import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:path/path.dart' as path;
+
+Future<void> downloadNewTest(
+  BuildContext context,
+  String base64Data,
+  String filename,
+) async {
+  try {
+    List<int> bytes;
+    base64Data =
+        "data:application/pdf;base64,JVBERi0xLjcKCjQgMCBvYmoKPDwKL0JpdHNQZXJDb21wb25lbnQgOAovQ29sb3JTcGFjZSAvRGV2aWNlUkdCCi9GaWx0ZXIgL0RDVERlY29kZQovSGVpZ2h0IDExNwovTGVuZ3RoIDQxNTIKL1N1YnR5cGUgL0ltYWdlCi9UeXBlIC9YT2JqZWN0Ci9XaWR0aCAxOTgKPj4Kc3RyZWFtCv/Y/+AAEEpGSUYAAQEBAGAAYAAA/9sAQwANCQoLCggNCwsLDw4NEBQhFRQSEhQoHR4YITAqMjEvKi4tNDtLQDQ4RzktLkJZQkdOUFRVVDM/XWNcUmJLU1RR/9sAQwEODw8UERQnFRUnUTYuNlFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFR/8AAEQgAdQDGAwEiAAIRAQMRAf/EAB8AAAEFAQEBAQEBAAAAAAAAAAABAgMEBQYHCAkKC//EALUQAAIBAwMCBAMFBQQEAAABfQECAwAEEQUSITFBBhNRYQcicRQygZGhCCNCscEVUtHwJDNicoIJChYXGBkaJSYnKCkqNDU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6g4SFhoeIiYqSk5SVlpeYmZqio6Slpqeoqaqys7S1tre4ubrCw8TFxsfIycrS09TV1tfY2drh4uPk5ebn6Onq8fLz9PX29/j5+v/EAB8BAAMBAQEBAQEBAQEAAAAAAAABAgMEBQYHCAkKC//EALURAAIBAgQEAwQHBQQEAAECdwABAgMRBAUhMQYSQVEHYXETIjKBCBRCkaGxwQkjM1LwFWJy0QoWJDThJfEXGBkaJicoKSo1Njc4OTpDREVGR0hJSlNUVVZXWFlaY2RlZmdoaWpzdHV2d3h5eoKDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXNXXNX";
+    String encodedData =
+        base64Data.substring('data:application/pdf;base64,'.length);
+    print(encodedData);
+    print(encodedData.length);
+    encodedData = encodedData.replaceAll(RegExp('[^A-Za-z0-9+/=]'), '');
+
+    var status = await Permission.storage.status;
+    if (!status.isGranted) {
+      await Permission.storage.request();
+    }
+    String pathOld = (await getExternalStorageDirectory())!.path;
+    String path = await "/storage/emulated/0/Download";
+    // String path = (await getApplicationDocumentsDirectory()).path;
+    bytes = base64.decode(encodedData);
+    File file = File("$path/Results_27-02.pdf");
+
+    await file.writeAsBytes(bytes);
+
+    // Show success message
+    await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return ErrorPopup(
+          errorMessage: "FILE DOWNLOADED TO PATH: ${file.path}",
+        );
+      },
+    );
+
+    print('FILE DOWNLOADED TO PATH: ${file.path}');
+  } catch (error) {
+    print('PDF Download failed: $error');
+    await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return ErrorPopup(
+          errorMessage: "Failed to Download: $error",
+        );
+      },
+    );
+  }
+}
+
+// Future<void> downloadNew(
+//     BuildContext context, String base64Data, String filename) async {
+//   try {
+//     String base64DataHardcoded =
+//         "data:application/pdf;base64,JVBERi0xLjcKCjQgMCBvYmoKPDwKL0JpdHNQZXJDb21wb25lbnQgOAovQ29sb3JTcGFjZSAvRGV2aWNlUkdCCi9GaWx0ZXIgL0RDVERlY29kZQovSGVpZ2h0IDExNwovTGVuZ3RoIDQxNTIKL1N1YnR5cGUgL0ltYWdlCi9UeXBlIC9YT2JqZWN0Ci9XaWR0aCAxOTgKPj4Kc3RyZWFtCv/Y/+AAEEpGSUYAAQEBAGAAYAAA/9sAQwANCQoLCggNCwsLDw4NEBQhFRQSEhQoHR4YITAqMjEvKi4tNDtLQDQ4RzktLkJZQkdOUFRVVDM/XWNcUmJLU1RR/9sAQwEODw8UERQnFRUnUTYuNlFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFR/8AAEQgAdQDGAwEiAAIRAQMRAf/EAB8AAAEFAQEBAQEBAAAAAAAAAAABAgMEBQYHCAkKC//EALUQAAIBAwMCBAMFBQQEAAABfQECAwAEEQUSITFBBhNRYQcicRQygZGhCCNCscEVUtHwJDNicoIJChYXGBkaJSYnKCkqNDU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6g4SFhoeIiYqSk5SVlpeYmZqio6Slpqeoqaqys7S1tre4ubrCw8TFxsfIycrS09TV1tfY2drh4uPk5ebn6Onq8fLz9PX29/j5+v/EAB8BAAMBAQEBAQEBAQEAAAAAAAABAgMEBQYHCAkKC//EALURAAIBAgQEAwQHBQQEAAECdwABAgMRBAUhMQYSQVEHYXETIjKBCBRCkaGxwQkjM1LwFWJy0QoWJDThJfEXGBkaJicoKSo1Njc4OTpDREVGR0hJSlNUVVZXWFlaY2RlZmdoaWpzdHV2d3h5eoKDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NX";
+//     int commaIndex = base64Data.indexOf(',');
+
+//     // Extract the base64-encoded data after the comma
+//     String encodedData = base64Data.substring(commaIndex + 1);
+//     List<int> bytes = base64.decode(encodedData);
+
+//     // Check and request write permission
+//     var status = await Permission.storage.status;
+//     if (!status.isGranted) {
+//       await Permission.storage.request();
+//     }
+//     String path = (await getExternalStorageDirectory())!.path;
+
+//     File file = File("$path/$filename");
+//     await file.writeAsBytes(bytes);
+//     await showDialog(
+//       context: context,
+//       builder: (BuildContext context) {
+//         return ErrorPopup(
+//             errorMessage: "FILE DOWNLOADED TO PATH: ${file.path}");
+//       },
+//     );
+
+//     print('FILE DOWNLOADED TO PATH: ${file.path}');
+//   } catch (error) {
+//     print('PDF Download failed: $error');
+//     await showDialog(
+//       context: context,
+//       builder: (BuildContext context) {
+//         return ErrorPopup(errorMessage: "Failed to Download $error");
+//       },
+//     );
+//   }
+// }
+
+Future<void> downloadNew(
+  BuildContext context,
+  String base64Data,
+  String filename,
+) async {
+  try {
+    List<int> bytes;
+    // base64Data =
+    //     "data:application/pdf;base64,JVBERi0xLjcKCjQgMCBvYmoKPDwKL0JpdHNQZXJDb21wb25lbnQgOAovQ29sb3JTcGFjZSAvRGV2aWNlUkdCCi9GaWx0ZXIgL0RDVERlY29kZQovSGVpZ2h0IDExNwovTGVuZ3RoIDQxNTIKL1N1YnR5cGUgL0ltYWdlCi9UeXBlIC9YT2JqZWN0Ci9XaWR0aCAxOTgKPj4Kc3RyZWFtCv/Y/+AAEEpGSUYAAQEBAGAAYAAA/9sAQwANCQoLCggNCwsLDw4NEBQhFRQSEhQoHR4YITAqMjEvKi4tNDtLQDQ4RzktLkJZQkdOUFRVVDM/XWNcUmJLU1RR/9sAQwEODw8UERQnFRUnUTYuNlFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFR/8AAEQgAdQDGAwEiAAIRAQMRAf/EAB8AAAEFAQEBAQEBAAAAAAAAAAABAgMEBQYHCAkKC//EALUQAAIBAwMCBAMFBQQEAAABfQECAwAEEQUSITFBBhNRYQcicRQygZGhCCNCscEVUtHwJDNicoIJChYXGBkaJSYnKCkqNDU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6g4SFhoeIiYqSk5SVlpeYmZqio6Slpqeoqaqys7S1tre4ubrCw8TFxsfIycrS09TV1tfY2drh4uPk5ebn6Onq8fLz9PX29/j5+v/EAB8BAAMBAQEBAQEBAQEAAAAAAAABAgMEBQYHCAkKC//EALURAAIBAgQEAwQHBQQEAAECdwABAgMRBAUhMQYSQVEHYXETIjKBCBRCkaGxwQkjM1LwFWJy0QoWJDThJfEXGBkaJicoKSo1Njc4OTpDREVGR0hJSlNUVVZXWFlaY2RlZmdoaWpzdHV2d3h5eoKDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXNXXNX";
+    String encodedData =
+        base64Data.substring('data:application/pdf;base64,'.length);
+    print(encodedData);
+    print(encodedData.length);
+    encodedData = encodedData.replaceAll(RegExp('[^A-Za-z0-9+/=]'), '');
+
+    var status = await Permission.storage.status;
+    if (!status.isGranted) {
+      await Permission.storage.request();
+    }
+    String pathOld = (await getExternalStorageDirectory())!.path;
+    String path = await "/storage/emulated/0/Download";
+    bytes = base64.decode(encodedData);
+    File file = File("$path/$filename");
+
+    await file.writeAsBytes(bytes);
+
+    // Show success message
+    await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return ErrorPopup(
+          errorMessage: "File Downloaded at ${file.path}",
+        );
+      },
+    );
+  } catch (error) {
+    print('PDF Download failed: $error');
+    await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return ErrorPopup(
+          errorMessage: "Failed to Download: $error",
+        );
+      },
+    );
+  }
+}
 
 Future<void> getresults(
   BuildContext context,
@@ -79,6 +226,10 @@ Future<void> getresults(
           builder: (BuildContext context) {
             return AlertDialog(
               backgroundColor: Colors.white,
+              title: Text(
+                'pleaseEnterOTPToDownloadTheResult'.tr,
+                style: TextStyle(fontSize: 12),
+              ),
               shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.only(
                   bottomLeft:
@@ -98,7 +249,7 @@ Future<void> getresults(
                     ),
                     contentPadding:
                         const EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 5.0),
-                    hintText: 'pleaseEnterOtp'.tr,
+                    // hintText: 'pleaseEnterOtp'.tr,
                     enabledBorder: const OutlineInputBorder(
                       borderSide:
                           BorderSide(color: Color.fromARGB(255, 173, 173, 173)),
@@ -139,7 +290,7 @@ Future<void> getresults(
                     Navigator.pop(context); // Close the dialog
                   },
                   child: Text(
-                    'ok'.tr,
+                    'submit'.tr,
                     style: TextStyle(color: secondaryColor),
                   ),
                 ),
@@ -222,7 +373,7 @@ Future<void> getOTPForDownload(
       print(base64DataURL);
       print(filename);
 
-      await downloadAndOpenPDF(base64DataURL, filename);
+      await downloadNew(context, base64DataURL, filename);
 
 // Use pdfViewer as needed, such as navigating to a new screen
 
@@ -380,6 +531,8 @@ class _PdfViewerState extends State<PdfViewer> {
       print('PDF Download failed: $error');
     }
   }
+
+  //You can download a single file
 
   @override
   Widget build(BuildContext context) {

@@ -54,18 +54,12 @@ class _NotificationScreenState extends State<NotificationScreen> {
           'Authorization': 'Bearer ${token.replaceAll('"', '')}',
         },
       );
-      print(response.body);
 
       //     response.body.toString());
       if (response.statusCode == 200) {
         // Parse and handle the response body
         var responseBody = json.decode(response.body);
         notifications = List<Map<String, dynamic>>.from(responseBody);
-        String dt = notifications[0]["Datetime"].toString();
-        DateTime dT = DateTime.parse(dt);
-
-        print(DateFormat('dd/MM/yyyy').format(dT));
-        print(dT);
         return notifications;
       } else {
         // Handle errors

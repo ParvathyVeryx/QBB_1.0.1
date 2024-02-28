@@ -75,8 +75,8 @@ class _MyAppState extends State<MyApp> {
 
   _clearSharedPreferences() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs
-        .remove("langSelected"); // Clear all data from shared preferences
+    await prefs.remove("langSelected");
+    await prefs.remove("showDot");
   }
 
   Future<void> _initApp() async {

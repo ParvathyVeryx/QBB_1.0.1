@@ -90,6 +90,7 @@ class ResultsState extends State<Results> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    showDotNotification();
     _isMounted = true;
     fetchData();
   }
@@ -105,6 +106,16 @@ class ResultsState extends State<Results> {
   bool isDateGreaterThanOrEqualToToday(DateTime dateToCheck) {
     DateTime today = DateTime.now();
     return dateToCheck.isAfter(today) || dateToCheck.isAtSameMomentAs(today);
+  }
+
+  bool? showDot;
+  Future<void> showDotNotification() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    String sD = pref.getString("showDot").toString();
+
+    setState(() {
+      sD == "null" ? showDot = true : showDot = false;
+    });
   }
 
   @override
@@ -156,17 +167,47 @@ class ResultsState extends State<Results> {
                       //   width: 50.0,
                       // ),
                       IconButton(
-                        onPressed: () {
+                        onPressed: () async {
+                          SharedPreferences pref =
+                              await SharedPreferences.getInstance();
+
+                          setState(() {
+                            showDot = false;
+                            pref.setString("showDot", "false");
+                          });
+
+                          // Perform actions on the first click, such as navigating or showing a notification.
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => NotificationScreen()),
+                              builder: (context) => NotificationScreen(),
+                            ),
                           );
                         },
-                        icon: const Icon(Icons.notifications_none_outlined),
+                        icon: Stack(
+                          children: [
+                            Icon(Icons.notifications_none_outlined),
+                            if (showDot == true)
+                              Positioned(
+                                top: 0,
+                                right: 0,
+                                bottom: 3,
+                                child: Container(
+                                  padding: EdgeInsets.all(6),
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: primaryColor,
+                                  ),
+                                  child: Text(
+                                    '', // You can customize this text or use an empty container for just a dot.
+                                  ),
+                                ),
+                              ),
+                          ],
+                        ),
                         iconSize: 30.0,
-                        color: textcolor,
-                      )
+                        color: Colors.white,
+                      ),
                     ],
                   ),
                   backgroundColor: appbar,
@@ -226,17 +267,47 @@ class ResultsState extends State<Results> {
                       //   width: 50.0,
                       // ),
                       IconButton(
-                        onPressed: () {
+                        onPressed: () async {
+                          SharedPreferences pref =
+                              await SharedPreferences.getInstance();
+
+                          setState(() {
+                            showDot = false;
+                            pref.setString("showDot", "false");
+                          });
+
+                          // Perform actions on the first click, such as navigating or showing a notification.
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => NotificationScreen()),
+                              builder: (context) => NotificationScreen(),
+                            ),
                           );
                         },
-                        icon: const Icon(Icons.notifications_none_outlined),
+                        icon: Stack(
+                          children: [
+                            Icon(Icons.notifications_none_outlined),
+                            if (showDot == true)
+                              Positioned(
+                                top: 0,
+                                right: 0,
+                                bottom: 3,
+                                child: Container(
+                                  padding: EdgeInsets.all(6),
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: primaryColor,
+                                  ),
+                                  child: Text(
+                                    '', // You can customize this text or use an empty container for just a dot.
+                                  ),
+                                ),
+                              ),
+                          ],
+                        ),
                         iconSize: 30.0,
-                        color: textcolor,
-                      )
+                        color: Colors.white,
+                      ),
                     ],
                   ),
                   backgroundColor: appbar,
@@ -294,17 +365,47 @@ class ResultsState extends State<Results> {
                   //   width: 50.0,
                   // ),
                   IconButton(
-                    onPressed: () {
+                    onPressed: () async {
+                      SharedPreferences pref =
+                          await SharedPreferences.getInstance();
+
+                      setState(() {
+                        showDot = false;
+                        pref.setString("showDot", "false");
+                      });
+
+                      // Perform actions on the first click, such as navigating or showing a notification.
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => NotificationScreen()),
+                          builder: (context) => NotificationScreen(),
+                        ),
                       );
                     },
-                    icon: const Icon(Icons.notifications_none_outlined),
+                    icon: Stack(
+                      children: [
+                        Icon(Icons.notifications_none_outlined),
+                        if (showDot == true)
+                          Positioned(
+                            top: 0,
+                            right: 0,
+                            bottom: 3,
+                            child: Container(
+                              padding: EdgeInsets.all(6),
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: primaryColor,
+                              ),
+                              child: Text(
+                                '', // You can customize this text or use an empty container for just a dot.
+                              ),
+                            ),
+                          ),
+                      ],
+                    ),
                     iconSize: 30.0,
-                    color: textcolor,
-                  )
+                    color: Colors.white,
+                  ),
                 ],
               ),
               backgroundColor: appbar,
@@ -730,7 +831,41 @@ class ResultsState extends State<Results> {
                                             ),
                                           ),
                                         ],
-                                      )
+                                      ),
+                                      // ElevatedButton(
+                                      //   onPressed: () async {
+                                      //     await downloadNewTest(context, "", "");
+                                      //   },
+                                      //   style: ButtonStyle(
+                                      //       backgroundColor: MaterialStateProperty
+                                      //           .all<Color>(textcolor.withOpacity(
+                                      //               0.6)), // Set background color
+                                      //       shape: MaterialStateProperty.all<
+                                      //           RoundedRectangleBorder>(
+                                      //         const RoundedRectangleBorder(
+                                      //           side: BorderSide(
+                                      //             color:
+                                      //                 secondaryColor, // Specify the border color here
+                                      //             width:
+                                      //                 1.0, // Specify the border width here
+                                      //           ),
+                                      //           borderRadius: BorderRadius.only(
+                                      //             bottomLeft: Radius.circular(
+                                      //                 12.0), // Rounded border at bottom-left
+                                      //           ),
+                                      //         ),
+                                      //       )),
+                                      //   child: Padding(
+                                      //     padding: const EdgeInsets.fromLTRB(
+                                      //         015, 0, 015, 0),
+                                      //     child: Text(
+                                      //       'download'.tr,
+                                      //       style: const TextStyle(
+                                      //           color: secondaryColor,
+                                      //           fontSize: 12),
+                                      //     ),
+                                      //   ),
+                                      // ),
                                     ],
                                   ),
                                 ),

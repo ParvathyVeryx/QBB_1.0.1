@@ -38,6 +38,7 @@ Future<void> signOut(BuildContext context) async {
     );
 
     if (response.statusCode == 200) {
+      pref.setString("showDot", "null");
       // Successful API call
 
       // Parse the JSON response
@@ -60,7 +61,8 @@ Future<void> signOut(BuildContext context) async {
       showDialog(
         context: context,
         builder: (BuildContext context) {
-          return ErrorPopup(errorMessage: json.decode(response.body)["Message"]);
+          return ErrorPopup(
+              errorMessage: json.decode(response.body)["Message"]);
         },
       );
     }

@@ -56,9 +56,20 @@ class ProfileState extends State<Profile> {
   late ImagePicker imagePicker;
   XFile? pickedImage;
 
+  bool? showDot;
+  Future<void> showDotNotification() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    String sD = pref.getString("showDot").toString();
+
+    setState(() {
+      sD == "null" ? showDot = true : showDot = false;
+    });
+  }
+
   @override
   void initState() {
     super.initState();
+    showDotNotification();
     imagePicker = ImagePicker();
 
     // Assume you have a variable _isLoading to track whether data is still loading
@@ -139,7 +150,7 @@ class ProfileState extends State<Profile> {
       setState(() {
         profilePicture = jsonMap['Photo'] ?? '';
       });
-      print("Profile Pic 1 "+ profilePicture);
+      print("Profile Pic 1 " + profilePicture);
     } catch (e) {
       // Handle the error appropriately
     }
@@ -277,16 +288,46 @@ class ProfileState extends State<Profile> {
                   color: Colors.white, fontFamily: 'Impact', fontSize: 16),
             ),
             IconButton(
-              onPressed: () {
+              onPressed: () async {
+                SharedPreferences pref = await SharedPreferences.getInstance();
+
+                setState(() {
+                  showDot = false;
+                  pref.setString("showDot", "false");
+                });
+
+                // Perform actions on the first click, such as navigating or showing a notification.
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => NotificationScreen()),
+                  MaterialPageRoute(
+                    builder: (context) => NotificationScreen(),
+                  ),
                 );
               },
-              icon: const Icon(Icons.notifications_none_outlined),
+              icon: Stack(
+                children: [
+                  Icon(Icons.notifications_none_outlined),
+                  if (showDot == true)
+                    Positioned(
+                      top: 0,
+                      right: 0,
+                      bottom: 3,
+                      child: Container(
+                        padding: EdgeInsets.all(6),
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: primaryColor,
+                        ),
+                        child: Text(
+                          '', // You can customize this text or use an empty container for just a dot.
+                        ),
+                      ),
+                    ),
+                ],
+              ),
               iconSize: 30.0,
               color: Colors.white,
-            )
+            ),
           ],
         ),
         backgroundColor: appbar,

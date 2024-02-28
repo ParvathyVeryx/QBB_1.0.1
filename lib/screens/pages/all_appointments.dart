@@ -77,12 +77,22 @@ class AllAppointmentsState extends State<AllAppointments> {
     }
   }
 
+  bool? showDot;
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     _isMounted = true;
     fetchData();
+    showDotNotification();
+  }
+
+  Future<void> showDotNotification() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    String sD = pref.getString("showDot").toString();
+
+    sD == "null" ? showDot = true : showDot = false;
   }
 
   @override
@@ -188,7 +198,8 @@ class AllAppointmentsState extends State<AllAppointments> {
                                             DateFormat('MM-yyyy')
                                                 .format(
                                                     dateExtract(appointment))
-                                                .toString(), style: TextStyle(fontSize: 11),
+                                                .toString(),
+                                            style: TextStyle(fontSize: 11),
                                           ),
                                         ),
                                       ],
@@ -218,10 +229,10 @@ class AllAppointmentsState extends State<AllAppointments> {
                                                               "10"
                                                           ? 'noShow'.tr
                                                           : appointment['AppoinmentStatus']
-                                                                  .toString() ==
-                                                              "2"
-                                                          ? 'rescheduled'.tr
-                                                          : 'cancelled'.tr,
+                                                                      .toString() ==
+                                                                  "2"
+                                                              ? 'rescheduled'.tr
+                                                              : 'cancelled'.tr,
                                               style: TextStyle(
                                                 color: Color.fromARGB(
                                                     255, 255, 255, 255),

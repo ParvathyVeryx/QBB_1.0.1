@@ -31,6 +31,7 @@ class AppointmentsState extends State<Appointments> {
   @override
   void initState() {
     super.initState();
+    showDotNotification();
     fetchData();
   } // Ensure you have the correct access token, qid, page, and language before calling this function.
 
@@ -54,6 +55,16 @@ class AppointmentsState extends State<Appointments> {
     } catch (error) {
       // Handle errors, e.g., show an error message.
     }
+  }
+
+  bool? showDot;
+  Future<void> showDotNotification() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    String sD = pref.getString("showDot").toString();
+
+    setState(() {
+      sD == "null" ? showDot = true : showDot = false;
+    });
   }
 
   @override
@@ -95,17 +106,47 @@ class AppointmentsState extends State<Appointments> {
                 //   width: 50.0,
                 // ),
                 IconButton(
-                  onPressed: () {
+                  onPressed: () async {
+                    SharedPreferences pref =
+                        await SharedPreferences.getInstance();
+
+                    setState(() {
+                      showDot = false;
+                      pref.setString("showDot", "false");
+                    });
+
+                    // Perform actions on the first click, such as navigating or showing a notification.
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => NotificationScreen()),
+                        builder: (context) => NotificationScreen(),
+                      ),
                     );
                   },
-                  icon: const Icon(Icons.notifications_none_outlined),
+                  icon: Stack(
+                    children: [
+                      Icon(Icons.notifications_none_outlined),
+                      if (showDot == true)
+                        Positioned(
+                          top: 0,
+                          right: 0,
+                          bottom: 3,
+                          child: Container(
+                            padding: EdgeInsets.all(6),
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: primaryColor,
+                            ),
+                            child: Text(
+                              '', // You can customize this text or use an empty container for just a dot.
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
                   iconSize: 30.0,
-                  color: textcolor,
-                )
+                  color: Colors.white,
+                ),
               ],
             ),
             backgroundColor: appbar,
