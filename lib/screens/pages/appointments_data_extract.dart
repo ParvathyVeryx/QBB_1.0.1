@@ -1,3 +1,4 @@
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
 String timeExtract(Map<String, dynamic> appointment) {
@@ -6,11 +7,13 @@ String timeExtract(Map<String, dynamic> appointment) {
   DateTime endTime = DateTime.parse(appointment['EndDate']);
 
   // Format the time
-  String formattedStartTime = DateFormat('hh:mm a').format(startTime);
-  String formattedEndTime = DateFormat('hh:mm a').format(endTime);
+  String formattedStartTime = DateFormat('hh:mm').format(startTime);
+  String formattedStartTimeAMPM = DateFormat('a', 'langChange'.tr).format(startTime);
+  String formattedEndTime = DateFormat('hh:mm').format(endTime);
+  String formattedEndTimeAMPM = DateFormat('a', 'langChange'.tr).format(endTime);
 
   // Return the formatted time
-  return '$formattedStartTime - $formattedEndTime';
+  return '$formattedStartTime $formattedStartTimeAMPM - $formattedEndTime $formattedEndTimeAMPM';
 }
 
 DateTime dateExtract(Map<String, dynamic> appointment) {

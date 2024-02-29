@@ -1158,6 +1158,7 @@ import 'dart:convert';
 import 'dart:ffi';
 
 import 'package:QBB/providers/studymodel.dart';
+import 'package:QBB/screens/pages/appointments_data_extract.dart';
 import 'package:flutter/material.dart';
 import 'package:QBB/constants.dart';
 import 'package:flutter/rendering.dart';
@@ -1220,13 +1221,40 @@ class BookAppScreenState extends State<BookAppScreen> {
       Map<String, dynamic> jsonResponse = json.decode(apiResponseJson);
       print("Availability Calendar");
       print(jsonResponse);
-
+      String? am;
+      String? pm;
       setState(() {
+        String rawTime = jsonResponse['timelist'][0];
         tList = jsonResponse['timelist'][0];
-        // nextAvailableDates =
-        //     List<String>.from(jsonResponse['nextAvilableDateList']);
+        print(tList.toLowerCase());
+        if (tList.toLowerCase().contains("pm")) {
+          print("Yes PM");
+          tList = tList.toLowerCase().replaceAll("pm", 'pm'.tr);
+        } else if (tList.toLowerCase().contains("am")) {
+          tList = tList.toLowerCase().replaceAll("am", 'am'.tr);
+        }
       });
     }
+  }
+
+  String _processTimeWithLocale(String rawTime) {
+    // Check if the rawTime contains "am" or "pm"
+    if (rawTime.toLowerCase().contains('am') ||
+        rawTime.toLowerCase().contains('pm')) {
+      // If yes, use a specific language code for formatting
+      return _formatTimeWithLocale(
+          rawTime,
+          'langChange'
+              .tr); // 'ar' for Arabic, replace with your desired language code
+    } else {
+      return _formatTimeWithLocale(rawTime, 'en');
+    }
+  }
+
+  String _formatTimeWithLocale(String rawTime, String languageCode) {
+    DateTime parsedTime = DateFormat('hh:mm').parse(rawTime);
+    DateTime parsedTimeAM = DateFormat('a', languageCode).parse(rawTime);
+    return DateFormat('hh:mm').format(parsedTime) + " " + "$parsedTimeAM";
   }
 
   // Future<void> _selectDate(BuildContext context) async {
@@ -1312,11 +1340,6 @@ class BookAppScreenState extends State<BookAppScreen> {
       } else {
         print("BookAppoinmentModelList is null or empty");
       }
-
-      // Set state if needed (depends on where this function is called)
-      // setState(() {
-      //   // Do something with availabiltyCandarId
-      // });
     }
   }
 
@@ -1405,13 +1428,19 @@ class BookAppScreenState extends State<BookAppScreen> {
 
     upcomingDateList = dateTimeList;
     List<DateTime> mergedList = [...dateTimeList, ...nextdateTimeList];
+    availabiltyCandarId = listACI;
+    if (mergedList.length == availabiltyCandarId.length) {
+      isACI = true;
+    }
     if (mergedList.length > availabiltyCandarId.length) {
       isACI = false;
     }
-    availabiltyCandarId = listACI;
+    print(upcomingDates);
     print(displayedACI);
     print(availabiltyCandarId);
     print(listACI);
+    print("!!!!!!" + mergedList.length.toString());
+    print(availabiltyCandarId.length);
     print(isACI);
     if (ispicked) {
       upcomingDateList = [];
@@ -1474,7 +1503,11 @@ class BookAppScreenState extends State<BookAppScreen> {
       upcomingDateList = [];
       availabiltyCandarId = [];
       displayedACI = [];
+
       List<DateTime> mergedList = [...dateTimeList, ...nextdateTimeList];
+      if (nextdateTimeList == []) {
+        mergedList = [...dateTimeList];
+      }
       int selectedIndex = mergedList.indexOf(selectedDate);
       // int endIndex = selectedIndex + 5;
       int endIndex = mergedList.length;
@@ -1484,6 +1517,7 @@ class BookAppScreenState extends State<BookAppScreen> {
         }
 
         upcomingDateList = mergedList.sublist(selectedIndex, endIndex);
+        if (nextdateTimeList == []) {}
         for (int i = selectedIndex; i < endIndex; i++) {
           isACI == false
               ? displayedACI.add(listACI[i - 1])
@@ -1910,25 +1944,28 @@ class BookAppScreenState extends State<BookAppScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      IconButton(
-                        onPressed: () {
-                          //   _pageController.previousPage(
-                          //     duration: const Duration(milliseconds: 300),
-                          //     curve: Curves.easeInOut,
-                          //   );
-                          setState(() {
-                            isNextWeekArrow = true;
-                            ispicked = false;
-                            isNextWeek = false;
-                            isNextWeekArrowRight = false;
-                            upcomingDateList = originalDateList;
-                            fetchDateList(originalDateList[0]);
-                          });
-                        },
-                        icon: const Icon(Icons.arrow_back_ios_rounded),
-                        color: primaryColor,
-                        iconSize: 11,
-                      ),
+                      upcomingDates.length == 0
+                          ? Container()
+                          : IconButton(
+                              onPressed: () {
+                                //   _pageController.previousPage(
+                                //     duration: const Duration(milliseconds: 300),
+                                //     curve: Curves.easeInOut,
+                                //   );
+
+                                setState(() {
+                                  isNextWeekArrow = true;
+                                  ispicked = false;
+                                  isNextWeek = false;
+                                  isNextWeekArrowRight = false;
+                                  upcomingDateList = originalDateList;
+                                  fetchDateList(originalDateList[0]);
+                                });
+                              },
+                              icon: const Icon(Icons.arrow_back_ios_rounded),
+                              color: primaryColor,
+                              iconSize: 11,
+                            ),
                       Text(
                         "nextWeek".tr,
                         style: TextStyle(
@@ -1936,25 +1973,28 @@ class BookAppScreenState extends State<BookAppScreen> {
                             fontSize: 11,
                             fontWeight: FontWeight.bold),
                       ),
-                      IconButton(
-                        onPressed: () {
-                          // _pageController.nextPage(
-                          //   duration: const Duration(milliseconds: 300),
-                          //   curve: Curves.easeInOut,
-                          // );
-                          setState(() {
-                            isNextWeekArrow = true;
-                            ispicked = false;
-                            isNextWeek = false;
-                            isNextWeekArrowRight = true;
-                            upcomingDateList = upcomingDates;
-                            fetchDateList(upcomingDateList[0]);
-                          });
-                        },
-                        icon: const Icon(Icons.arrow_forward_ios_rounded),
-                        color: primaryColor,
-                        iconSize: 11,
-                      )
+                      upcomingDates.length == 0
+                          ? Container()
+                          : IconButton(
+                              onPressed: () {
+                                // _pageController.nextPage(
+                                //   duration: const Duration(milliseconds: 300),
+                                //   curve: Curves.easeInOut,
+                                // );
+                                setState(() {
+                                  isNextWeekArrow = true;
+                                  ispicked = false;
+                                  isNextWeek = false;
+                                  isNextWeekArrowRight = true;
+
+                                  upcomingDateList = upcomingDates;
+                                  fetchDateList(upcomingDateList[0]);
+                                });
+                              },
+                              icon: const Icon(Icons.arrow_forward_ios_rounded),
+                              color: primaryColor,
+                              iconSize: 11,
+                            )
                     ],
                   ),
                   Row(
@@ -2127,7 +2167,7 @@ class BookAppScreenState extends State<BookAppScreen> {
                                             child: Column(
                                               children: [
                                                 Text(
-                                                  '${DateFormat('EEEE').format(date)}',
+                                                  '${DateFormat('EEEE', 'langChange'.tr).format(date)}',
                                                   style: const TextStyle(
                                                       fontSize: 11,
                                                       color: appbar),
@@ -2241,7 +2281,14 @@ class BookAppScreenState extends State<BookAppScreen> {
                                                               .format(DateTime
                                                                   .now())
                                                               .runtimeType);
-                                                          checkAvailabilityCalendar =
+                                                          isACI == false &&
+                                                                      isFirstList ==
+                                                                          true ||
+                                                                  check == "Ok"
+                                                              ? checkAvailabilityCalendar =
+                                                              availabiltyCandarId[
+                                                                      index-1]
+                                                                  .toString() : checkAvailabilityCalendar =
                                                               availabiltyCandarId[
                                                                       index]
                                                                   .toString();

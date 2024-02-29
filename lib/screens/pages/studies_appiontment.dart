@@ -164,6 +164,7 @@ class StuidesAppointmentState extends State<StuidesAppointment> {
                                           studyId: widget.studyId,
                                           isPreg: isPreg)),
                                 );
+                                // Navigator.pushNamed(context, '/bookanAppointment');
                               }
                             }
                           : null, // Link to the function

@@ -23,8 +23,16 @@ class BookAppointments extends StatefulWidget {
   final String? studyName;
   final int? studyId;
   final bool? isPreg;
+  final VoidCallback? refreshCallback;
+  final bool? isLangChange;
 
-  const BookAppointments({Key? key, this.studyName, this.studyId, this.isPreg})
+  const BookAppointments(
+      {Key? key,
+      this.studyName,
+      this.studyId,
+      this.isPreg,
+      this.isLangChange,
+      this.refreshCallback})
       : super(key: key);
 
   @override
@@ -33,7 +41,7 @@ class BookAppointments extends StatefulWidget {
 
 class BookAppointmentsState extends State<BookAppointments> {
   String selectedValue = 'selectStudies'.tr;
-  String secondSelectedValue = 'Select visit type';
+  String secondSelectedValue = 'selectVisitType'.tr;
   bool showSecondDropdown = false;
   List<String> studyNames = [];
   List<int> studyIds = [];
@@ -53,43 +61,37 @@ class BookAppointmentsState extends State<BookAppointments> {
     const Profile(),
   ];
 
+  static final GlobalKey<BookAppointmentsState> yourPageKey =
+      GlobalKey<BookAppointmentsState>();
+
+  Future<void> refreshPage() async {
+    print("refreshing");
+    setState(() {
+      selectedValue = 'selectStudies'.tr;
+      secondSelectedValue = 'selectVisitType'.tr;
+      print(selectedValue);
+    });
+
+    // setState(() {
+    //   selectedValue = 'selectStudies'.tr;
+    // });
+
+    // // Fetch data or perform other actions as needed
+    await fetchStudyMasterAPI();
+  }
+
   @override
   void initState() {
     showDotNotification();
     super.initState();
     showDotNotification();
     fetchStudyMasterAPI();
-    // Start fetching study names
-    // fetchStudyMasterAPI().then((_) {
-    // Set the selectedValue based on the provided studyName
-    // if (widget.studyName != null && studyNames.contains(widget.studyName!)) {
-    //   int selectedStudyIndex = studyNames.indexOf(widget.studyName!);
-    //   if (selectedStudyIndex != -1) {
-    //     setState(() {
-    //       selectedValue = widget.studyName!;
-    //       selectedStudyId = widget.studyId;
-    //       showSecondDropdown = true;
-    //     });
-    //     fetchVisitTypes(selectedStudyId!);
-    //   }
-    // } else {
-    // If studyName is not provided, select the first study in the list
-    // setState(() {
-    //   selectedValue =
-    //       studyNames.isNotEmpty ? studyNames.first : 'Select studies';
-    //   selectedStudyId = studyIds.isNotEmpty ? studyIds.first : null;
-    //   showSecondDropdown = studyNames.isNotEmpty;
-    // });
-    // if (studyIds.isNotEmpty) {
-    //   fetchVisitTypes(selectedStudyId!);
-    // }
-    // }
-    //   selectedStudyId = studyIds.isNotEmpty ? studyIds.first : null;
-    //   // fetchVisitTypes(selectedStudyId!);
-    // });
+    refreshPage();
+    widget.isLangChange == true ? refreshPage() : Container();
   }
 
   Future<void> fetchStudyMasterAPI() async {
+    selectedValue = 'selectStudies'.tr;
     SharedPreferences pref = await SharedPreferences.getInstance();
     var setLang = 'langChange'.tr;
 
@@ -113,6 +115,7 @@ class BookAppointmentsState extends State<BookAppointments> {
         setState(() {
           studyNames =
               responseData.map((data) => data['Name'].toString()).toList();
+
           if (studyNames.isNotEmpty) {
             selectedValue = 'selectStudies'.tr; // Set the initial placeholder
           }
@@ -186,6 +189,12 @@ class BookAppointmentsState extends State<BookAppointments> {
     setState(() {
       sD == "null" ? showDot = true : showDot = false;
     });
+  }
+
+  final GlobalKey<BookAppointmentsState> _bookAppointmentsKey =
+      GlobalKey<BookAppointmentsState>();
+  void refreshBookAppointments() {
+    _bookAppointmentsKey.currentState?.refreshPage();
   }
 
   @override
@@ -277,236 +286,248 @@ class BookAppointmentsState extends State<BookAppointments> {
             ),
             drawer: const SideMenu(),
             bottomNavigationBar: CustomTab(tabId: 2),
-            body: Container(
-              height: MediaQuery.of(context).size.height,
-              decoration: const BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage('assets/images/bg.png'),
-                  alignment: Alignment
-                      .bottomCenter, // Align the image to the bottom center
-                  fit: BoxFit
-                      .contain, // Adjust to your needs (e.g., BoxFit.fill, BoxFit.fitHeight)
-                ),
-              ),
-              child: TabBarView(
-                children: [
-                  Column(
-                    children: [
-                      Align(
-                        alignment: Alignment.topCenter,
-                        child: Padding(
-                          padding: const EdgeInsets.only(top: 16.0),
-                          child: Container(
-                            width: 300.0,
-                            decoration: BoxDecoration(
-                              borderRadius: const BorderRadius.only(
-                                bottomLeft: Radius.circular(20.0),
-                              ),
-                              color: Colors.white,
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.grey.withOpacity(0.5),
-                                  spreadRadius: 2,
-                                  blurRadius: 5,
-                                  offset: const Offset(0, 3),
-                                ),
-                              ],
-                            ),
-                            child: Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 16.0),
-                              child: studyNames.isEmpty
-                                  ? Center(child: LoaderWidget())
-                                  : DropdownButton<String>(
-                                      value: selectedValue,
-                                      items: [
-                                        DropdownMenuItem<String>(
-                                          value: 'Select studies',
-                                          child: Text(
-                                            'selectStudies'.tr,
-                                            style:
-                                                TextStyle(color: Colors.black),
-                                          ),
-                                        ),
-                                        ...studyNames.map(
-                                          (studyName) =>
-                                              DropdownMenuItem<String>(
-                                            value: studyName,
-                                            child: Text(studyName),
-                                          ),
-                                        ),
-                                      ],
-                                      onChanged: (value) {
-                                        setState(() {
-                                          selectedValue = value!;
-                                          showSecondDropdown =
-                                              value != 'Select studies';
-                                          int selectedStudyIndex =
-                                              studyNames.indexOf(value);
-                                          selectedStudyId =
-                                              studyIds[selectedStudyIndex];
-                                          secondSelectedValue =
-                                              "Select visit type";
-                                          fetchVisitTypes(selectedStudyId!);
-                                        });
-                                      },
-                                      style: const TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 12.0,
-                                      ),
-                                      icon: const Icon(Icons.arrow_drop_down),
-                                      isExpanded: true,
-                                      underline: const SizedBox(),
-                                    ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      Visibility(
-                        visible: showSecondDropdown,
-                        child: Padding(
-                          padding: const EdgeInsets.only(top: 16.0),
-                          child: Container(
-                            width: 300.0,
-                            decoration: BoxDecoration(
-                              borderRadius: const BorderRadius.only(
-                                bottomLeft: Radius.circular(20.0),
-                              ),
-                              color: Colors.white,
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.grey.withOpacity(0.5),
-                                  spreadRadius: 2,
-                                  blurRadius: 5,
-                                  offset: const Offset(0, 3),
-                                ),
-                              ],
-                            ),
-                            child: Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 16.0),
-                              child: DropdownButton<String>(
-                                value:
-                                    secondSelectedValue ?? visitTypeNames.first,
-                                items: ['Select visit type', ...visitTypeNames]
-                                    .toSet()
-                                    .toList() // Convert to set to remove duplicates
-                                    .map((visitTypeName) => DropdownMenuItem(
-                                          value: visitTypeName,
-                                          child: Text(
-                                            visitTypeName,
-                                            style: TextStyle(
-                                                color: Colors.black,
-                                                fontSize: 12),
-                                          ),
-                                        ))
-                                    .toList(),
-                                onChanged: (value) {
-                                  setState(() {
-                                    secondSelectedValue = value!;
-                                  });
-
-                                  if (value != 'Select visit type') {
-                                    int selectedVisitTypeIndex =
-                                        visitTypeNames.indexOf(value!);
-                                    int selectedVisitTypeId =
-                                        visitTypeIds[selectedVisitTypeIndex];
-                                    selectedVisitTypeIdForBooking =
-                                        selectedVisitTypeId;
-                                  }
-                                },
-                                style: const TextStyle(
-                                  color: Colors.purple,
-                                  fontSize: 16.0,
-                                ),
-                                icon: const Icon(Icons.arrow_drop_down),
-                                isExpanded: true,
-                                underline: const SizedBox(),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 30),
-                      Center(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            SizedBox(
-                              width: 150,
-                              child: ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  shape: const RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.only(
-                                      bottomLeft: Radius.circular(20.0),
-                                    ),
-                                  ),
-                                  backgroundColor: Colors.white,
-                                  side: const BorderSide(color: appbar),
-                                  elevation: 0,
-                                ),
-                                onPressed: () {
-                                  // Handle button press
-                                  Navigator.pop(context);
-                                },
-                                child: Text(
-                                  'cancelButton'.tr,
-                                  style: const TextStyle(color: appbar),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(width: 16.0),
-                            SizedBox(
-                              width: 150,
-                              child: ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  shape: const RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.only(
-                                      bottomLeft: Radius.circular(20.0),
-                                    ),
-                                  ),
-                                  backgroundColor: primaryColor,
-                                  // side: const BorderSide(color: Colors.black),
-                                  elevation: 0,
-                                ),
-                                onPressed: () async {
-                                  SharedPreferences pref =
-                                      await SharedPreferences.getInstance();
-                                  pref.setString("selectedStudyId",
-                                      selectedStudyId.toString());
-                                  pref.setString("selectedVisitTypeID",
-                                      selectedVisitTypeIdForBooking.toString());
-                                  pref.setString("selectedvalue",
-                                      secondSelectedValue.toString());
-                                  if (selectedValue != 'selectStudies'.tr &&
-                                      secondSelectedValue !=
-                                          'Select visit type') {
-                                    await bookAppointmentApiCall(
-                                      context,
-                                      selectedStudyId.toString(),
-                                      selectedVisitTypeIdForBooking.toString(),
-                                      secondSelectedValue,
-                                    );
-                                  }
-                                },
-                                child: Text(
-                                  'tutorialContinueButton'.tr,
-                                  style: const TextStyle(color: Colors.white),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      // Loading indicator
-                      if (isLoading)
-                        Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: LoaderWidget(),
-                        ),
-                    ],
+            body: RefreshIndicator(
+              onRefresh: refreshPage,
+              child: Container(
+                height: MediaQuery.of(context).size.height,
+                decoration: const BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage('assets/images/bg.png'),
+                    alignment: Alignment
+                        .bottomCenter, // Align the image to the bottom center
+                    fit: BoxFit
+                        .contain, // Adjust to your needs (e.g., BoxFit.fill, BoxFit.fitHeight)
                   ),
-                ],
+                ),
+                child: TabBarView(
+                  children: [
+                    Column(
+                      children: [
+                        // BookAppointments(
+                        //   key: _bookAppointmentsKey,
+                        //   refreshCallback: refreshBookAppointments,
+                        // ),
+                        Align(
+                          alignment: Alignment.topCenter,
+                          child: Padding(
+                            padding: const EdgeInsets.only(top: 16.0),
+                            child: Container(
+                              width: 300.0,
+                              decoration: BoxDecoration(
+                                borderRadius: const BorderRadius.only(
+                                  bottomLeft: Radius.circular(20.0),
+                                ),
+                                color: Colors.white,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey.withOpacity(0.5),
+                                    spreadRadius: 2,
+                                    blurRadius: 5,
+                                    offset: const Offset(0, 3),
+                                  ),
+                                ],
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 16.0),
+                                child: studyNames.isEmpty
+                                    ? Center(child: LoaderWidget())
+                                    : DropdownButton<String>(
+                                        value: selectedValue,
+                                        items: [
+                                          DropdownMenuItem<String>(
+                                            value: 'selectStudies'.tr,
+                                            child: Text(
+                                              'selectStudies'.tr,
+                                              style: TextStyle(
+                                                  color: Colors.black),
+                                            ),
+                                          ),
+                                          ...studyNames.map(
+                                            (studyName) =>
+                                                DropdownMenuItem<String>(
+                                              value: studyName,
+                                              child: Text(studyName),
+                                            ),
+                                          ),
+                                        ],
+                                        onChanged: (value) {
+                                          setState(() {
+                                            selectedValue = value!;
+                                            showSecondDropdown =
+                                                value != 'selectStudies'.tr;
+                                            int selectedStudyIndex =
+                                                studyNames.indexOf(value);
+                                            selectedStudyId =
+                                                studyIds[selectedStudyIndex];
+                                            secondSelectedValue =
+                                                'selectVisitType'.tr;
+                                            fetchVisitTypes(selectedStudyId!);
+                                          });
+                                        },
+                                        style: const TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 12.0,
+                                        ),
+                                        icon: const Icon(Icons.arrow_drop_down),
+                                        isExpanded: true,
+                                        underline: const SizedBox(),
+                                      ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        Visibility(
+                          visible: showSecondDropdown,
+                          child: Padding(
+                            padding: const EdgeInsets.only(top: 16.0),
+                            child: Container(
+                              width: 300.0,
+                              decoration: BoxDecoration(
+                                borderRadius: const BorderRadius.only(
+                                  bottomLeft: Radius.circular(20.0),
+                                ),
+                                color: Colors.white,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey.withOpacity(0.5),
+                                    spreadRadius: 2,
+                                    blurRadius: 5,
+                                    offset: const Offset(0, 3),
+                                  ),
+                                ],
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 16.0),
+                                child: DropdownButton<String>(
+                                  value: secondSelectedValue,
+                                  items: [
+                                    'selectVisitType'.tr,
+                                    ...visitTypeNames
+                                  ]
+                                      .toSet()
+                                      .toList() // Convert to set to remove duplicates
+                                      .map((visitTypeName) => DropdownMenuItem(
+                                            value: visitTypeName,
+                                            child: Text(
+                                              visitTypeName,
+                                              style: TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 12),
+                                            ),
+                                          ))
+                                      .toList(),
+                                  onChanged: (value) {
+                                    setState(() {
+                                      secondSelectedValue = value!;
+
+                                      if (value != 'selectVisitType'.tr) {
+                                        int selectedVisitTypeIndex =
+                                            visitTypeNames.indexOf(value!);
+                                        int selectedVisitTypeId = visitTypeIds[
+                                            selectedVisitTypeIndex];
+                                        selectedVisitTypeIdForBooking =
+                                            selectedVisitTypeId;
+                                      }
+                                    });
+                                  },
+                                  style: const TextStyle(
+                                    color: Colors.purple,
+                                    fontSize: 16.0,
+                                  ),
+                                  icon: const Icon(Icons.arrow_drop_down),
+                                  isExpanded: true,
+                                  underline: const SizedBox(),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 30),
+                        Center(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SizedBox(
+                                width: 150,
+                                child: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    shape: const RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.only(
+                                        bottomLeft: Radius.circular(20.0),
+                                      ),
+                                    ),
+                                    backgroundColor: Colors.white,
+                                    side: const BorderSide(color: appbar),
+                                    elevation: 0,
+                                  ),
+                                  onPressed: () {
+                                    // Handle button press
+                                    Navigator.pop(context);
+                                  },
+                                  child: Text(
+                                    'cancelButton'.tr,
+                                    style: const TextStyle(color: appbar),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 16.0),
+                              SizedBox(
+                                width: 150,
+                                child: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    shape: const RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.only(
+                                        bottomLeft: Radius.circular(20.0),
+                                      ),
+                                    ),
+                                    backgroundColor: primaryColor,
+                                    // side: const BorderSide(color: Colors.black),
+                                    elevation: 0,
+                                  ),
+                                  onPressed: () async {
+                                    SharedPreferences pref =
+                                        await SharedPreferences.getInstance();
+                                    pref.setString("selectedStudyId",
+                                        selectedStudyId.toString());
+                                    pref.setString(
+                                        "selectedVisitTypeID",
+                                        selectedVisitTypeIdForBooking
+                                            .toString());
+                                    pref.setString("selectedvalue",
+                                        secondSelectedValue.toString());
+                                    if (selectedValue != 'selectStudies'.tr &&
+                                        secondSelectedValue !=
+                                            'selectVisitType'.tr) {
+                                      await bookAppointmentApiCall(
+                                        context,
+                                        selectedStudyId.toString(),
+                                        selectedVisitTypeIdForBooking
+                                            .toString(),
+                                        secondSelectedValue,
+                                      );
+                                    }
+                                  },
+                                  child: Text(
+                                    'tutorialContinueButton'.tr,
+                                    style: const TextStyle(color: Colors.white),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        // Loading indicator
+                        if (isLoading)
+                          Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: LoaderWidget(),
+                          ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
           ),

@@ -222,7 +222,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                 body: SingleChildScrollView(
                     child: Container(
                   height: MediaQuery.of(context).size.height * 0.95,
-                  child: Center(child: Text("No Notification")),
+                  child: Center(child: Text('noNotifications'.tr)),
                 )));
           }
 

@@ -58,9 +58,8 @@ class CustomAlertDialogShape extends RoundedRectangleBorder {
 }
 
 class SideMenu extends StatefulWidget {
-  const SideMenu({
-    Key? key,
-  }) : super(key: key);
+  final VoidCallback? refreshCallback;
+  const SideMenu({Key? key, this.refreshCallback}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => sideMenuclass();
@@ -68,7 +67,10 @@ class SideMenu extends StatefulWidget {
 
 class sideMenuclass extends State<SideMenu> {
   String selectedLanguage = '';
+  bool? isBookApp;
 
+  final GlobalKey<BookAppointmentsState> _bookAppointmentsKey =
+      GlobalKey<BookAppointmentsState>();
   Future<String> loadSelectedLanguage() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
@@ -112,6 +114,9 @@ class sideMenuclass extends State<SideMenu> {
     loadSelectedLanguage();
   }
 
+  final GlobalKey<RefreshIndicatorState> _refreshKey =
+      GlobalKey<RefreshIndicatorState>();
+
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -135,7 +140,7 @@ class sideMenuclass extends State<SideMenu> {
           child: Column(
             // mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const SizedBox(height: 30),
+              const SizedBox(height: 100),
               Image.asset(
                 "assets/images/logo-welcome-screen.png",
                 width: 65.0,
@@ -161,20 +166,23 @@ class sideMenuclass extends State<SideMenu> {
                 //   style: TextStyle(color: textcolor, fontSize: 14),
                 // ),
                 onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const BookAppointments(
-                              isPreg: false,
-                            )),
-                  );
+                  isBookApp = true;
+                  print("bookAPp" + isBookApp.toString());
+                  // Navigator.push(
+                  //   context,
+                  //   MaterialPageRoute(
+                  //       builder: (context) => const BookAppointments(
+                  //             isPreg: false,
+                  //           )),
+                  // );
+                  Navigator.pushNamed(context, '/bookanAppointment');
                   // Handle onTap action
                   // For example, you can navigate to a different screen.
                   // Navigator.pop(context); // Close the drawer
                 },
               ),
               const SizedBox(
-                height: 5.0,
+                height: 2.0,
               ),
               ListTile(
                 leading: Image.asset(
@@ -188,6 +196,7 @@ class sideMenuclass extends State<SideMenu> {
                   style: TextStyle(color: textcolor, fontSize: 14),
                 ),
                 onTap: () {
+                  isBookApp = false;
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => Appointments()),
@@ -197,7 +206,7 @@ class sideMenuclass extends State<SideMenu> {
               // Add more DrawerListTile widgets as needed
 
               const SizedBox(
-                height: 5.0,
+                height: 2.0,
               ),
               ListTile(
                 leading: Image.asset(
@@ -211,6 +220,7 @@ class sideMenuclass extends State<SideMenu> {
                   style: TextStyle(color: textcolor, fontSize: 14),
                 ),
                 onTap: () {
+                  isBookApp = false;
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => Results()),
@@ -218,7 +228,7 @@ class sideMenuclass extends State<SideMenu> {
                 },
               ),
               const SizedBox(
-                height: 5.0,
+                height: 2.0,
               ),
               ListTile(
                 leading: Image.asset(
@@ -232,6 +242,7 @@ class sideMenuclass extends State<SideMenu> {
                   style: TextStyle(color: textcolor, fontSize: 14),
                 ),
                 onTap: () {
+                  isBookApp = false;
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => Studies()),
@@ -242,7 +253,7 @@ class sideMenuclass extends State<SideMenu> {
                 },
               ),
               const SizedBox(
-                height: 5.0,
+                height: 2.0,
               ),
               ListTile(
                 leading: Image.asset(
@@ -256,6 +267,7 @@ class sideMenuclass extends State<SideMenu> {
                   style: TextStyle(color: textcolor, fontSize: 14),
                 ),
                 onTap: () {
+                  isBookApp = false;
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => Profile()),
@@ -263,7 +275,7 @@ class sideMenuclass extends State<SideMenu> {
                 },
               ),
               const SizedBox(
-                height: 5.0,
+                height: 2.0,
               ),
               ListTile(
                 leading: Image.asset(
@@ -277,6 +289,7 @@ class sideMenuclass extends State<SideMenu> {
                   style: TextStyle(color: textcolor, fontSize: 14),
                 ),
                 onTap: () {
+                  isBookApp = false;
                   // Handle onTap action
                   // For example, you can navigate to a different screen.
                   Navigator.push(
@@ -286,7 +299,7 @@ class sideMenuclass extends State<SideMenu> {
                 },
               ),
               const SizedBox(
-                height: 5.0,
+                height: 2.0,
               ),
               ListTile(
                 leading: Image.asset(
@@ -300,6 +313,7 @@ class sideMenuclass extends State<SideMenu> {
                   style: TextStyle(color: textcolor, fontSize: 14),
                 ),
                 onTap: () {
+                  // isBookApp = false;
                   showDialog(
                     context: context,
                     builder: (context) {
@@ -389,6 +403,7 @@ class sideMenuclass extends State<SideMenu> {
                                       } else {
                                         selectedLanguage = 'English';
                                       }
+
                                       Navigator.of(context)
                                           .pop(); // Close the dialog
                                     },
@@ -396,6 +411,23 @@ class sideMenuclass extends State<SideMenu> {
                                   ),
                                   TextButton(
                                     onPressed: () async {
+                                      BookAppointments(
+                                        isLangChange: true,
+                                      );
+
+                                      // BookAppointmentsState
+                                      //     .yourPageKey.currentState
+                                      //     ?.refreshPage();
+                                      // BookAppointmentsState myState =
+                                      //     BookAppointmentsState();
+                                      // myState.refreshPage();
+                                      checkCurrentRoute();
+                                      // if (checkCurrentRoute() ==
+                                      //     "/bookanAppointment") {
+                                      //   Navigator.pushNamed(
+                                      //       context, '/bookanAppointment');
+                                      // }
+
                                       if (selectedLanguage.isNotEmpty) {
                                         SharedPreferences pref =
                                             await SharedPreferences
@@ -410,8 +442,15 @@ class sideMenuclass extends State<SideMenu> {
                                             selectedLanguage == 'English'
                                                 ? locale[0]['locale']
                                                 : locale[1]['locale']);
-                                        Navigator.of(context)
-                                            .pop(); // Close the dialog
+                                        BookAppointmentsState myState =
+                                            BookAppointmentsState();
+                                        myState.refreshPage();
+                                        Navigator.of(context).pop();
+                                        if (checkCurrentRoute() ==
+                                            "/bookanAppointment") {
+                                          Navigator.pushNamed(
+                                              context, '/bookanAppointment');
+                                        } // Close the dialog
                                       } else {
                                         // Show an error or inform the user to select a language
                                       }
@@ -429,7 +468,7 @@ class sideMenuclass extends State<SideMenu> {
                 },
               ),
               const SizedBox(
-                height: 5.0,
+                height: 2.0,
               ),
               ListTile(
                 leading: Image.asset(
@@ -443,6 +482,7 @@ class sideMenuclass extends State<SideMenu> {
                   style: TextStyle(color: textcolor, fontSize: 14),
                 ),
                 onTap: () {
+                  isBookApp = false;
                   // Handle onTap action
                   // For example, you can navigate to a different screen.
                   // Navigator.push(
@@ -457,6 +497,29 @@ class sideMenuclass extends State<SideMenu> {
         ),
       ),
     );
+  }
+
+  String checkCurrentRoute() {
+    // Get the current route
+    final currentRoute = ModalRoute.of(context);
+    print(currentRoute);
+
+    if (currentRoute != null) {
+      // Access route properties
+      final routeName = currentRoute.settings.name;
+      // final isFullScreenDialog = currentRoute.settings.isFullscreenDialog;
+
+      // Do something with the route information
+      print('Current Route: $routeName');
+      // if (routeName == "/bookanAppointment") {
+      //   Navigator.pushNamed(context, '/bookanAppointment');
+      // }
+      return routeName.toString();
+      // print('Is Full Screen Dialog: $isFullScreenDialog');
+    } else {
+      print('No current route found.');
+      return "null";
+    }
   }
 
   var getlan;
@@ -603,20 +666,14 @@ class SideMenuHomeclass extends State<SideMenuHome> {
                 //   style: TextStyle(color: textcolor, fontSize: 14),
                 // ),
                 onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const BookAppointments(
-                              isPreg: false,
-                            )),
-                  );
+                  Navigator.pushNamed(context, '/bookanAppointment');
                   // Handle onTap action
                   // For example, you can navigate to a different screen.
                   // Navigator.pop(context); // Close the drawer
                 },
               ),
               const SizedBox(
-                height: 5.0,
+                height: 2.0,
               ),
               ListTile(
                 leading: Image.asset(
@@ -639,7 +696,7 @@ class SideMenuHomeclass extends State<SideMenuHome> {
               // Add more DrawerListTile widgets as needed
 
               const SizedBox(
-                height: 5.0,
+                height: 2.0,
               ),
               ListTile(
                 leading: Image.asset(
@@ -660,7 +717,7 @@ class SideMenuHomeclass extends State<SideMenuHome> {
                 },
               ),
               const SizedBox(
-                height: 5.0,
+                height: 2.0,
               ),
               ListTile(
                 leading: Image.asset(
@@ -684,7 +741,7 @@ class SideMenuHomeclass extends State<SideMenuHome> {
                 },
               ),
               const SizedBox(
-                height: 5.0,
+                height: 2.0,
               ),
               ListTile(
                 leading: Image.asset(
@@ -705,7 +762,7 @@ class SideMenuHomeclass extends State<SideMenuHome> {
                 },
               ),
               const SizedBox(
-                height: 5.0,
+                height: 2.0,
               ),
               ListTile(
                 leading: Image.asset(
@@ -728,7 +785,7 @@ class SideMenuHomeclass extends State<SideMenuHome> {
                 },
               ),
               const SizedBox(
-                height: 5.0,
+                height: 2.0,
               ),
               ListTile(
                 leading: Image.asset(
@@ -871,7 +928,7 @@ class SideMenuHomeclass extends State<SideMenuHome> {
                 },
               ),
               const SizedBox(
-                height: 5.0,
+                height: 2.0,
               ),
               ListTile(
                 leading: Image.asset(
@@ -885,7 +942,6 @@ class SideMenuHomeclass extends State<SideMenuHome> {
                   style: TextStyle(color: textcolor, fontSize: 14),
                 ),
                 onTap: () async {
-                  
                   // Handle onTap action
                   // For example, you can navigate to a different screen.
                   // Navigator.push(

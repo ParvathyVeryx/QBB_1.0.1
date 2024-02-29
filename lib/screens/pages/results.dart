@@ -67,9 +67,6 @@ class ResultsState extends State<Results> {
       // String qid = prefs.getString("userQID").toString();
       // var lang = 'langChange'.tr;
 
-      print("Printing Results");
-      print(response.body);
-
       // Check if the request was successful (status code 200)
       if (response.statusCode == 200) {
         // Parse and handle the response body
@@ -89,6 +86,7 @@ class ResultsState extends State<Results> {
   @override
   void initState() {
     // TODO: implement initState
+    fetchAppointmentsData();
     super.initState();
     showDotNotification();
     _isMounted = true;
@@ -116,6 +114,78 @@ class ResultsState extends State<Results> {
     setState(() {
       sD == "null" ? showDot = true : showDot = false;
     });
+  }
+
+  List<Map<String, dynamic>> allAppointments = [];
+  String allCancelMsg = '';
+  List<String> cancelMessages = [];
+
+  List<Map<String, dynamic>> allCompletedAppointments = [];
+
+  Future<List<Map<String, dynamic>>> fetchAppointmentsData() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    var lang = 'langChange'.tr;
+    String qid = pref.getString("userQID").toString();
+
+    // try {
+
+    //   var appointments = await viewAppointments('$qid', 1, '$lang');
+    //   // setState(() {
+    //   //   // Set all appointments
+    //   //   allAppointments = appointments;
+    //   // });
+    //   allAppointments = appointments;
+    //   return appointments;
+    // } catch (error) {
+    //   // Handle errors, e.g., show an error message.
+    //   print('Error fetching appointments: $error');
+    //   throw error; // Make sure to rethrow the error
+    // }
+
+    try {
+      // Get the token from shared preferences
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String token = prefs.getString('token') ??
+          ''; // Replace 'auth_token' with your actual key
+
+      // Check if the token is available
+      if (token.isEmpty) {
+        return [];
+      }
+
+      // Construct the request URL
+      String apiUrl =
+          'https://participantportal-test.qatarbiobank.org.qa/QbbAPIS/api/ViewAppointmentsAPI';
+      String requestUrl = '$apiUrl?qid=$qid&page=1&language=$lang';
+
+      // Make the GET request with the token in the headers
+      var response = await http.get(
+        Uri.parse(requestUrl),
+        headers: {
+          'Authorization': 'Bearer ${token.replaceAll('"', '')}',
+        },
+      );
+
+      // Check if the request was successful (status code 200)
+      if (response.statusCode == 200) {
+        // Parse and handle the response body
+        var responseBody = json.decode(response.body);
+        allAppointments = List<Map<String, dynamic>>.from(responseBody);
+        allCompletedAppointments = allAppointments
+            .where((appointment) =>
+                appointment['AppoinmentStatus'] is int &&
+                appointment['AppoinmentStatus'] == 4)
+            .toList();
+        print("All app length" + allCompletedAppointments.length.toString());
+        return allCompletedAppointments;
+      } else {
+        // Handle errors
+
+        return []; // Return an empty list in case of an error
+      }
+    } catch (e, stackTrace) {
+      return []; // Return an empty list in case of an exception
+    }
   }
 
   @override
@@ -327,8 +397,17 @@ class ResultsState extends State<Results> {
                 ),
                 body: SingleChildScrollView(
                     child: Container(
-                  height: MediaQuery.of(context).size.height * 0.95,
-                  child: const Center(child: Text("No Results")),
+                  height: MediaQuery.of(context).size.height * 0.85,
+                  child: Center(
+                      child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      'resultsAreStillUnderReviewYouWillReceiveAnSMSOnceTheResultsAreReady'
+                          .tr,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 16),
+                    ),
+                  )),
                 )));
           }
 

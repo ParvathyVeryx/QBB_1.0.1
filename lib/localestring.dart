@@ -7,6 +7,8 @@ class LocaleString extends Translations {
         //ENGLISH LANGUAGE
         'en': {
           "langChange": "en",
+          "noNotifications" : "No Notifications",
+          "noResults" : "No Results",
           "create/activateAcc": "Create/Activate Account",
           "activateAccMsg":
               "Active if you have already participated/registered in Qatar biobank before",
@@ -332,6 +334,8 @@ class LocaleString extends Translations {
         //HINDI LANGUAGE
         'ar': {
           "langChange": "ar",
+          "noNotifications": "لا يوجد إشعارات",
+          "noResults" : "لا نتائج",
           "create/activateAcc": "إنشاء/تفعيل الحساب",
           "activateAccMsg": "نشط إذا كنت قد شاركت/سجلت في قطر بيوبنك من قبل",
           "pleaseSelectDate": "يرجى تحديد التاريخ",
@@ -388,7 +392,7 @@ class LocaleString extends Translations {
           "married": "متزوج",
           "formale": "متزوج",
           "forfemale": "متزوجة",
-          "are_you_sure": "هل أنت متأكد من أنك تريد تأكيد الموعد",
+          "areYouSure": "هل أنت متأكد من أنك تريد تأكيد الموعد",
           "thankYouForAppointment":
               "شكرًا لموعدك مع QBB. تتم مشاركة تفاصيل موعدك مع معرف بريدك الإلكتروني",
           "divorced": "مطلقة",
@@ -552,8 +556,8 @@ class LocaleString extends Translations {
           "studyName": "اسم الدراسة",
           "rescheduleAppointment": "تغيير الموعد الآن",
           "Select Date": "حدد تاريخ",
-          "Next Week": "الاسبوع القادم",
-          "Next Available Dates": "الموعد المتاح القادم",
+          "nextWeek": "الاسبوع القادم",
+          "nextAvailableDates": "الموعد المتاح القادم",
           "booked": "حجز",
           "available": "متاح",
           "rescheduleNow": "تغيير الموعد الآن",

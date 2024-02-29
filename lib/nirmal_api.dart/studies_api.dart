@@ -18,7 +18,7 @@ updateLanguage(Locale locale) {
   Get.updateLocale(locale);
 }
 
-Future<List<Study>> fetchStudyMasterAPI() async {
+Future<List<Study>> fetchStudyAPI() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   var lang = 'langChange'.tr;
   final String apiUrl =
@@ -67,3 +67,46 @@ Future<List<Study>> fetchStudyMasterAPI() async {
   }
 }
 
+//   Future<List<String>> fetchStudyMasterAPI() async {
+//     print("Data is loading");
+//     SharedPreferences pref = await SharedPreferences.getInstance();
+//     var setLang = 'langChange'.tr;
+
+//     final String apiUrl =
+//         'https://participantportal-test.qatarbiobank.org.qa/QbbAPIS/api/StudyMasterAPI';
+
+//     try {
+//       SharedPreferences pref = await SharedPreferences.getInstance();
+//       String? token = pref.getString('token');
+//       String? qid = await getQIDFromSharedPreferences();
+
+//       final http.Response response = await http.get(
+//         Uri.parse('$apiUrl?QID=$qid&language=$setLang'),
+//         headers: {
+//           'Authorization': 'Bearer ${token?.replaceAll('"', '')}',
+//         },
+//       );
+
+//       if (response.statusCode == 200) {
+//         isLoading = false;
+//         final List<dynamic> responseData = json.decode(response.body);
+//         setState(() {
+//           // studyNames.add('selectStudies'.tr);
+//           studyNames =
+//               responseData.map((data) => data['Name'].toString()).toList();
+
+//           studyIds = responseData.map((data) => data['Id'] as int).toList();
+//         });
+//         return studyNames; // Return the list of study names
+//       } else {
+//         throw Exception('Failed to fetch data');
+//       }
+//     } catch (error) {
+//       // Handle errors
+//       return [];
+//     } finally {
+//       // setState(() {
+//       //   isLoading = false;
+//       // });
+//     }
+//   }

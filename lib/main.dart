@@ -5,6 +5,8 @@ import 'package:QBB/localization/localization.dart';
 import 'package:QBB/nirmal/login_screen.dart';
 import 'package:QBB/providers/studymodel.dart';
 import 'package:QBB/providers/token_provider.dart';
+import 'package:QBB/screens/pages/book_appintment_nk.dart';
+import 'package:QBB/screens/pages/bookappointment_screen.dart';
 import 'package:QBB/screens/splash.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
@@ -118,6 +120,7 @@ class _MyAppState extends State<MyApp> {
         ),
         routes: {
           '/login': (BuildContext context) => const LoginPage(),
+          '/bookanAppointment': (BuildContext context) => const BookAppointments(),
         },
         home: const SplashScreen(),
       ),

@@ -74,6 +74,8 @@ Future<void> bookAppointmentApiCall(
       '$apiUrl?qatarid=${queryParams['qatarid']}&StudyId=${queryParams['StudyId']}&Pregnant=${queryParams['Pregnant']}&VisitTypeId=${queryParams['VisitTypeId']}&PersonGradeId=${queryParams['PersonGradeId']}&VisitName=${queryParams['VisitName']}&page=${queryParams['page']}&language=${queryParams['language']}');
   // SharedPreferences pref = await SharedPreferences.getInstance();
   // String? token = pref.getString('token');
+  print(uri);
+
   try {
     Dialogs.showLoadingDialog(context, _keyLoader, _loader);
     final response = await http.get(
@@ -84,6 +86,7 @@ Future<void> bookAppointmentApiCall(
       },
     );
     print("Print Response");
+    print(response.body);
     if (response.statusCode == 200) {
       Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
       final Map<String, dynamic> jsonResponse = json.decode(response.body);

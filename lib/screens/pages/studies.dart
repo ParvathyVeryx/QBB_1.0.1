@@ -39,7 +39,7 @@ class StudiesState extends State<Studies> {
   refreshPage() {
     studies = [];
 
-    fetchStudyMasterAPI().then((studyList) {
+    fetchStudyAPI().then((studyList) {
       setState(() {
         studies = studyList;
         isLoading = false; // Set loading state to false when data is fetched
@@ -146,7 +146,7 @@ class StudiesState extends State<Studies> {
           backgroundColor: appbar,
         ),
         body: FutureBuilder<List<Study>>(
-          future: fetchStudyMasterAPI(),
+          future: fetchStudyAPI(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               // return Center(child: CircularProgressIndicator());

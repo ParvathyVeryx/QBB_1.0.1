@@ -76,9 +76,15 @@ class RescheduleAppState extends State<RescheduleApp> {
         print(jsonResponse);
 
         setState(() {
+          String rawTime = jsonResponse['timelist'][0];
           tList = jsonResponse['timelist'][0];
-          // Update other state variables as needed
-          // nextAvailableDates = List<String>.from(jsonResponse['nextAvilableDateList']);
+          print(tList.toLowerCase());
+          if (tList.toLowerCase().contains("pm")) {
+            print("Yes PM");
+            tList = tList.toLowerCase().replaceAll("pm", 'pm'.tr);
+          } else if (tList.toLowerCase().contains("am")) {
+            tList = tList.toLowerCase().replaceAll("am", 'am'.tr);
+          }
         });
 
         print("Availability ID");
@@ -365,10 +371,11 @@ class RescheduleAppState extends State<RescheduleApp> {
 
     upcomingDateList = dateTimeList;
     List<DateTime> mergedList = [...dateTimeList, ...nextdateTimeList];
+    availabiltyCandarId = listACI;
     if (mergedList.length > availabiltyCandarId.length) {
       isACI = false;
     }
-    availabiltyCandarId = listACI;
+
     print(displayedACI);
     print(availabiltyCandarId);
     print(listACI);
@@ -849,25 +856,27 @@ class RescheduleAppState extends State<RescheduleApp> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      IconButton(
-                        onPressed: () {
-                          // _pageController.previousPage(
-                          //   duration: const Duration(milliseconds: 300),
-                          //   curve: Curves.easeInOut,
-                          // );
-                          setState(() {
-                            isNextWeekArrow = true;
-                            ispicked = false;
-                            isNextWeek = false;
-                            isNextWeekArrowRight = false;
-                            upcomingDateList = originalDateList;
-                            fetchDateList(originalDateList[0]);
-                          });
-                        },
-                        icon: const Icon(Icons.arrow_back_ios_rounded),
-                        color: primaryColor,
-                        iconSize: 11,
-                      ),
+                      upcomingDates.length == 0
+                          ? Container()
+                          : IconButton(
+                              onPressed: () {
+                                // _pageController.previousPage(
+                                //   duration: const Duration(milliseconds: 300),
+                                //   curve: Curves.easeInOut,
+                                // );
+                                setState(() {
+                                  isNextWeekArrow = true;
+                                  ispicked = false;
+                                  isNextWeek = false;
+                                  isNextWeekArrowRight = false;
+                                  upcomingDateList = originalDateList;
+                                  fetchDateList(originalDateList[0]);
+                                });
+                              },
+                              icon: const Icon(Icons.arrow_back_ios_rounded),
+                              color: primaryColor,
+                              iconSize: 11,
+                            ),
                       Text(
                         "nextWeek".tr,
                         style: TextStyle(
@@ -875,25 +884,27 @@ class RescheduleAppState extends State<RescheduleApp> {
                             fontSize: 11,
                             fontWeight: FontWeight.bold),
                       ),
-                      IconButton(
-                        onPressed: () {
-                          // _pageController.nextPage(
-                          //   duration: const Duration(milliseconds: 300),
-                          //   curve: Curves.easeInOut,
-                          // );
-                          setState(() {
-                            isNextWeekArrow = true;
-                            ispicked = false;
-                            isNextWeek = false;
-                            isNextWeekArrowRight = true;
-                            upcomingDateList = upcomingDates;
-                            fetchDateList(upcomingDateList[0]);
-                          });
-                        },
-                        icon: const Icon(Icons.arrow_forward_ios_rounded),
-                        color: primaryColor,
-                        iconSize: 11,
-                      )
+                      upcomingDates.length == 0
+                          ? Container()
+                          : IconButton(
+                              onPressed: () {
+                                // _pageController.nextPage(
+                                //   duration: const Duration(milliseconds: 300),
+                                //   curve: Curves.easeInOut,
+                                // );
+                                setState(() {
+                                  isNextWeekArrow = true;
+                                  ispicked = false;
+                                  isNextWeek = false;
+                                  isNextWeekArrowRight = true;
+                                  upcomingDateList = upcomingDates;
+                                  fetchDateList(upcomingDateList[0]);
+                                });
+                              },
+                              icon: const Icon(Icons.arrow_forward_ios_rounded),
+                              color: primaryColor,
+                              iconSize: 11,
+                            )
                     ],
                   ),
                   Row(
@@ -1131,10 +1142,10 @@ class RescheduleAppState extends State<RescheduleApp> {
                                                       elevation: 0,
                                                     ),
                                                     onPressed: () async {
-                                                      checkAvailabilityCalendar =
-                                                          availabiltyCandarId[
-                                                                  index]
-                                                              .toString();
+                                                      // checkAvailabilityCalendar =
+                                                      //     availabiltyCandarId[
+                                                      //             index]
+                                                      //         .toString();
                                                       String? uD = DateFormat(
                                                               'dd/MM/yyyy')
                                                           .format(
@@ -1187,7 +1198,20 @@ class RescheduleAppState extends State<RescheduleApp> {
                                                       // fetchDateList(upcomingDateList[index]);
                                                       // fetchAvailabilityCalendar(
                                                       //     date);
+
                                                       isFirst();
+                                                      isACI == false &&
+                                                                  isFirstList ==
+                                                                      true ||
+                                                              check == "Ok"
+                                                          ? checkAvailabilityCalendar =
+                                                              availabiltyCandarId[
+                                                                      index - 1]
+                                                                  .toString()
+                                                          : checkAvailabilityCalendar =
+                                                              availabiltyCandarId[
+                                                                      index]
+                                                                  .toString();
                                                       isACI == false &&
                                                                   isFirstList ==
                                                                       true ||
