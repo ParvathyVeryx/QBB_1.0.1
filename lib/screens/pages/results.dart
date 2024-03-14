@@ -177,6 +177,11 @@ class ResultsState extends State<Results> {
                 appointment['AppoinmentStatus'] == 4)
             .toList();
         print("All app length" + allCompletedAppointments.length.toString());
+        allCompletedAppointments.sort((a, b) {
+          DateTime dateA = DateTime.parse(a['AppoimentDate']);
+          DateTime dateB = DateTime.parse(b['AppoimentDate']);
+          return dateB.compareTo(dateA);
+        });
         return allCompletedAppointments;
       } else {
         // Handle errors

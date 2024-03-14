@@ -655,8 +655,9 @@ class RegisterUserState extends State<RegisterUser> {
                       const SizedBox(
                         height: 20.0,
                       ),
-                      _buildDropdownFormField(
+                      _buildDropdownFormFieldGender(
                         value: gender, // Use the gender variable here
+
                         onChanged: (value) {
                           print("Selected gender: $value");
                           setState(() {
@@ -728,7 +729,7 @@ class RegisterUserState extends State<RegisterUser> {
                       //   }).toList(),
                       //   labelText: '${'maritalStatus'.tr}*',
                       // ),
-                      _buildDropdownFormField(
+                      _buildDropdownFormFieldMaritalStatus(
                         value: maritalStatus,
                         onChanged: (value) {
                           setState(() {
@@ -780,47 +781,51 @@ class RegisterUserState extends State<RegisterUser> {
                       const SizedBox(
                         height: 20.0,
                       ),
-                      _hideColumn == true ? Container() : Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          Text(
-                            'howLong'.tr,
-                            style: const TextStyle(
-                                fontSize: 12, fontWeight: FontWeight.normal),
-                          ),
-                          const SizedBox(height: 10.0),
-                          _buildDropdownFormField(
-                            value: _selectedLivingPeriod,
-                            onChanged: (value) {
-                              setState(() {
-                                _selectedLivingPeriod = value;
-                                // Handle the selected value as needed
-                                int? intValue = years.firstWhere(
-                                    (item) => item['Name'] == value)['Id'];
-
-                                // Pass intValue to the API or use it as needed
-                                livingperiodId = intValue;
-                                // campaignList = sourceItems
-                                //     .firstWhere((item) => item['Name'] == value)["Name"];
-                                print("Source" + livingperiodId.toString());
-                                fetchYear();
-                              });
-                            },
-                            items: years.map((item) {
-                              return DropdownMenuItem<String>(
-                                value: item["Name"],
-                                child: Text(
-                                  item['Name'],
-                                  style: TextStyle(
+                      _hideColumn == true
+                          ? Container()
+                          : Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                Text(
+                                  'howLong'.tr,
+                                  style: const TextStyle(
                                       fontSize: 12,
-                                      fontWeight: FontWeight.w400),
+                                      fontWeight: FontWeight.normal),
                                 ),
-                              );
-                            }).toList(),
-                            labelText: '${'duration'.tr}*',
-                          ),
-                        ],
-                      ),
+                                const SizedBox(height: 10.0),
+                                _buildDropdownFormFieldLivingperiod(
+                                  value: _selectedLivingPeriod,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      _selectedLivingPeriod = value;
+                                      // Handle the selected value as needed
+                                      int? intValue = years.firstWhere((item) =>
+                                          item['Name'] == value)['Id'];
+
+                                      // Pass intValue to the API or use it as needed
+                                      livingperiodId = intValue;
+                                      // campaignList = sourceItems
+                                      //     .firstWhere((item) => item['Name'] == value)["Name"];
+                                      print(
+                                          "Source" + livingperiodId.toString());
+                                      fetchYear();
+                                    });
+                                  },
+                                  items: years.map((item) {
+                                    return DropdownMenuItem<String>(
+                                      value: item["Name"],
+                                      child: Text(
+                                        item['Name'],
+                                        style: TextStyle(
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.w400),
+                                      ),
+                                    );
+                                  }).toList(),
+                                  labelText: '${'duration'.tr}*',
+                                ),
+                              ],
+                            ),
                       const SizedBox(
                         height: 10,
                       ), // Additional Dropdown 1
@@ -836,7 +841,7 @@ class RegisterUserState extends State<RegisterUser> {
                             ),
                           ),
                           const SizedBox(height: 10.0),
-                          _buildDropdownFormField(
+                          _buildDropdownFormFieldSource(
                             value: campainValue,
                             onChanged: (value) {
                               setState(() {
@@ -865,6 +870,13 @@ class RegisterUserState extends State<RegisterUser> {
                               );
                             }).toList(),
                             labelText: 'newspaper'.tr + '*',
+                            // validator: (value) {
+                            //   print(value);
+                            //   if (value!.isEmpty) {
+                            //     return 'otherPleaseSpecify'.tr;
+                            //   }
+                            //   return null;
+                            // },
                           ),
                         ],
                       ),
@@ -897,7 +909,7 @@ class RegisterUserState extends State<RegisterUser> {
                               ),
                             ),
                             const SizedBox(height: 10.0),
-                            _buildDropdownFormField(
+                            _buildDropdownFormFieldCampaign(
                               value: campaignList,
                               onChanged: (value) {
                                 setState(() {
@@ -998,6 +1010,7 @@ class RegisterUserState extends State<RegisterUser> {
                           ),
                           ElevatedButton(
                             onPressed: () async {
+                              print(gender);
                               SharedPreferences prefs =
                                   await SharedPreferences.getInstance();
                               String? token = prefs.getString('token');
@@ -1540,7 +1553,7 @@ class RegisterUserState extends State<RegisterUser> {
     );
   }
 
-  Widget _buildDropdownFormField(
+  Widget _buildDropdownFormFieldCampaign(
       {required String? value,
       required void Function(String?)? onChanged,
       required List<DropdownMenuItem<String>> items,
@@ -1580,8 +1593,208 @@ class RegisterUserState extends State<RegisterUser> {
             border: InputBorder.none, // Remove the default border
           ),
           validator: (value) {
-            if (selectedDate == null) {
+            if (value == null) {
               return 'pleaseSelectaValue'.tr; // Validation error message
+            }
+            return null; // No error
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDropdownFormFieldGender(
+      {required String? value,
+      required void Function(String?)? onChanged,
+      required List<DropdownMenuItem<String>> items,
+      required String labelText,
+      String? defaultValue}) {
+    return Container(
+      decoration: BoxDecoration(
+        border: Border.all(
+          color: const Color.fromARGB(
+              255, 173, 173, 173), // Set the border color to grey
+          width: 1.0, // Set the border width
+        ),
+
+        borderRadius: const BorderRadius.only(
+          bottomLeft: Radius.circular(20.0), // Rounded border at bottom-left
+        ), // Rounded border corners
+      ),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(10.0, 0, 10.0, 0),
+        child: DropdownButtonFormField<String>(
+          value: value ?? defaultValue,
+          onChanged: onChanged,
+          items: items,
+          decoration: InputDecoration(
+            errorStyle: const TextStyle(
+              // Add your style properties here
+              color: primaryColor,
+              fontWeight: FontWeight.w600,
+              fontSize: 14.0,
+            ),
+            labelText: labelText,
+            labelStyle: const TextStyle(
+                color: Color.fromARGB(255, 173, 173, 173), fontSize: 12),
+            // Set the label text color
+
+            // Label text color
+            border: InputBorder.none, // Remove the default border
+          ),
+          validator: (value) {
+            if (value == null) {
+              return 'pleaseSelectaValue'.tr; // Validation error message
+            }
+            return null; // No error
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDropdownFormFieldMaritalStatus(
+      {required String? value,
+      required void Function(String?)? onChanged,
+      required List<DropdownMenuItem<String>> items,
+      required String labelText,
+      String? defaultValue}) {
+    return Container(
+      decoration: BoxDecoration(
+        border: Border.all(
+          color: const Color.fromARGB(
+              255, 173, 173, 173), // Set the border color to grey
+          width: 1.0, // Set the border width
+        ),
+
+        borderRadius: const BorderRadius.only(
+          bottomLeft: Radius.circular(20.0), // Rounded border at bottom-left
+        ), // Rounded border corners
+      ),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(10.0, 0, 10.0, 0),
+        child: DropdownButtonFormField<String>(
+          value: value ?? defaultValue,
+          onChanged: onChanged,
+          items: items,
+          decoration: InputDecoration(
+            errorStyle: const TextStyle(
+              // Add your style properties here
+              color: primaryColor,
+              fontWeight: FontWeight.w600,
+              fontSize: 14.0,
+            ),
+            labelText: labelText,
+            labelStyle: const TextStyle(
+                color: Color.fromARGB(255, 173, 173, 173), fontSize: 12),
+            // Set the label text color
+
+            // Label text color
+            border: InputBorder.none, // Remove the default border
+          ),
+          validator: (value) {
+            if (value == null) {
+              return 'pleaseSelectaValue'.tr; // Validation error message
+            }
+            return null; // No error
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDropdownFormFieldLivingperiod(
+      {required String? value,
+      required void Function(String?)? onChanged,
+      required List<DropdownMenuItem<String>> items,
+      required String labelText,
+      String? defaultValue}) {
+    return Container(
+      decoration: BoxDecoration(
+        border: Border.all(
+          color: const Color.fromARGB(
+              255, 173, 173, 173), // Set the border color to grey
+          width: 1.0, // Set the border width
+        ),
+
+        borderRadius: const BorderRadius.only(
+          bottomLeft: Radius.circular(20.0), // Rounded border at bottom-left
+        ), // Rounded border corners
+      ),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(10.0, 0, 10.0, 0),
+        child: DropdownButtonFormField<String>(
+          value: value ?? defaultValue,
+          onChanged: onChanged,
+          items: items,
+          decoration: InputDecoration(
+            errorStyle: const TextStyle(
+              // Add your style properties here
+              color: primaryColor,
+              fontWeight: FontWeight.w600,
+              fontSize: 14.0,
+            ),
+            labelText: labelText,
+            labelStyle: const TextStyle(
+                color: Color.fromARGB(255, 173, 173, 173), fontSize: 12),
+            // Set the label text color
+
+            // Label text color
+            border: InputBorder.none, // Remove the default border
+          ),
+          validator: (value) {
+            if (value == null) {
+              return 'pleaseSelectaValue'.tr; // Validation error message
+            }
+            return null; // No error
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDropdownFormFieldSource(
+      {required String? value,
+      required void Function(String?)? onChanged,
+      required List<DropdownMenuItem<String>> items,
+      required String labelText,
+      String? defaultValue}) {
+    return Container(
+      decoration: BoxDecoration(
+        border: Border.all(
+          color: const Color.fromARGB(
+              255, 173, 173, 173), // Set the border color to grey
+          width: 1.0, // Set the border width
+        ),
+
+        borderRadius: const BorderRadius.only(
+          bottomLeft: Radius.circular(20.0), // Rounded border at bottom-left
+        ), // Rounded border corners
+      ),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(10.0, 0, 10.0, 0),
+        child: DropdownButtonFormField<String>(
+          value: value ?? defaultValue,
+          onChanged: onChanged,
+          items: items,
+          decoration: InputDecoration(
+            errorStyle: const TextStyle(
+              // Add your style properties here
+              color: primaryColor,
+              fontWeight: FontWeight.w600,
+              fontSize: 14.0,
+            ),
+            labelText: labelText,
+            labelStyle: const TextStyle(
+                color: Color.fromARGB(255, 173, 173, 173), fontSize: 12),
+            // Set the label text color
+
+            // Label text color
+            border: InputBorder.none, // Remove the default border
+          ),
+          validator: (value) {
+            if (value == null) {
+              return 'sourceCannotBeEmpty'.tr; // Validation error message
             }
             return null; // No error
           },

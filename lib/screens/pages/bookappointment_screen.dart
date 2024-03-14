@@ -1305,6 +1305,7 @@ class BookAppScreenState extends State<BookAppScreen> {
     }
 
     setState(() {
+      selectedIndices = [];
       ispicked = true;
       isNextWeekArrow = false;
       isNextWeek = false;
@@ -1818,12 +1819,7 @@ class BookAppScreenState extends State<BookAppScreen> {
                 Divider(),
                 TextButton(
                   onPressed: () async {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const Appointments(),
-                      ),
-                    );
+                    Navigator.pushNamed(context, '/appointments');
                   },
                   child: Text(
                     'ok'.tr,
@@ -1954,6 +1950,7 @@ class BookAppScreenState extends State<BookAppScreen> {
                                 //   );
 
                                 setState(() {
+                                  selectedIndices = [];
                                   isNextWeekArrow = true;
                                   ispicked = false;
                                   isNextWeek = false;
@@ -1982,6 +1979,7 @@ class BookAppScreenState extends State<BookAppScreen> {
                                 //   curve: Curves.easeInOut,
                                 // );
                                 setState(() {
+                                  selectedIndices = [];
                                   isNextWeekArrow = true;
                                   ispicked = false;
                                   isNextWeek = false;
@@ -2069,6 +2067,7 @@ class BookAppScreenState extends State<BookAppScreen> {
                                               ),
                                               onPressed: () {
                                                 setState(() {
+                                                  selectedIndices = [];
                                                   isNextWeekArrowRight = false;
                                                   isNextWeek = true;
                                                   ispicked = false;
@@ -2281,37 +2280,81 @@ class BookAppScreenState extends State<BookAppScreen> {
                                                               .format(DateTime
                                                                   .now())
                                                               .runtimeType);
-                                                          isACI == false &&
-                                                                      isFirstList ==
-                                                                          true ||
-                                                                  check == "Ok"
-                                                              ? checkAvailabilityCalendar =
-                                                              availabiltyCandarId[
-                                                                      index-1]
-                                                                  .toString() : checkAvailabilityCalendar =
-                                                              availabiltyCandarId[
-                                                                      index]
-                                                                  .toString();
-                                                          // availabiltyCandarId[index];
-                                                          // print("ACI" +
-                                                          //     availabiltyCandarId[index]
-                                                          //         .toString());
+                                                          // isACI == false &&
+                                                          //             isFirstList ==
+                                                          //                 true ||
+                                                          //         check == "Ok"
+                                                          //     ? checkAvailabilityCalendar =
+                                                          //         availabiltyCandarId[
+                                                          //                 index -
+                                                          //                     1]
+                                                          //             .toString()
+                                                          //     : checkAvailabilityCalendar =
+                                                          //         availabiltyCandarId[
+                                                          //                 index]
+                                                          //             .toString();
 
-                                                          // fetchDateList(upcomingDateList[index]);
-                                                          // fetchAvailabilityCalendar(
-                                                          //     date);
                                                           isFirst();
                                                           isACI == false &&
-                                                                      isFirstList ==
-                                                                          true ||
-                                                                  check == "Ok"
+                                                                  isFirstList ==
+                                                                      true
+                                                              ? checkAvailabilityCalendar =
+                                                                  availabiltyCandarId[
+                                                                          index -
+                                                                              1]
+                                                                      .toString()
+                                                              : isACI == false &&
+                                                                      check ==
+                                                                          "Ok"
+                                                                  ? checkAvailabilityCalendar =
+                                                                      availabiltyCandarId[index -
+                                                                              1]
+                                                                          .toString()
+                                                                  : checkAvailabilityCalendar =
+                                                                      availabiltyCandarId[
+                                                                              index]
+                                                                          .toString();
+                                                          isACI == false &&
+                                                                  isFirstList ==
+                                                                      true
                                                               ? getAvailabilityCalendar(
                                                                   availabiltyCandarId[
                                                                       index -
                                                                           1])
-                                                              : getAvailabilityCalendar(
-                                                                  availabiltyCandarId[
-                                                                      index]);
+                                                              : isACI == false &&
+                                                                      check ==
+                                                                          "Ok"
+                                                                  ? getAvailabilityCalendar(
+                                                                      availabiltyCandarId[
+                                                                          index -
+                                                                              1])
+                                                                  : getAvailabilityCalendar(
+                                                                      availabiltyCandarId[
+                                                                          index]);
+                                                          // isACI == false &&
+                                                          //             isFirstList ==
+                                                          //                 true &&
+                                                          //         check == "Ok"
+                                                          //     ? checkAvailabilityCalendar =
+                                                          //         availabiltyCandarId[
+                                                          //                 index -
+                                                          //                     1]
+                                                          //             .toString()
+                                                          //     : checkAvailabilityCalendar =
+                                                          //         availabiltyCandarId[
+                                                          //                 index]
+                                                          //             .toString();
+                                                          // isACI == false &&
+                                                          //             isFirstList ==
+                                                          //                 true &&
+                                                          //         check == "Ok"
+                                                          //     ? getAvailabilityCalendar(
+                                                          //         availabiltyCandarId[
+                                                          //             index -
+                                                          //                 1])
+                                                          //     : getAvailabilityCalendar(
+                                                          //         availabiltyCandarId[
+                                                          //             index]);
                                                           if (selectedDates
                                                                   .length ==
                                                               1) {

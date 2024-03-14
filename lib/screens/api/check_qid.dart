@@ -152,7 +152,7 @@ Future<bool> checkQIDExist(
 Country getCountryInfoByCode(List<Country> countryList, String countryCode) {
   Country? matchingCountry = countryList.firstWhere(
     (country) => country.code == countryCode,
-    orElse: () => Country(0, "", "Unknown Country"), // Default ID to 0
+    orElse: () => Country(0, "", ""), // Default ID to 0
   );
 
   return matchingCountry;

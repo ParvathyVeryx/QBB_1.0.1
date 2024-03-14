@@ -261,35 +261,35 @@ class StudiesState extends State<Studies> {
                                     // Fetch the "Id" from the study JSON
                                     int? studyId = study
                                         .Id; // Replace "id" with the actual getter in your Study class
-                                    if (gender.contains("emale") &&
-                                        maritalId != "Single") {
-                                      print("Female");
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) =>
-                                              StuidesAppointment(
-                                            studyName: study
-                                                .studyName, // Pass the study name as an argument
-                                            studyId: studyId,
-                                          ),
+                                    // if (gender.contains("emale") &&
+                                    //     maritalId != "Single") {
+                                    //   print("Female");
+                                    //   Navigator.push(
+                                    //     context,
+                                    //     MaterialPageRoute(
+                                    //       builder: (context) =>
+                                    //           StuidesAppointment(
+                                    //         studyName: study
+                                    //             .studyName, // Pass the study name as an argument
+                                    //         studyId: studyId,
+                                    //       ),
+                                    //     ),
+                                    //   );
+                                    // } else {
+                                    //   print("Male");
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            BookAppointmentStudies(
+                                          studyName: study
+                                              .studyName, // Pass the study name as an argument
+                                          studyId: studyId,
+                                          isPreg: false,
                                         ),
-                                      );
-                                    } else {
-                                      print("Male");
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) =>
-                                              BookAppointmentStudies(
-                                            studyName: study
-                                                .studyName, // Pass the study name as an argument
-                                            studyId: studyId,
-                                            isPreg: false,
-                                          ),
-                                        ),
-                                      );
-                                    }
+                                      ),
+                                    );
+                                    // }
                                   },
                                   style: ButtonStyle(
                                     backgroundColor:

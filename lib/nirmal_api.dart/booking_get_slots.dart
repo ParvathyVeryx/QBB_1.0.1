@@ -58,7 +58,7 @@ Future<void> bookAppointmentApiCall(
     'qatarid': qid,
     'StudyId': studyId,
     'VisitTypeId': visitTypeId,
-    'Pregnant': 'null',
+    'Pregnant': "false",
     'PersonGradeId': personGradeId,
     'VisitName': visitTypeName,
     'page': '1',

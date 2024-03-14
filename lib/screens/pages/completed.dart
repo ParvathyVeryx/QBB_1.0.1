@@ -409,6 +409,11 @@ class CompletedState extends State<Completed> {
                 appointment['AppoinmentStatus'] is int &&
                 appointment['AppoinmentStatus'] == 4)
             .toList();
+        allCompletedAppointments.sort((a, b) {
+          DateTime dateA = DateTime.parse(a['AppoimentDate']);
+          DateTime dateB = DateTime.parse(b['AppoimentDate']);
+          return dateB.compareTo(dateA);
+        });
         return allCompletedAppointments;
       } else {
         // Handle errors
@@ -512,7 +517,8 @@ class CompletedState extends State<Completed> {
                                             DateFormat('MM-yyyy')
                                                 .format(
                                                     dateExtract(appointment))
-                                                .toString(), style: TextStyle(fontSize: 11),
+                                                .toString(),
+                                            style: TextStyle(fontSize: 11),
                                           ),
                                         ),
                                       ],

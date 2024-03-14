@@ -103,10 +103,7 @@ class _CustomTabState extends State<CustomTab> {
           ),
           InkWell(
             onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const Appointments()),
-              );
+              Navigator.pushNamed(context, '/appointments');
             },
             child: Container(
               // margin: EdgeInsets.fromLTRB(
@@ -376,10 +373,7 @@ class CustomTabDefaultState extends State<CustomTabDefault> {
           ),
           InkWell(
             onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const Appointments()),
-              );
+              Navigator.pushNamed(context, '/appointments');
             },
             child: Container(
               // margin: EdgeInsets.fromLTRB(

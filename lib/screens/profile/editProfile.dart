@@ -173,9 +173,16 @@ class EditUserState extends State<EditUser> {
                         ),
                         _buildDropdownFormField(
                           value: _genderController,
-                          onChanged: (value) {
+                          onChanged: (value) async{
+                            SharedPreferences pref =
+                                await SharedPreferences.getInstance();
+                            pref.setString("userMaritalStatus",
+                                value.toString());
+                            print("kkkkkkkk");
+                            print(value.toString());
                             setState(() {
                               maritalStatus = value!;
+                              
                               switch (maritalStatus) {
                                 case 'Single':
                                   maritalId = 2;
@@ -215,14 +222,24 @@ class EditUserState extends State<EditUser> {
                           ].map((String value) {
                             return DropdownMenuItem<String>(
                               value: value.tr,
-                              child: Text(value.tr, style: TextStyle(fontSize: 12, fontWeight: FontWeight.w400),),
+                              child: Text(
+                                value.tr,
+                                style: TextStyle(
+                                    fontSize: 12, fontWeight: FontWeight.w400),
+                              ),
                             );
                           }).toList(),
                           labelText: '${'maritalStatus'.tr}*',
                         ),
                         const SizedBox(height: 20.0),
                         ElevatedButton(
-                          onPressed: () {
+                          onPressed: () async {
+                            // SharedPreferences pref =
+                            //     await SharedPreferences.getInstance();
+                            // pref.setString("userMaritalStatus",
+                            //     _genderController.toString());
+                            // print("kkkkkkkk");
+                            // print(_genderController.toString());
                             // if (isButtonEnabled) {
                             // if (_genderController == "Single".tr) {
                             //   newMaritalid = 2;
@@ -370,7 +387,7 @@ Widget _buildRoundedBorderTextField({
     decoration: InputDecoration(
       contentPadding: const EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 5.0),
       labelText: labelText,
-      
+
       errorStyle: const TextStyle(
         // Add your style properties here
         color: primaryColor,
@@ -378,7 +395,9 @@ Widget _buildRoundedBorderTextField({
         fontSize: 14.0,
       ),
       labelStyle: TextStyle(
-          color: labelTextColor, fontSize: 12, fontWeight: FontWeight.w400), // Set the label text color
+          color: labelTextColor,
+          fontSize: 12,
+          fontWeight: FontWeight.w400), // Set the label text color
       enabledBorder: const OutlineInputBorder(
         borderSide: BorderSide(color: Color.fromARGB(255, 173, 173, 173)),
         borderRadius: BorderRadius.only(

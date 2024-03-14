@@ -45,6 +45,10 @@ class BookAppointmentStudiesState extends State<BookAppointmentStudies> {
   int? selectedStudyId;
   bool isLoading = false; // Added flag for loading indicator
   int currentIndex = 2;
+  bool isButtonEnabled = false;
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  bool isPreg = false;
+  String preg = '';
   final screens = [
     const HomeScreen(),
     const Appointments(),
@@ -68,6 +72,7 @@ class BookAppointmentStudiesState extends State<BookAppointmentStudies> {
             showSecondDropdown = true;
           });
           fetchVisitTypes(selectedStudyId!);
+          getGender();
         }
       } else {
         // If studyName is not provided, select the first study in the list
@@ -174,6 +179,16 @@ class BookAppointmentStudiesState extends State<BookAppointmentStudies> {
     }
   }
 
+  String gender = '';
+  String maritalId = '';
+
+  void getGender() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    gender = pref.getString("userGender").toString();
+    maritalId = pref.getString("userMaritalStatus").toString();
+    print(gender + maritalId);
+  }
+
   @override
   Widget build(BuildContext context) {
     return PopScope(
@@ -245,145 +260,202 @@ class BookAppointmentStudiesState extends State<BookAppointmentStudies> {
                       .contain, // Adjust to your needs (e.g., BoxFit.fill, BoxFit.fitHeight)
                 ),
               ),
+              // child: Column(
+              //   children: [
+
               child: TabBarView(
                 children: [
                   Column(
                     children: [
-                      Align(
-                        alignment: Alignment.topCenter,
-                        child: Padding(
-                          padding: const EdgeInsets.only(top: 16.0),
-                          child: Container(
-                            width: 300.0,
-                            decoration: BoxDecoration(
-                              borderRadius: const BorderRadius.only(
-                                bottomLeft: Radius.circular(20.0),
-                              ),
-                              color: Colors.white,
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.grey.withOpacity(0.5),
-                                  spreadRadius: 2,
-                                  blurRadius: 5,
-                                  offset: const Offset(0, 3),
+                      gender.contains("emale") && maritalId != "Single"
+                          ? Column(
+                              children: [
+                                // const SizedBox(height: 10.0),
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      left: 16.0, right: 16.0),
+                                  child: Row(
+                                    children: [
+                                      Text(
+                                        "areYouPregnant".tr,
+                                        style: TextStyle(
+                                            fontSize: 13,
+                                            fontWeight: FontWeight.w500),
+                                      ),
+                                      //   ],
+                                      // ),
+                                      // const SizedBox(
+                                      //   height: 10.0,
+                                      // ),
+                                      Expanded(
+                                          child: _buildRadioListTile(
+                                              'yes'.tr, 'Yes')),
+                                      // const SizedBox(
+                                      //   width: 20.0,
+                                      // ),
+                                      Expanded(
+                                          child: _buildRadioListTileNo(
+                                              'no'.tr, 'No')),
+                                    ],
+                                  ),
                                 ),
                               ],
+                            )
+                          : Container(
+                              height: 0,
                             ),
-                            child: Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 16.0),
-                              child: studyNames.isEmpty
-                                  ? Center(child: LoaderWidget())
-                                  : DropdownButton<String>(
-                                      value: selectedValue,
-                                      items: [
-                                        DropdownMenuItem<String>(
-                                          value: 'Select studies',
-                                          child: Text(
-                                            'selectStudies'.tr,
-                                            style:
-                                                TextStyle(color: Colors.black),
-                                          ),
-                                        ),
-                                        ...studyNames.map(
-                                          (studyName) =>
+                      gender.contains("emale") && maritalId != "Single" && preg == ''
+                          ? Container(
+                              height: 0,
+                            )
+                          : Align(
+                              alignment: Alignment.topCenter,
+                              child: Padding(
+                                padding: const EdgeInsets.only(top: 16.0),
+                                child: Container(
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.9,
+                                  decoration: BoxDecoration(
+                                    borderRadius: const BorderRadius.only(
+                                      bottomLeft: Radius.circular(20.0),
+                                    ),
+                                    color: Colors.white,
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.grey.withOpacity(0.5),
+                                        spreadRadius: 2,
+                                        blurRadius: 5,
+                                        offset: const Offset(0, 3),
+                                      ),
+                                    ],
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 16.0),
+                                    child: studyNames.isEmpty
+                                        ? Center(child: LoaderWidget())
+                                        : DropdownButton<String>(
+                                            value: selectedValue,
+                                            items: [
                                               DropdownMenuItem<String>(
-                                            value: studyName,
-                                            child: Text(studyName),
+                                                value: 'Select studies',
+                                                child: Text(
+                                                  'selectStudies'.tr,
+                                                  style: TextStyle(
+                                                      color: Colors.black),
+                                                ),
+                                              ),
+                                              ...studyNames.map(
+                                                (studyName) =>
+                                                    DropdownMenuItem<String>(
+                                                  value: studyName,
+                                                  child: Text(studyName),
+                                                ),
+                                              ),
+                                            ],
+                                            onChanged: (value) {
+                                              setState(() {
+                                                selectedValue = value!;
+                                                showSecondDropdown =
+                                                    value != 'Select studies';
+                                                int selectedStudyIndex =
+                                                    studyNames.indexOf(value);
+                                                selectedStudyId = studyIds[
+                                                    selectedStudyIndex];
+                                                secondSelectedValue =
+                                                    "Select visit type";
+                                                fetchVisitTypes(
+                                                    selectedStudyId!);
+                                              });
+                                            },
+                                            style: const TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 12.0,
+                                            ),
+                                            icon: const Icon(
+                                                Icons.arrow_drop_down),
+                                            isExpanded: true,
+                                            underline: const SizedBox(),
                                           ),
-                                        ),
-                                      ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                      gender.contains("emale") && maritalId != "Single" && preg == ''
+                          ? Container(
+                              height: 0,
+                            )
+                          : Visibility(
+                              visible: showSecondDropdown,
+                              child: Padding(
+                                padding: const EdgeInsets.only(top: 16.0),
+                                child: Container(
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.9,
+                                  decoration: BoxDecoration(
+                                    borderRadius: const BorderRadius.only(
+                                      bottomLeft: Radius.circular(20.0),
+                                    ),
+                                    color: Colors.white,
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.grey.withOpacity(0.5),
+                                        spreadRadius: 2,
+                                        blurRadius: 5,
+                                        offset: const Offset(0, 3),
+                                      ),
+                                    ],
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 16.0),
+                                    child: DropdownButton<String>(
+                                      value: secondSelectedValue ??
+                                          visitTypeNames.first,
+                                      items: [
+                                        'Select visit type',
+                                        ...visitTypeNames
+                                      ]
+                                          .toSet()
+                                          .toList() // Convert to set to remove duplicates
+                                          .map((visitTypeName) =>
+                                              DropdownMenuItem(
+                                                value: visitTypeName,
+                                                child: Text(
+                                                  visitTypeName,
+                                                  style: TextStyle(
+                                                      color: Colors.black,
+                                                      fontSize: 12),
+                                                ),
+                                              ))
+                                          .toList(),
                                       onChanged: (value) {
                                         setState(() {
-                                          selectedValue = value!;
-                                          showSecondDropdown =
-                                              value != 'Select studies';
-                                          int selectedStudyIndex =
-                                              studyNames.indexOf(value);
-                                          selectedStudyId =
-                                              studyIds[selectedStudyIndex];
-                                          secondSelectedValue =
-                                              "Select visit type";
-                                          fetchVisitTypes(selectedStudyId!);
+                                          secondSelectedValue = value!;
                                         });
+
+                                        if (value != 'Select visit type') {
+                                          int selectedVisitTypeIndex =
+                                              visitTypeNames.indexOf(value!);
+                                          int selectedVisitTypeId =
+                                              visitTypeIds[
+                                                  selectedVisitTypeIndex];
+                                          selectedVisitTypeIdForBooking =
+                                              selectedVisitTypeId;
+                                        }
                                       },
                                       style: const TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 12.0,
+                                        color: Colors.purple,
+                                        fontSize: 16.0,
                                       ),
                                       icon: const Icon(Icons.arrow_drop_down),
                                       isExpanded: true,
                                       underline: const SizedBox(),
                                     ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      Visibility(
-                        visible: showSecondDropdown,
-                        child: Padding(
-                          padding: const EdgeInsets.only(top: 16.0),
-                          child: Container(
-                            width: 300.0,
-                            decoration: BoxDecoration(
-                              borderRadius: const BorderRadius.only(
-                                bottomLeft: Radius.circular(20.0),
-                              ),
-                              color: Colors.white,
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.grey.withOpacity(0.5),
-                                  spreadRadius: 2,
-                                  blurRadius: 5,
-                                  offset: const Offset(0, 3),
+                                  ),
                                 ),
-                              ],
-                            ),
-                            child: Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 16.0),
-                              child: DropdownButton<String>(
-                                value:
-                                    secondSelectedValue ?? visitTypeNames.first,
-                                items: ['Select visit type', ...visitTypeNames]
-                                    .toSet()
-                                    .toList() // Convert to set to remove duplicates
-                                    .map((visitTypeName) => DropdownMenuItem(
-                                          value: visitTypeName,
-                                          child: Text(
-                                            visitTypeName,
-                                            style: TextStyle(
-                                                color: Colors.black,
-                                                fontSize: 12),
-                                          ),
-                                        ))
-                                    .toList(),
-                                onChanged: (value) {
-                                  setState(() {
-                                    secondSelectedValue = value!;
-                                  });
-
-                                  if (value != 'Select visit type') {
-                                    int selectedVisitTypeIndex =
-                                        visitTypeNames.indexOf(value!);
-                                    int selectedVisitTypeId =
-                                        visitTypeIds[selectedVisitTypeIndex];
-                                    selectedVisitTypeIdForBooking =
-                                        selectedVisitTypeId;
-                                  }
-                                },
-                                style: const TextStyle(
-                                  color: Colors.purple,
-                                  fontSize: 16.0,
-                                ),
-                                icon: const Icon(Icons.arrow_drop_down),
-                                isExpanded: true,
-                                underline: const SizedBox(),
                               ),
                             ),
-                          ),
-                        ),
-                      ),
                       const SizedBox(height: 30),
                       Center(
                         child: Row(
@@ -416,36 +488,69 @@ class BookAppointmentStudiesState extends State<BookAppointmentStudies> {
                             SizedBox(
                               width: 150,
                               child: ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  shape: const RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.only(
-                                      bottomLeft: Radius.circular(20.0),
-                                    ),
-                                  ),
-                                  backgroundColor: primaryColor,
-                                  // side: const BorderSide(color: Colors.black),
-                                  elevation: 0,
-                                ),
-                                onPressed: () async {
-                                  SharedPreferences pref =
-                                      await SharedPreferences.getInstance();
-                                  pref.setString("selectedStudyId",
-                                      selectedStudyId.toString());
-                                  pref.setString("selectedVisitTypeID",
-                                      selectedVisitTypeIdForBooking.toString());
-                                  pref.setString("selectedvalue",
-                                      secondSelectedValue.toString());
-                                  if (selectedValue != 'selectStudies'.tr &&
-                                      secondSelectedValue !=
-                                          'Select visit type') {
-                                    await bookAppointmentApiCall(
-                                      context,
-                                      selectedStudyId.toString(),
-                                      selectedVisitTypeIdForBooking.toString(),
-                                      secondSelectedValue,
-                                    );
-                                  }
-                                },
+                                style: selectedValue == 'selectStudies'.tr ||
+                                        secondSelectedValue ==
+                                            'selectVisitType'.tr ||
+                                        selectedStudyId == null ||
+                                        selectedVisitTypeIdForBooking == null
+                                    ? ButtonStyle(
+                                        backgroundColor: MaterialStateProperty
+                                            .all<Color>(primaryColor.withOpacity(
+                                                0.4)), // Set background color
+                                        shape: MaterialStateProperty.all<
+                                            RoundedRectangleBorder>(
+                                          const RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.only(
+                                              bottomLeft: Radius.circular(
+                                                  12.0), // Rounded border at bottom-left
+                                            ),
+                                          ),
+                                        ))
+                                    : ButtonStyle(
+                                        backgroundColor: MaterialStateProperty.all<
+                                                Color>(
+                                            primaryColor), // Set background color
+                                        shape: MaterialStateProperty.all<
+                                            RoundedRectangleBorder>(
+                                          const RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.only(
+                                              bottomLeft: Radius.circular(
+                                                  12.0), // Rounded border at bottom-left
+                                            ),
+                                          ),
+                                        )),
+                                onPressed: (selectedValue ==
+                                            'selectStudies'.tr ||
+                                        secondSelectedValue ==
+                                            'selectVisitType'.tr ||
+                                        selectedStudyId == null ||
+                                        selectedVisitTypeIdForBooking == null)
+                                    ? null
+                                    : () async {
+                                        SharedPreferences pref =
+                                            await SharedPreferences
+                                                .getInstance();
+                                        pref.setString("selectedStudyId",
+                                            selectedStudyId.toString());
+                                        pref.setString(
+                                            "selectedVisitTypeID",
+                                            selectedVisitTypeIdForBooking
+                                                .toString());
+                                        pref.setString("selectedvalue",
+                                            secondSelectedValue.toString());
+                                        if (selectedValue !=
+                                                'selectStudies'.tr &&
+                                            secondSelectedValue !=
+                                                'Select visit type') {
+                                          await bookAppointmentApiCall(
+                                            context,
+                                            selectedStudyId.toString(),
+                                            selectedVisitTypeIdForBooking
+                                                .toString(),
+                                            secondSelectedValue,
+                                          );
+                                        }
+                                      },
                                 child: Text(
                                   'tutorialContinueButton'.tr,
                                   style: const TextStyle(color: Colors.white),
@@ -462,13 +567,53 @@ class BookAppointmentStudiesState extends State<BookAppointmentStudies> {
                           child: LoaderWidget(),
                         ),
                     ],
-                  ),
+                  )
+                  //   ],
+                  // ),
                 ],
               ),
             ),
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildRadioListTile(String title, String value) {
+    return RadioListTile<String>(
+      title: Text(
+        title,
+        style: TextStyle(fontSize: 12),
+      ),
+      value: value,
+      groupValue: preg,
+      onChanged: (newValue) {
+        setState(() {
+          preg = newValue!;
+          isPreg = true;
+          isButtonEnabled = true;
+        });
+      },
+      activeColor: primaryColor,
+    );
+  }
+
+  Widget _buildRadioListTileNo(String title, String value) {
+    return RadioListTile<String>(
+      title: Text(
+        title,
+        style: TextStyle(fontSize: 12),
+      ),
+      value: value,
+      groupValue: preg,
+      onChanged: (newValue) {
+        setState(() {
+          preg = newValue!;
+          isPreg = false;
+          isButtonEnabled = true;
+        });
+      },
+      activeColor: primaryColor,
     );
   }
 }

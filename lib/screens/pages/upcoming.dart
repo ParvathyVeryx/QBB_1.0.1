@@ -84,6 +84,11 @@ class UpcomingState extends State<Upcoming> {
         pref.getString("appointmentID");
         print("Upcoming Appointments");
         print(allUpcomingAppointments);
+        allUpcomingAppointments.sort((a, b) {
+          DateTime dateA = DateTime.parse(a['AppoimentDate']);
+          DateTime dateB = DateTime.parse(b['AppoimentDate']);
+          return dateB.compareTo(dateA);
+        });
         return allUpcomingAppointments;
       } else {
         // Handle errors
@@ -191,6 +196,7 @@ class UpcomingState extends State<Upcoming> {
         "AppoinmentId": appointmentId,
         "Reason": selectedReason,
         "ReasonType": "4",
+        "language": 'langChange'.tr
       };
 
       // Construct the API URL
@@ -204,26 +210,39 @@ class UpcomingState extends State<Upcoming> {
       if (response.statusCode == 200) {
         Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
         await showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                title: Text(''),
-                content: Text(json.decode(response.body)["Message"]),
-                actions: [
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => Appointments(),
-                        ),
-                      ); // Close the dialog
-                    },
-                    child: Text('OK'),
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              backgroundColor: Colors.white,
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.only(
+                  bottomLeft:
+                      Radius.circular(50.0), // Adjust the radius as needed
+                ),
+              ),
+              content: Padding(
+                padding: const EdgeInsets.only(top: 12.0),
+                child: Text(
+                  json.decode(response.body)["Message"],
+                  style:
+                      const TextStyle(color: Color.fromARGB(255, 74, 74, 74)),
+                ),
+              ),
+              actions: <Widget>[
+                // Divider(),
+                TextButton(
+                  onPressed: () async {
+                    Navigator.pushNamed(context, '/appointments');
+                  },
+                  child: Text(
+                    'ok'.tr,
+                    style: TextStyle(color: secondaryColor),
                   ),
-                ],
-              );
-            });
+                ),
+              ],
+            );
+          },
+        );
       } else {
         Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
         await showDialog(
@@ -276,6 +295,7 @@ class UpcomingState extends State<Upcoming> {
         "AppoinmentId": appointmentId,
         "Reason": selectedReason,
         "ReasonType": "4",
+        "language": 'langChange'.tr
       };
 
       // Construct the API URL
@@ -311,12 +331,7 @@ class UpcomingState extends State<Upcoming> {
                 // Divider(),
                 TextButton(
                   onPressed: () async {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const Appointments(),
-                      ),
-                    );
+                    Navigator.pushNamed(context, '/appointments');
                   },
                   child: Text(
                     'ok'.tr,
@@ -463,7 +478,11 @@ class UpcomingState extends State<Upcoming> {
                                                           .toString() ==
                                                       "2"
                                                   ? 'rescheduled'.tr
-                                                  : "upcoming".tr,
+                                                  : appointment['AppoinmentStatus']
+                                                              .toString() ==
+                                                          "1"
+                                                      ? "upcoming".tr
+                                                      : "",
                                               style: const TextStyle(
                                                 color: Color.fromARGB(
                                                     255, 255, 255, 255),
@@ -702,31 +721,37 @@ class UpcomingState extends State<Upcoming> {
                                         width: 150,
                                         child: ElevatedButton(
                                           style: appointment["showCancelBtn"] ==
-                                                    false ? ElevatedButton.styleFrom(
-                                            shape: const RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.only(
-                                                bottomLeft:
-                                                    Radius.circular(20.0),
-                                              ),
-                                            ),
-                                            backgroundColor: Colors.white,
-                                            side:
-                                                const BorderSide(color: appbar),
-                                            elevation: 0,
-                                          ) : ElevatedButton.styleFrom(
-                                            shape: const RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.only(
-                                                bottomLeft:
-                                                    Radius.circular(20.0),
-                                              ),
-                                            ),
-                                            backgroundColor: Colors.white.withOpacity(0.5),
-                                            side:
-                                                const BorderSide(color: appbar),
-                                            elevation: 0,
-                                          ),
+                                                  false
+                                              ? ElevatedButton.styleFrom(
+                                                  shape:
+                                                      const RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.only(
+                                                      bottomLeft:
+                                                          Radius.circular(20.0),
+                                                    ),
+                                                  ),
+                                                  backgroundColor: Colors.white,
+                                                  side: const BorderSide(
+                                                      color: appbar),
+                                                  elevation: 0,
+                                                )
+                                              : ElevatedButton.styleFrom(
+                                                  shape:
+                                                      const RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.only(
+                                                      bottomLeft:
+                                                          Radius.circular(20.0),
+                                                    ),
+                                                  ),
+                                                  backgroundColor: Colors.white
+                                                      .withOpacity(0.5),
+                                                  side: const BorderSide(
+                                                      color: appbar),
+                                                  elevation: 0,
+                                                ),
                                           onPressed: () async {
-                                            
                                             appointment["showCancelBtn"] ==
                                                     false
                                                 ? //   showDialog(
@@ -936,32 +961,38 @@ class UpcomingState extends State<Upcoming> {
                                       SizedBox(
                                         width: 150,
                                         child: ElevatedButton(
-                                          
-                                          style: appointment["showRescheduleBtn"] ==
-                                                    true
-                                                ? ElevatedButton.styleFrom(
-                                            shape: const RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.only(
-                                                bottomLeft:
-                                                    Radius.circular(20.0),
-                                              ),
-                                            ),
-                                            backgroundColor: primaryColor,
-                                            // side: const BorderSide(
-                                            //     color: Colors.black),
-                                            elevation: 0,
-                                          ) : ElevatedButton.styleFrom(
-                                            shape: const RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.only(
-                                                bottomLeft:
-                                                    Radius.circular(20.0),
-                                              ),
-                                            ),
-                                            backgroundColor: primaryColor.withOpacity(0.5),
-                                            // side: const BorderSide(
-                                            //     color: Colors.black),
-                                            elevation: 0,
-                                          ),
+                                          style: appointment[
+                                                      "showRescheduleBtn"] ==
+                                                  true
+                                              ? ElevatedButton.styleFrom(
+                                                  shape:
+                                                      const RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.only(
+                                                      bottomLeft:
+                                                          Radius.circular(20.0),
+                                                    ),
+                                                  ),
+                                                  backgroundColor: primaryColor,
+                                                  // side: const BorderSide(
+                                                  //     color: Colors.black),
+                                                  elevation: 0,
+                                                )
+                                              : ElevatedButton.styleFrom(
+                                                  shape:
+                                                      const RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.only(
+                                                      bottomLeft:
+                                                          Radius.circular(20.0),
+                                                    ),
+                                                  ),
+                                                  backgroundColor: primaryColor
+                                                      .withOpacity(0.5),
+                                                  // side: const BorderSide(
+                                                  //     color: Colors.black),
+                                                  elevation: 0,
+                                                ),
                                           onPressed: () {
                                             String appId =
                                                 appointment["AppoinmentId"]

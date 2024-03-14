@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:ffi';
 
 import 'package:QBB/constants.dart';
@@ -19,6 +20,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'screens/api/signout_api.dart';
 import 'screens/pages/studies.dart';
+import 'package:http/http.dart' as http;
 
 class LanguageProvider extends ChangeNotifier {
   String _selectedLanguage = 'English';
@@ -117,6 +119,31 @@ class sideMenuclass extends State<SideMenu> {
   final GlobalKey<RefreshIndicatorState> _refreshKey =
       GlobalKey<RefreshIndicatorState>();
 
+  List<Map<String, dynamic>> reasons = [];
+  Future<List<Map<String, dynamic>>> getReasons() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    var lang = 'langChange'.tr;
+    String token = pref.getString('token') ??
+        ''; // Replace 'auth_token' with your actual key
+    var response = await http.get(
+      Uri.parse(
+          "https://participantportal-test.qatarbiobank.org.qa/QbbAPIS/api/GetReasonForCancelAppoinmentAPI?language=$lang"),
+      headers: {
+        'Authorization': 'Bearer ${token.replaceAll('"', '')}',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      // Parse and handle the response body
+      var responseBody = json.decode(response.body);
+      reasons = List<Map<String, dynamic>>.from(responseBody);
+
+      return reasons;
+    } else {
+      return [];
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -197,10 +224,7 @@ class sideMenuclass extends State<SideMenu> {
                 ),
                 onTap: () {
                   isBookApp = false;
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => Appointments()),
-                  );
+                  Navigator.pushNamed(context, '/appointments');
                 },
               ),
               // Add more DrawerListTile widgets as needed
@@ -442,6 +466,7 @@ class sideMenuclass extends State<SideMenu> {
                                             selectedLanguage == 'English'
                                                 ? locale[0]['locale']
                                                 : locale[1]['locale']);
+                                        getReasons();
                                         BookAppointmentsState myState =
                                             BookAppointmentsState();
                                         myState.refreshPage();
@@ -450,6 +475,11 @@ class sideMenuclass extends State<SideMenu> {
                                             "/bookanAppointment") {
                                           Navigator.pushNamed(
                                               context, '/bookanAppointment');
+                                        }
+                                        if (checkCurrentRoute() ==
+                                            "/appointments") {
+                                          Navigator.pushNamed(
+                                              context, '/appointments');
                                         } // Close the dialog
                                       } else {
                                         // Show an error or inform the user to select a language
@@ -489,6 +519,10 @@ class sideMenuclass extends State<SideMenu> {
                   //   context,
                   //   MaterialPageRoute(builder: (context) => const LoginPage()),
                   // ); // Close the drawer
+                  Navigator.of(context).pushNamedAndRemoveUntil(
+                    '/login',
+                    (Route<dynamic> route) => false,
+                  );
                   signOut(context);
                 },
               ),
@@ -687,10 +721,7 @@ class SideMenuHomeclass extends State<SideMenuHome> {
                   style: TextStyle(color: textcolor, fontSize: 14),
                 ),
                 onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => Appointments()),
-                  );
+                  Navigator.pushNamed(context, '/appointments');
                 },
               ),
               // Add more DrawerListTile widgets as needed

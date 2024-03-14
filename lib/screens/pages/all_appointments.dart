@@ -2,8 +2,13 @@ import 'dart:convert';
 
 import 'package:QBB/constants.dart';
 import 'package:QBB/nirmal_api.dart/appointments._api.dart';
+import 'package:QBB/nirmal_api.dart/booking_get_slots.dart';
+import 'package:QBB/screens/api/userid.dart';
+import 'package:QBB/screens/pages/appointments.dart';
 import 'package:QBB/screens/pages/appointments_data_extract.dart';
+import 'package:QBB/screens/pages/erorr_popup.dart';
 import 'package:QBB/screens/pages/loader.dart';
+import 'package:QBB/sidebar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -66,6 +71,13 @@ class AllAppointmentsState extends State<AllAppointments> {
             .cast<String>()
             .toList();
         print(allAppointments);
+        List<Map<String, dynamic>> reversedAppointments =
+            allAppointments.reversed.toList();
+        allAppointments.sort((a, b) {
+          DateTime dateA = DateTime.parse(a['AppoimentDate']);
+          DateTime dateB = DateTime.parse(b['AppoimentDate']);
+          return dateB.compareTo(dateA);
+        });
         return allAppointments;
       } else {
         // Handle errors
@@ -86,6 +98,299 @@ class AllAppointmentsState extends State<AllAppointments> {
     _isMounted = true;
     fetchData();
     showDotNotification();
+    // setState(() {
+    getReasons();
+    // });
+  }
+
+  List<Map<String, dynamic>> reasons = [];
+  Future<List<Map<String, dynamic>>> getReasons() async {
+    print("Reasons");
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    var lang = 'langChange'.tr;
+    String token = pref.getString('token') ??
+        ''; // Replace 'auth_token' with your actual key
+    try {
+      print("Reasons 2");
+      var response = await http.get(
+        Uri.parse(
+            "https://participantportal-test.qatarbiobank.org.qa/QbbAPIS/api/GetReasonForCancelAppoinmentAPI?language=$lang"),
+        headers: {
+          'Authorization': 'Bearer ${token.replaceAll('"', '')}',
+        },
+      );
+      print("Reasons 3");
+
+      if (response.statusCode == 200) {
+        print("Reasons 4");
+        // Parse and handle the response body
+        var responseBody = json.decode(response.body);
+
+        reasons = List<Map<String, dynamic>>.from(responseBody);
+
+        return reasons;
+      } else {
+        print("Reasons 5");
+        return [];
+      }
+    } catch (e) {
+      print("Reasons 6");
+      return [];
+    }
+  }
+
+  String selectedReason = '';
+
+  List<Widget> buildReasonRadioButtons(StateSetter setState) {
+    // Create a list of radio buttons based on the reasons
+    return reasons.map((reason) {
+      String reasonName = reason['Name'] ?? '';
+      print(reason);
+      return RadioListTile(
+        title: Text(
+          reasonName,
+          style: TextStyle(fontSize: 10),
+        ),
+        value: reasonName,
+        groupValue: selectedReason,
+        activeColor: primaryColor,
+        onChanged: (value) async {
+          SharedPreferences pref = await SharedPreferences.getInstance();
+          // Handle radio button selection
+          setState(() {
+            selectedReason = value as String;
+          });
+          pref.setString("selectedReason", value as String);
+        },
+      );
+    }).toList();
+  }
+
+// Widget buildReasonRadioButtons(
+//   StateSetter setState,
+//   List<Map<String, dynamic>> reasons,
+// ) {
+//   return Column(
+//     mainAxisSize: MainAxisSize.min,
+//     children: reasons.map((reason) {
+//       String reasonName = reason['Name'] ?? '';
+//       print(reason);
+//       return RadioListTile(
+//         title: Text(
+//           reasonName,
+//           style: TextStyle(fontSize: 10),
+//         ),
+//         value: reasonName,
+//         groupValue: selectedReason,
+//         activeColor: primaryColor,
+//         onChanged: (value) async {
+//           SharedPreferences pref = await SharedPreferences.getInstance();
+//           setState(() {
+//             selectedReason = value as String;
+//           });
+//           pref.setString("selectedReason", value as String);
+//         },
+//       );
+//     }).toList(),
+//   );
+// }
+
+  Future<void> cancelResultAppointment(String appointmentId) async {
+    final GlobalKey<State> _keyLoader = GlobalKey<State>();
+    LoaderWidget _loader = LoaderWidget();
+    SharedPreferences pref = await SharedPreferences.getInstance();
+
+    String? qid = await getQIDFromSharedPreferences();
+    var lang = 'langChange'.tr;
+    // String selectedAppointmentId =
+    //     pref.getString("selectedAppointmentId").toString();
+    // String selectedReason = pref.getString("selectedReason").toString();
+
+    try {
+      Dialogs.showLoadingDialog(context, _keyLoader, _loader);
+      // Retrieve the token from SharedPreferences
+      String? token = pref.getString('token');
+      if (token == null) {
+        // Handle the case where the token is not available
+        return;
+      }
+
+      // Construct headers with the retrieved token
+      Map<String, String> headers = {
+        'Authorization': 'Bearer ${token.replaceAll('"', '')}',
+      };
+
+      Map<String, dynamic> requestBody = {
+        "QID": qid,
+        "AppoinmentId": appointmentId,
+        "Reason": selectedReason,
+        "ReasonType": "4",
+        "language": 'langChange'.tr
+      };
+
+      // Construct the API URL
+      Uri apiUrl = Uri.parse(
+          'https://participantportal-test.qatarbiobank.org.qa/QbbAPIS/api/CancelResultAppointmentAPI');
+
+      // Make the HTTP POST request
+      final response =
+          await http.post(apiUrl, headers: headers, body: requestBody);
+      print("Cancel Result Appointment");
+      if (response.statusCode == 200) {
+        Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
+       await showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              backgroundColor: Colors.white,
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.only(
+                  bottomLeft:
+                      Radius.circular(50.0), // Adjust the radius as needed
+                ),
+              ),
+              content: Padding(
+                padding: const EdgeInsets.only(top: 12.0),
+                child: Text(
+                  json.decode(response.body)["Message"],
+                  style:
+                      const TextStyle(color: Color.fromARGB(255, 74, 74, 74)),
+                ),
+              ),
+              actions: <Widget>[
+                // Divider(),
+                TextButton(
+                  onPressed: () async {
+                    Navigator.pushNamed(context, '/appointments');
+                  },
+                  child: Text(
+                    'ok'.tr,
+                    style: TextStyle(color: secondaryColor),
+                  ),
+                ),
+              ],
+            );
+          },
+        );
+      } else {
+        Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
+        await showDialog(
+            context: context, // Use the context of the current screen
+            builder: (BuildContext context) {
+              return ErrorPopup(
+                  errorMessage: json.decode(response.body)["Message"]);
+            });
+      }
+    } catch (e) {
+      Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
+      print("Exception caught: $e");
+      await showDialog(
+          context: context, // Use the context of the current screen
+          builder: (BuildContext context) {
+            return ErrorPopup(
+              errorMessage: '$e',
+            );
+          });
+    }
+  }
+
+  Future<void> cancelAnAppointment(String appointmentId) async {
+    final GlobalKey<State> _keyLoader = GlobalKey<State>();
+    LoaderWidget _loader = LoaderWidget();
+    SharedPreferences pref = await SharedPreferences.getInstance();
+
+    String? qid = await getQIDFromSharedPreferences();
+    var lang = 'langChange'.tr;
+    // String selectedAppointmentId =
+    //     pref.getString("selectedAppointmentId").toString();
+    // String selectedReason = pref.getString("selectedReason").toString();
+
+    try {
+      Dialogs.showLoadingDialog(context, _keyLoader, _loader);
+      // Retrieve the token from SharedPreferences
+      String? token = pref.getString('token');
+      if (token == null) {
+        // Handle the case where the token is not available
+        return;
+      }
+
+      // Construct headers with the retrieved token
+      Map<String, String> headers = {
+        'Authorization': 'Bearer ${token.replaceAll('"', '')}',
+      };
+
+      Map<String, dynamic> requestBody = {
+        "QID": qid,
+        "AppoinmentId": appointmentId,
+        "Reason": selectedReason,
+        "ReasonType": "4",
+        "language": 'langChange'.tr
+      };
+
+      // Construct the API URL
+      Uri apiUrl = Uri.parse(
+          'https://participantportal-test.qatarbiobank.org.qa/QbbAPIS/api/CancelAppointmentAPI');
+
+      // Make the HTTP POST request
+      final response =
+          await http.post(apiUrl, headers: headers, body: requestBody);
+
+      if (response.statusCode == 200) {
+        Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
+        await showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              backgroundColor: Colors.white,
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.only(
+                  bottomLeft:
+                      Radius.circular(50.0), // Adjust the radius as needed
+                ),
+              ),
+              content: Padding(
+                padding: const EdgeInsets.only(top: 12.0),
+                child: Text(
+                  json.decode(response.body)["Message"],
+                  style:
+                      const TextStyle(color: Color.fromARGB(255, 74, 74, 74)),
+                ),
+              ),
+              actions: <Widget>[
+                // Divider(),
+                TextButton(
+                  onPressed: () async {
+                    Navigator.pushNamed(context, '/appointments');
+                  },
+                  child: Text(
+                    'ok'.tr,
+                    style: TextStyle(color: secondaryColor),
+                  ),
+                ),
+              ],
+            );
+          },
+        );
+      } else {
+        Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
+        await showDialog(
+            context: context, // Use the context of the current screen
+            builder: (BuildContext context) {
+              return ErrorPopup(
+                  errorMessage: json.decode(response.body)["Message"]);
+            });
+      }
+    } catch (e) {
+      Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
+      print("Exception caught: $e");
+      await showDialog(
+          context: context, // Use the context of the current screen
+          builder: (BuildContext context) {
+            return ErrorPopup(
+              errorMessage: '$e',
+            );
+          });
+    }
   }
 
   Future<void> showDotNotification() async {
@@ -232,7 +537,39 @@ class AllAppointmentsState extends State<AllAppointments> {
                                                                       .toString() ==
                                                                   "2"
                                                               ? 'rescheduled'.tr
-                                                              : 'cancelled'.tr,
+                                                              : appointment['AppoinmentStatus']
+                                                                          .toString() ==
+                                                                      "3"
+                                                                  ? 'toReschedule'
+                                                                      .tr
+                                                                  : appointment['AppoinmentStatus']
+                                                                              .toString() ==
+                                                                          "5"
+                                                                      ? 'cancelled'
+                                                                          .tr
+                                                                      : appointment['AppoinmentStatus'].toString() ==
+                                                                              "7"
+                                                                          ? 'revisitRequired'
+                                                                              .tr
+                                                                          : appointment['AppoinmentStatus'].toString() == "8"
+                                                                              ? 'arrived'.tr
+                                                                              : appointment['AppoinmentStatus'].toString() == "9"
+                                                                                  ? 'delayed'.tr
+                                                                                  : appointment['AppoinmentStatus'].toString() == "11"
+                                                                                      ? 'resultReady'.tr
+                                                                                      : appointment['AppoinmentStatus'].toString() == "12"
+                                                                                          ? 'revisitNotRequired'.tr
+                                                                                          : appointment['AppoinmentStatus'].toString() == "13"
+                                                                                              ? 'wishList'.tr
+                                                                                              : appointment['AppoinmentStatus'].toString() == "14"
+                                                                                                  ? 'confirmed'.tr
+                                                                                                  : appointment['AppoinmentStatus'].toString() == "15"
+                                                                                                      ? 'onTheWay'.tr
+                                                                                                      : appointment['AppoinmentStatus'].toString() == "16"
+                                                                                                          ? 'reminded'.tr
+                                                                                                          : appointment['AppoinmentStatus'].toString() == "17"
+                                                                                                              ? 'mayBe'.tr
+                                                                                                              : '',
                                               style: TextStyle(
                                                 color: Color.fromARGB(
                                                     255, 255, 255, 255),
@@ -460,7 +797,9 @@ class AllAppointmentsState extends State<AllAppointments> {
                                       const SizedBox(
                                         height: 20,
                                       ),
-                                      appointment["AppoinmentStatus"] == 1
+                                      appointment["AppoinmentStatus"] == 1 ||
+                                              appointment["AppoinmentStatus"] ==
+                                                  2
                                           ? Center(
                                               child: Row(
                                                 mainAxisAlignment:
@@ -469,59 +808,220 @@ class AllAppointmentsState extends State<AllAppointments> {
                                                   SizedBox(
                                                     width: 150,
                                                     child: ElevatedButton(
-                                                      style: ElevatedButton
-                                                          .styleFrom(
-                                                        shape:
-                                                            const RoundedRectangleBorder(
-                                                          borderRadius:
-                                                              BorderRadius.only(
-                                                            bottomLeft:
-                                                                Radius.circular(
-                                                                    20.0),
-                                                          ),
-                                                        ),
-                                                        backgroundColor:
-                                                            Colors.white,
-                                                        side: const BorderSide(
-                                                            color: Colors
-                                                                .deepPurple),
-                                                        elevation: 0,
-                                                      ),
+                                                      style: appointment[
+                                                                  "showCancelBtn"] ==
+                                                              false
+                                                          ? ElevatedButton
+                                                              .styleFrom(
+                                                              shape:
+                                                                  const RoundedRectangleBorder(
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .only(
+                                                                  bottomLeft: Radius
+                                                                      .circular(
+                                                                          20.0),
+                                                                ),
+                                                              ),
+                                                              backgroundColor:
+                                                                  Colors.white,
+                                                              side: const BorderSide(
+                                                                  color:
+                                                                      appbar),
+                                                              elevation: 0,
+                                                            )
+                                                          : ElevatedButton
+                                                              .styleFrom(
+                                                              shape:
+                                                                  const RoundedRectangleBorder(
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .only(
+                                                                  bottomLeft: Radius
+                                                                      .circular(
+                                                                          20.0),
+                                                                ),
+                                                              ),
+                                                              backgroundColor:
+                                                                  Colors.white
+                                                                      .withOpacity(
+                                                                          0.5),
+                                                              side: const BorderSide(
+                                                                  color:
+                                                                      appbar),
+                                                              elevation: 0,
+                                                            ),
                                                       onPressed: () async {
-                                                        if (appointment[
-                                                                'CancelExpiredMSG'] !=
-                                                            null) {
-                                                          showDialog(
-                                                              context: context,
-                                                              builder:
-                                                                  (BuildContext
-                                                                      context) {
-                                                                return AlertDialog(
-                                                                  title:
-                                                                      Text(''),
-                                                                  content: Text(
-                                                                      appointment[
-                                                                          'CancelExpiredMSG']),
-                                                                  actions: [
-                                                                    ElevatedButton(
-                                                                      onPressed:
-                                                                          () {
-                                                                        Navigator.pop(
-                                                                            context); // Close the dialog
-                                                                      },
-                                                                      child: Text(
-                                                                          'OK'),
-                                                                    ),
-                                                                  ],
-                                                                );
-                                                              });
-                                                        }
+                                                        setState(() {
+                                                          getReasons();
+                                                        });
+
+                                                        appointment["showCancelBtn"] ==
+                                                                false
+                                                            ? //   showDialog(
+                                                            showDialog(
+                                                                context:
+                                                                    context,
+                                                                builder:
+                                                                    (BuildContext
+                                                                        context) {
+                                                                  return ErrorPopup(
+                                                                      errorMessage:
+                                                                          appointment[
+                                                                              'CancelExpiredMSG']);
+                                                                })
+                                                            : appointment[
+                                                                        "AppoinmenttypName"] ==
+                                                                    "Result"
+                                                                ? showDialog(
+                                                                    context:
+                                                                        context,
+                                                                    builder:
+                                                                        (context) {
+                                                                      return AlertDialog(
+                                                                        shape: CustomAlertDialogShape(
+                                                                            bottomLeftRadius:
+                                                                                36.0),
+                                                                        title:
+                                                                            Column(
+                                                                          children: [
+                                                                            Center(child: Text("", style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600))),
+                                                                            SizedBox(
+                                                                              height: 10,
+                                                                            ),
+                                                                            // Divider(),
+                                                                          ],
+                                                                        ),
+                                                                        content:
+                                                                            StatefulBuilder(
+                                                                          builder:
+                                                                              (BuildContext context, StateSetter setState) {
+                                                                            return Column(
+                                                                              mainAxisSize: MainAxisSize.min,
+                                                                              children: [
+                                                                                ...buildReasonRadioButtons(setState),
+
+                                                                                // ),
+                                                                              ],
+                                                                            );
+                                                                          },
+                                                                        ),
+                                                                        actions: [
+                                                                          Column(
+                                                                            children: [
+                                                                              Row(
+                                                                                mainAxisAlignment: MainAxisAlignment.end,
+                                                                                children: [
+                                                                                  TextButton(
+                                                                                    onPressed: () async {
+                                                                                      // SharedPreferences prefs =
+                                                                                      //     await SharedPreferences.getInstance();
+                                                                                      // var selectedLanguagePref =
+                                                                                      //     prefs.getString('langEn').toString();
+                                                                                      // if (selectedLanguagePref == "false") {
+                                                                                      //   selectedLanguage = 'Arabic';
+                                                                                      // } else {
+                                                                                      //   selectedLanguage = 'English';
+                                                                                      // }
+                                                                                      Navigator.of(context).pop(); // Close the dialog
+                                                                                    },
+                                                                                    child: Text('cancelButton'.tr),
+                                                                                  ),
+                                                                                  TextButton(
+                                                                                    onPressed: () {
+                                                                                      String appId = appointment["AppoinmentId"].toString();
+
+                                                                                      cancelResultAppointment(appId);
+                                                                                      Navigator.pop(context);
+                                                                                    },
+                                                                                    child: Text('ok'.tr),
+                                                                                  ),
+                                                                                ],
+                                                                              ),
+                                                                            ],
+                                                                          ),
+                                                                        ],
+                                                                      );
+                                                                    },
+                                                                  )
+                                                                : showDialog(
+                                                                    context:
+                                                                        context,
+                                                                    builder:
+                                                                        (context) {
+                                                                      return AlertDialog(
+                                                                        shape: CustomAlertDialogShape(
+                                                                            bottomLeftRadius:
+                                                                                36.0),
+                                                                        title:
+                                                                            Column(
+                                                                          children: [
+                                                                            Center(child: Text("", style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600))),
+                                                                            SizedBox(
+                                                                              height: 10,
+                                                                            ),
+                                                                            // Divider(),
+                                                                          ],
+                                                                        ),
+                                                                        content:
+                                                                            StatefulBuilder(
+                                                                          builder:
+                                                                              (BuildContext context, StateSetter setState) {
+                                                                            return Column(
+                                                                              mainAxisSize: MainAxisSize.min,
+                                                                              children: [
+                                                                                ...buildReasonRadioButtons(setState),
+
+                                                                                // ),
+                                                                              ],
+                                                                            );
+                                                                          },
+                                                                        ),
+                                                                        actions: [
+                                                                          Column(
+                                                                            children: [
+                                                                              Row(
+                                                                                mainAxisAlignment: MainAxisAlignment.end,
+                                                                                children: [
+                                                                                  TextButton(
+                                                                                    onPressed: () async {
+                                                                                      // SharedPreferences prefs =
+                                                                                      //     await SharedPreferences.getInstance();
+                                                                                      // var selectedLanguagePref =
+                                                                                      //     prefs.getString('langEn').toString();
+                                                                                      // if (selectedLanguagePref == "false") {
+                                                                                      //   selectedLanguage = 'Arabic';
+                                                                                      // } else {
+                                                                                      //   selectedLanguage = 'English';
+                                                                                      // }
+                                                                                      Navigator.of(context).pop(); // Close the dialog
+                                                                                    },
+                                                                                    child: Text('cancelButton'.tr),
+                                                                                  ),
+                                                                                  TextButton(
+                                                                                    onPressed: () {
+                                                                                      String appId = appointment["AppoinmentId"].toString();
+
+                                                                                      cancelAnAppointment(appId);
+                                                                                      Navigator.pop(context);
+                                                                                    },
+                                                                                    child: Text('ok'.tr),
+                                                                                  ),
+                                                                                ],
+                                                                              ),
+                                                                            ],
+                                                                          ),
+                                                                        ],
+                                                                      );
+                                                                    },
+                                                                  );
+                                                        // }
                                                       },
                                                       child: Text(
                                                         'cancelButton'.tr,
                                                         style: TextStyle(
-                                                            color: Colors
-                                                                .deepPurple),
+                                                            color: appbar,
+                                                            fontSize: 11),
                                                       ),
                                                     ),
                                                   ),
@@ -529,59 +1029,179 @@ class AllAppointmentsState extends State<AllAppointments> {
                                                   SizedBox(
                                                     width: 150,
                                                     child: ElevatedButton(
-                                                      style: ElevatedButton
-                                                          .styleFrom(
-                                                        shape:
-                                                            const RoundedRectangleBorder(
-                                                          borderRadius:
-                                                              BorderRadius.only(
-                                                            bottomLeft:
-                                                                Radius.circular(
-                                                                    20.0),
-                                                          ),
-                                                        ),
-                                                        backgroundColor:
-                                                            primaryColor,
-                                                        side: const BorderSide(
-                                                            color:
-                                                                Colors.black),
-                                                        elevation: 0,
-                                                      ),
-                                                      onPressed: () async {
-                                                        if (appointment[
-                                                                'ResultExpiredMSG'] !=
-                                                            null) {
-                                                          showDialog(
-                                                              context: context,
-                                                              builder:
-                                                                  (BuildContext
-                                                                      context) {
-                                                                return AlertDialog(
-                                                                  title:
-                                                                      Text(''),
-                                                                  content: Text(
-                                                                      appointment[
-                                                                          'ResultExpiredMSG']),
-                                                                  actions: [
-                                                                    ElevatedButton(
-                                                                      onPressed:
-                                                                          () {
-                                                                        Navigator.pop(
-                                                                            context); // Close the dialog
-                                                                      },
-                                                                      child: Text(
-                                                                          'OK'),
+                                                      style: appointment[
+                                                                  "showRescheduleBtn"] ==
+                                                              true
+                                                          ? ElevatedButton
+                                                              .styleFrom(
+                                                              shape:
+                                                                  const RoundedRectangleBorder(
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .only(
+                                                                  bottomLeft: Radius
+                                                                      .circular(
+                                                                          20.0),
+                                                                ),
+                                                              ),
+                                                              backgroundColor:
+                                                                  primaryColor,
+                                                              // side: const BorderSide(
+                                                              //     color: Colors.black),
+                                                              elevation: 0,
+                                                            )
+                                                          : ElevatedButton
+                                                              .styleFrom(
+                                                              shape:
+                                                                  const RoundedRectangleBorder(
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .only(
+                                                                  bottomLeft: Radius
+                                                                      .circular(
+                                                                          20.0),
+                                                                ),
+                                                              ),
+                                                              backgroundColor:
+                                                                  primaryColor
+                                                                      .withOpacity(
+                                                                          0.5),
+                                                              // side: const BorderSide(
+                                                              //     color: Colors.black),
+                                                              elevation: 0,
+                                                            ),
+                                                      onPressed: () {
+                                                        String appId = appointment[
+                                                                "AppoinmentId"]
+                                                            .toString();
+                                                        String Vtype = appointment[
+                                                                'VisittypeName']
+                                                            .toString();
+                                                        String vTypeId =
+                                                            appointment[
+                                                                    'VisitTypeId']
+                                                                .toString();
+                                                        String appstatus =
+                                                            appointment[
+                                                                    'AppoinmentStatus']
+                                                                .toString();
+                                                        String calendarId =
+                                                            appointment[
+                                                                    "AvailabilityCalenderId"]
+                                                                .toString();
+                                                        String appTypeId =
+                                                            appointment[
+                                                                    "AppointmentTypeId"]
+                                                                .toString();
+                                                        String studyId =
+                                                            appointment[
+                                                                    "StudyId"]
+                                                                .toString();
+                                                        String appDate =
+                                                            appointment[
+                                                                "AppoimentDate"];
+                                                        // rescheduleAppointment(
+                                                        //     appId,
+                                                        //     appstatus,
+                                                        //     Vtype,
+                                                        //     calendarId,
+                                                        //     appTypeId,
+                                                        //     vTypeId,
+                                                        //     studyId);
+                                                        appointment["showRescheduleBtn"] ==
+                                                                true
+                                                            ? showDialog(
+                                                                context:
+                                                                    context,
+                                                                builder:
+                                                                    (BuildContext
+                                                                        context) {
+                                                                  return AlertDialog(
+                                                                    backgroundColor:
+                                                                        Colors
+                                                                            .white,
+                                                                    shape:
+                                                                        const RoundedRectangleBorder(
+                                                                      borderRadius:
+                                                                          BorderRadius
+                                                                              .only(
+                                                                        bottomLeft:
+                                                                            Radius.circular(50.0), // Adjust the radius as needed
+                                                                      ),
                                                                     ),
-                                                                  ],
-                                                                );
-                                                              });
-                                                        }
+                                                                    content:
+                                                                        Padding(
+                                                                      padding: const EdgeInsets
+                                                                          .only(
+                                                                          top:
+                                                                              12.0),
+                                                                      child:
+                                                                          Text(
+                                                                        'rescheduleAppoint'
+                                                                            .tr,
+                                                                        style: const TextStyle(
+                                                                            color: Color.fromARGB(
+                                                                                255,
+                                                                                74,
+                                                                                74,
+                                                                                74)),
+                                                                      ),
+                                                                    ),
+                                                                    actions: <Widget>[
+                                                                      TextButton(
+                                                                        onPressed:
+                                                                            () async {
+                                                                          appointment["AppoinmenttypName"] == "Result"
+                                                                              ? GetResultRescheduleAppointment(context, studyId, vTypeId, Vtype, appId, appDate, appTypeId)
+                                                                              : GetRescheduleAppointment(context, studyId, vTypeId, Vtype, appId, appDate, appTypeId);
+
+                                                                          // Navigator.pop(context);
+                                                                        },
+                                                                        child:
+                                                                            Text(
+                                                                          'ok'.tr,
+                                                                          style:
+                                                                              TextStyle(color: secondaryColor),
+                                                                        ),
+                                                                      ),
+                                                                    ],
+                                                                  );
+                                                                },
+                                                              )
+                                                            : showDialog(
+                                                                context:
+                                                                    context,
+                                                                builder:
+                                                                    (BuildContext
+                                                                        context) {
+                                                                  return ErrorPopup(
+                                                                      errorMessage:
+                                                                          appointment[
+                                                                              "ResultExpiredMSG"]);
+                                                                },
+                                                              );
+                                                        // appointment["AppoinmenttypName"] ==
+                                                        //         "Result"
+                                                        //     ? GetResultRescheduleAppointment(
+                                                        //         context,
+                                                        //         studyId,
+                                                        //         vTypeId,
+                                                        //         Vtype,
+                                                        //         appId,
+                                                        //         appDate)
+                                                        //     : GetRescheduleAppointment(
+                                                        //         context,
+                                                        //         studyId,
+                                                        //         vTypeId,
+                                                        //         Vtype,
+                                                        //         appId,
+                                                        //         appDate);
                                                       },
                                                       child: Text(
-                                                        'Reschedule',
+                                                        'reschedule'.tr,
                                                         style: TextStyle(
-                                                            color:
-                                                                Colors.white),
+                                                            color: Colors.white,
+                                                            fontSize: 11),
                                                       ),
                                                     ),
                                                   ),

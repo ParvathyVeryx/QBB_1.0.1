@@ -46,16 +46,8 @@ Future<void> signOut(BuildContext context) async {
       // Save the API response in shared preferences
 
       // Now, navigate to the AppointmentBookingPage
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const LoginPage(),
-        ),
-      );
-      Navigator.of(context).pushNamedAndRemoveUntil(
-        '/login',
-        (Route<dynamic> route) => false,
-      );
+
+      print("Success");
     } else {
       // Handle errors
       showDialog(

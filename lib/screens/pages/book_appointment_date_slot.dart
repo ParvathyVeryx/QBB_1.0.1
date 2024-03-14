@@ -250,12 +250,8 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
                 actions: [
                   ElevatedButton(
                     onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => Appointments(),
-                        ),
-                      ); // Close the dialog
+                      Navigator.pushNamed(
+                                              context, '/appointments'); // Close the dialog
                     },
                     child: Text('OK'),
                   ),
