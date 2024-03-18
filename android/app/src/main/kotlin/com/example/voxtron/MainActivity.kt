@@ -1,4 +1,4 @@
-package com.example.qbb
+package com.qatar.qbb
 
 import io.flutter.embedding.android.FlutterActivity
 

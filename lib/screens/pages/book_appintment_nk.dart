@@ -169,6 +169,7 @@ class BookAppointmentsState extends State<BookAppointments> {
       print("$apiUrl?QID=$qid&StudyId=$studyId&Preg=$isPreg&language=$setLang");
       if (response.statusCode == 200) {
         final List<dynamic> responseData = json.decode(response.body);
+        print("Visiti type codes"+responseData.toString());
         setState(() {
           visitTypeNames =
               responseData.map((data) => data['Name'].toString()).toList();
@@ -180,8 +181,7 @@ class BookAppointmentsState extends State<BookAppointments> {
       }
     } catch (error) {
       isLoading = false;
-    }
-    finally {
+    } finally {
       setState(() {
         isLoading = false;
       });
@@ -356,7 +356,9 @@ class BookAppointmentsState extends State<BookAppointments> {
                             : Container(
                                 height: 0,
                               ),
-                        gender.contains("emale") && maritalId != "Single" && preg == ''
+                        gender.contains("emale") &&
+                                maritalId != "Single" &&
+                                preg == ''
                             ? Container(
                                 height: 0,
                               )
@@ -433,7 +435,9 @@ class BookAppointmentsState extends State<BookAppointments> {
                                   ),
                                 ),
                               ),
-                        gender.contains("emale") && maritalId != "Single" && preg == ''
+                        gender.contains("emale") &&
+                                maritalId != "Single" &&
+                                preg == ''
                             ? Container(
                                 height: 0,
                               )
