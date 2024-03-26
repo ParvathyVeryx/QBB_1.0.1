@@ -1,4 +1,4 @@
-package com.qatar.qbb
+package com.qatar.biobank
 
 import io.flutter.embedding.android.FlutterActivity
 
